@@ -8,7 +8,7 @@
 
 ## 2. 기술 스택 (Tech Stack)
 
-- **Frontend & Backend:** Next.js 15 (App Router), TypeScript, **Tailwind CSS**.
+- **Frontend & Backend:** Next.js 16 (App Router), TypeScript, **Tailwind CSS**.
 - **UI Library:** **Shadcn UI** (New York Style, Zinc Theme) - for accessible, composable components.
 - **Styling:** CSS Modules (for custom complex styles only), otherwise Tailwind Utility First.
 - **Database:** PostgreSQL (Supabase or Neon)
