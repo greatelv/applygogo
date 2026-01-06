@@ -20,7 +20,7 @@
    - 텍스트 추출 중
    - AI 분석 중
    - 경력 요약 중
-   ↓ 자동 진행 (6~7초)
+   ↓ 자동 진행 (6~7초) (1 크레딧 차감)
 
 3. 경력사항 요약 확인 (ResumeSummaryPage)
    - AI가 요약한 경력사항 확인
@@ -31,17 +31,17 @@
 4. 영문 번역 확인 (ResumeTranslatePage)
    - Split View (한글 | 영문)
    - 영문 번역 내용 수정 가능
-   - 재번역 기능
+   - 재번역 기능 (0.5 크레딧 차감)
    ↓ "다음: 템플릿 선택" 클릭
 
 5. 템플릿 선택 & 미리보기 (ResumePreviewPage)
-   - Modern / Classic / Minimal 템플릿 선택
+   - Modern / Classic / Minimal(Pro) 템플릿 선택
    - 실시간 미리보기
    ↓ "PDF 다운로드" 클릭
 
 6. 완료
    - 이력서 목록에 추가
-   - 크레딧 차감
+   - 차감 없음 (다운로드 무료)
    - 완성 알림
 ```
 
@@ -169,7 +169,7 @@ UPLOAD → PROCESSING → SUMMARIZED → TRANSLATED → COMPLETED
 - selectedResumeId: string | null
 
 // 사용자 정보
-- plan: "FREE" | "STANDARD" | "PRO"
+- plan: "FREE" | "PRO"
 - quota: number
 - resumes: Resume[]
 
@@ -261,9 +261,8 @@ currentPage = "resumes"
 
 ### 4. 크레딧 시스템
 
-- Free: 월 2 크레딧
-- Standard: 월 6 크레딧
-- Pro: 월 20 크레딧
+- Free: 월 3 크레딧
+- Pro: 월 100 크레딧
 - 이력서 1개 생성 = 크레딧 1개 소모
 
 ## 📝 다음 단계 (향후 개발)

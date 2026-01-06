@@ -87,7 +87,7 @@
 
 - ✅ 현재 플랜 정보
 - ✅ 남은 크레딧 표시
-- ✅ 3가지 플랜 비교
+- ✅ 2가지 플랜 비교 (Free, Pro)
 - ✅ 업그레이드 버튼
 - ✅ 플랜 해지 버튼
 - ✅ 결제 내역 (플레이스홀더)
@@ -216,7 +216,7 @@ currentExperiences: Experience[]
 currentTranslated: TranslatedExperience[]
 
 // 사용자
-plan: "FREE" | "STANDARD" | "PRO"
+plan: "FREE" | "PRO"
 quota: number
 resumes: Resume[]
 ```
@@ -257,10 +257,10 @@ resumes: Resume[]
 
 ## 📚 문서
 
-1. **README.md** - 프로젝트 소개 및 설치 가이드
-2. **THEME_GUIDE.md** - 테마 커스터마이징 완벽 가이드
-3. **WORKFLOW_GUIDE.md** - 워크플로우 및 페이지 구조 상세 설명
-4. **PROJECT_SUMMARY.md** (이 문서) - 구현 완료 항목 체크리스트
+1.  **README.md** - 프로젝트 소개 및 설치 가이드
+2.  **THEME_GUIDE.md** - 테마 커스터마이징 완벽 가이드
+3.  **WORKFLOW_GUIDE.md** - 워크플로우 및 페이지 구조 상세 설명
+4.  **PROJECT_SUMMARY.md** (이 문서) - 구현 완료 항목 체크리스트
 
 ## 🎯 주요 사용자 여정
 
@@ -317,8 +317,9 @@ resumes: Resume[]
 
 ### 4. 크레딧 시스템
 
-- 이력서 1개 생성 = 크레딧 1개 소모
-- 헤더에 실시간 표시
+- Free: 월 3 크레딧
+- Pro: 월 100 크레딧
+- 이력서 생성 = 1 크레딧, 재번역 = 0.5 크레딧 소모
 - 크레딧 부족 시 업그레이드 유도
 
 ## 🚀 다음 단계 (향후 개발)

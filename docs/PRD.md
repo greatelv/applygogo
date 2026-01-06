@@ -47,45 +47,39 @@
 
 ## 3. Business Rules & Logic
 
-### 3.1. Subscription Model (3-Tier Strategy)
+### 3.1. Subscription Model (2-Tier Strategy)
 
-다양한 사용자 니즈를 고려하여 **단계별 플랜 구조**를 제공한다.
+사용자 니즈를 고려하여 **Free(체험)**와 **Pro(실전)** 두 가지 플랜을 제공한다.
 
 - **Quota Cost:**
 
-  - 복잡한 차감 로직(1, 2점 등)을 제거하고, 횟수 기반으로 단순화.
-  - 1회 = 업로드 → AI 처리 → 편집 → 템플릿 선택 → PDF 다운로드 전체 워크플로우.
+  - **AI Processing:** 1 크레딧 차감.
+  - **AI Re-translation (재번역):** 0.5 크레딧 차감.
+  - **Download:** 차감 없음.
 
 - **Plan Tiers:**
 
 1. **Free (체험):**
 
-   - 월 **2회** 전체 기능 이용 가능.
-   - 이력서 보관 1개.
-   - 모든 템플릿 중 **Basic 템플릿만** 사용 가능.
-   - _목적: 서비스 퀄리티 검증 및 Hooking._
+   - **가격:** 무료.
+   - **제공:** 월 **3 크레딧**.
+   - **보관:** 이력서 1개.
+   - **템플릿:** Modern, Classic 사용 가능.
+   - _목적: 서비스 퀄리티 검증 및 체험._
 
-2. **Standard (표준):**
-
-   - **가격:** 월 **5,900원** (VAT 포함).
-   - 월 **10회** 이용 가능.
-   - 이력서 보관 10개.
-   - 모든 템플릿 사용 가능.
-   - _목적: 중간 사용자 타겟, 가격 접근성 확보._
-
-3. **Pro (합격 패스):**
+2. **Pro (합격 패스):**
    - **가격:** 월 **9,900원** (VAT 포함).
-   - 월 **무제한** 이용 (Fair Use Policy 적용: 일 50회).
-   - 이력서 보관 무제한 + PDF 무제한 다운로드.
-   - **PRO 전용 템플릿** 포함 (고급 디자인).
+   - **제공:** 월 **100 크레딧**.
+   - **보관:** 이력서 무제한.
+   - **템플릿:** 모든 템플릿(Minimal 포함) 사용 가능.
    - _목적: 파워 유저 및 취업 준비생 집중 지원._
 
 ### 3.2. Template Access Control
 
-- **FREE:** Modern (Basic) 템플릿만 사용 가능.
-- **STANDARD:** Modern, Classic, Minimal 템플릿 사용 가능.
-- **PRO:** 모든 템플릿 + Executive, Creative (PRO 전용) 사용 가능.
-- PRO 템플릿 선택 시 FREE/STANDARD 유저는 **업그레이드 유도 UI** 표시.
+- **종류:** 총 3종 (Modern, Classic, Minimal).
+- **FREE:** Modern, Classic 사용 가능.
+- **PRO:** Modern, Classic, Minimal (PRO 전용) 모두 사용 가능.
+- PRO 템플릿(Minimal) 선택 시 FREE 유저는 **업그레이드 유도 UI** 표시.
 
 ### 3.3. Cancellation Policy (Grace Period) - Future
 
@@ -117,7 +111,7 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
 - **Acceptance Criteria (Current - Mock):**
   - 로그인 버튼 클릭 시 Google OAuth UI 표시 (Mock).
   - "Google로 계속하기" 버튼 클릭 시 즉시 대시보드로 진입.
-  - 기본 플랜은 'FREE', 크레딧은 2로 설정.
+  - 기본 플랜은 'FREE', 크레딧은 3으로 설정.
 - **Acceptance Criteria (Future - Production):**
   - 실제 Google OAuth 인증 흐름.
   - 가입 시 `Users` 테이블에 정보 생성, `Plans`는 기본 'FREE'.
@@ -188,14 +182,13 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
 
 - **As a** 유저, **I want to** 완성된 내용을 다양한 템플릿으로 미리보고 선택하고 싶다.
 - **Acceptance Criteria:**
-  - **템플릿 목록**: 좌측에 템플릿 카드 (Modern, Classic, Minimal, Executive, Creative).
+  - **템플릿 목록**: 좌측에 템플릿 카드 (Modern, Classic, Minimal).
   - **PRO 뱃지**: PRO 전용 템플릿에 배지 표시.
   - **실시간 미리보기**: 우측에 선택한 템플릿의 실제 렌더링 결과 표시.
   - **접근 제어**:
-    - FREE: Modern만 선택 가능.
-    - STANDARD: Modern, Classic, Minimal 선택 가능.
+    - FREE: Modern, Classic 선택 가능.
     - PRO: 모든 템플릿 선택 가능.
-    - PRO 템플릿 선택 시 FREE/STANDARD는 업그레이드 유도 UI + "PRO로 업그레이드" 버튼.
+    - PRO 템플릿 선택 시 FREE 유저는 업그레이드 유도 UI + "PRO로 업그레이드" 버튼.
   - **네비게이션**: "이전" 버튼(Edit으로), "다음" 버튼(Complete로) or "PRO로 업그레이드".
 
 **Story 2.5: Step 5 - 완료 및 다운로드**
