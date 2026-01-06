@@ -23,7 +23,7 @@
 - **Auth:** Auth.js v5 (Google OAuth).
 - **AI Engine:** Google Gemini Pro API (Structured Output).ㅎ
 - **Storage:** AWS S3 Compatible (Supabase Storage) - PDF 파일 관리.
-- **Payments:** PortOne or Toss Payments (Subscription Model).
+- **Payments:** PortOne (Subscription Model).
 - **Deployment:** Vercel.
 
 ## 3. Business Rules & Logic

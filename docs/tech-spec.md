@@ -16,7 +16,7 @@
 - **AI Engine:** Google Gemini Pro API
 - **Auth:** Auth.js (NextAuth) v5 - Google Provider
 - **Storage:** AWS S3 compatible (Supabase Storage or Cloudflare R2) - PDF 원본 및 결과물 저장
-- **Payment:** PortOne or Tosspayments (Billing Key 방식)
+- **Payment:** PortOne (Billing Key 방식)
 
 ---
 
