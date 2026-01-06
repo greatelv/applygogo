@@ -4,7 +4,7 @@ const apiKey = process.env.GEMINI_API_KEY!;
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export const gemini = genAI.getGenerativeModel({
-  model: "gemini-pro",
+  model: "gemini-1.5-flash",
 });
 
 export const SUMMARY_PROMPT = `

@@ -80,7 +80,10 @@ export async function POST(
   } catch (error) {
     console.error("Summarize API Error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      {
+        error: "Internal Server Error",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
