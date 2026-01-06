@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FileText, Upload } from "lucide-react";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 
 interface NewResumePageProps {
   onUpload: (file: File) => void;

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "../components/theme-provider";
 import { LandingPage } from "../components/landing-page";
 import { LoginPage } from "../components/login-page";
@@ -9,13 +10,7 @@ import { ResumesPage } from "../components/resumes-page";
 import { NewResumePage } from "../components/new-resume-page";
 import { BillingPage } from "../components/billing-page";
 
-// Mock data
-const mockUser = {
-  name: "홍길동",
-  email: "hong@example.com",
-  image: undefined,
-};
-
+// Mock data (Resume list only)
 type ResumeStatus =
   | "IDLE"
   | "SUMMARIZED"
@@ -30,54 +25,73 @@ interface Resume {
   updatedAt: string;
 }
 
-const mockResumes: Resume[] = [
-  {
-    id: "1",
-    title: "소프트웨어 엔지니어 이력서.pdf",
-    status: "COMPLETED",
-    updatedAt: "2026-01-05",
-  },
-  {
-    id: "2",
-    title: "프로덕트 매니저 이력서.pdf",
-    status: "TRANSLATED",
-    updatedAt: "2026-01-03",
-  },
-];
-
 export default function App() {
+  const { data: session, status } = useSession();
   const [showLanding, setShowLanding] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentPage, setCurrentPage] = useState("resumes");
   const [plan, setPlan] = useState<"FREE" | "STANDARD" | "PRO">("FREE");
   const [quota, setQuota] = useState(2);
-  const [resumes, setResumes] = useState(mockResumes);
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Effect to automatically show dashboard if authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      setShowLanding(false);
+      // Fetch resumes
+      fetch("/api/resumes")
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error("Failed to fetch");
+        })
+        .then((data) => setResumes(data))
+        .catch((err) => console.error(err));
+    }
+  }, [status]);
 
   const handleGetStarted = () => {
-    setShowLanding(false);
+    if (status === "authenticated") {
+      setShowLanding(false);
+    } else {
+      setShowLanding(false); // Go to login
+    }
   };
 
   const handleLogin = () => {
-    setIsAuthenticated(true);
+    signIn("google");
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setCurrentPage("resumes");
-    setShowLanding(true);
+    signOut({ callbackUrl: "/" });
   };
 
-  const handleUpload = (file: File) => {
-    console.log("Uploading file:", file.name);
-    // Mock: Add new resume
-    const newResume = {
-      id: String(Date.now()),
-      title: file.name,
-      status: "IDLE" as const,
-      updatedAt: new Date().toISOString().split("T")[0],
-    };
-    setResumes([newResume, ...resumes]);
-    setCurrentPage("resumes");
+  const handleUpload = async (file: File) => {
+    if (isUploading) return;
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/resumes/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(`업로드 실패: ${errorData.error}`);
+        return;
+      }
+
+      const newResume = await res.json();
+      setResumes((prev) => [newResume, ...prev]);
+      setCurrentPage("resumes");
+    } catch (error) {
+      console.error(error);
+      alert("업로드 중 오류가 발생했습니다.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleUpgrade = (newPlan: "STANDARD" | "PRO") => {
@@ -97,23 +111,32 @@ export default function App() {
   };
 
   const handleSelectResume = (id: string) => {
-    console.log("Selected resume:", id);
-    alert(`이력서 상세 페이지 (ID: ${id})\n\n이 기능은 추후 구현됩니다.`);
+    // console.log("Selected resume:", id);
+    // alert(`이력서 상세 페이지 (ID: ${id})\n\n이 기능은 추후 구현됩니다.`);
+    window.location.href = `/resumes/${id}`;
   };
+
+  if (status === "loading") {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {showLanding ? (
+      {showLanding && status !== "authenticated" ? (
         <LandingPage onGetStarted={handleGetStarted} />
-      ) : !isAuthenticated ? (
+      ) : status !== "authenticated" ? (
         <LoginPage onLogin={handleLogin} />
       ) : (
         <DashboardLayout
           plan={plan}
           quota={quota}
-          userName={mockUser.name}
-          userEmail={mockUser.email}
-          userImage={mockUser.image}
+          userName={session?.user?.name || "사용자"}
+          userEmail={session?.user?.email || ""}
+          userImage={session?.user?.image || undefined}
           activeItem={currentPage}
           onNavigate={setCurrentPage}
           onLogout={handleLogout}

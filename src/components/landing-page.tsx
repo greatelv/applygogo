@@ -1,11 +1,4 @@
-import {
-  ArrowRight,
-  Check,
-  Sparkles,
-  FileText,
-  Globe,
-  Download,
-} from "lucide-react";
+import { ArrowRight, Check, Sparkles, Globe, Download } from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./theme-toggle";
 
