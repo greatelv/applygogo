@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { supabaseServer } from "@/lib/supabase";
-import pdf from "pdf-parse";
+// import pdf from "pdf-parse"; // Causing ESM issues
 
 export async function POST(req: Request) {
   try {
@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    // const session = { user: { id: "dev-test-user" } }; // Mock session
 
     const formData = await req.formData();
     const file = formData.get("file") as File;
@@ -54,13 +55,18 @@ export async function POST(req: Request) {
     // 2. Validate PDF Text Extraction
     let extractedText = "";
     try {
-      // @ts-ignore
-      const pdfData = await pdf(buffer);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const pdfLib = require("pdf-parse");
+      // Check for named export commonly found in this fork
+      const PDFParse = pdfLib.default || pdfLib.PDFParse || pdfLib;
+
+      const parser = new PDFParse({ data: buffer });
+      const pdfData = await parser.getText();
       extractedText = pdfData.text;
-    } catch (parseError) {
+    } catch (parseError: any) {
       console.error("PDF Parse Error:", parseError);
       return NextResponse.json(
-        { error: "Invalid or corrupt PDF file" },
+        { error: `Invalid or corrupt PDF file: ${parseError.message}` },
         { status: 400 }
       );
     }
