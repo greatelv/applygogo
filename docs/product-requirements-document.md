@@ -28,20 +28,26 @@
 
 ## 3. Business Rules & Logic
 
-### 3.1. Subscription Model (Quota System)
+### 3.1. Subscription Model (Simplifed & Generous)
 
-유저는 **Plan**에 따라 매월 부여되는 **Quota(크레딧)**을 소모하여 AI 기능을 사용한다.
+취업 시즌의 단기 집중 사용 패턴을 고려하여, 유저가 크레딧 걱정 없이 완벽한 결과물을 만들 수 있도록 **단일 유료 플랜(Pro)** 집중 전략을 취한다.
 
 - **Quota Cost:**
-- 요약(Summarize) 1회 = **1 Quota**.
-- 번역(Translate) 1회 = **1 Quota**.
-- 딸깍 전환(One-Click) 1회 = **2 Quota**.
+- 복잡한 차감 로직(1, 2점 등)을 제거하고, 횟수 기반으로 단순화.
 
 - **Plan Tiers:**
 
-1. **Free:** 월 2 Quota / 이력서 보관 1개.
-2. **Standard:** 월 6 Quota / 이력서 보관 3개.
-3. **Pro:** 월 20 Quota / 이력서 보관 무제한.
+1. **Free (체험):**
+
+   - 월 **2회** 전체 기능 이용 가능.
+   - 이력서 보관 1개.
+   - _목적: 서비스 퀄리티 검증 및 Hooking._
+
+2. **Pro (합격 패스):**
+   - **가격:** 월 **9,900원** (VAT 포함).
+   - 월 **무제한** 이용 (Fair Use Policy 적용: 일 50회).
+   - 이력서 보관 무제한 + PDF 무제한 다운로드.
+   - _목적: 1개월 단기 결제 유도 (High Conversion)._
 
 ### 3.2. Cancellation Policy (Grace Period)
 
