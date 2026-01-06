@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------
+// 1. Auth.js Models (User, Account, Session, VerificationToken)
+// ---------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  // Custom Fields for ApplyGogo
+  phoneNumber   String?   @map("phone_number")
+  linkedinUrl   String?   @map("linkedin_url")
+  portfolioUrl  String?   @map("portfolio_url")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  subscription  Subscription?
+  resumes       Resume[]
+  usageLogs     UsageLog[]
+
+  @@map("users")
+}
+
+model Account {
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ---------------------------------------------------------
+// 2. Subscription & Billing
+// ---------------------------------------------------------
+
+enum PlanCode {
+  FREE
+  PRO
+}
+
+model Plan {
+  code          PlanCode @id
+  monthlyQuota  Float    @map("monthly_quota") // 3.0 or 100.0
+  maxResumes    Int      @map("max_resumes")   // 1 or -1 (unlimited)
+  
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique @map("user_id")
+  planCode           PlanCode           @map("plan_code")
+  
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime           @default(now()) @map("current_period_start")
+  currentPeriodEnd   DateTime           @map("current_period_end")
+  cancelAtPeriodEnd  Boolean            @default(false) @map("cancel_at_period_end")
+  billingKey         String?            @map("billing_key")
+
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planCode], references: [code])
+
+  @@map("subscriptions")
+}
+
+model UsageLog {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  amount      Float    // 1.0 or 0.5
+  description String   // "Processing Resume: {id}" or "Re-translating"
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("usage_logs")
+}
+
+// ---------------------------------------------------------
+// 3. Resume Core
+// ---------------------------------------------------------
+
+enum ResumeStatus {
+  IDLE
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ResumeStep {
+  UPLOAD
+  PROCESSING
+  EDIT
+  TEMPLATE
+  COMPLETED
+}
+
+enum ResumeTemplate {
+  MODERN
+  CLASSIC
+  MINIMAL
+}
+
+model Resume {
+  id               String          @id @default(cuid())
+  userId           String          @map("user_id")
+  title            String
+  originalFileUrl  String          @map("original_file_url")
+  targetRole       String?         @map("target_role")
+  
+  status           ResumeStatus    @default(IDLE)
+  failureMessage   String?         @map("failure_message")
+  
+  currentStep      ResumeStep      @default(UPLOAD) @map("current_step")
+  selectedTemplate ResumeTemplate? @map("selected_template")
+
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workExperiences WorkExperience[]
+  educations      Education[]
+  skills          Skill[]
+
+  @@map("resumes")
+}
+
+// ---------------------------------------------------------
+// 4. Resume Details (Data)
+// ---------------------------------------------------------
+
+model WorkExperience {
+  id            String   @id @default(cuid())
+  resumeId      String   @map("resume_id")
+  
+  companyNameKr String   @map("company_name_kr")
+  companyNameEn String?  @map("company_name_en")
+  roleKr        String   @map("role_kr")
+  roleEn        String?  @map("role_en")
+  startDate     String   @map("start_date") // YYYY.MM
+  endDate       String   @map("end_date")   // YYYY.MM or Present
+  
+  // JSONB arrays for bullet points
+  bulletsKr     Json     @map("bullets_kr") // string[]
+  bulletsEn     Json?    @map("bullets_en") // string[]
+  
+  order         Int      @default(0)
+
+  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("work_experiences")
+}
+
+model Education {
+  id           String @id @default(cuid())
+  resumeId     String @map("resume_id")
+  resume       Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  
+  schoolName   String @map("school_name")
+  major        String
+  degree       String
+  startDate    String @map("start_date")
+  endDate      String @map("end_date") // YYYY.MM or Present
+  
+  order        Int    @default(0)
+
+  @@map("educations")
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  resumeId String @map("resume_id")
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  
+  name     String
+  level    String? // e.g. "Expert", "Intermediate"
+  
+  order    Int    @default(0)
+
+  @@map("skills")
+}
