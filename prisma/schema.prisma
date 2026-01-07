@@ -6,47 +6,52 @@ datasource db {
   provider = "postgresql"
 }
 
-model accounts {
-  user_id             String
-  type                String
-  provider            String
-  provider_account_id String
-  refresh_token       String?
-  access_token        String?
-  expires_at          Int?
-  token_type          String?
-  scope               String?
-  id_token            String?
-  session_state       String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime
-  users               users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+model Account {
+  userId             String   @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String   @map("provider_account_id")
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, provider_account_id])
+  @@id([provider, providerAccountId])
+  @@map("accounts")
 }
 
-model educations {
-  id          String  @id
-  resume_id   String
+model Education {
+  id          String  @id @default(cuid())
+  resumeId    String  @map("resume_id")
   school_name String
   major       String
   degree      String
   start_date  String
   end_date    String
   order       Int     @default(0)
-  resumes     resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("educations")
 }
 
-model plans {
+model Plan {
   code          PlanCode        @id
   monthly_quota Float
   max_resumes   Int
-  subscriptions subscriptions[]
+  subscriptions Subscription[]
+
+  @@map("plans")
 }
 
-model resumes {
-  id                String             @id
-  user_id           String
+model Resume {
+  id                String             @id @default(cuid())
+  userId            String             @map("user_id")
   title             String
   original_file_url String
   target_role       String?
@@ -55,57 +60,67 @@ model resumes {
   current_step      ResumeStep         @default(UPLOAD)
   selected_template ResumeTemplate?
   created_at        DateTime           @default(now())
-  updated_at        DateTime
-  educations        educations[]
-  users             users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  skills            skills[]
-  work_experiences  work_experiences[]
+  updated_at        DateTime           @updatedAt
+  educations        Education[]
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills            Skill[]
+  work_experiences  WorkExperience[]
+
+  @@map("resumes")
 }
 
-model sessions {
-  session_token String   @unique
-  user_id       String
-  expires       DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime
-  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+model Session {
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
-model skills {
-  id        String  @id
-  resume_id String
+model Skill {
+  id        String  @id @default(cuid())
+  resumeId  String  @map("resume_id")
   name      String
   level     String?
   order     Int     @default(0)
-  resumes   resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("skills")
 }
 
-model subscriptions {
-  id                   String             @id
-  user_id              String             @unique
-  plan_code            PlanCode
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique @map("user_id")
+  planCode            PlanCode           @map("plan_code")
   status               SubscriptionStatus @default(ACTIVE)
   current_period_start DateTime           @default(now())
   current_period_end   DateTime
   cancel_at_period_end Boolean            @default(false)
   billing_key          String?
   created_at           DateTime           @default(now())
-  updated_at           DateTime
-  plans                plans              @relation(fields: [plan_code], references: [code])
-  users                users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  updated_at           DateTime           @updatedAt
+  plan                 Plan               @relation(fields: [planCode], references: [code])
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
 }
 
-model usage_logs {
-  id          String   @id
-  user_id     String
+model UsageLog {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
   amount      Float
   description String
   created_at  DateTime @default(now())
-  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("usage_logs")
 }
 
-model users {
-  id            String         @id
+model User {
+  id            String         @id @default(cuid())
   name          String?
   email         String         @unique
   emailVerified DateTime?
@@ -114,25 +129,28 @@ model users {
   linkedin_url  String?
   portfolio_url String?
   created_at    DateTime       @default(now())
-  updated_at    DateTime
-  accounts      accounts[]
-  resumes       resumes[]
-  sessions      sessions[]
-  subscriptions subscriptions?
-  usage_logs    usage_logs[]
+  updated_at    DateTime       @updatedAt
+  accounts      Account[]
+  resumes       Resume[]
+  sessions      Session[]
+  subscription  Subscription?
+  usage_logs    UsageLog[]
+
+  @@map("users")
 }
 
-model verification_tokens {
+model VerificationToken {
   identifier String
   token      String
   expires    DateTime
 
   @@id([identifier, token])
+  @@map("verification_tokens")
 }
 
-model work_experiences {
-  id              String  @id
-  resume_id       String
+model WorkExperience {
+  id              String  @id @default(cuid())
+  resumeId        String  @map("resume_id")
   company_name_kr String
   company_name_en String?
   role_kr         String
@@ -142,7 +160,9 @@ model work_experiences {
   bullets_kr      Json
   bullets_en      Json?
   order           Int     @default(0)
-  resumes         resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+  resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("work_experiences")
 }
 
 enum PlanCode {

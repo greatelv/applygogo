@@ -18,10 +18,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         <div className="space-y-4">
           <Button
-            onClick={onLogin}
+            type="submit"
             variant="outline"
             size="lg"
             className="w-full"
+            onClick={onLogin}
           >
             <Chrome className="size-5" />
             Google로 시작하기

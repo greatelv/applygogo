@@ -1,16 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { LoginPage } from "../../components/login-page";
+import { authenticate } from "../../lib/actions";
 
 export default function Page() {
-  const router = useRouter();
-
-  const handleLogin = () => {
-    // TODO: Implement Supabase Auth
-    // Mock login redirect
-    router.push("/resumes");
-  };
-
-  return <LoginPage onLogin={handleLogin} />;
+  return (
+    <form action={authenticate}>
+      <LoginPage onLogin={() => {}} />
+    </form>
+  );
 }
