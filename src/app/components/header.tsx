@@ -26,8 +26,16 @@ interface HeaderProps {
 }
 
 const planConfig = {
-  FREE: { label: "Free", variant: "outline" as const, color: "text-neutral-600" },
-  STANDARD: { label: "Standard", variant: "secondary" as const, color: "text-blue-600" },
+  FREE: {
+    label: "Free",
+    variant: "outline" as const,
+    color: "text-neutral-600",
+  },
+  STANDARD: {
+    label: "Standard",
+    variant: "secondary" as const,
+    color: "text-blue-600",
+  },
   PRO: { label: "Pro", variant: "default" as const, color: "text-purple-600" },
 };
 
@@ -100,7 +108,10 @@ export function Header({
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <button
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                suppressHydrationWarning
+              >
                 <Avatar className="size-8">
                   <AvatarImage src={userImage} alt={userName} />
                   <AvatarFallback>{initials}</AvatarFallback>
@@ -136,10 +147,7 @@ export function Header({
       {/* Workflow Stepper - Mobile bottom */}
       {workflowSteps && currentStep && (
         <div className="lg:hidden px-4 pb-3 border-t border-border/50">
-          <WorkflowStepper
-            steps={workflowSteps}
-            currentStep={currentStep}
-          />
+          <WorkflowStepper steps={workflowSteps} currentStep={currentStep} />
         </div>
       )}
     </header>

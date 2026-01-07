@@ -1,4 +1,12 @@
-import { Download, Trash2, Clock, CheckCircle2, ArrowLeft, Edit, ArrowRight } from "lucide-react";
+import {
+  Download,
+  Trash2,
+  Clock,
+  CheckCircle2,
+  ArrowLeft,
+  Edit,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ModernTemplate } from "./resume-templates/modern-template";
@@ -64,19 +72,19 @@ const statusConfig = {
   FAILED: { label: "실패", variant: "warning" as const },
 };
 
-export function ResumeDetailPage({ 
-  resumeId, 
+export function ResumeDetailPage({
+  resumeId,
   resumeTitle,
   experiences,
   template = "modern",
   isWorkflowComplete = false,
-  onBack, 
+  onBack,
   onDelete,
   onDownload,
-  onEdit
+  onEdit,
 }: ResumeDetailPageProps) {
   // Use props data if provided (workflow mode), otherwise use mock data
-  const resume = isWorkflowComplete 
+  const resume = isWorkflowComplete
     ? {
         id: resumeId || "temp",
         title: resumeTitle || "새 이력서",
@@ -138,9 +146,16 @@ export function ResumeDetailPage({
               <Badge variant={config.variant}>{config.label}</Badge>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
+              <span
+                className="flex items-center gap-1"
+                suppressHydrationWarning
+              >
                 <Clock className="size-4" />
-                {isWorkflowComplete ? "방금 전" : `최종 수정: ${new Date(resume.updatedAt).toLocaleString('ko-KR')}`}
+                {isWorkflowComplete
+                  ? "방금 전"
+                  : `최종 수정: ${new Date(resume.updatedAt).toLocaleString(
+                      "ko-KR"
+                    )}`}
               </span>
               <span>템플릿: {resume.template}</span>
             </div>
@@ -180,7 +195,9 @@ export function ResumeDetailPage({
       <details className="bg-card border border-border rounded-lg p-6">
         <summary className="cursor-pointer font-semibold mb-4 flex items-center gap-2">
           <span>한글 원본 보기</span>
-          <span className="text-xs text-muted-foreground">(클릭하여 펼치기)</span>
+          <span className="text-xs text-muted-foreground">
+            (클릭하여 펼치기)
+          </span>
         </summary>
         <div className="space-y-6 pt-4 border-t border-border">
           {(resume.experiences || []).map((exp: any) => (
@@ -188,13 +205,20 @@ export function ResumeDetailPage({
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h4 className="font-semibold">{exp.company}</h4>
-                  <p className="text-sm text-muted-foreground">{exp.position}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {exp.position}
+                  </p>
                 </div>
-                <span className="text-sm text-muted-foreground">{exp.period}</span>
+                <span className="text-sm text-muted-foreground">
+                  {exp.period}
+                </span>
               </div>
               <ul className="space-y-1">
                 {exp.bullets.map((bullet: string, index: number) => (
-                  <li key={index} className="text-sm flex gap-2 text-muted-foreground">
+                  <li
+                    key={index}
+                    className="text-sm flex gap-2 text-muted-foreground"
+                  >
                     <span className="flex-shrink-0">•</span>
                     <span>{bullet}</span>
                   </li>
