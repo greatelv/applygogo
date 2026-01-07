@@ -186,7 +186,7 @@ Next.js App Router 사용을 가정합니다.
 
 2. **Phase 2 (Payment & Polish):**
 
-   - PG사 연동 및 3-Tier 구독 모델 구현.
+   - PG사 연동 및 2-Tier 구독 모델 구현.
    - 이력서 템플릿 5종 디자인 및 PDF 생성기 구현.
    - 템플릿별 접근 제어 로직.
 

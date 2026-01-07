@@ -212,7 +212,6 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
   - **Empty State**: 이력서가 없을 때 "첫 이력서를 만들어보세요" 메시지.
   - **플랜별 제한 표시**:
     - FREE: "1/1 이력서 보관 중" + 업그레이드 유도.
-    - STANDARD: "3/10 이력서 보관 중".
     - PRO: "무제한" 표시.
   - **액션**: 각 카드 클릭 시 Detail 페이지로.
   - **삭제 후 피드백**: Toast 메시지 "이력서가 삭제되었습니다".
@@ -223,7 +222,7 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
 
 - **As a** 유저, **I want to** 현재 플랜을 확인하고 업그레이드하고 싶다.
 - **Acceptance Criteria (Current - Mock):**
-  - **현재 플랜 카드**: FREE/STANDARD/PRO 표시, 남은 크레딧.
+  - **현재 플랜 카드**: FREE/PRO 표시, 남은 크레딧.
   - **플랜 비교표**: 3개 플랜의 기능 비교.
   - **업그레이드 버튼**: 클릭 시 "결제 기능은 개발 예정입니다" Alert.
 - **Acceptance Criteria (Future - Production):**
@@ -402,7 +401,7 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
 
 향후 개발을 시작할 때, AI에게 다음과 같이 지시하면 위 문서를 가장 효과적으로 활용할 수 있습니다.
 
-> "위의 `Project Context`와 `Refined User Stories`를 바탕으로, 우선 **Database Schema(Prisma schema)**를 작성해 줘. 특히 Subscription 모델의 `cancel_at_period_end` 로직과 Resume의 `JSONB` 데이터 구조, 그리고 3-tier 플랜(FREE/STANDARD/PRO)을 신경 써서 설계해 줘. 템플릿 접근 제어 로직도 포함해."
+> "위의 `Project Context`와 `Refined User Stories`를 바탕으로, 우선 **Database Schema(Prisma schema)**를 작성해 줘. 특히 Subscription 모델의 `cancel_at_period_end` 로직과 Resume의 `JSONB` 데이터 구조, 그리고 2-tier 플랜(FREE/PRO)을 신경 써서 설계해 줘. 템플릿 접근 제어 로직도 포함해."
 
 > "현재 프로토타입의 `/src/app/components` 구조를 기반으로 Next.js 15 App Router 구조로 마이그레이션하고, Supabase Auth를 연동해 줘. Mock 함수들을 실제 API 호출로 교체하는 작업부터 시작해."
 
@@ -414,7 +413,7 @@ AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명
 
 ### v2.0 (2026-01-06)
 
-- ✅ 3-tier 플랜 구조 추가 (FREE/STANDARD/PRO).
+- ✅ 2-tier 플랜 구조 추가 (FREE/PRO).
 - ✅ 5단계 워크플로우 명확화 (Upload → Processing → Edit → Template → Complete).
 - ✅ contenteditable 기반 실시간 편집 방식 반영.
 - ✅ 템플릿 선택 및 PRO 접근 제어 로직 추가.
