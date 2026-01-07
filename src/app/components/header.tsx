@@ -26,16 +26,8 @@ interface HeaderProps {
 }
 
 const planConfig = {
-  FREE: {
-    label: "Free",
-    variant: "outline" as const,
-    color: "text-neutral-600",
-  },
-  STANDARD: {
-    label: "Standard",
-    variant: "secondary" as const,
-    color: "text-blue-600",
-  },
+  FREE: { label: "Free", variant: "outline" as const, color: "text-neutral-600" },
+  STANDARD: { label: "Standard", variant: "secondary" as const, color: "text-blue-600" },
   PRO: { label: "Pro", variant: "default" as const, color: "text-purple-600" },
 };
 
@@ -71,7 +63,7 @@ export function Header({
           </button>
 
           {/* Mobile logo */}
-          <h1 className="text-lg tracking-tight lg:hidden">지원고고</h1>
+          <h1 className="text-lg tracking-tight lg:hidden">레스유메</h1>
 
           {/* Workflow Stepper - Desktop left side */}
           {workflowSteps && currentStep && (
@@ -144,7 +136,10 @@ export function Header({
       {/* Workflow Stepper - Mobile bottom */}
       {workflowSteps && currentStep && (
         <div className="lg:hidden px-4 pb-3 border-t border-border/50">
-          <WorkflowStepper steps={workflowSteps} currentStep={currentStep} />
+          <WorkflowStepper
+            steps={workflowSteps}
+            currentStep={currentStep}
+          />
         </div>
       )}
     </header>

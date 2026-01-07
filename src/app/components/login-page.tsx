@@ -10,7 +10,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl tracking-tight mb-3">지원고고</h1>
+          <h1 className="text-4xl tracking-tight mb-3">레스유메</h1>
           <p className="text-muted-foreground text-sm">
             한국어 이력서를 글로벌 스탠다드 영문 이력서로
           </p>
