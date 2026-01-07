@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model accounts {
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime
+  users               users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([provider, provider_account_id])
+}
+
+model educations {
+  id          String  @id
+  resume_id   String
+  school_name String
+  major       String
+  degree      String
+  start_date  String
+  end_date    String
+  order       Int     @default(0)
+  resumes     resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+}
+
+model plans {
+  code          PlanCode        @id
+  monthly_quota Float
+  max_resumes   Int
+  subscriptions subscriptions[]
+}
+
+model resumes {
+  id                String             @id
+  user_id           String
+  title             String
+  original_file_url String
+  target_role       String?
+  status            ResumeStatus       @default(IDLE)
+  failure_message   String?
+  current_step      ResumeStep         @default(UPLOAD)
+  selected_template ResumeTemplate?
+  created_at        DateTime           @default(now())
+  updated_at        DateTime
+  educations        educations[]
+  users             users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  skills            skills[]
+  work_experiences  work_experiences[]
+}
+
+model sessions {
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model skills {
+  id        String  @id
+  resume_id String
+  name      String
+  level     String?
+  order     Int     @default(0)
+  resumes   resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+}
+
+model subscriptions {
+  id                   String             @id
+  user_id              String             @unique
+  plan_code            PlanCode
+  status               SubscriptionStatus @default(ACTIVE)
+  current_period_start DateTime           @default(now())
+  current_period_end   DateTime
+  cancel_at_period_end Boolean            @default(false)
+  billing_key          String?
+  created_at           DateTime           @default(now())
+  updated_at           DateTime
+  plans                plans              @relation(fields: [plan_code], references: [code])
+  users                users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model usage_logs {
+  id          String   @id
+  user_id     String
+  amount      Float
+  description String
+  created_at  DateTime @default(now())
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model users {
+  id            String         @id
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  image         String?
+  phone_number  String?
+  linkedin_url  String?
+  portfolio_url String?
+  created_at    DateTime       @default(now())
+  updated_at    DateTime
+  accounts      accounts[]
+  resumes       resumes[]
+  sessions      sessions[]
+  subscriptions subscriptions?
+  usage_logs    usage_logs[]
+}
+
+model verification_tokens {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model work_experiences {
+  id              String  @id
+  resume_id       String
+  company_name_kr String
+  company_name_en String?
+  role_kr         String
+  role_en         String?
+  start_date      String
+  end_date        String
+  bullets_kr      Json
+  bullets_en      Json?
+  order           Int     @default(0)
+  resumes         resumes @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+}
+
+enum PlanCode {
+  FREE
+  PRO
+}
+
+enum ResumeStatus {
+  IDLE
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ResumeStep {
+  UPLOAD
+  PROCESSING
+  EDIT
+  TEMPLATE
+  COMPLETED
+}
+
+enum ResumeTemplate {
+  MODERN
+  CLASSIC
+  MINIMAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
