@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 // Export configured model for multimodal use (PDF analysis)
 export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite", // More stable than 2.5-flash
+  model: "gemini-2.5-flash", // Explicit version (DO NOT CHANGE)
 });
 
 // Retry helper function
@@ -13,7 +13,7 @@ export async function generateContentWithRetry(
   model: any,
   content: any,
   maxRetries = 2,
-  initialDelay = 2000
+  initialDelay = 5000 // Increase delay to 5s
 ) {
   let lastError: Error | null = null;
 
@@ -66,15 +66,18 @@ export const RESUME_ANALYSIS_PROMPT = `
    - bullets_en: 해당 경력의 모든 업무 및 성과 (영문 번역, 배열)
 
 2. **학력사항 (educations)**: 각 학력마다 다음 정보 포함
-   - school_name: 학교명
-   - major: 전공
-   - degree: 학위 (학사/석사/박사 등)
+   - school_name: 학교명 (한글)
+   - school_name_en: 학교명 (영문 번역)
+   - major: 전공 (한글)
+   - major_en: 전공 (영문 번역)
+   - degree: 학위 (학사/석사/박사 등, 한글)
+   - degree_en: 학위 (Bachelor/Master/PhD, 영문 번역)
    - start_date: 입학일 (YYYY-MM)
    - end_date: 졸업일 (YYYY-MM)
 
 3. **기술 스택 (skills)**: 각 기술마다 다음 정보 포함
-   - name: 기술명
-   - level: 숙련도 (초급/중급/고급/전문가)
+   - name: 기술명 (프로그래밍 언어, 프레임워크, 도구 등)
+   - **숙련도(level)는 포함하지 마세요**
 
 **응답 형식:**
 \`\`\`json

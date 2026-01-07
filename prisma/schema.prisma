@@ -27,15 +27,18 @@ model Account {
 }
 
 model Education {
-  id          String  @id @default(cuid())
-  resumeId    String  @map("resume_id")
-  school_name String
-  major       String
-  degree      String
-  start_date  String
-  end_date    String
-  order       Int     @default(0)
-  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id              String  @id @default(cuid())
+  resumeId        String  @map("resume_id")
+  school_name     String
+  school_name_en  String?
+  major           String
+  major_en        String?
+  degree          String
+  degree_en       String?
+  start_date      String
+  end_date        String
+  order           Int     @default(0)
+  resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("educations")
 }

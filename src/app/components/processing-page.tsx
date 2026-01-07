@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Loader2, FileText, Languages, CheckCircle } from "lucide-react";
+import {
+  Loader2,
+  FileText,
+  Languages,
+  CheckCircle,
+  Upload,
+} from "lucide-react";
 import { Button } from "./ui/button";
 
 interface ProcessingPageProps {
@@ -8,14 +14,15 @@ interface ProcessingPageProps {
   onComplete: () => void;
 }
 
+type ProcessingPhase = "uploading" | "extracting" | "grouping" | "done";
+
 export function ProcessingPage({
   resumeTitle,
   resumeId,
   onComplete,
 }: ProcessingPageProps) {
-  const [currentPhase, setCurrentPhase] = useState<
-    "parsing" | "summarizing" | "translating" | "done"
-  >("parsing");
+  const [currentPhase, setCurrentPhase] =
+    useState<ProcessingPhase>("uploading");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,8 +35,14 @@ export function ProcessingPage({
 
     const analyzeResume = async () => {
       try {
-        // Start analysis
-        setCurrentPhase("parsing");
+        // Phase 1: Upload complete (already done)
+        setCurrentPhase("uploading");
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        if (isCancelled) return;
+
+        // Phase 2: Extraction + Translation
+        setCurrentPhase("extracting");
 
         const response = await fetch(`/api/resumes/${resumeId}/analyze`, {
           method: "POST",
@@ -42,15 +55,13 @@ export function ProcessingPage({
 
         if (isCancelled) return;
 
-        // Simulate phase transitions for better UX
-        setCurrentPhase("summarizing");
+        // Phase 3: Grouping + Selection (happens in backend, show for UX)
+        setCurrentPhase("grouping");
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         if (isCancelled) return;
-        setCurrentPhase("translating");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        if (isCancelled) return;
+        // Phase 4: Done
         setCurrentPhase("done");
 
         // Auto-proceed after showing completion
@@ -73,29 +84,40 @@ export function ProcessingPage({
 
   const processingSteps = [
     {
-      id: "parsing",
-      label: "PDF 파싱",
+      id: "uploading",
+      label: "업로드 완료",
+      icon: Upload,
+      description: "이력서 PDF 업로드 완료",
+    },
+    {
+      id: "extracting",
+      label: "추출 + 번역",
       icon: FileText,
-      description: "이력서 텍스트 추출 중...",
+      description: "PDF에서 경력사항 추출 및 영문 번역 중...",
     },
     {
-      id: "summarizing",
-      label: "AI 요약",
+      id: "grouping",
+      label: "그룹화 + 선택",
       icon: Loader2,
-      description: "경력사항 요약 중...",
+      description: "회사별 그룹화 및 핵심 경력 선택 중...",
     },
     {
-      id: "translating",
-      label: "영문 번역",
-      icon: Languages,
-      description: "영어로 번역 중...",
+      id: "done",
+      label: "완료",
+      icon: CheckCircle,
+      description: "AI 분석이 완료되었습니다!",
     },
   ];
 
   const getStepStatus = (stepId: string) => {
-    const stepOrder = ["parsing", "summarizing", "translating"];
+    const stepOrder: ProcessingPhase[] = [
+      "uploading",
+      "extracting",
+      "grouping",
+      "done",
+    ];
     const currentStepIndex = stepOrder.indexOf(currentPhase);
-    const thisStepIndex = stepOrder.indexOf(stepId);
+    const thisStepIndex = stepOrder.indexOf(stepId as ProcessingPhase);
 
     if (currentPhase === "done") return "completed";
     if (thisStepIndex < currentStepIndex) return "completed";

@@ -134,7 +134,7 @@
   - **Authenticated Pages (/resumes/**)**: **Client-Side Rendering (SSR Disabled)\*\* via `next/dynamic` (`ssr: false`) to prevent hydration mismatches and handle complex client-side state.
 - **Styling:** Tailwind CSS v4, Shadcn UI.
 - **Database:** PostgreSQL (Supabase), Prisma ORM.
-- **AI:** Google Gemini Pro API.
+- **AI:** Google Gemini Pro API (Model: `gemini-2.5-flash` - **DO NOT CHANGE**).
 - **Storage:** Supabase Storage (AWS S3 Compatible).
 
 ### 6.2 Database Schema (Prisma Draft)

@@ -73,68 +73,99 @@ export async function POST(
     let mergedExperiences = work_experiences;
 
     if (work_experiences && work_experiences.length > 1) {
-      const refinementPrompt = `
+      console.log(
+        `[Refinement] Starting second pass with ${work_experiences.length} experiences...`
+      );
+
+      try {
+        const refinementPrompt = `
 다음은 이력서에서 추출한 경력사항 데이터입니다. 같은 회사가 여러 번 중복되어 나타날 수 있습니다.
 
-**당신의 임무:**
+**CRITICAL INSTRUCTIONS (MUST FOLLOW):**
 
-1. **같은 회사 통합**
-   - "주식회사 어베어", "주식회사어베어", "어베어", "Abear Inc." → 모두 같은 회사
-   - "월급쟁이부자들(주)", "월급쟁이부자들", "Wolbu" → 모두 같은 회사
-   - 띄어쓰기, 괄호, 주식회사/㈜ 표기, 영문명 차이는 무시하고 판단
+1. **GROUP BY COMPANY (회사 통합)**
+   - Merge ALL entries for the same company into one.
+   - Ignore minor differences (e.g., "(주)", "Inc.", spacing).
 
-2. **최고의 불릿 3~5개 선택**
-   - 구체적인 수치/성과가 있는 것 우선
-   - 기술 스택이 명시된 것 우선
-   - 중복된 내용은 하나만 선택
-   - 각 회사당 정확히 3~5개
 
-3. **날짜 통합**
-   - 같은 회사의 여러 기간이 있다면 가장 빠른 start_date, 가장 늦은 end_date 사용
+2. **STRICTLY LIMIT BULLETS (불릿 제한)**
+   - **SELECT ONLY THE TOP 3-4 BULLETS PER COMPANY.**
+   - **NEVER** exceed 4 bullets. This is a HARD LIMIT.
+   - Select bullets with specific metrics (%, $) or technologies.
+   - Merge similar bullets.
 
-**입력 데이터:**
+3. **DATE MERGING (날짜 통합)**
+   - Use the earliest start_date and latest end_date.
+
+**Input Data:**
 ${JSON.stringify(work_experiences, null, 2)}
 
-**출력 형식:**
+**Output Format:**
 \`\`\`json
 {
   "work_experiences": [
     {
-      "company_name_kr": "정규화된 회사명 (가장 공식적인 표기)",
-      "company_name_en": "영문 회사명",
-      "role_kr": "대표 직무",
-      "role_en": "Representative Role",
-      "start_date": "YYYY-MM",
-      "end_date": "YYYY-MM 또는 현재",
-      "bullets_kr": ["불릿1", "불릿2", "불릿3"],
-      "bullets_en": ["Bullet1", "Bullet2", "Bullet3"]
+      "company_name_kr": "...",
+      "company_name_en": "...",
+      "role_kr": "...",
+      "role_en": "...",
+      "start_date": "...",
+      "end_date": "...",
+      "bullets_kr": ["... (MAX 4 items)"],
+      "bullets_en": ["... (MAX 4 items)"]
     }
   ]
 }
 \`\`\`
 
-**검증:**
-- [ ] 각 회사는 정확히 1번만 나타나는가?
-- [ ] 각 회사당 불릿이 3~5개인가?
-- [ ] 선택된 불릿이 가장 임팩트 있는가?
+**Verification:**
+- [ ] Merged duplicates?
+- [ ] MAX 4 bullets per company? (CRITICAL)
 `;
 
-      const refinementResult = await generateContentWithRetry(
-        geminiModel,
-        refinementPrompt
+        const refinementResult = await generateContentWithRetry(
+          geminiModel,
+          refinementPrompt
+        );
+        const refinedText = refinementResult.response.text();
+
+        const refinedJsonMatch = refinedText.match(/```json\n([\s\S]*?)\n```/);
+        const refinedJsonText = refinedJsonMatch
+          ? refinedJsonMatch[1]
+          : refinedText;
+        const refinedData = JSON.parse(refinedJsonText);
+
+        mergedExperiences = refinedData.work_experiences;
+        console.log(
+          `[Refinement] Success! Reduced to ${mergedExperiences.length} companies`
+        );
+      } catch (error) {
+        console.error("[Refinement] Failed, using original data:", error);
+        // Fall back to original data if refinement fails
+        mergedExperiences = work_experiences;
+      }
+    } else {
+      console.log(
+        `[Refinement] Skipped (only ${
+          work_experiences?.length || 0
+        } experiences)`
       );
-      const refinedText = refinementResult.response.text();
-
-      const refinedJsonMatch = refinedText.match(/```json\n([\s\S]*?)\n```/);
-      const refinedJsonText = refinedJsonMatch
-        ? refinedJsonMatch[1]
-        : refinedText;
-      const refinedData = JSON.parse(refinedJsonText);
-
-      mergedExperiences = refinedData.work_experiences;
     }
 
     // 7. Save to database
+
+    // Fallback: Code-level enforcement of 4 bullets limit
+    if (mergedExperiences && mergedExperiences.length > 0) {
+      mergedExperiences = mergedExperiences.map((exp: any) => ({
+        ...exp,
+        bullets_kr: Array.isArray(exp.bullets_kr)
+          ? exp.bullets_kr.slice(0, 4)
+          : [],
+        bullets_en: Array.isArray(exp.bullets_en)
+          ? exp.bullets_en.slice(0, 4)
+          : [],
+      }));
+    }
 
     // Save work experiences
     if (mergedExperiences && mergedExperiences.length > 0) {
@@ -160,8 +191,11 @@ ${JSON.stringify(work_experiences, null, 2)}
         data: educations.map((edu: any, index: number) => ({
           resumeId: resumeId,
           school_name: edu.school_name,
-          major: edu.major || "-", // Provide default for required field
-          degree: edu.degree || "-", // Provide default for required field
+          school_name_en: edu.school_name_en || edu.school_name,
+          major: edu.major || "-",
+          major_en: edu.major_en || edu.major || "-",
+          degree: edu.degree || "-",
+          degree_en: edu.degree_en || edu.degree || "-",
           start_date: edu.start_date,
           end_date: edu.end_date,
           order: index,
@@ -175,7 +209,7 @@ ${JSON.stringify(work_experiences, null, 2)}
         data: skills.map((skill: any, index: number) => ({
           resumeId: resumeId,
           name: skill.name,
-          level: skill.level,
+          // level is removed as per user request
           order: index,
         })),
       });
