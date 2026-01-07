@@ -21,9 +21,14 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      const isOnProtected =
+        nextUrl.pathname.startsWith("/resumes") ||
+        nextUrl.pathname.startsWith("/new") ||
+        nextUrl.pathname.startsWith("/profile") ||
+        nextUrl.pathname.startsWith("/billing") ||
+        nextUrl.pathname.startsWith("/help");
 
-      if (isOnDashboard) {
+      if (isOnProtected) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       }

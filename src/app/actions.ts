@@ -8,7 +8,7 @@ import { writeFile, unlink } from "fs/promises";
 import { join } from "path";
 
 export async function login() {
-  await signIn("google", { redirectTo: "/dashboard" });
+  await signIn("google", { redirectTo: "/resumes" });
 }
 
 export async function logout() {
@@ -123,7 +123,7 @@ export async function uploadResume(formData: FormData) {
 
   // Redirect outside try-catch to avoid catching NEXT_REDIRECT
   if (resumeId) {
-    redirect(`/dashboard/resumes/${resumeId}`);
+    redirect(`/resumes/${resumeId}`);
   }
 }
 
