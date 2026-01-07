@@ -1,6 +1,9 @@
-# 📂 Project Context: ApplyGogo (가칭) (Master PRD - v2.0)
+# 📂 Project Context: ApplyGogo (가칭) (Master PRD)
 
-## 1. Product Overview
+> **Last Updated:** 2026-01-07
+> **Status:** Active Development (Phase 2 Preparation)
+
+## 1. Product Overview (제품 개요)
 
 - **Product Name:** 지원고고 (ApplyGogo) (가칭)
 - **Definition:** 한국어 이력서(PDF)를 입력받아 AI(LLM)를 통해 **요약(Summarization), 번역(Translation), 서식화(Formatting)**를 수행하여 Global Standard에 맞는 영문 이력서(PDF)로 변환해 주는 Micro SaaS.
@@ -8,421 +11,224 @@
 - **Design Philosophy:**
   - **Aesthetic:** Vercel & Linear-inspired Modern & Minimal Design.
   - **Values:** Clean typography, monochrome color palette with subtle accents, decluttered UI, and smooth micro-interactions.
-  - **Goal:** 세련된 SaaS 디자인이 나왔으면 한다.
-  - **Dark Mode:** 시스템 설정 연동 및 토글 지원으로 사용자 선호도 반영.
-- **Target Audience:**
-  - 글로벌 기업 지원자 (영어 이력서 작성에 부담을 느끼는 한국인).
-  - 급하게 영문 이력서를 제출해야 하는 직장인.
-  - 기존 번역기/LLM 채팅의 한계(PDF 미지원, 서식 깨짐)를 느끼는 유저.
+  - **Target Audience:**
+    - 글로벌 기업 지원자 (영어 이력서 작성에 부담을 느끼는 한국인).
+    - 급하게 영문 이력서를 제출해야 하는 직장인.
+    - 기존 번역기/LLM 채팅의 한계(PDF 미지원, 서식 깨짐)를 느끼는 유저.
 
-## 2. Technical Stack & Constraints (For AI Engineer)
+---
 
-이 프로젝트는 다음 기술 스택을 기반으로 **프론트엔드 프로토타입**으로 구현되었다.
+## 2. Implementation & Design Guidelines (구현 및 디자인 지침) ⚠️ CRITICAL
 
-### 2.1. Current Implementation (v1.0 Prototype)
+이 프로젝트의 프론트엔드 코드는 **Figma에서 정교하게 설계된 프로토타입**을 기반으로 합니다. 향후 개발 시 다음 원칙을 **반드시** 준수해야 합니다.
 
-- **Frontend:** React 18 + Vite, TypeScript, **Tailwind CSS v4**, **Shadcn UI**.
-- **State Management:** React useState/Context (Local State).
-- **Routing:** Client-side page navigation (SPA).
-- **Auth:** Mock Google OAuth UI (실제 인증 없음).
-- **AI Engine:** Mock Processing (실제 API 호출 없음, 시뮬레이션).
-- **Storage:** Browser Memory (새로고침 시 데이터 손실).
-- **Theme:** next-themes (다크모드 지원).
-- **Icons:** lucide-react.
-- **Deployment:** Vercel (Static Hosting).
+### 2.1 UI/UX 보존 원칙 (UI Preservation)
 
-### 2.2. Future Production Stack (v2.0 Roadmap)
+> **"Look & Feel을 절대 변경하지 마세요."**
 
-실제 서비스 런칭 시 다음 기술로 전환 예정:
+- **현재 디자인 유지:** 컴포넌트의 레이아웃, 여백(Spacing), 타이포그래피, 색상, 인터랙션 등 시각적 요소를 임의로 변경하거나 "개선"하려 하지 마세요.
+- **구조 유지:** `src/app/components` 내의 기존 컴포넌트 구조를 최대한 재사용하세요.
+- **스타일 변경 금지:** Tailwind 클래스나 CSS 변수를 불필요하게 수정하여 기존 디자인이 깨지는 일이 없도록 주의하세요.
 
-- **Frontend/Backend:** Next.js 16 (App Router), TypeScript.
-- **Database:** PostgreSQL (Supabase or Neon), Prisma ORM.
-- **Auth:** Auth.js v5 (Google OAuth).
-- **AI Engine:** Google Gemini Pro API (Structured Output).
-- **Storage:** AWS S3 Compatible (Supabase Storage) - PDF 파일 관리.
-- **Payments:** PortOne (Subscription Model).
-- **Deployment:** Vercel.
+### 2.2 데이터 연동 전략 (Data Integration Strategy)
 
-> **⚠️ Note:** 현재 버전은 **기능 검증 및 UX 테스트를 위한 인터랙티브 프로토타입**입니다.
+> **"껍데기는 그대로, 내용물만 실제 데이터로 교체하세요."**
 
-## 3. Business Rules & Logic
+- 현재의 하드코딩된 Mock Data나 로컬 상태(useState)를 실제 백엔드 API 데이터(Supabase/React Query)로 교체하는 것에 집중하세요.
+- **Skeleton Loading:** 데이터 로딩 중에는 기존 디자인의 Layout을 유지하는 Skeleton UI를 적극 활용하여 Layout Shift를 방지하세요.
 
-### 3.1. Subscription Model (2-Tier Strategy)
+---
 
-사용자 니즈를 고려하여 **Free(체험)**와 **Pro(실전)** 두 가지 플랜을 제공한다.
+## 3. Current Status (현재 구현 상태)
 
-- **Quota Cost:**
+현재 **프론트엔드 프로토타입 (v1.0)** 구현이 완료된 상태입니다.
 
-  - **AI Processing:** 1 크레딧 차감.
-  - **AI Re-translation (재번역):** 0.5 크레딧 차감.
+### ✅ 구현 완료 사항
+
+- **워크플로우 전체:** PDF 업로드 → AI 처리(Mock) → 요약 편집 → 번역 편집(Split View) → 템플릿 선택 → 다운로드.
+- **페이지:**
+  - 랜딩페이지, 로그인, 대시보드 (이력서 목록).
+  - 워크플로우 페이지 (Upload, Processing, Edit, Preview).
+  - 계정 관리 (프로필, 설정, 결제 관리, 도움말).
+- **기능:**
+  - **다크모드:** 시스템 연동 및 수동 토글 완벽 지원.
+  - **반응형:** 데스크톱(사이드바) / 모바일(햄버거 메뉴) 대응.
+  - **편집기:** `contenteditable` 기반의 실시간 텍스트 수정.
+
+### 🚧 향후 개발 필요 (Backlog)
+
+- [ ] **Backend:** Next.js API Routes, Supabase 연동.
+- [ ] **AI:** Google Gemini API 연동 (요약/번역 실제 처리).
+- [ ] **PDF:** 실제 PDF 파일 파싱 및 생성 로직.
+- [ ] **Auth:** 실제 Google OAuth 연동.
+- [ ] **Payment:** PortOne 결제 연동.
+
+---
+
+## 4. Business Rules & Logic (비즈니스 로직)
+
+### 4.1 Subscription Model (2-Tier Strategy)
+
+| Plan                | Price (VAT 포함) | Credits    | Storage | Template Access    | 비고          |
+| :------------------ | :--------------- | :--------- | :------ | :----------------- | :------------ |
+| **Free** (체험)     | 무료             | 월 **3**   | 1개     | Modern, Classic    | 서비스 체험용 |
+| **Pro** (합격 패스) | 월 **9,900원**   | 월 **100** | 무제한  | **All** (+Minimal) | 파워 유저용   |
+
+- **Credit 차감 정책:**
+  - **AI Processing (생성):** 1 크레딧 차감.
+  - **Re-translation (재번역):** 0.5 크레딧 차감.
   - **Download:** 차감 없음.
 
-- **Plan Tiers:**
+### 4.2 Template Access Control
 
-1. **Free (체험):**
-
-   - **가격:** 무료.
-   - **제공:** 월 **3 크레딧**.
-   - **보관:** 이력서 1개.
-   - **템플릿:** Modern, Classic 사용 가능.
-   - _목적: 서비스 퀄리티 검증 및 체험._
-
-2. **Pro (합격 패스):**
-   - **가격:** 월 **9,900원** (VAT 포함).
-   - **제공:** 월 **100 크레딧**.
-   - **보관:** 이력서 무제한.
-   - **템플릿:** 모든 템플릿(Minimal 포함) 사용 가능.
-   - _목적: 파워 유저 및 취업 준비생 집중 지원._
-
-### 3.2. Template Access Control
-
-- **종류:** 총 3종 (Modern, Classic, Minimal).
-- **FREE:** Modern, Classic 사용 가능.
-- **PRO:** Modern, Classic, Minimal (PRO 전용) 모두 사용 가능.
-- PRO 템플릿(Minimal) 선택 시 FREE 유저는 **업그레이드 유도 UI** 표시.
-
-### 3.3. Cancellation Policy (Grace Period) - Future
-
-- 구독 해지 시 즉시 권한이 박탈되지 않는다.
-- **`cancel_at_period_end` = true**로 설정되며, 현재 결제 주기의 마지막 날(`current_period_end`)까지는 해당 플랜 기능을 유지한다.
-- 결제일 다음날 배치(Batch) 혹은 접속 시점 체크를 통해 최종 권한을 Free로 강등한다.
+- **Free 유저:** Modern, Classic 템플릿만 선택 가능.
+- **Pro 유저:** 모든 템플릿(Minimal 포함) 선택 가능.
+- **Upsell:** Free 유저가 Pro 템플릿 선택 시 업그레이드 유도 UI 표시.
 
 ---
 
-# 📝 Refined User Stories (Functional Specs)
+## 5. User Stories & Workflows (기능 명세)
 
-AI가 구현해야 할 기능을 **Epic(기능 단위)**별로 분류하고, 명확한 **Acceptance Criteria(인수 조건)**를 추가했습니다.
+### 5.1 Resume Creation Workflow (5 Steps)
 
-## Epic 1: Auth & Onboarding
+1.  **Step 1: Upload (업로드)**
+    - PDF 파일 드래그 앤 드롭 또는 선택.
+    - 유효성 검사 (10MB 제한).
+2.  **Step 2: AI Processing (처리)**
+    - 진행율 표시 (Parsing → Summary → Review → Translating).
+    - 6~7초 후 자동 전환 (Mock).
+3.  **Step 3: Edit Summary (요약 편집)**
+    - AI가 추출한 핵심 경력 요약 확인.
+    - 불릿 포인트 추가/삭제/수정.
+4.  **Step 4: Edit Translation (번역 편집)**
+    - **Split View:** 좌측(한글 원본) vs 우측(영문 번역).
+    - 영문 텍스트 직접 수정 가능.
+5.  **Step 5: Preview & Download (완료)**
+    - 템플릿 변경에 따른 실시간 미리보기.
+    - 최종 PDF 다운로드.
 
-**Story 1.1: 랜딩 페이지**
+### 5.2 Key User Stories
 
-- **As a** 방문자, **I want to** 서비스의 가치를 빠르게 이해하고 시작하고 싶다.
-- **Acceptance Criteria:**
-  - Hero Section: 주요 가치 제안 및 CTA 버튼.
-  - Features Section: 핵심 기능 3가지 소개.
-  - Pricing Section: 플랜별 비교표.
-  - Footer: 회사 정보 및 링크.
-  - 모든 CTA는 로그인 페이지로 연결.
+#### Epic 1: Auth & Onboarding
 
-**Story 1.2: 구글 로그인**
+- **Story 1.2:** 사용자는 Google 계정으로 원클릭 가입/로그인을 할 수 있어야 한다. (Auth.js)
 
-- **As a** 방문자, **I want to** 구글 계정으로 간편하게 가입/로그인하고 싶다.
-- **Acceptance Criteria (Current - Mock):**
-  - 로그인 버튼 클릭 시 Google OAuth UI 표시 (Mock).
-  - "Google로 계속하기" 버튼 클릭 시 즉시 대시보드로 진입.
-  - 기본 플랜은 'FREE', 크레딧은 3으로 설정.
-- **Acceptance Criteria (Future - Production):**
-  - 실제 Google OAuth 인증 흐름.
-  - 가입 시 `Users` 테이블에 정보 생성, `Plans`는 기본 'FREE'.
-  - 로그인 성공 시 `/dashboard`로 리다이렉트.
+#### Epic 2: Resume Management
 
-**Story 1.3: 반응형 레이아웃 (App Shell)**
+- **Story 2.6:** 사용자는 대시보드에서 내 이력서 목록을 상태별(완료, 진행중)로 확인하고 관리할 수 있어야 한다.
 
-- **As a** 로그인한 유저, **I want to** 일관된 레이아웃을 모든 기기에서 경험하고 싶다.
-- **Acceptance Criteria:**
-  - **Header:**
-    - 좌측: 로고 + 서비스명.
-    - 우측: 테마 토글, 플랜 뱃지(데스크톱), 크레딧 표시(데스크톱/모바일 모두), 사용자 드롭다운.
-    - 모바일: 햄버거 메뉴 버튼.
-  - **Desktop Sidebar (고정):**
-    - 네비게이션: 이력서 관리, 새 이력서 만들기, 결제 관리, 프로필, 도움말.
-    - 하단: 로그아웃 버튼.
-  - **Mobile Drawer:**
-    - 햄버거 클릭 시 좌측에서 슬라이드.
-    - 동일한 네비게이션 항목 포함.
-  - **다크모드:**
-    - 시스템 설정 연동.
-    - 토글로 Light/Dark/System 모드 전환.
-    - CSS 변수 기반 테마 시스템.
+#### Epic 3: Payment
 
-## Epic 2: Resume Workflow (5-Step Process)
-
-전체 워크플로우는 **5단계**로 구성된다:
-
-1. **Upload** → 2. **AI Processing** → 3. **Edit** → 4. **Template Selection** → 5. **Complete**
-
-**Story 2.1: Step 1 - PDF 업로드**
-
-- **As a** 유저, **I want to** PDF 이력서를 업로드하여 작업을 시작하고 싶다.
-- **Acceptance Criteria:**
-  - **드래그 앤 드롭 지원**: 파일을 드래그하여 업로드 영역에 드롭.
-  - **파일 선택 버튼**: 클릭하여 파일 탐색기 열기.
-  - **파일 검증**: PDF만 허용, 크기 제한 10MB.
-  - **업로드 피드백**: 파일명 표시, 업로드 중 프로그레스 바.
-  - **다음 단계**: "업로드 및 처리 시작" 버튼 클릭 시 Processing 단계로 이동.
-  - **크레딧 체크**: 크레딧이 0이면 업그레이드 유도 메시지.
-
-**Story 2.2: Step 2 - AI 처리 (Processing)**
-
-- **As a** 유저, **I want to** AI가 이력서를 분석하는 과정을 시각적으로 확인하고 싶다.
-- **Acceptance Criteria (Current - Mock):**
-  - **애니메이션**: AI 처리 중임을 나타내는 로딩 애니메이션.
-  - **단계 표시**: "PDF 파싱 중...", "경력 요약 중...", "영문 번역 중..." 등 단계별 메시지.
-  - **자동 진행**: 3-5초 후 자동으로 Edit 단계로 전환.
-  - **크레딧 차감**: 처리 시작 시 크레딧 1 차감 (Mock).
-- **Acceptance Criteria (Future - Production):**
-  - 실제 PDF 텍스트 추출 API 호출.
-  - Gemini API를 통한 요약 및 번역.
-  - `Resumes` 테이블에 상태 저장 (IDLE → PROCESSING → COMPLETED).
-  - 실패 시 에러 메시지 및 재시도 옵션.
-
-**Story 2.3: Step 3 - 실시간 편집 (contenteditable)**
-
-- **As a** 유저, **I want to** AI가 생성한 한글/영문 텍스트를 직접 수정하고 싶다.
-- **Acceptance Criteria:**
-  - **Split View UI**: 좌측(한글), 우측(영문).
-  - **Contenteditable**: 각 불릿 포인트를 클릭만 하면 즉시 편집 가능.
-  - **자동 저장 표시**: 편집 시 "변경사항 자동 저장됨" 시각적 피드백 (현재는 상태 관리).
-  - **추가/삭제**: 경력 항목 추가 버튼, 삭제 버튼.
-  - **실시간 동기화**: 한글 수정 시 영문은 그대로 유지 (독립적 편집).
-  - **네비게이션**: "이전" 버튼(Processing으로), "다음" 버튼(Template Selection으로).
-
-**Story 2.4: Step 4 - 템플릿 선택 및 미리보기**
-
-- **As a** 유저, **I want to** 완성된 내용을 다양한 템플릿으로 미리보고 선택하고 싶다.
-- **Acceptance Criteria:**
-  - **템플릿 목록**: 좌측에 템플릿 카드 (Modern, Classic, Minimal).
-  - **PRO 뱃지**: PRO 전용 템플릿에 배지 표시.
-  - **실시간 미리보기**: 우측에 선택한 템플릿의 실제 렌더링 결과 표시.
-  - **접근 제어**:
-    - FREE: Modern, Classic 선택 가능.
-    - PRO: 모든 템플릿 선택 가능.
-    - PRO 템플릿 선택 시 FREE 유저는 업그레이드 유도 UI + "PRO로 업그레이드" 버튼.
-  - **네비게이션**: "이전" 버튼(Edit으로), "다음" 버튼(Complete로) or "PRO로 업그레이드".
-
-**Story 2.5: Step 5 - 완료 및 다운로드**
-
-- **As a** 유저, **I want to** 최종 결과물을 확인하고 PDF로 다운로드하고 싶다.
-- **Acceptance Criteria:**
-  - **완료 배너**: "이력서가 성공적으로 생성되었습니다!" 성공 메시지.
-  - **미리보기**: 선택한 템플릿으로 렌더링된 전체 이력서.
-  - **PDF 다운로드**: "PDF 다운로드" 버튼 클릭 시 브라우저 다운로드 트리거 (Future: 실제 PDF 생성).
-  - **액션 버튼**:
-    - "수정" 버튼: Step 3 (Edit)로 이동.
-    - "목록으로" 버튼: 이력서 관리 페이지로.
-    - "삭제" 버튼: 삭제 확인 후 목록으로 (Toast 피드백).
-  - **저장**: 이력서 목록에 자동 저장 (현재는 브라우저 상태).
-
-**Story 2.6: 이력서 목록 관리**
-
-- **As a** 유저, **I want to** 생성한 이력서들을 한눈에 보고 관리하고 싶다.
-- **Acceptance Criteria:**
-  - **카드 레이아웃**: 이력서 제목, 생성일, 상태(완료/진행중), 템플릿 정보.
-  - **Empty State**: 이력서가 없을 때 "첫 이력서를 만들어보세요" 메시지.
-  - **플랜별 제한 표시**:
-    - FREE: "1/1 이력서 보관 중" + 업그레이드 유도.
-    - PRO: "무제한" 표시.
-  - **액션**: 각 카드 클릭 시 Detail 페이지로.
-  - **삭제 후 피드백**: Toast 메시지 "이력서가 삭제되었습니다".
-
-## Epic 3: Subscription & Payment (UI Prototype)
-
-**Story 3.1: 결제 관리 페이지**
-
-- **As a** 유저, **I want to** 현재 플랜을 확인하고 업그레이드하고 싶다.
-- **Acceptance Criteria (Current - Mock):**
-  - **현재 플랜 카드**: FREE/PRO 표시, 남은 크레딧.
-  - **플랜 비교표**: 3개 플랜의 기능 비교.
-  - **업그레이드 버튼**: 클릭 시 "결제 기능은 개발 예정입니다" Alert.
-- **Acceptance Criteria (Future - Production):**
-  - PortOne 결제 모달 연동.
-  - 카드 정보 입력 및 PG사 승인.
-  - DB `Subscriptions` 테이블 업데이트 및 즉시 크레딧 지급.
-  - 결제 성공 시 "업그레이드 완료" Toast + 헤더 플랜 뱃지 실시간 업데이트.
-
-**Story 3.2: 구독 해지 (Future)**
-
-- **As a** 구독자, **I want to** 다음 달부터 결제가 되지 않도록 해지하고 싶다.
-- **Acceptance Criteria:**
-  - '해지하기' 버튼 클릭 시 즉시 권한이 사라지면 안 됨.
-  - DB의 `cancel_at_period_end`를 true로 변경.
-  - UI에는 "YYYY-MM-DD에 해지될 예정입니다"라는 문구 표시.
-  - 해지 예정 기간 동안은 해당 플랜 기능 유지.
-
-**Story 3.3: 결제 이력 확인 (Future)**
-
-- **As a** 유저, **I want to** 내 결제 내역과 영수증을 확인하고 싶다.
-- **Acceptance Criteria:**
-  - 결제 날짜, 금액, 플랜명, 상태(성공/환불) 리스트 제공.
-  - PG사가 제공하는 영수증 URL 링크 제공.
-  - 월별 필터링 및 검색 기능.
-
-## Epic 4: UX Enhancements (Quality of Life)
-
-**Story 4.1: 다크모드**
-
-- **As a** 유저, **I want to** 눈의 피로를 줄이기 위해 다크모드를 사용하고 싶다.
-- **Acceptance Criteria:**
-  - 헤더에 테마 토글 버튼 (Sun/Moon 아이콘).
-  - Light, Dark, System 모드 지원.
-  - CSS 변수 기반 테마 (--background, --foreground 등).
-  - 모든 컴포넌트에서 일관된 색상 적용.
-  - 사용자 설정 localStorage 저장 (새로고침 후에도 유지).
-
-**Story 4.2: 반응형 디자인**
-
-- **As a** 모바일 유저, **I want to** 모든 기능을 모바일에서도 사용하고 싶다.
-- **Acceptance Criteria:**
-  - 모바일: 햄버거 메뉴, 크레딧 컴팩트 표시.
-  - 태블릿: 적절한 레이아웃 조정.
-  - 데스크톱: 고정 사이드바, 넓은 화면 활용.
-  - Split View: 모바일에서는 탭 전환 (한글/영문).
-
-**Story 4.3: 로딩 및 피드백**
-
-- **As a** 유저, **I want to** 시스템 상태를 항상 명확히 알고 싶다.
-- **Acceptance Criteria:**
-  - Processing 단계: 애니메이션 + 진행 메시지.
-  - 버튼 클릭: 로딩 스피너 (해당되는 경우).
-  - 성공/실패: Toast 메시지 (sonner 라이브러리).
-  - 삭제 확인: confirm 다이얼로그.
-
-**Story 4.4: 용어 일관성**
-
-- **As a** 유저, **I want to** 혼란스럽지 않은 일관된 용어를 보고 싶다.
-- **Acceptance Criteria:**
-  - "새로 만들기" → "새 이력서 만들기" 통일.
-  - "크레딧" 용어 전체 일관 사용.
-  - 버튼 레이블 명확성 유지.
-
-**Story 4.5: 프로필 및 도움말**
-
-- **As a** 유저, **I want to** 내 정보를 확인하고 서비스 사용법을 배우고 싶다.
-- **Acceptance Criteria:**
-  - **프로필 페이지**: 사용자 이름, 이메일, 가입일 표시 (Mock).
-  - **도움말 페이지**: FAQ, 사용 가이드, 문의 방법.
+- **Story 3.1:** 사용자는 '결제 관리' 페이지에서 자신의 플랜과 잔여 크레딧을 확인하고, Pro 플랜으로 업그레이드할 수 있어야 한다.
+- **Story 3.2 (Future):** 구독 해지 시 즉시 종료되지 않고, 결제 주기 말일(`cancel_at_period_end`)까지 권한이 유지되어야 한다.
 
 ---
 
-## 4. Design System & Components
+## 6. Technical Architecture (기술 아키텍처)
 
-### 4.1. CSS 변수 기반 테마
+### 6.1 Tech Stack (Migration Target: v2.0)
 
-`/src/styles/theme.css`에 정의된 CSS 변수를 사용하여 색상 관리:
+- **Frontend/Backend:** Next.js 16 (App Router), TypeScript.
+- **Styling:** Tailwind CSS v4, Shadcn UI.
+- **Database:** PostgreSQL (Supabase), Prisma ORM.
+- **AI:** Google Gemini Pro API.
+- **Storage:** Supabase Storage (AWS S3 Compatible).
 
-```css
-:root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  /* ... */
+### 6.2 Database Schema (Prisma Draft)
+
+```prisma
+// User & Auth
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  provider      String    // 'google'
+  providerId    String
+  createdAt     DateTime  @default(now())
+
+  subscription  Subscription?
+  resumes       Resume[]
 }
 
-.dark {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  /* ... */
+// Subscription (2-Tier)
+model Plan {
+  code          String    @id // 'FREE', 'PRO'
+  monthlyQuota  Float
+  maxResumes    Int       // -1 for unlimited
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id])
+  planCode          String
+  plan              Plan      @relation(fields: [planCode], references: [code])
+
+  status            String    // 'ACTIVE', 'CANCELED', 'PAST_DUE'
+  currentPeriodEnd  DateTime
+  cancelAtPeriodEnd Boolean   @default(false)
+}
+
+// Resume Core
+model Resume {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+
+  status          String    // 'IDLE', 'PROCESSING', 'COMPLETED', 'FAILED'
+  currentStep     String    // 'UPLOAD', 'PROCESSING', 'EDIT', 'TEMPLATE', 'COMPLETED'
+  selectedTemplate String   // 'MODERN', 'CLASSIC', 'MINIMAL'
+
+  workExperiences WorkExperience[]
+}
+
+// Resume Data (Split View Support)
+model WorkExperience {
+  id              String    @id @default(uuid())
+  resumeId        String
+  resume          Resume    @relation(fields: [resumeId], references: [id])
+
+  companyNameKr   String
+  companyNameEn   String
+  roleKr          String
+  roleEn          String
+
+  bulletsKr       Json      // String[]
+  bulletsEn       Json      // String[]
 }
 ```
 
-### 4.2. 주요 컴포넌트
+---
 
-- **Layout:**
-  - `dashboard-layout.tsx`: 메인 레이아웃 (헤더 + 사이드바/드로어).
-  - `header.tsx`: 플랜 뱃지, 크레딧, 유저 메뉴.
-- **Pages:**
-  - `landing-page.tsx`: 랜딩 페이지.
-  - `resumes-page.tsx`: 이력서 목록.
-  - `new-resume-page.tsx`: PDF 업로드.
-  - `processing-page.tsx`: AI 처리 애니메이션.
-  - `resume-edit-page.tsx`: contenteditable 편집.
-  - `resume-preview-page.tsx`: 템플릿 선택 및 미리보기.
-  - `resume-detail-page.tsx`: 완료 및 다운로드.
-  - `billing-page.tsx`: 결제 관리.
-- **Templates:**
-  - `modern-template.tsx`: 모던 디자인.
-  - (추가 템플릿 확장 가능).
+## 7. Design System (디자인 시스템)
 
-### 4.3. Shadcn UI 컴포넌트
+`/src/styles/theme.css`에서 CSS 변수로 색상을 관리합니다. 디자인 일관성을 위해 Tailwind 유틸리티 대신 정의된 변수(`bg-background`, `text-foreground` 등)를 사용하세요.
 
-- Button, Badge, Card, Dialog, DropdownMenu, Sheet (Drawer), Separator 등 활용.
+### 7.1 Key Colors
+
+- **Background:** `bg-background` (White / Black)
+- **Foreground:** `text-foreground` (Black / White)
+- **Primary:** `bg-primary` (Brand Color)
+- **Muted:** `bg-muted` (Subtle grays for secondary UI)
+- **Border:** `border-border`
+
+### 7.2 Dark Mode
+
+시스템 설정을 따르거나 유저가 명시적으로 토글할 수 있습니다 (`next-themes`). 모든 컴포넌트는 다크모드에서의 가독성을 고려하여 구현되어야 합니다.
 
 ---
 
-## 5. Known Limitations & Future Improvements
+## 8. Directory Structure (참고)
 
-### 5.1. Current Prototype Limitations
-
-- ✅ **데이터 영속성 없음**: 새로고침 시 모든 데이터 손실 (localStorage 미사용).
-- ✅ **실제 인증 없음**: 구글 로그인 UI만 존재, 실제 세션 관리 없음.
-- ✅ **AI 처리 Mock**: 실제 PDF 파싱 및 Gemini API 호출 없음.
-- ✅ **결제 기능 없음**: 결제 UI만 존재, PG 연동 없음.
-- ✅ **PDF 생성 없음**: "다운로드" 버튼은 Alert만 표시.
-
-### 5.2. Production Roadmap (v2.0)
-
-1. **Backend 구축:**
-
-   - Next.js API Routes + Prisma ORM.
-   - PostgreSQL DB 스키마 설계.
-   - AWS S3 PDF 스토리지.
-
-2. **실제 기능 구현:**
-
-   - Google OAuth 인증.
-   - PDF 파싱 (pdf-parse 라이브러리).
-   - Gemini API 연동.
-   - PortOne 결제 연동.
-   - HTML to PDF (puppeteer 또는 jsPDF).
-
-3. **성능 최적화:**
-
-   - 서버 사이드 렌더링 (SSR).
-   - 이미지 최적화.
-   - API Rate Limiting.
-
-4. **보안:**
-
-   - CSRF 토큰.
-   - API Key 환경 변수 관리.
-   - 사용자 데이터 암호화.
-
-5. **Analytics & Monitoring:**
-   - Google Analytics / Mixpanel.
-   - Sentry 에러 트래킹.
-
----
-
-## 6. Success Metrics (향후 측정 지표)
-
-- **Conversion Rate:** 랜딩 페이지 방문 → 회원가입 → 유료 전환.
-- **Activation Rate:** 가입 후 첫 이력서 생성 완료율.
-- **Retention Rate:** 월간 활성 사용자(MAU).
-- **ARPU:** Average Revenue Per User.
-- **NPS:** Net Promoter Score (유저 만족도).
-
----
-
-### 💡 AI Agent를 위한 프롬프트 가이드 (Tip)
-
-향후 개발을 시작할 때, AI에게 다음과 같이 지시하면 위 문서를 가장 효과적으로 활용할 수 있습니다.
-
-> "위의 `Project Context`와 `Refined User Stories`를 바탕으로, 우선 **Database Schema(Prisma schema)**를 작성해 줘. 특히 Subscription 모델의 `cancel_at_period_end` 로직과 Resume의 `JSONB` 데이터 구조, 그리고 2-tier 플랜(FREE/PRO)을 신경 써서 설계해 줘. 템플릿 접근 제어 로직도 포함해."
-
-> "현재 프로토타입의 `/src/app/components` 구조를 기반으로 Next.js 15 App Router 구조로 마이그레이션하고, Supabase Auth를 연동해 줘. Mock 함수들을 실제 API 호출로 교체하는 작업부터 시작해."
-
-이 문서는 개발자가 바로 작업에 착수할 수 있는 수준의 **Implementation Guide**입니다.
-
----
-
-## 📋 Changelog
-
-### v2.0 (2026-01-06)
-
-- ✅ 2-tier 플랜 구조 추가 (FREE/PRO).
-- ✅ 5단계 워크플로우 명확화 (Upload → Processing → Edit → Template → Complete).
-- ✅ contenteditable 기반 실시간 편집 방식 반영.
-- ✅ 템플릿 선택 및 PRO 접근 제어 로직 추가.
-- ✅ 다크모드 지원 명시.
-- ✅ 반응형 레이아웃 (데스크톱 사이드바 + 모바일 햄버거) 상세화.
-- ✅ 현재 프로토타입과 향후 프로덕션 스택 분리.
-- ✅ UX 개선사항 반영 (Toast 피드백, 용어 통일, 크레딧 모바일 표시 등).
-- ✅ 기술 스택을 React + Vite 기반으로 업데이트.
-
-### v1.0 (Initial)
-
-- 초기 PRD 작성 (Next.js 기반, 2-tier 플랜).
+```
+src/
+├── app/
+│   ├── components/        # Presentational Components (Keep UI as is!)
+│   │   ├── ui/            # Shadcn UI Primitives
+│   │   ├── ...pages...    # Page Templates
+│   └── ...
+├── styles/
+│   ├── theme.css          # Design Tokens (CSS Variables)
+│   └── tailwind.css
+```
