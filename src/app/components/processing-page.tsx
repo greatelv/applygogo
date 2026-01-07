@@ -4,48 +4,72 @@ import { Button } from "./ui/button";
 
 interface ProcessingPageProps {
   resumeTitle: string;
+  resumeId: string | null;
   onComplete: () => void;
 }
 
-export function ProcessingPage({ resumeTitle, onComplete }: ProcessingPageProps) {
-  const [currentPhase, setCurrentPhase] = useState<"parsing" | "summarizing" | "translating" | "done">("parsing");
+export function ProcessingPage({
+  resumeTitle,
+  resumeId,
+  onComplete,
+}: ProcessingPageProps) {
+  const [currentPhase, setCurrentPhase] = useState<
+    "parsing" | "summarizing" | "translating" | "done"
+  >("parsing");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 단계별 진행 시뮬레이션
-    const timers: NodeJS.Timeout[] = [];
+    if (!resumeId) {
+      setError("Resume ID is missing");
+      return;
+    }
 
-    // 2초 후 텍스트 추출 완료
-    timers.push(
-      setTimeout(() => {
+    let isCancelled = false;
+
+    const analyzeResume = async () => {
+      try {
+        // Start analysis
+        setCurrentPhase("parsing");
+
+        const response = await fetch(`/api/resumes/${resumeId}/analyze`, {
+          method: "POST",
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Analysis failed");
+        }
+
+        if (isCancelled) return;
+
+        // Simulate phase transitions for better UX
         setCurrentPhase("summarizing");
-      }, 2000)
-    );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // 4초 후 AI 분석 완료
-    timers.push(
-      setTimeout(() => {
+        if (isCancelled) return;
         setCurrentPhase("translating");
-      }, 4000)
-    );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // 6초 후 요약 완료
-    timers.push(
-      setTimeout(() => {
+        if (isCancelled) return;
         setCurrentPhase("done");
-      }, 6000)
-    );
 
-    // 7초 후 다음 단계로 이동
-    timers.push(
-      setTimeout(() => {
-        onComplete();
-      }, 7000)
-    );
+        // Auto-proceed after showing completion
+        setTimeout(() => {
+          if (!isCancelled) onComplete();
+        }, 1500);
+      } catch (err: any) {
+        if (!isCancelled) {
+          setError(err.message || "분석 중 오류가 발생했습니다.");
+        }
+      }
+    };
+
+    analyzeResume();
 
     return () => {
-      timers.forEach(timer => clearTimeout(timer));
+      isCancelled = true;
     };
-  }, [onComplete]);
+  }, [resumeId, onComplete]);
 
   const processingSteps = [
     {
@@ -144,22 +168,29 @@ export function ProcessingPage({ resumeTitle, onComplete }: ProcessingPageProps)
           })}
         </div>
 
+        {error && (
+          <div className="mt-8 pt-6 border-t border-border">
+            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-sm text-destructive font-medium">오류 발생</p>
+              <p className="text-sm text-muted-foreground mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+
         {currentPhase === "done" && (
           <div className="mt-8 pt-6 border-t border-border text-center">
             <p className="text-sm text-muted-foreground mb-4">
               분석이 완료되었습니다! 다음 단계로 이동합니다...
             </p>
-            <Button onClick={onComplete}>
-              요약 확인하기
-            </Button>
+            <Button onClick={onComplete}>요약 확인하기</Button>
           </div>
         )}
       </div>
 
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
         <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>팁:</strong> AI가 경력사항을 불릿 포인트 3~4개로 요약합니다. 
-          다음 단계에서 직접 수정할 수 있습니다.
+          💡 <strong>팁:</strong> AI가 경력사항을 불릿 포인트 3~4개로
+          요약합니다. 다음 단계에서 직접 수정할 수 있습니다.
         </p>
       </div>
     </div>

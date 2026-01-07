@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { User, Mail, Calendar, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -77,7 +79,9 @@ export function ProfilePage({
               {isEditing ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block">이름</label>
+                    <label className="text-sm font-medium mb-2 block">
+                      이름
+                    </label>
                     <input
                       type="text"
                       value={editName}
@@ -108,7 +112,11 @@ export function ProfilePage({
                     <Badge variant={config.variant}>{config.label}</Badge>
                   </div>
                   <p className="text-muted-foreground mb-4">{userEmail}</p>
-                  <Button variant="outline" onClick={() => setIsEditing(true)} size="sm">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEditing(true)}
+                    size="sm"
+                  >
                     프로필 수정
                   </Button>
                 </>

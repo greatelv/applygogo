@@ -8,6 +8,7 @@ import { ResumeEditPage } from "./resume-edit-page";
 import { ResumePreviewPage } from "./resume-preview-page";
 import { ResumeDetailPage } from "./resume-detail-page";
 import { useApp } from "../context/app-context";
+import { uploadResumeAction } from "../lib/actions";
 
 interface Experience {
   id: string;
@@ -54,6 +55,7 @@ export function ResumeWizard({
   const router = useRouter();
   const { setWorkflowState, quota, setQuota, plan } = useApp();
 
+  const [isUploading, setIsUploading] = useState(false);
   const [step, setStep] = useState<
     "upload" | "processing" | "edit" | "preview"
   >(initialMode === "edit" ? "edit" : "upload");
@@ -62,7 +64,12 @@ export function ResumeWizard({
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
     initialData?.experiences || []
   );
+  const [educations, setEducations] = useState<any[]>([]);
+  const [skills, setSkills] = useState<any[]>([]);
   const [template, setTemplate] = useState(initialData?.template || "modern");
+  const [resumeId, setResumeId] = useState<string | null>(
+    initialData?.id || null
+  );
 
   // Always use the full 5 steps for consistency
   const steps = createSteps;
@@ -73,20 +80,73 @@ export function ResumeWizard({
     return () => setWorkflowState(undefined, undefined);
   }, [step, setWorkflowState, steps]);
 
-  const handleUpload = (file: File) => {
-    setResumeTitle(file.name);
-    setStep("processing");
+  const handleUpload = async (file: File) => {
+    try {
+      setIsUploading(true);
+      setResumeTitle(file.name);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const result = await uploadResumeAction(formData);
+
+      if (result.success && result.resumeId) {
+        setResumeId(result.resumeId);
+        setStep("processing");
+      }
+    } catch (error: any) {
+      alert(error.message || "업로드 중 오류가 발생했습니다.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleProcessingComplete = () => {
+  const handleProcessingComplete = async () => {
     if (quota > 0) {
       setQuota(quota - 1);
     }
+
+    // Fetch analyzed data from DB
+    if (resumeId) {
+      try {
+        const response = await fetch(`/api/resumes/${resumeId}`);
+        if (response.ok) {
+          const data = await response.json();
+
+          // Transform DB data to component format
+          const transformedExperiences = data.work_experiences.map(
+            (exp: any) => ({
+              id: exp.id,
+              company: exp.company_name_kr,
+              companyEn: exp.company_name_en,
+              position: exp.role_kr,
+              positionEn: exp.role_en,
+              period: `${exp.start_date} ~ ${exp.end_date}`,
+              bullets: exp.bullets_kr,
+              bulletsEn: exp.bullets_en,
+            })
+          );
+
+          setExperiences(transformedExperiences);
+          setEducations(data.educations || []);
+          setSkills(data.skills || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resume data:", error);
+      }
+    }
+
     setStep("edit");
   };
 
-  const handleEditNext = (data: TranslatedExperience[]) => {
-    setExperiences(data as any);
+  const handleEditNext = (data: {
+    experiences: any[];
+    educations: any[];
+    skills: any[];
+  }) => {
+    setExperiences(data.experiences as any);
+    setEducations(data.educations);
+    setSkills(data.skills);
     setStep("preview");
   };
 
@@ -111,13 +171,14 @@ export function ResumeWizard({
   };
 
   if (step === "upload") {
-    return <NewResumePage onUpload={handleUpload} />;
+    return <NewResumePage onUpload={handleUpload} isUploading={isUploading} />;
   }
 
   if (step === "processing") {
     return (
       <ProcessingPage
         resumeTitle={resumeTitle}
+        resumeId={resumeId}
         onComplete={handleProcessingComplete}
       />
     );
@@ -127,7 +188,9 @@ export function ResumeWizard({
     return (
       <ResumeEditPage
         resumeTitle={resumeTitle}
-        initialExperiences={initialMode === "edit" ? experiences : undefined}
+        initialExperiences={experiences}
+        initialEducations={educations}
+        initialSkills={skills}
         isEditingExisting={initialMode === "edit"}
         quota={quota}
         onNext={handleEditNext}
