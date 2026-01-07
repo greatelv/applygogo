@@ -1,4 +1,11 @@
-import { ArrowRight, Check, Sparkles, FileText, Globe, Download } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Sparkles,
+  FileText,
+  Globe,
+  Download,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -13,7 +20,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl tracking-tight font-semibold">레스유메</h1>
+            <h1 className="text-xl tracking-tight font-semibold">지원고고</h1>
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <Button onClick={onGetStarted} size="sm">
@@ -30,15 +37,19 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted mb-6">
               <Sparkles className="size-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">AI 기반 이력서 변환 서비스</span>
+              <span className="text-sm text-muted-foreground">
+                AI 기반 이력서 변환 서비스
+              </span>
             </div>
-            
+
             <h2 className="text-4xl lg:text-6xl tracking-tight mb-6">
               한국어 이력서를
               <br />
-              <span className="text-muted-foreground">글로벌 스탠다드 영문으로</span>
+              <span className="text-muted-foreground">
+                글로벌 스탠다드 영문으로
+              </span>
             </h2>
-            
+
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               AI가 자동으로 경력을 요약하고 번역하여, 채용 담당자가 주목하는
               <br />
@@ -66,7 +77,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-3xl tracking-tight mb-4">왜 레스유메인가요?</h3>
+            <h3 className="text-3xl tracking-tight mb-4">왜 지원고고인가요?</h3>
             <p className="text-muted-foreground">
               단순 번역이 아닌, 채용 시장에 최적화된 이력서를 만듭니다
             </p>
@@ -79,8 +90,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
               <h4 className="text-lg font-semibold mb-2">AI 기반 요약</h4>
               <p className="text-muted-foreground text-sm">
-                Gemini Pro가 경력사항을 분석하여 핵심 성과 중심의 3~4줄 불릿 포인트로 재구성합니다.
-                채용 담당자가 원하는 형식 그대로.
+                Gemini Pro가 경력사항을 분석하여 핵심 성과 중심의 3~4줄 불릿
+                포인트로 재구성합니다. 채용 담당자가 원하는 형식 그대로.
               </p>
             </div>
 
@@ -90,8 +101,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
               <h4 className="text-lg font-semibold mb-2">전문 번역</h4>
               <p className="text-muted-foreground text-sm">
-                Split View로 한글/영문을 동시에 비교하며 수정 가능.
-                직접 편집으로 완벽한 커스터마이징까지.
+                Split View로 한글/영문을 동시에 비교하며 수정 가능. 직접
+                편집으로 완벽한 커스터마이징까지.
               </p>
             </div>
 
@@ -101,8 +112,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
               <h4 className="text-lg font-semibold mb-2">프로 템플릿</h4>
               <p className="text-muted-foreground text-sm">
-                Modern, Classic, Minimal 3가지 템플릿 중 선택하여
-                즉시 PDF로 다운로드. 지원 기업에 바로 제출하세요.
+                Modern, Classic, Minimal 3가지 템플릿 중 선택하여 즉시 PDF로
+                다운로드. 지원 기업에 바로 제출하세요.
               </p>
             </div>
           </div>
@@ -158,9 +169,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h3 className="text-3xl tracking-tight mb-4">간단한 가격 정책</h3>
-            <p className="text-muted-foreground">
-              필요한 만큼만 사용하세요
-            </p>
+            <p className="text-muted-foreground">필요한 만큼만 사용하세요</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -169,15 +178,18 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="text-3xl font-bold mb-4">무료</div>
               <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  월 2 크레딧
+                  <Check className="size-4 text-green-600" />월 2 크레딧
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600" />
                   이력서 1개 보관
                 </li>
               </ul>
-              <Button variant="outline" className="w-full" onClick={onGetStarted}>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={onGetStarted}
+              >
                 시작하기
               </Button>
             </div>
@@ -190,8 +202,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="text-3xl font-bold mb-4">₩9,900</div>
               <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  월 6 크레딧
+                  <Check className="size-4 text-green-600" />월 6 크레딧
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600" />
@@ -212,8 +223,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="text-3xl font-bold mb-4">₩29,900</div>
               <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  월 20 크레딧
+                  <Check className="size-4 text-green-600" />월 20 크레딧
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600" />
@@ -224,7 +234,11 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   커스텀 템플릿
                 </li>
               </ul>
-              <Button variant="outline" className="w-full" onClick={onGetStarted}>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={onGetStarted}
+              >
                 시작하기
               </Button>
             </div>
@@ -239,7 +253,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             지금 바로 글로벌 커리어를 시작하세요
           </h3>
           <p className="text-muted-foreground mb-8">
-            레스유메와 함께라면 영문 이력서 걱정은 이제 그만
+            지원고고와 함께라면 영문 이력서 걱정은 이제 그만
           </p>
           <Button onClick={onGetStarted} size="lg">
             무료로 시작하기
@@ -252,11 +266,17 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       <footer className="border-t border-border py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>© 2026 레스유메. All rights reserved.</p>
+            <p>© 2026 지원고고. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-foreground">서비스 약관</a>
-              <a href="#" className="hover:text-foreground">개인정보 처리방침</a>
-              <a href="#" className="hover:text-foreground">문의</a>
+              <a href="#" className="hover:text-foreground">
+                서비스 약관
+              </a>
+              <a href="#" className="hover:text-foreground">
+                개인정보 처리방침
+              </a>
+              <a href="#" className="hover:text-foreground">
+                문의
+              </a>
             </div>
           </div>
         </div>

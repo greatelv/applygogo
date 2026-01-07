@@ -71,7 +71,7 @@ export function Header({
           </button>
 
           {/* Mobile logo */}
-          <h1 className="text-lg tracking-tight lg:hidden">레스유메</h1>
+          <h1 className="text-lg tracking-tight lg:hidden">지원고고</h1>
 
           {/* Workflow Stepper - Desktop left side */}
           {workflowSteps && currentStep && (

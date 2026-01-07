@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { CircleHelp, ChevronDown, Mail, FileText, CreditCard, Shield } from "lucide-react";
+import {
+  CircleHelp,
+  ChevronDown,
+  Mail,
+  FileText,
+  CreditCard,
+  Shield,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 
 interface FAQItem {
@@ -13,7 +20,7 @@ const faqs: FAQItem[] = [
   {
     id: "1",
     category: "시작하기",
-    question: "레스유메는 어떻게 사용하나요?",
+    question: "지원고고는 어떻게 사용하나요?",
     answer:
       "1) PDF 이력서를 업로드하세요. 2) AI가 자동으로 요약하고 번역합니다. 3) 결과를 확인하고 수정하세요. 4) 원하는 템플릿으로 PDF를 다운로드하세요.",
   },
@@ -191,18 +198,21 @@ export function HelpPage() {
       </div>
 
       {/* Contact Section */}
-      <div id="contact" className="mt-16 bg-card border border-border rounded-lg p-8 text-center">
+      <div
+        id="contact"
+        className="mt-16 bg-card border border-border rounded-lg p-8 text-center"
+      >
         <Mail className="size-12 text-primary mx-auto mb-4" />
         <h3 className="text-xl font-semibold mb-2">답변을 찾지 못하셨나요?</h3>
         <p className="text-muted-foreground mb-6">
           이메일로 문의해주시면 24시간 내에 답변드리겠습니다
         </p>
         <a
-          href="mailto:support@lesume.com"
+          href="mailto:support@applygogo.com"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
         >
           <Mail className="size-4" />
-          support@lesume.com
+          support@applygogo.com
         </a>
       </div>
     </div>

@@ -17,7 +17,13 @@ const navItems = [
   { id: "help", label: "도움말", icon: CircleHelp },
 ];
 
-export function Sidebar({ activeItem, onNavigate, isOpen, onClose, onCreateNew }: SidebarProps) {
+export function Sidebar({
+  activeItem,
+  onNavigate,
+  isOpen,
+  onClose,
+  onCreateNew,
+}: SidebarProps) {
   return (
     <>
       {/* Mobile overlay */}
@@ -49,7 +55,7 @@ export function Sidebar({ activeItem, onNavigate, isOpen, onClose, onCreateNew }
 
           {/* Logo */}
           <div className="p-6 border-b border-border hidden lg:block">
-            <h2 className="text-xl tracking-tight">레스유메</h2>
+            <h2 className="text-xl tracking-tight">지원고고</h2>
           </div>
 
           {/* Navigation */}
@@ -100,7 +106,7 @@ export function Sidebar({ activeItem, onNavigate, isOpen, onClose, onCreateNew }
           {/* Footer */}
           <div className="p-4 border-t border-border">
             <div className="text-xs text-muted-foreground space-y-1">
-              <p>© 2026 레스유메</p>
+              <p>© 2026 지원고고</p>
               <div className="flex gap-3">
                 <a href="#" className="hover:text-foreground">
                   문의
