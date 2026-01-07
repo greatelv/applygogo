@@ -80,6 +80,9 @@ export function ResumeEditPage({
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
     {}
   );
+  const [highlightedBullets, setHighlightedBullets] = useState<
+    Record<string, number[]>
+  >({});
 
   const handleBulletEdit = (
     expId: string,
@@ -181,6 +184,21 @@ export function ResumeEditPage({
           return { ...exp, bulletsEn: newBulletsEn };
         })
       );
+
+      // Highlight changed bullets
+      setHighlightedBullets((prev) => ({
+        ...prev,
+        [expId]: requestItems.map((item) => item.index),
+      }));
+
+      // Remove highlight after 2 seconds
+      setTimeout(() => {
+        setHighlightedBullets((prev) => {
+          const newState = { ...prev };
+          delete newState[expId];
+          return newState;
+        });
+      }, 2000);
     } catch (error) {
       console.error(error);
       alert("번역 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
@@ -336,7 +354,11 @@ export function ResumeEditPage({
                               true
                             )
                           }
-                          className="flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                          className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] ${
+                            highlightedBullets[exp.id]?.includes(index)
+                              ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
+                              : ""
+                          }`}
                           placeholder="Click to edit"
                         >
                           {bullet}

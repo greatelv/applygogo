@@ -205,14 +205,23 @@ ${JSON.stringify(work_experiences, null, 2)}
 
     // Save skills
     if (skills && skills.length > 0) {
-      await prisma.skill.createMany({
-        data: skills.map((skill: any, index: number) => ({
+      const validSkills = skills
+        .filter((skill: any) => {
+          if (typeof skill === "string") return skill.trim().length > 0;
+          if (typeof skill === "object" && skill.name) return true;
+          return false;
+        })
+        .map((skill: any, index: number) => ({
           resumeId: resumeId,
-          name: skill.name,
-          // level is removed as per user request
+          name: typeof skill === "string" ? skill : skill.name,
           order: index,
-        })),
-      });
+        }));
+
+      if (validSkills.length > 0) {
+        await prisma.skill.createMany({
+          data: validSkills,
+        });
+      }
     }
 
     // 7. Update resume status to COMPLETED
