@@ -118,6 +118,10 @@ export function Header({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem className="cursor-pointer" asChild>
+                <a href="/pricing">요금제 업그레이드</a>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium">{userName}</p>
