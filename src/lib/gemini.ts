@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 // Export configured model for multimodal use (PDF analysis)
 export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash", // More stable than 2.5-flash
+  model: "gemini-2.5-flash-lite", // More stable than 2.5-flash
 });
 
 // Retry helper function

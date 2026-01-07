@@ -160,8 +160,8 @@ ${JSON.stringify(work_experiences, null, 2)}
         data: educations.map((edu: any, index: number) => ({
           resumeId: resumeId,
           school_name: edu.school_name,
-          major: edu.major,
-          degree: edu.degree,
+          major: edu.major || "-", // Provide default for required field
+          degree: edu.degree || "-", // Provide default for required field
           start_date: edu.start_date,
           end_date: edu.end_date,
           order: index,
