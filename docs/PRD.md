@@ -129,6 +129,9 @@
 ### 6.1 Tech Stack (Migration Target: v2.0)
 
 - **Frontend/Backend:** Next.js 16 (App Router), TypeScript.
+- **Rendering Strategy:**
+  - **Public Pages (Landing, Login)**: Server-Side Rendering (SSR) for SEO.
+  - **Authenticated Pages (/resumes/**)**: **Client-Side Rendering (SSR Disabled)\*\* via `next/dynamic` (`ssr: false`) to prevent hydration mismatches and handle complex client-side state.
 - **Styling:** Tailwind CSS v4, Shadcn UI.
 - **Database:** PostgreSQL (Supabase), Prisma ORM.
 - **AI:** Google Gemini Pro API.
