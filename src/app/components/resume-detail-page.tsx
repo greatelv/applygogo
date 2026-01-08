@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Download,
   Trash2,
@@ -5,11 +6,12 @@ import {
   CheckCircle2,
   ArrowLeft,
   Edit,
-  ArrowRight,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ModernTemplate } from "./resume-templates/modern-template";
+import { ClassicTemplate } from "./resume-templates/classic-template";
+import { MinimalTemplate } from "./resume-templates/minimal-template";
 import { toast } from "sonner";
 
 interface TranslatedExperience {
@@ -75,11 +77,95 @@ export function ResumeDetailPage({
 
   const config = statusConfig[resume.status];
 
-  const handleDownload = () => {
+  // Ref is kept for Preview display (though not used for PDF generation anymore)
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = async () => {
     if (onDownload) {
       onDownload();
-    } else {
-      alert("PDF 다운로드 기능은 개발 예정입니다.");
+      return;
+    }
+
+    try {
+      const { pdf } = await import("@react-pdf/renderer");
+      // Dynamic import to avoid SSR issues with React-PDF
+      const { ModernPdf, registerFonts } = await import(
+        "./pdf-templates/modern-pdf"
+      );
+      const { ClassicPdf } = await import("./pdf-templates/classic-pdf");
+      const { MinimalPdf } = await import("./pdf-templates/minimal-pdf");
+
+      // Register fonts with correct URL
+      registerFonts();
+
+      let doc;
+      const commonProps = {
+        personalInfo: resume.personalInfo,
+        experiences: resume.experiences,
+        // @ts-ignore
+        educations: [],
+        // @ts-ignore
+        skills: [],
+      };
+
+      switch (resume.template) {
+        case "classic":
+          doc = <ClassicPdf {...commonProps} />;
+          break;
+        case "minimal":
+          doc = <MinimalPdf {...commonProps} />;
+          break;
+        case "modern":
+        default:
+          doc = <ModernPdf {...commonProps} />;
+          break;
+      }
+
+      const blob = await pdf(doc).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${resume.title || "resume"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success("PDF 다운로드가 완료되었습니다");
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast.error("PDF 생성 중 오류가 발생했습니다");
+    }
+  };
+
+  const renderTemplate = () => {
+    switch (resume.template) {
+      case "classic":
+        return (
+          <ClassicTemplate
+            personalInfo={resume.personalInfo}
+            experiences={resume.experiences || []}
+          />
+        );
+      case "minimal":
+        return (
+          <MinimalTemplate
+            personalInfo={resume.personalInfo}
+            experiences={resume.experiences || []}
+          />
+        );
+      case "modern":
+      default:
+        return (
+          <ModernTemplate
+            personalInfo={resume.personalInfo}
+            experiences={resume.experiences || []}
+            // @ts-ignore
+            educations={[]}
+            // @ts-ignore
+            skills={[]}
+          />
+        );
     }
   };
 
@@ -95,7 +181,7 @@ export function ResumeDetailPage({
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* 워크플로우 완료 시에만 표시되는 성공 배너 */}
+      {/* Success Banner */}
       {isWorkflowComplete && (
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 rounded-lg flex items-center gap-3">
           <CheckCircle2 className="size-5 text-green-600 dark:text-green-400 flex-shrink-0" />
@@ -110,7 +196,7 @@ export function ResumeDetailPage({
         </div>
       )}
 
-      {/* 공통 헤더 */}
+      {/* Header */}
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <div>
@@ -134,7 +220,7 @@ export function ResumeDetailPage({
             </div>
           </div>
 
-          {/* 공통 액션 버튼 */}
+          {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={onBack}>
               <ArrowLeft className="size-4" />
@@ -167,11 +253,11 @@ export function ResumeDetailPage({
       {/* Preview */}
       <div className="bg-card border border-border rounded-lg overflow-hidden mb-6">
         <div className="bg-muted/30 p-4">
-          <div className="aspect-[210/297] overflow-auto bg-white dark:bg-gray-900 shadow-lg mx-auto max-w-3xl">
-            <ModernTemplate
-              personalInfo={resume.personalInfo}
-              experiences={resume.experiences || []}
-            />
+          <div
+            ref={componentRef}
+            className="aspect-[210/297] bg-white text-black shadow-lg mx-auto"
+          >
+            {renderTemplate()}
           </div>
         </div>
       </div>
