@@ -16,6 +16,7 @@ const steps = [
 interface TemplatesClientProps {
   resumeId: string;
   resumeTitle: string;
+  personalInfo: any;
   experiences: any[];
   educations: any[];
   skills: any[];
@@ -25,6 +26,7 @@ interface TemplatesClientProps {
 export function TemplatesClient({
   resumeId,
   resumeTitle,
+  personalInfo,
   experiences,
   educations,
   skills,
@@ -35,26 +37,52 @@ export function TemplatesClient({
 
   useEffect(() => {
     setWorkflowState(steps, "preview");
+
+    // Ensure state is TEMPLATE
+    fetch(`/api/resumes/${resumeId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ current_step: "TEMPLATE" }),
+    }).catch(console.error);
+
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState]);
+  }, [setWorkflowState, resumeId]);
 
   const handleNext = async (templateId: string) => {
-    // TODO: Save selected template to DB via API if needed
-    // await fetch(`/api/resumes/${resumeId}`, { method: 'PATCH', body: JSON.stringify({ template: templateId }) });
+    try {
+      const res = await fetch(`/api/resumes/${resumeId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          current_step: "COMPLETED",
+          selected_template: templateId.toUpperCase(), // Enum is usually uppercase
+          status: "COMPLETED",
+        }),
+      });
 
-    // For now, just navigate to completion or dashboard
-    router.push(`/resumes/${resumeId}`);
+      if (!res.ok) {
+        throw new Error("Failed to save template selection");
+      }
+
+      router.push(`/resumes/${resumeId}`);
+    } catch (error) {
+      console.error("Error saving template:", error);
+      // Fallback navigation even on error? Or show alert?
+      // router.push(`/resumes/${resumeId}`);
+      alert("템플릿 저장 중 오류가 발생했습니다.");
+    }
   };
 
   return (
     <ResumePreviewPage
       resumeTitle={resumeTitle}
+      personalInfo={personalInfo}
       experiences={experiences}
       educations={educations}
       skills={skills}
       currentPlan={currentPlan}
       onNext={handleNext}
-      onBack={() => router.back()}
+      onBack={() => router.push(`/resumes/${resumeId}/edit`)}
       onUpgrade={() => router.push("/pricing")}
     />
   );

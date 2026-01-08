@@ -6,6 +6,7 @@ interface Resume {
   id: string;
   title: string;
   status: "IDLE" | "SUMMARIZED" | "TRANSLATED" | "COMPLETED" | "FAILED";
+  currentStep: "UPLOAD" | "PROCESSING" | "EDIT" | "TEMPLATE" | "COMPLETED";
   updatedAt: string;
 }
 
@@ -18,8 +19,17 @@ interface ResumesPageProps {
   onUpgrade?: () => void;
 }
 
+const stepConfig = {
+  UPLOAD: { label: "업로드 중", variant: "secondary" as const },
+  PROCESSING: { label: "AI 분석 중", variant: "secondary" as const },
+  EDIT: { label: "편집 중", variant: "outline" as const },
+  TEMPLATE: { label: "템플릿 선택", variant: "outline" as const },
+  COMPLETED: { label: "완료됨", variant: "success" as const },
+};
+
+// Fallback for status if needed, though step is preferred now
 const statusConfig = {
-  IDLE: { label: "업로드됨", variant: "outline" as const },
+  IDLE: { label: "대기 중", variant: "outline" as const },
   SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
   TRANSLATED: { label: "번역됨", variant: "secondary" as const },
   COMPLETED: { label: "완료", variant: "success" as const },
@@ -97,7 +107,10 @@ export function ResumesPage({
 
       <div className="space-y-3">
         {resumes.map((resume) => {
-          const config = statusConfig[resume.status];
+          // Use step config if available, fallback to status
+          const config =
+            stepConfig[resume.currentStep] || statusConfig[resume.status];
+
           return (
             <div
               key={resume.id}

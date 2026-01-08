@@ -60,6 +60,14 @@ export default async function Page({
     end_date: edu.end_date,
   }));
 
+  const mappedPersonalInfo = {
+    name_kr: resume.name_kr || "",
+    name_en: resume.name_en || "",
+    email: resume.email || "",
+    phone: resume.phone || "",
+    links: (resume.links as { label: string; url: string }[]) || [],
+  };
+
   const mappedSkills = resume.skills.map((s) => ({
     id: s.id,
     name: s.name,
@@ -70,6 +78,7 @@ export default async function Page({
     <TemplatesClient
       resumeId={resume.id}
       resumeTitle={resume.title}
+      personalInfo={mappedPersonalInfo}
       experiences={mappedExperiences}
       educations={mappedEducations}
       skills={mappedSkills}

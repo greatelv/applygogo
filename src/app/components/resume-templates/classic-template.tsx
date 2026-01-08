@@ -27,13 +27,23 @@ interface Skill {
   level?: string | null;
 }
 
+interface PersonalInfo {
+  name_kr?: string;
+  name_en?: string;
+  email?: string;
+  phone?: string;
+  links?: { label: string; url: string }[];
+}
+
 interface ClassicTemplateProps {
+  personalInfo?: PersonalInfo;
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
 }
 
 export function ClassicTemplate({
+  personalInfo,
   experiences,
   educations = [],
   skills = [],
@@ -42,16 +52,31 @@ export function ClassicTemplate({
     <div className="bg-white text-black p-8 min-h-[800px] font-serif">
       {/* Header */}
       <div className="text-center mb-8 pb-6 border-b-2 border-gray-800">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide">
-          JOHN DOE
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide uppercase">
+          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
         </h1>
-        <p className="text-lg text-gray-700 mb-2">Frontend Developer</p>
-        <div className="text-sm text-gray-600 space-x-2">
-          <span>john.doe@email.com</span>
-          <span>|</span>
-          <span>+82 10-1234-5678</span>
-          <span>|</span>
-          <span>Seoul, Korea</span>
+        {/* <p className="text-lg text-gray-700 mb-2">Frontend Developer</p> */}
+        <div className="text-sm text-gray-600 flex justify-center flex-wrap gap-2">
+          {personalInfo?.email && <span>{personalInfo.email}</span>}
+          {personalInfo?.phone && (
+            <>
+              <span>|</span>
+              <span>{personalInfo.phone}</span>
+            </>
+          )}
+          {personalInfo?.links?.map((link, i) => (
+            <span key={i} className="flex gap-2">
+              <span>|</span>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:underline"
+              >
+                {link.label}
+              </a>
+            </span>
+          ))}
         </div>
       </div>
 

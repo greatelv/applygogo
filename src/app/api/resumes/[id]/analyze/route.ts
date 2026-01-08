@@ -63,8 +63,23 @@ export async function POST(
     const responseText = result.response.text();
 
     // Extract JSON from markdown code block if present
-    const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
-    const jsonText = jsonMatch ? jsonMatch[1] : responseText;
+    const cleanJsonText = (text: string) => {
+      // 1. Try to match markdown code blocks (flexible)
+      const match = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (match) return match[1];
+
+      // 2. If no code block, try to find the outermost braces
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start !== -1 && end !== -1) {
+        return text.substring(start, end + 1);
+      }
+
+      // 3. Return original text as fallback
+      return text;
+    };
+
+    const jsonText = cleanJsonText(responseText);
     const analysisResult = JSON.parse(jsonText);
 
     // 6. Second pass: Ask Gemini to merge duplicates and select best bullets
@@ -129,13 +144,38 @@ ${JSON.stringify(work_experiences, null, 2)}
         );
         const refinedText = refinementResult.response.text();
 
-        const refinedJsonMatch = refinedText.match(/```json\n([\s\S]*?)\n```/);
-        const refinedJsonText = refinedJsonMatch
-          ? refinedJsonMatch[1]
-          : refinedText;
+        const refinedJsonText = cleanJsonText(refinedText);
         const refinedData = JSON.parse(refinedJsonText);
 
         mergedExperiences = refinedData.work_experiences;
+
+        // Perform sorting: Newest first (descending by end_date)
+        mergedExperiences.sort((a: any, b: any) => {
+          const getTime = (dateStr: string) => {
+            if (!dateStr) return 0;
+            const lower = dateStr.toLowerCase();
+            if (
+              lower.includes("present") ||
+              lower.includes("현재") ||
+              lower.includes("재직")
+            ) {
+              return new Date().getTime() + 1000000; // Future date to keep at top
+            }
+            // Try to parse YYYY.MM format primarily used in resumes
+            // Simple cleanup for common formats like '2023.01', '2023-01', 'Jan 2023'
+            const cleanDate = dateStr.replace(/\./g, "-");
+            const date = new Date(cleanDate);
+            if (isNaN(date.getTime())) {
+              // Try appending day if it's YYYY-MM
+              const dateWithDay = new Date(cleanDate + "-01");
+              return isNaN(dateWithDay.getTime()) ? 0 : dateWithDay.getTime();
+            }
+            return date.getTime();
+          };
+
+          return getTime(b.end_date) - getTime(a.end_date);
+        });
+
         console.log(
           `[Refinement] Success! Reduced to ${mergedExperiences.length} companies`
         );

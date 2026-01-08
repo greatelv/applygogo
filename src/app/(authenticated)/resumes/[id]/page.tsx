@@ -22,6 +22,22 @@ export default async function Page({
 
   if (!resume) notFound();
 
+  // Redirect based on workflow step
+  if (resume.current_step === "EDIT") {
+    redirect(`/resumes/${resume.id}/edit`);
+  } else if (resume.current_step === "TEMPLATE") {
+    redirect(`/resumes/${resume.id}/templates`);
+  } else if (resume.current_step === "PROCESSING") {
+    // Assuming there is a processing page, if not, maybe edit?
+    // Let's assume there is one or default to edit, but let's check directory structure.
+    // There is a 'processing' directory seen earlier.
+    redirect(`/resumes/${resume.id}/processing`);
+  } else if (resume.current_step === "UPLOAD") {
+    // If stuck in upload, maybe invalid state or needs re-upload
+    // But usually this means just started.
+    redirect(`/resumes/new`);
+  }
+
   const mappedExperiences = resume.work_experiences.map((exp) => ({
     id: exp.id,
     company: exp.company_name_kr,

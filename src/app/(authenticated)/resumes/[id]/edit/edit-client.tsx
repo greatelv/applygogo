@@ -36,8 +36,16 @@ export function EditClient({
 
   useEffect(() => {
     setWorkflowState(steps, "edit");
+
+    // Ensure we are in EDIT step in DB
+    fetch(`/api/resumes/${resumeId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ current_step: "EDIT" }),
+    }).catch(console.error);
+
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState]);
+  }, [setWorkflowState, resumeId]);
 
   const handleNext = async (data: {
     personalInfo: any;
@@ -96,8 +104,12 @@ export function EditClient({
       initialEducations={initialEducations}
       initialSkills={initialSkills}
       onNext={(data) => handleNext(data)}
-      onBack={() => router.back()} // Or router.push(`/resumes/${resumeId}/processing`)
-      isEditingExisting={true} // Always treated as editing data loaded from DB
+      onBack={() => {
+        setIsSaving(true); // Reuse saving state for loading spinner
+        router.push("/resumes/new");
+      }}
+      isEditingExisting={true}
+      isLoading={isSaving} // Pass loading state to component
     />
   );
 }

@@ -7,6 +7,7 @@ interface Resume {
   id: string;
   title: string;
   status: "IDLE" | "SUMMARIZED" | "TRANSLATED" | "COMPLETED" | "FAILED";
+  currentStep: "UPLOAD" | "PROCESSING" | "EDIT" | "TEMPLATE" | "COMPLETED";
   updatedAt: string;
 }
 

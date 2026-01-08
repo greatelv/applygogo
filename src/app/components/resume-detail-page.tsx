@@ -138,7 +138,7 @@ export function ResumeDetailPage({
           <div className="flex items-center gap-2">
             <Button variant="ghost" onClick={onBack}>
               <ArrowLeft className="size-4" />
-              목록으로
+              {isWorkflowComplete ? "이전" : "목록으로"}
             </Button>
             {!isWorkflowComplete && onDelete && (
               <Button

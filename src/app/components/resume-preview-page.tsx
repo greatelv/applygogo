@@ -38,6 +38,7 @@ interface Skill {
 
 interface ResumePreviewPageProps {
   resumeTitle: string;
+  personalInfo?: any;
   experiences: TranslatedExperience[];
   educations: Education[];
   skills: Skill[];
@@ -50,6 +51,7 @@ interface ResumePreviewPageProps {
 
 export function ResumePreviewPage({
   resumeTitle,
+  personalInfo,
   experiences,
   educations,
   skills,
@@ -112,6 +114,7 @@ export function ResumePreviewPage({
       case "modern":
         return (
           <ModernTemplate
+            personalInfo={personalInfo}
             experiences={experiences}
             educations={educations}
             skills={skills}
@@ -120,6 +123,7 @@ export function ResumePreviewPage({
       case "classic":
         return (
           <ClassicTemplate
+            personalInfo={personalInfo}
             experiences={experiences}
             educations={educations}
             skills={skills}
@@ -128,6 +132,7 @@ export function ResumePreviewPage({
       case "minimal":
         return (
           <MinimalTemplate
+            personalInfo={personalInfo}
             experiences={experiences}
             educations={educations}
             skills={skills}
@@ -136,6 +141,7 @@ export function ResumePreviewPage({
       default:
         return (
           <ModernTemplate
+            personalInfo={personalInfo}
             experiences={experiences}
             educations={educations}
             skills={skills}
@@ -147,12 +153,6 @@ export function ResumePreviewPage({
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-3">
-          <Badge variant="secondary" className="gap-1">
-            <Eye className="size-3" />
-            실시간 미리보기
-          </Badge>
-        </div>
         <h1 className="text-2xl mb-2">템플릿 선택</h1>
         <p className="text-sm text-muted-foreground">
           {resumeTitle} • 원하는 템플릿을 선택하세요
@@ -205,12 +205,11 @@ export function ResumePreviewPage({
           )}
 
           <div className="pt-4 space-y-2">
-            <Button onClick={handleNext} className="w-full" size="lg">
-              {isProTemplateSelected ? "PRO로 업그레이드" : "다음"}
-              <ArrowRight className="size-4" />
-            </Button>
             <Button variant="outline" onClick={onBack} className="w-full">
               이전
+            </Button>
+            <Button onClick={handleNext} className="w-full" size="lg">
+              {isProTemplateSelected ? "PRO로 업그레이드" : "다음"}
             </Button>
           </div>
         </div>

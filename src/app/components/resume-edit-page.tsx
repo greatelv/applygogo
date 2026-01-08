@@ -64,6 +64,7 @@ interface ResumeEditPageProps {
   initialSkills?: Skill[];
   isEditingExisting?: boolean;
   quota?: number;
+  isLoading?: boolean; // Add this prop
   onNext: (data: {
     personalInfo: PersonalInfo;
     experiences: TranslatedExperience[];
@@ -82,10 +83,44 @@ export function ResumeEditPage({
   initialSkills,
   isEditingExisting,
   quota,
+  isLoading = false, // Default to false
   onNext,
   onBack,
   onRetranslate,
 }: ResumeEditPageProps) {
+  // ... (rest of the component)
+
+  // Update buttons at the bottom
+  /* ... */
+  <div className="mt-12 flex gap-3">
+    <Button
+      variant="outline"
+      onClick={onBack}
+      size="lg"
+      className="flex-1"
+      disabled={isLoading}
+    >
+      {isEditingExisting ? "새로 만들기" : "이전"}
+    </Button>
+    <Button
+      onClick={() => onNext({ personalInfo, experiences, educations, skills })}
+      size="lg"
+      className="flex-1"
+      disabled={isLoading}
+    >
+      {isLoading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          처리 중...
+        </>
+      ) : (
+        <>
+          다음
+          <ArrowRight className="size-4 ml-2" />
+        </>
+      )}
+    </Button>
+  </div>;
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     initialPersonalInfo || {
       name_kr: "",
@@ -365,12 +400,6 @@ export function ResumeEditPage({
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-3">
-          <Badge variant="secondary" className="gap-1">
-            <Sparkles className="size-3" />
-            {isEditingExisting ? "이력서 수정" : "AI 처리 완료"}
-          </Badge>
-        </div>
         <h1 className="text-2xl mb-2">편집</h1>
         <p className="text-sm text-muted-foreground">
           {resumeTitle} • AI가 분석한 내용을 검토하고 수정하세요.
@@ -1031,8 +1060,14 @@ export function ResumeEditPage({
       </div>
 
       <div className="mt-12 flex gap-3">
-        <Button variant="outline" onClick={onBack} size="lg" className="flex-1">
-          이전
+        <Button
+          variant="outline"
+          onClick={onBack}
+          size="lg"
+          className="flex-1"
+          disabled={isLoading}
+        >
+          {isEditingExisting ? "새로 만들기" : "이전"}
         </Button>
         <Button
           onClick={() =>
@@ -1040,9 +1075,19 @@ export function ResumeEditPage({
           }
           size="lg"
           className="flex-1"
+          disabled={isLoading}
         >
-          다음
-          <ArrowRight className="size-4 ml-2" />
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              처리 중...
+            </>
+          ) : (
+            <>
+              다음
+              <ArrowRight className="size-4 ml-2" />
+            </>
+          )}
         </Button>
       </div>
     </div>

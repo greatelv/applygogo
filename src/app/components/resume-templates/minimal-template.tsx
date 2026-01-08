@@ -27,13 +27,23 @@ interface Skill {
   level?: string | null;
 }
 
+interface PersonalInfo {
+  name_kr?: string;
+  name_en?: string;
+  email?: string;
+  phone?: string;
+  links?: { label: string; url: string }[];
+}
+
 interface MinimalTemplateProps {
+  personalInfo?: PersonalInfo;
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
 }
 
 export function MinimalTemplate({
+  personalInfo,
   experiences,
   educations = [],
   skills = [],
@@ -44,13 +54,23 @@ export function MinimalTemplate({
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
-            John Doe
+            {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
           </h1>
-          <p className="text-gray-500 text-sm mb-4">Frontend Developer</p>
-          <div className="flex gap-3 text-xs text-gray-500">
-            <span>john.doe@email.com</span>
-            <span>+82 10-1234-5678</span>
-            <span>Seoul</span>
+          {/* <p className="text-gray-500 text-sm mb-4">Frontend Developer</p> */}
+          <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
+            {personalInfo?.email && <span>{personalInfo.email}</span>}
+            {personalInfo?.phone && <span>{personalInfo.phone}</span>}
+            {personalInfo?.links?.map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:underline text-gray-600"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
 

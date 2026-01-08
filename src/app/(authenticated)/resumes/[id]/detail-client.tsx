@@ -47,7 +47,13 @@ export function DetailClient({
       experiences={experiences}
       template={template}
       isWorkflowComplete={isWorkflowComplete}
-      onBack={() => router.push("/resumes")}
+      onBack={() => {
+        if (isWorkflowComplete) {
+          router.push(`/resumes/${resumeId}/templates`);
+        } else {
+          router.push("/resumes");
+        }
+      }}
       onEdit={() => router.push(`/resumes/${resumeId}/edit`)}
       onDelete={async (id) => {
         try {

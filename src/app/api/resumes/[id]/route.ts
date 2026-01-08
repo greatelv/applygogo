@@ -141,7 +141,7 @@ export async function PUT(
           email,
           phone,
           links,
-          current_step: "TEMPLATE", // Move to next step logic handled by frontend, but useful to track
+          current_step: body.current_step || "TEMPLATE",
           updated_at: new Date(),
         },
       });
@@ -152,6 +152,49 @@ export async function PUT(
     console.error("Error updating resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update resume" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id: resumeId } = await params;
+    const body = await request.json();
+    const { current_step, selected_template, status } = body;
+
+    // Verify ownership
+    const existingResume = await prisma.resume.findUnique({
+      where: { id: resumeId, userId: session.user.id },
+    });
+
+    if (!existingResume) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    }
+
+    // Update resume
+    const updatedResume = await prisma.resume.update({
+      where: { id: resumeId },
+      data: {
+        ...(current_step && { current_step }),
+        ...(selected_template && { selected_template }),
+        ...(status && { status }),
+      },
+    });
+
+    return NextResponse.json(updatedResume);
+  } catch (error: any) {
+    console.error("Error patching resume:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to patch resume" },
       { status: 500 }
     );
   }

@@ -21,6 +21,12 @@ export default async function Page() {
       | "TRANSLATED"
       | "COMPLETED"
       | "FAILED",
+    currentStep: r.current_step as
+      | "UPLOAD"
+      | "PROCESSING"
+      | "EDIT"
+      | "TEMPLATE"
+      | "COMPLETED",
     updatedAt: r.updated_at.toISOString().split("T")[0],
   }));
 
