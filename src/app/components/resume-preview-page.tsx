@@ -168,7 +168,7 @@ export function ResumePreviewPage({
                 key={template.id}
                 onClick={() => setSelectedTemplate(template.id)}
                 className={cn(
-                  "w-full text-left p-4 rounded-lg border-2 transition-all",
+                  "w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer",
                   selectedTemplate === template.id
                     ? "border-primary bg-primary/5"
                     : "border-border hover:border-foreground/30 bg-card"

@@ -163,22 +163,30 @@
     line-height: 1.5;
   }
 
-  label {
+  label,
+  label[for] {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    cursor: pointer;
   }
 
   button {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    cursor: pointer;
   }
 
   input {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+
+  summary,
+  a {
+    cursor: pointer;
   }
 
   @keyframes shimmer {

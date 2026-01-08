@@ -65,7 +65,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          "border-2 border-dashed rounded-lg p-12 text-center transition-colors relative",
+          "border-2 border-dashed rounded-lg p-12 text-center transition-colors relative cursor-pointer",
           isDragging
             ? "border-foreground/40 bg-accent"
             : "border-border hover:border-foreground/30",

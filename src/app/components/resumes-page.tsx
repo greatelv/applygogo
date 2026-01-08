@@ -25,7 +25,13 @@ const statusConfig = {
   FAILED: { label: "실패", variant: "warning" as const },
 };
 
-export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, onUpgrade }: ResumesPageProps) {
+export function ResumesPage({
+  resumes,
+  onCreateNew,
+  onSelectResume,
+  quota = 0,
+  onUpgrade,
+}: ResumesPageProps) {
   const hasNoCredits = quota === 0;
 
   if (resumes.length === 0) {
@@ -52,8 +58,7 @@ export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, o
             </div>
           ) : (
             <Button onClick={onCreateNew} size="lg">
-              <Plus className="size-5" />
-              새 이력서 만들기
+              <Plus className="size-5" />새 이력서 만들기
             </Button>
           )}
         </div>
@@ -71,15 +76,10 @@ export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, o
           </p>
         </div>
         {hasNoCredits ? (
-          onUpgrade && (
-            <Button onClick={onUpgrade}>
-              플랜 업그레이드
-            </Button>
-          )
+          onUpgrade && <Button onClick={onUpgrade}>플랜 업그레이드</Button>
         ) : (
           <Button onClick={onCreateNew}>
-            <Plus className="size-4" />
-            새 이력서 만들기
+            <Plus className="size-4" />새 이력서 만들기
           </Button>
         )}
       </div>
@@ -87,7 +87,8 @@ export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, o
       {hasNoCredits && (
         <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-lg">
           <p className="text-sm text-amber-800 dark:text-amber-400">
-            ⚠️ 크레딧이 부족하여 새 이력서를 만들 수 없습니다. 플랜을 업그레이드하거나 다음 갱신일을 기다려주세요.
+            ⚠️ 크레딧이 부족하여 새 이력서를 만들 수 없습니다. 플랜을
+            업그레이드하거나 다음 갱신일을 기다려주세요.
           </p>
         </div>
       )}
@@ -99,7 +100,7 @@ export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, o
             <button
               key={resume.id}
               onClick={() => onSelectResume(resume.id)}
-              className="w-full bg-card border border-border rounded-lg p-4 hover:border-foreground/20 hover:shadow-sm transition-all text-left"
+              className="w-full bg-card border border-border rounded-lg p-4 hover:border-foreground/20 hover:shadow-sm transition-all text-left cursor-pointer"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -107,9 +108,12 @@ export function ResumesPage({ resumes, onCreateNew, onSelectResume, quota = 0, o
                     <FileText className="size-5 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium mb-1 truncate">{resume.title}</h3>
+                    <h3 className="font-medium mb-1 truncate">
+                      {resume.title}
+                    </h3>
                     <p className="text-xs text-muted-foreground">
-                      마지막 수정: {new Date(resume.updatedAt).toLocaleDateString('ko-KR')}
+                      마지막 수정:{" "}
+                      {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
                     </p>
                   </div>
                 </div>
