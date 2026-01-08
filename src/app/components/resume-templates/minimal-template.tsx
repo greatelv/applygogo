@@ -68,7 +68,8 @@ export function MinimalTemplate({
                 rel="noreferrer"
                 className="hover:underline text-gray-600"
               >
-                {link.label}
+                <span className="font-medium">{link.label}:</span>{" "}
+                {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
               </a>
             ))}
           </div>

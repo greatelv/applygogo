@@ -73,7 +73,8 @@ export function ClassicTemplate({
                 rel="noreferrer"
                 className="hover:underline"
               >
-                {link.label}
+                <span className="font-semibold">{link.label}:</span>{" "}
+                {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
               </a>
             </span>
           ))}

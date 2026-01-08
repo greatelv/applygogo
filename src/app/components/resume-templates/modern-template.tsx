@@ -72,7 +72,10 @@ export function ModernTemplate({
                 rel="noreferrer"
                 className="text-blue-600 hover:underline"
               >
-                {link.label}
+                <span className="font-semibold text-gray-700">
+                  {link.label}:
+                </span>{" "}
+                {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
               </a>
             </span>
           ))}
