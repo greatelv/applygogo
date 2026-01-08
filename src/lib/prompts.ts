@@ -2,11 +2,11 @@ export const RESUME_ANALYSIS_PROMPT = `
 당신은 이력서 분석 전문가입니다. 주어진 이력서 PDF에서 정보를 정확하게 추출하고 전문적으로 번역해주세요.
 
 **추출 지침:**
-1. **누락 없는 추출 (CRITICAL)**: **PDF에 명시된 모든 경력사항을 빠짐없이 추출하세요.** 기간이 짧거나 비중이 적어도 절대 제외하지 마세요.
+1. **누락 없는 추출 (중요)**: **PDF에 명시된 모든 경력사항을 빠짐없이 추출하세요.** 기간이 짧거나 비중이 적어도 절대 제외하지 마세요.
 2. **중복 제거**: PDF 내에서 요약부와 상세 내용 등 같은 정보가 반복될 경우, 이를 하나로 합쳐 유니크하게 추출하세요.
 3. **경력 그룹화**: **동일한 회사의 경력은 하나의 항목으로 통합**하세요. 직무가 바뀌었더라도 같은 회사라면 한 항목에 넣고, 수행 업무(bullets)에서 이를 구분하여 기술하세요.
 4. **학력 유니크화**: 졸업 여부나 전공이 같다면 중복된 학력 항목은 하나로 정리하세요.
-5. **최근 이력순 나열**: **모든 경력사항(\`work_experiences\`)과 학력사항(\`educations\`)은 가장 최신 항목이 위로 오도록(역연대순, Reverse Chronological Order) 정렬**하여 배열로 만드세요.
+5. **최근 이력순 나열**: **모든 경력사항(\`work_experiences\`)과 학력사항(\`educations\`)은 가장 최신 항목이 위로 오도록(역연대순)** 정렬하여 배열로 만드세요.
 
 **상세 필드 구성:**
 1. **개인 정보 (personal_info)**:
@@ -54,31 +54,34 @@ export const RESUME_ANALYSIS_PROMPT = `
 export const getRefinementPrompt = (work_experiences: any[]) => `
 다음은 이력서에서 추출한 경력사항 데이터입니다. 같은 회사가 여러 번 중복되어 나타날 수 있습니다.
 
-**CRITICAL INSTRUCTIONS (MUST FOLLOW):**
+**필수 지침 (반드시 준수):**
 
-1. **GROUP BY COMPANY (회사 통합)**
-   - Merge ALL entries for the same company into one.
-   - Ignore minor differences (e.g., "(주)", "Inc.", spacing).
+1. **회사별 통합 (GROUP BY COMPANY)**
+   - 동일한 회사의 모든 항목을 하나로 통합하세요.
+   - 사소한 차이(예: "(주)", "Inc.", 띄어쓰기 등)는 무시하고 같은 회사로 취급하세요.
 
+2. **불릿 개수 제한 (STRICT LIMIT)**
+   - **회사당 가장 중요한 3-4개의 성과만 선택하세요.**
+   - **절대로** 4개를 초과하지 마세요. 이는 강력한 제한사항입니다.
+   - 구체적인 수치(%, $)나 기술 스택이 포함된 성과를 우선 선택하세요.
+   - 유사한 내용은 하나로 합치세요.
 
-2. **STRICTLY LIMIT BULLETS (불릿 제한)**
-   - **SELECT ONLY THE TOP 3-4 BULLETS PER COMPANY.**
-   - **NEVER** exceed 4 bullets. This is a HARD LIMIT.
-   - Select bullets with specific metrics (%, $) or technologies.
-   - Merge similar bullets.
+3. **날짜 통합 (DATE MERGING)**
+   - 가장 빠른 시작일(start_date)과 가장 늦은 종료일(end_date)을 사용하세요.
 
-3. **DATE MERGING (날짜 통합)**
-   - Use the earliest start_date and latest end_date.
-   
-4. **MANDATORY PRESERVATION (누락 금지)**
-   - **DO NOT DROP ANY COMPANY.** Even if the duration is short or details are sparse.
-   - You MUST return the SAME number of unique companies as the input, unless they are exact duplicates.
-   - If a company has no bullets, keep it with an empty list or a generic description.
+4. **누락 금지 (중요)**
+   - **어떤 회사도 절대 누락하지 마세요.** 기간이 짧거나 내용이 적더라도 유지해야 합니다.
+   - 입력된 데이터와 동일한 수의 유니크한 회사를 반환해야 합니다(완전한 중복 제외).
+   - 만약 상세 내용(bullets)이 없다면 빈 배열이나 일반적인 직무 설명을 포함하여 유지하세요.
 
-**Input Data:**
+5. **정렬 (SORTING)**
+   - **모든 경력은 종료일(end_date) 기준 최신순(내림차순, 역연대순)으로 정렬하세요.**
+   - "재직 중" 또는 "Present"인 경우 가장 최상단에 배치하세요.
+
+**입력 데이터:**
 ${JSON.stringify(work_experiences, null, 2)}
 
-**Output Format:**
+**출력 형식:**
 \`\`\`json
 {
   "work_experiences": [
@@ -89,14 +92,14 @@ ${JSON.stringify(work_experiences, null, 2)}
       "role_en": "...",
       "start_date": "...",
       "end_date": "...",
-      "bullets_kr": ["... (MAX 4 items)"],
-      "bullets_en": ["... (MAX 4 items)"]
+      "bullets_kr": ["... (최대 4개)"],
+      "bullets_en": ["... (최대 4개)"]
     }
   ]
 }
 \`\`\`
 
-**Verification:**
-- [ ] Merged duplicates?
-- [ ] MAX 4 bullets per company? (CRITICAL)
+**검증:**
+- [ ] 중복 회사가 통합되었는가?
+- [ ] 회사당 불릿이 4개 이하인가? (중요)
 `;
