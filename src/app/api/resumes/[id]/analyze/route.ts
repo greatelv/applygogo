@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase";
-import {
-  geminiModel,
-  RESUME_ANALYSIS_PROMPT,
-  generateContentWithRetry,
-} from "@/lib/gemini";
+import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
+import { RESUME_ANALYSIS_PROMPT, getRefinementPrompt } from "@/lib/prompts";
+
+// ... (imports)
 
 export async function POST(
   request: NextRequest,
@@ -93,50 +92,7 @@ export async function POST(
       );
 
       try {
-        const refinementPrompt = `
-다음은 이력서에서 추출한 경력사항 데이터입니다. 같은 회사가 여러 번 중복되어 나타날 수 있습니다.
-
-**CRITICAL INSTRUCTIONS (MUST FOLLOW):**
-
-1. **GROUP BY COMPANY (회사 통합)**
-   - Merge ALL entries for the same company into one.
-   - Ignore minor differences (e.g., "(주)", "Inc.", spacing).
-
-
-2. **STRICTLY LIMIT BULLETS (불릿 제한)**
-   - **SELECT ONLY THE TOP 3-4 BULLETS PER COMPANY.**
-   - **NEVER** exceed 4 bullets. This is a HARD LIMIT.
-   - Select bullets with specific metrics (%, $) or technologies.
-   - Merge similar bullets.
-
-3. **DATE MERGING (날짜 통합)**
-   - Use the earliest start_date and latest end_date.
-
-**Input Data:**
-${JSON.stringify(work_experiences, null, 2)}
-
-**Output Format:**
-\`\`\`json
-{
-  "work_experiences": [
-    {
-      "company_name_kr": "...",
-      "company_name_en": "...",
-      "role_kr": "...",
-      "role_en": "...",
-      "start_date": "...",
-      "end_date": "...",
-      "bullets_kr": ["... (MAX 4 items)"],
-      "bullets_en": ["... (MAX 4 items)"]
-    }
-  ]
-}
-\`\`\`
-
-**Verification:**
-- [ ] Merged duplicates?
-- [ ] MAX 4 bullets per company? (CRITICAL)
-`;
+        const refinementPrompt = getRefinementPrompt(work_experiences);
 
         const refinementResult = await generateContentWithRetry(
           geminiModel,
