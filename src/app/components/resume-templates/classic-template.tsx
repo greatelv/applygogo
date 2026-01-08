@@ -9,16 +9,42 @@ interface Experience {
   bulletsEn: string[];
 }
 
-interface ClassicTemplateProps {
-  experiences: Experience[];
+interface Education {
+  id: string;
+  school_name: string;
+  school_name_en?: string;
+  major: string;
+  major_en?: string;
+  degree: string;
+  degree_en?: string;
+  start_date: string;
+  end_date: string;
 }
 
-export function ClassicTemplate({ experiences }: ClassicTemplateProps) {
+interface Skill {
+  id: string;
+  name: string;
+  level?: string | null;
+}
+
+interface ClassicTemplateProps {
+  experiences: Experience[];
+  educations?: Education[];
+  skills?: Skill[];
+}
+
+export function ClassicTemplate({
+  experiences,
+  educations = [],
+  skills = [],
+}: ClassicTemplateProps) {
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-serif">
       {/* Header */}
       <div className="text-center mb-8 pb-6 border-b-2 border-gray-800">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide">JOHN DOE</h1>
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide">
+          JOHN DOE
+        </h1>
         <p className="text-lg text-gray-700 mb-2">Frontend Developer</p>
         <div className="text-sm text-gray-600 space-x-2">
           <span>john.doe@email.com</span>
@@ -35,10 +61,11 @@ export function ClassicTemplate({ experiences }: ClassicTemplateProps) {
           PROFESSIONAL SUMMARY
         </h2>
         <p className="text-sm text-gray-800 leading-relaxed text-justify">
-          Accomplished Frontend Developer with over 4 years of progressive experience 
-          in designing and implementing sophisticated web applications. Demonstrated 
-          expertise in modern JavaScript frameworks and a proven ability to enhance 
-          operational efficiency and user satisfaction.
+          Accomplished Frontend Developer with over 4 years of progressive
+          experience in designing and implementing sophisticated web
+          applications. Demonstrated expertise in modern JavaScript frameworks
+          and a proven ability to enhance operational efficiency and user
+          satisfaction.
         </p>
       </div>
 
@@ -53,13 +80,18 @@ export function ClassicTemplate({ experiences }: ClassicTemplateProps) {
               <div className="mb-1">
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
-                  <span className="text-xs text-gray-600 italic">{exp.period}</span>
+                  <span className="text-xs text-gray-600 italic">
+                    {exp.period}
+                  </span>
                 </div>
                 <p className="text-sm text-gray-700 italic">{exp.positionEn}</p>
               </div>
               <ul className="space-y-1">
                 {exp.bulletsEn.map((bullet, index) => (
-                  <li key={index} className="text-sm text-gray-800 flex gap-2 leading-relaxed">
+                  <li
+                    key={index}
+                    className="text-sm text-gray-800 flex gap-2 leading-relaxed"
+                  >
                     <span className="flex-shrink-0">•</span>
                     <span>{bullet}</span>
                   </li>
@@ -71,35 +103,45 @@ export function ClassicTemplate({ experiences }: ClassicTemplateProps) {
       </div>
 
       {/* Skills */}
-      <div className="mb-6">
-        <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
-          TECHNICAL COMPETENCIES
-        </h2>
-        <div className="text-sm text-gray-800 space-y-1">
-          <p>
-            <span className="font-semibold">Frontend Technologies:</span>{" "}
-            React, TypeScript, Vue.js, Tailwind CSS, HTML5, CSS3, JavaScript (ES6+)
-          </p>
-          <p>
-            <span className="font-semibold">Development Tools:</span>{" "}
-            Git, Figma, VS Code, Webpack, npm, Jest
-          </p>
+      {skills.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
+            TECHNICAL COMPETENCIES
+          </h2>
+          <div className="text-sm text-gray-800">
+            <p>
+              <span className="font-semibold">Skills:</span>{" "}
+              {skills.map((s) => s.name).join(", ")}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Education */}
-      <div>
-        <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
-          EDUCATION
-        </h2>
-        <div className="flex justify-between items-baseline">
-          <div>
-            <h3 className="font-bold text-gray-900">Korea University</h3>
-            <p className="text-sm text-gray-700 italic">Bachelor of Science in Computer Science</p>
+      {educations.length > 0 && (
+        <div>
+          <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
+            EDUCATION
+          </h2>
+          <div className="space-y-3">
+            {educations.map((edu) => (
+              <div key={edu.id} className="flex justify-between items-baseline">
+                <div>
+                  <h3 className="font-bold text-gray-900">
+                    {edu.school_name_en || edu.school_name}
+                  </h3>
+                  <p className="text-sm text-gray-700 italic">
+                    {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                  </p>
+                </div>
+                <span className="text-xs text-gray-600 italic">
+                  {edu.start_date} - {edu.end_date}
+                </span>
+              </div>
+            ))}
           </div>
-          <span className="text-xs text-gray-600 italic">2016 - 2020</span>
         </div>
-      </div>
+      )}
     </div>
   );
 }

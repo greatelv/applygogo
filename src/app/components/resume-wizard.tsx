@@ -159,6 +159,8 @@ export function ResumeWizard({
       id: initialData?.id || "new-1", // Use existing ID or mock new one
       title: resumeTitle,
       experiences: experiences,
+      educations: educations,
+      skills: skills,
       template: templateId,
       updatedAt: new Date().toISOString(),
       status: "COMPLETED",
@@ -211,6 +213,8 @@ export function ResumeWizard({
       <ResumePreviewPage
         resumeTitle={resumeTitle}
         experiences={experiences}
+        educations={educations}
+        skills={skills}
         currentPlan={plan}
         onNext={handlePreviewNext}
         onBack={() => setStep("edit")}

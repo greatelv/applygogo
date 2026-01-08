@@ -7,9 +7,12 @@ import {
   Trash2,
   Edit3,
   Loader2,
+  X,
+  Pencil,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { Input } from "./ui/input";
 
 interface Experience {
   id: string;
@@ -83,7 +86,9 @@ export function ResumeEditPage({
   const [highlightedBullets, setHighlightedBullets] = useState<
     Record<string, number[]>
   >({});
+  const [newSkill, setNewSkill] = useState("");
 
+  // Experience Handlers
   const handleBulletEdit = (
     expId: string,
     index: number,
@@ -135,7 +140,7 @@ export function ResumeEditPage({
     );
   };
 
-  const handleRetranslate = async (expId: string) => {
+  const handleRetranslateExperience = async (expId: string) => {
     const currentExp = experiences.find((e) => e.id === expId);
     const initialExp = initialExperiences?.find((e) => e.id === expId);
 
@@ -165,7 +170,10 @@ export function ResumeEditPage({
       const response = await fetch("/api/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texts: requestItems.map((item) => item.text) }),
+        body: JSON.stringify({
+          texts: requestItems.map((item) => item.text),
+          type: "bullets",
+        }),
       });
 
       if (!response.ok) throw new Error("Translation failed");
@@ -185,13 +193,12 @@ export function ResumeEditPage({
         })
       );
 
-      // Highlight changed bullets
+      // Highlight logic...
       setHighlightedBullets((prev) => ({
         ...prev,
         [expId]: requestItems.map((item) => item.index),
       }));
 
-      // Remove highlight after 2 seconds
       setTimeout(() => {
         setHighlightedBullets((prev) => {
           const newState = { ...prev };
@@ -201,10 +208,80 @@ export function ResumeEditPage({
       }, 2000);
     } catch (error) {
       console.error(error);
-      alert("번역 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      alert("번역 중 오류가 발생했습니다.");
     } finally {
       setIsTranslating((prev) => ({ ...prev, [expId]: false }));
     }
+  };
+
+  // Education Handlers
+  const handleEducationChange = (
+    id: string,
+    field: keyof Education,
+    value: string
+  ) => {
+    setEducations((prev) =>
+      prev.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu))
+    );
+  };
+
+  const handleTranslateEducation = async (eduId: string) => {
+    const edu = educations.find((e) => e.id === eduId);
+    if (!edu) return;
+
+    setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: true }));
+
+    try {
+      // Translate School, Major, Degree
+      const textsToTranslate = [edu.school_name, edu.major, edu.degree].filter(
+        Boolean
+      );
+
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          texts: textsToTranslate,
+          type: "general",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Translation failed");
+
+      const { translatedTexts } = await response.json();
+
+      setEducations((prev) =>
+        prev.map((e) => {
+          if (e.id !== eduId) return e;
+          return {
+            ...e,
+            school_name_en: translatedTexts[0] || e.school_name_en,
+            major_en: translatedTexts[1] || e.major_en,
+            degree_en: translatedTexts[2] || e.degree_en,
+          };
+        })
+      );
+    } catch (error) {
+      console.error(error);
+      alert("학력 번역 중 오류가 발생했습니다.");
+    } finally {
+      setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: false }));
+    }
+  };
+
+  // Skills Handlers
+  const handleAddSkill = () => {
+    if (!newSkill.trim()) return;
+    const skill: Skill = {
+      id: `new-${Date.now()}`,
+      name: newSkill.trim(),
+    };
+    setSkills((prev) => [...prev, skill]);
+    setNewSkill("");
+  };
+
+  const handleRemoveSkill = (id: string) => {
+    setSkills((prev) => prev.filter((s) => s.id !== id));
   };
 
   return (
@@ -218,36 +295,33 @@ export function ResumeEditPage({
         </div>
         <h1 className="text-2xl mb-2">편집</h1>
         <p className="text-sm text-muted-foreground">
-          {resumeTitle} •{" "}
-          {isEditingExisting
-            ? "내용을 수정하고 다시 미리보기할 수 있습니다"
-            : "AI가 요약하고 번역한 내용을 확인하고 필요시 수정하세요"}
+          {resumeTitle} • AI가 분석한 내용을 검토하고 수정하세요.
         </p>
       </div>
 
-      {/* Guide Card */}
-      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <div className="flex items-start gap-3">
-          <Edit3 className="size-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
-              클릭하여 바로 수정하기
-            </p>
-            <p className="text-sm text-blue-800 dark:text-blue-400">
-              각 항목을 클릭하면 바로 수정할 수 있습니다. 수정 내용은 자동으로
-              저장됩니다.
-            </p>
-          </div>
+      <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg p-4 mb-8 flex items-start gap-3">
+        <div className="p-1 bg-blue-100 dark:bg-blue-900/50 rounded-full mt-0.5">
+          <Pencil className="size-3.5 text-blue-600 dark:text-blue-400" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
+            내용을 클릭하여 직접 수정할 수 있습니다
+          </h3>
+          <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
+            한글 내용을 수정하고 <strong>[재번역]</strong> 버튼을 누르면 AI가
+            변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은 휴지통
+            아이콘을 눌러 삭제하세요.
+          </p>
         </div>
       </div>
 
       <div className="space-y-8">
+        {/* Experiences */}
         {experiences.map((exp) => (
           <div
             key={exp.id}
             className="bg-card border border-border rounded-lg overflow-hidden"
           >
-            {/* Header */}
             <div className="bg-muted/50 px-6 py-4 border-b border-border">
               <div className="flex items-center justify-between">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 flex-1">
@@ -274,7 +348,7 @@ export function ResumeEditPage({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleRetranslate(exp.id)}
+                    onClick={() => handleRetranslateExperience(exp.id)}
                     disabled={isTranslating[exp.id]}
                   >
                     {isTranslating[exp.id] ? (
@@ -290,10 +364,9 @@ export function ResumeEditPage({
               </div>
             </div>
 
-            {/* Content - Split View */}
             <div className="p-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Korean (Original) */}
+                {/* Korean Bullets */}
                 <div>
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
                     한글 경력사항
@@ -316,14 +389,12 @@ export function ResumeEditPage({
                             )
                           }
                           className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
-                          placeholder="클릭하여 입력"
                         >
                           {bullet}
                         </div>
                         <button
                           onClick={() => handleRemoveBullet(exp.id, index)}
                           className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
-                          title="항목 삭제"
                         >
                           <Trash2 className="size-3.5 text-destructive" />
                         </button>
@@ -332,7 +403,7 @@ export function ResumeEditPage({
                   </ul>
                 </div>
 
-                {/* English (Translation) */}
+                {/* English Bullets */}
                 <div>
                   <h4 className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
                     영문 번역
@@ -359,14 +430,12 @@ export function ResumeEditPage({
                               ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
                               : ""
                           }`}
-                          placeholder="Click to edit"
                         >
                           {bullet}
                         </div>
                         <button
                           onClick={() => handleRemoveBullet(exp.id, index)}
                           className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
-                          title="Delete item"
                         >
                           <Trash2 className="size-3.5 text-destructive" />
                         </button>
@@ -375,8 +444,6 @@ export function ResumeEditPage({
                   </ul>
                 </div>
               </div>
-
-              {/* Add Bullet Button */}
               <div className="mt-6">
                 <Button
                   variant="outline"
@@ -384,107 +451,287 @@ export function ResumeEditPage({
                   onClick={() => handleAddBullet(exp.id)}
                   className="w-full"
                 >
-                  <Plus className="size-4" />
-                  항목 추가
+                  <Plus className="size-4" /> 항목 추가
                 </Button>
               </div>
             </div>
           </div>
         ))}
-      </div>
 
-      {/* Education Section */}
-      <div className="mt-12">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">학력사항</h2>
-          <p className="text-sm text-muted-foreground">
-            AI가 추출한 학력 정보를 확인하고 수정하세요
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          {educations.map((edu) => (
-            <div
-              key={edu.id}
-              className="bg-card border border-border rounded-lg p-6"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Korean */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">한글</p>
-                  <h3 className="font-semibold">{edu.school_name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {edu.major} • {edu.degree}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {edu.start_date} ~ {edu.end_date}
-                  </p>
+        {/* Educations */}
+        <div className="mt-12">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">학력사항</h2>
+          </div>
+          <div className="space-y-6">
+            {educations.map((edu) => (
+              <div
+                key={edu.id}
+                className="bg-card border border-border rounded-lg overflow-hidden"
+              >
+                <div className="bg-muted/50 px-6 py-4 border-b border-border">
+                  <div className="flex items-center justify-between">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 flex-1">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          한글 (원본)
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          English (번역)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 ml-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleTranslateEducation(edu.id)}
+                        disabled={isTranslating[`edu-${edu.id}`]}
+                      >
+                        {isTranslating[`edu-${edu.id}`] ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <RefreshCw className="size-4" />
+                        )}
+                        <span className="ml-2 hidden lg:inline">재번역</span>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
-                {/* English */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">English</p>
-                  <h3 className="font-semibold">
-                    {edu.school_name_en || edu.school_name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {edu.major_en || edu.major} • {edu.degree_en || edu.degree}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {edu.start_date} ~ {edu.end_date}
-                  </p>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Korean Education */}
+                    <div className="space-y-1">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleEducationChange(
+                            edu.id,
+                            "school_name",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[100px]"
+                      >
+                        {edu.school_name}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "major",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        >
+                          {edu.major}
+                        </div>
+                        <span className="text-muted-foreground select-none">
+                          •
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "degree",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
+                        >
+                          {edu.degree}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "start_date",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                        >
+                          {edu.start_date}
+                        </div>
+                        <span className="text-muted-foreground select-none">
+                          ~
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "end_date",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                        >
+                          {edu.end_date}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* English Education */}
+                    <div className="space-y-1">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleEducationChange(
+                            edu.id,
+                            "school_name_en",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[100px]"
+                      >
+                        {edu.school_name_en || edu.school_name}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "major_en",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        >
+                          {edu.major_en || edu.major}
+                        </div>
+                        <span className="text-muted-foreground select-none">
+                          •
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "degree_en",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
+                        >
+                          {edu.degree_en || edu.degree}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "start_date",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                        >
+                          {edu.start_date}
+                        </div>
+                        <span className="text-muted-foreground select-none">
+                          ~
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "end_date",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                        >
+                          {edu.end_date}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Skills Section */}
-      <div className="mt-12">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
-          <p className="text-sm text-muted-foreground">
-            AI가 추출한 기술 스택을 확인하고 수정하세요
-          </p>
+            ))}
+          </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Korean */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-3">한글</p>
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <div
-                    key={skill.id}
-                    className="inline-flex items-center px-3 py-1.5 bg-muted rounded-md text-sm font-medium"
-                  >
-                    {skill.name}
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* Skills */}
+        <div className="mt-12">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
+            <p className="text-sm text-muted-foreground">
+              기술 스택을 추가하거나 제거하세요.
+            </p>
+          </div>
 
-            {/* English */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-3">English</p>
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <div
-                    key={skill.id}
-                    className="inline-flex items-center px-3 py-1.5 bg-muted rounded-md text-sm font-medium"
+          <div className="bg-card border border-border rounded-lg p-6">
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <Badge
+                  key={skill.id}
+                  variant="secondary"
+                  className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8"
+                >
+                  {skill.name}
+                  <button
+                    onClick={() => handleRemoveSkill(skill.id)}
+                    className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
                   >
-                    {skill.name}
-                  </div>
-                ))}
+                    <X className="size-3" />
+                  </button>
+                </Badge>
+              ))}
+
+              <div className="flex gap-2 max-w-xs relative top-0.5">
+                <Input
+                  placeholder="새 기술 스택"
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddSkill();
+                    }
+                  }}
+                  className="h-8 text-sm w-32"
+                />
+                <Button
+                  onClick={handleAddSkill}
+                  variant="secondary"
+                  size="sm"
+                  className="h-8 px-2"
+                >
+                  <Plus className="size-4" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 flex gap-3">
+      <div className="mt-12 flex gap-3">
         <Button variant="outline" onClick={onBack} className="flex-1">
           이전
         </Button>
@@ -495,14 +742,6 @@ export function ResumeEditPage({
           다음
           <ArrowRight className="size-4" />
         </Button>
-      </div>
-
-      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>팁:</strong> 좌측 한글 원본과 우측 영문 번역을 동시에
-          비교하며 수정할 수 있습니다. 각 경력은 3~4개의 불릿 포인트로 요약하고,
-          핵심 성과와 구체적인 수치를 포함하면 더욱 효과적입니다.
-        </p>
       </div>
     </div>
   );

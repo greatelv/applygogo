@@ -9,17 +9,43 @@ interface Experience {
   bulletsEn: string[];
 }
 
-interface MinimalTemplateProps {
-  experiences: Experience[];
+interface Education {
+  id: string;
+  school_name: string;
+  school_name_en?: string;
+  major: string;
+  major_en?: string;
+  degree: string;
+  degree_en?: string;
+  start_date: string;
+  end_date: string;
 }
 
-export function MinimalTemplate({ experiences }: MinimalTemplateProps) {
+interface Skill {
+  id: string;
+  name: string;
+  level?: string | null;
+}
+
+interface MinimalTemplateProps {
+  experiences: Experience[];
+  educations?: Education[];
+  skills?: Skill[];
+}
+
+export function MinimalTemplate({
+  experiences,
+  educations = [],
+  skills = [],
+}: MinimalTemplateProps) {
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-sans">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">John Doe</h1>
+          <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
+            John Doe
+          </h1>
           <p className="text-gray-500 text-sm mb-4">Frontend Developer</p>
           <div className="flex gap-3 text-xs text-gray-500">
             <span>john.doe@email.com</span>
@@ -31,8 +57,8 @@ export function MinimalTemplate({ experiences }: MinimalTemplateProps) {
         {/* About */}
         <div className="mb-10">
           <p className="text-sm text-gray-700 leading-relaxed font-light">
-            Frontend Developer specializing in React and TypeScript with 4+ years 
-            of experience building elegant, user-centric web applications.
+            Frontend Developer specializing in React and TypeScript with 4+
+            years of experience building elegant, user-centric web applications.
           </p>
         </div>
 
@@ -46,14 +72,21 @@ export function MinimalTemplate({ experiences }: MinimalTemplateProps) {
               <div key={exp.id} className="relative">
                 <div className="flex justify-between items-baseline mb-3">
                   <div>
-                    <h3 className="font-medium text-gray-900">{exp.companyEn}</h3>
+                    <h3 className="font-medium text-gray-900">
+                      {exp.companyEn}
+                    </h3>
                     <p className="text-sm text-gray-500">{exp.positionEn}</p>
                   </div>
-                  <span className="text-xs text-gray-400 tabular-nums">{exp.period}</span>
+                  <span className="text-xs text-gray-400 tabular-nums">
+                    {exp.period}
+                  </span>
                 </div>
                 <ul className="space-y-2">
                   {exp.bulletsEn.map((bullet, index) => (
-                    <li key={index} className="text-sm text-gray-600 leading-relaxed font-light">
+                    <li
+                      key={index}
+                      className="text-sm text-gray-600 leading-relaxed font-light"
+                    >
                       {bullet}
                     </li>
                   ))}
@@ -64,37 +97,52 @@ export function MinimalTemplate({ experiences }: MinimalTemplateProps) {
         </div>
 
         {/* Skills */}
-        <div className="mb-10">
-          <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
-            Skills
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {["React", "TypeScript", "Vue.js", "Tailwind CSS", "Git", "Figma", "VS Code"].map(
-              (skill) => (
+        {skills.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
+              Skills
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill) => (
                 <span
-                  key={skill}
+                  key={skill.id}
                   className="px-3 py-1 text-xs text-gray-700 bg-gray-50 rounded-full border border-gray-200"
                 >
-                  {skill}
+                  {skill.name}
                 </span>
-              )
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Education */}
-        <div>
-          <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
-            Education
-          </h2>
-          <div className="flex justify-between items-baseline">
-            <div>
-              <h3 className="font-medium text-gray-900">Korea University</h3>
-              <p className="text-sm text-gray-500">BS in Computer Science</p>
+        {educations.length > 0 && (
+          <div>
+            <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
+              Education
+            </h2>
+            <div className="space-y-4">
+              {educations.map((edu) => (
+                <div
+                  key={edu.id}
+                  className="flex justify-between items-baseline"
+                >
+                  <div>
+                    <h3 className="font-medium text-gray-900">
+                      {edu.school_name_en || edu.school_name}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                    </p>
+                  </div>
+                  <span className="text-xs text-gray-400 tabular-nums">
+                    {edu.start_date} - {edu.end_date}
+                  </span>
+                </div>
+              ))}
             </div>
-            <span className="text-xs text-gray-400 tabular-nums">2016 - 2020</span>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

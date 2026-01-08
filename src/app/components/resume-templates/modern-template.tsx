@@ -9,11 +9,35 @@ interface Experience {
   bulletsEn: string[];
 }
 
-interface ModernTemplateProps {
-  experiences: Experience[];
+interface Education {
+  id: string;
+  school_name: string;
+  school_name_en?: string;
+  major: string;
+  major_en?: string;
+  degree: string;
+  degree_en?: string;
+  start_date: string;
+  end_date: string;
 }
 
-export function ModernTemplate({ experiences }: ModernTemplateProps) {
+interface Skill {
+  id: string;
+  name: string;
+  level?: string | null;
+}
+
+interface ModernTemplateProps {
+  experiences: Experience[];
+  educations?: Education[];
+  skills?: Skill[];
+}
+
+export function ModernTemplate({
+  experiences,
+  educations = [],
+  skills = [],
+}: ModernTemplateProps) {
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-sans">
       {/* Header */}
@@ -36,9 +60,9 @@ export function ModernTemplate({ experiences }: ModernTemplateProps) {
           PROFESSIONAL SUMMARY
         </h2>
         <p className="text-sm text-gray-700 leading-relaxed">
-          Results-driven Frontend Developer with 4+ years of experience in building 
-          responsive web applications. Proven track record of improving user experience 
-          and team productivity through innovative solutions.
+          Results-driven Frontend Developer with 4+ years of experience in
+          building responsive web applications. Proven track record of improving
+          user experience and team productivity through innovative solutions.
         </p>
       </div>
 
@@ -54,7 +78,9 @@ export function ModernTemplate({ experiences }: ModernTemplateProps) {
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
-                  <p className="text-sm text-blue-600 font-medium">{exp.positionEn}</p>
+                  <p className="text-sm text-blue-600 font-medium">
+                    {exp.positionEn}
+                  </p>
                 </div>
                 <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
                   {exp.period}
@@ -74,37 +100,51 @@ export function ModernTemplate({ experiences }: ModernTemplateProps) {
       </div>
 
       {/* Skills */}
-      <div className="mb-8">
-        <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-blue-600"></div>
-          TECHNICAL SKILLS
-        </h2>
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <span className="font-semibold text-gray-900">Frontend:</span>
-            <span className="text-gray-700 ml-2">React, TypeScript, Vue.js, Tailwind CSS</span>
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Tools:</span>
-            <span className="text-gray-700 ml-2">Git, Figma, VS Code, Webpack</span>
+      {skills.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
+            <div className="w-8 h-0.5 bg-blue-600"></div>
+            TECHNICAL SKILLS
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {skills.map((skill) => (
+              <span
+                key={skill.id}
+                className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
+              >
+                {skill.name}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Education */}
-      <div>
-        <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
-          <div className="w-8 h-0.5 bg-blue-600"></div>
-          EDUCATION
-        </h2>
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-bold text-gray-900">Korea University</h3>
-            <p className="text-sm text-gray-600">Bachelor of Computer Science</p>
+      {educations.length > 0 && (
+        <div>
+          <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
+            <div className="w-8 h-0.5 bg-blue-600"></div>
+            EDUCATION
+          </h2>
+          <div className="space-y-4">
+            {educations.map((edu) => (
+              <div key={edu.id} className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-gray-900">
+                    {edu.school_name_en || edu.school_name}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                  </p>
+                </div>
+                <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
+                  {edu.start_date} - {edu.end_date}
+                </span>
+              </div>
+            ))}
           </div>
-          <span className="text-sm text-gray-500 whitespace-nowrap ml-4">2016 - 2020</span>
         </div>
-      </div>
+      )}
     </div>
   );
 }

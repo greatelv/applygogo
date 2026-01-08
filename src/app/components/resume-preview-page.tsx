@@ -18,9 +18,29 @@ interface TranslatedExperience {
   bulletsEn: string[];
 }
 
+interface Education {
+  id: string;
+  school_name: string;
+  school_name_en?: string;
+  major: string;
+  major_en?: string;
+  degree: string;
+  degree_en?: string;
+  start_date: string;
+  end_date: string;
+}
+
+interface Skill {
+  id: string;
+  name: string;
+  level?: string | null;
+}
+
 interface ResumePreviewPageProps {
   resumeTitle: string;
   experiences: TranslatedExperience[];
+  educations: Education[];
+  skills: Skill[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
   onNext?: (templateId: string) => void;
   onComplete?: () => void;
@@ -28,37 +48,11 @@ interface ResumePreviewPageProps {
   onUpgrade?: () => void;
 }
 
-type Template = {
-  id: string;
-  name: string;
-  description: string;
-  isPro: boolean;
-};
-
-const templates: Template[] = [
-  {
-    id: "modern",
-    name: "Modern",
-    description: "깔끔하고 현대적인 디자인. IT/스타트업 추천",
-    isPro: false,
-  },
-  {
-    id: "classic",
-    name: "Classic",
-    description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
-    isPro: false,
-  },
-  {
-    id: "minimal",
-    name: "Minimal",
-    description: "미니멀하고 세련된 느낌. 디자인/크리에이티브 추천",
-    isPro: true,
-  },
-];
-
 export function ResumePreviewPage({
   resumeTitle,
   experiences,
+  educations,
+  skills,
   currentPlan = "FREE",
   onNext,
   onComplete,
@@ -67,8 +61,37 @@ export function ResumePreviewPage({
 }: ResumePreviewPageProps) {
   const [selectedTemplate, setSelectedTemplate] = useState("modern");
 
-  const selectedTemplateData = templates.find(t => t.id === selectedTemplate);
-  const isProTemplateSelected = selectedTemplateData?.isPro && currentPlan !== "PRO";
+  type Template = {
+    id: string;
+    name: string;
+    description: string;
+    isPro: boolean;
+  };
+
+  const templates: Template[] = [
+    {
+      id: "modern",
+      name: "Modern",
+      description: "깔끔하고 현대적인 디자인. IT/스타트업 추천",
+      isPro: false,
+    },
+    {
+      id: "classic",
+      name: "Classic",
+      description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
+      isPro: false,
+    },
+    {
+      id: "minimal",
+      name: "Minimal",
+      description: "미니멀하고 세련된 느낌. 디자인/크리에이티브 추천",
+      isPro: true,
+    },
+  ];
+
+  const selectedTemplateData = templates.find((t) => t.id === selectedTemplate);
+  const isProTemplateSelected =
+    selectedTemplateData?.isPro && currentPlan !== "PRO";
 
   const handleNext = () => {
     // PRO 템플릿이 선택되었지만 사용자가 PRO가 아닌 경우
@@ -87,13 +110,37 @@ export function ResumePreviewPage({
   const renderTemplate = () => {
     switch (selectedTemplate) {
       case "modern":
-        return <ModernTemplate experiences={experiences} />;
+        return (
+          <ModernTemplate
+            experiences={experiences}
+            educations={educations}
+            skills={skills}
+          />
+        );
       case "classic":
-        return <ClassicTemplate experiences={experiences} />;
+        return (
+          <ClassicTemplate
+            experiences={experiences}
+            educations={educations}
+            skills={skills}
+          />
+        );
       case "minimal":
-        return <MinimalTemplate experiences={experiences} />;
+        return (
+          <MinimalTemplate
+            experiences={experiences}
+            educations={educations}
+            skills={skills}
+          />
+        );
       default:
-        return <ModernTemplate experiences={experiences} />;
+        return (
+          <ModernTemplate
+            experiences={experiences}
+            educations={educations}
+            skills={skills}
+          />
+        );
     }
   };
 
@@ -131,14 +178,18 @@ export function ResumePreviewPage({
                   <h4 className="font-semibold">{template.name}</h4>
                   <div className="flex items-center gap-2">
                     {template.isPro && (
-                      <Badge variant="default" className="text-xs">PRO</Badge>
+                      <Badge variant="default" className="text-xs">
+                        PRO
+                      </Badge>
                     )}
                     {selectedTemplate === template.id && (
                       <CheckCircle className="size-5 text-primary" />
                     )}
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">{template.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {template.description}
+                </p>
               </button>
             ))}
           </div>
@@ -147,17 +198,14 @@ export function ResumePreviewPage({
           {isProTemplateSelected && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-400">
-                ⭐ 이 템플릿은 PRO 플랜 전용입니다. 아래 버튼을 눌러 업그레이드하세요.
+                ⭐ 이 템플릿은 PRO 플랜 전용입니다. 아래 버튼을 눌러
+                업그레이드하세요.
               </p>
             </div>
           )}
 
           <div className="pt-4 space-y-2">
-            <Button
-              onClick={handleNext}
-              className="w-full"
-              size="lg"
-            >
+            <Button onClick={handleNext} className="w-full" size="lg">
               {isProTemplateSelected ? "PRO로 업그레이드" : "다음"}
               <ArrowRight className="size-4" />
             </Button>
@@ -181,8 +229,8 @@ export function ResumePreviewPage({
 
       <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
         <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에 최적화되어 있습니다. 
-          지원하려는 회사와 포지션에 맞는 템플릿을 선택하세요.
+          💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에 최적화되어
+          있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을 선택하세요.
         </p>
       </div>
     </div>

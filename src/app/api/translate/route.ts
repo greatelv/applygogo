@@ -9,20 +9,34 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { texts } = await req.json();
+    const { texts, type = "bullets" } = await req.json();
 
     if (!texts || !Array.isArray(texts) || texts.length === 0) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 
+    let instruction = "";
+    if (type === "bullets") {
+      instruction = `
+      Translate the following Korean bullet points into professional English resume bullet points.
+      Rules:
+      - Maintain the original meaning, metrics, and technical terms.
+      - Use strong professional action verbs (e.g., Developed, Orchestrated, Optimized).
+      - Keep formatting consistent.
+      `;
+    } else {
+      instruction = `
+      Translate the following Korean text into English suitable for a resume (e.g., School Name, Major, Degree).
+      Rules:
+      - Maintain proper nouns (e.g., University names).
+      - Use standard academic terms (e.g., Bachelor of Science, GPA).
+      - Keep formatting consistent.
+      `;
+    }
+
     const prompt = `
     You are a professional resume translator.
-    Translate the following Korean bullet points into professional English resume bullet points.
-
-    Rules:
-    - Maintain the original meaning, metrics, and technical terms.
-    - Use strong professional action verbs (e.g., Developed, Orchestrated, Optimized).
-    - Keep formatting consistent.
+    ${instruction}
     - Output ONLY a JSON array of strings. Do not include markdown code blocks.
 
     Input:
