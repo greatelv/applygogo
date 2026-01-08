@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
-import { EditClient } from "./edit-client";
+import { TemplatesClient } from "./templates-client";
 
 export default async function Page({
   params,
@@ -19,12 +19,24 @@ export default async function Page({
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
+      user: {
+        include: {
+          subscription: true,
+        },
+      },
     },
   });
 
   if (!resume) notFound();
 
-  // Data Mapping for UI Component
+  // Determine user plan (Simplified logic)
+  const currentPlan =
+    resume.user.subscription?.status === "ACTIVE" &&
+    resume.user.subscription?.planCode === "PRO"
+      ? "PRO"
+      : "FREE";
+
+  // Data Mapping
   const mappedExperiences = resume.work_experiences.map((exp) => ({
     id: exp.id,
     company: exp.company_name_kr,
@@ -55,12 +67,13 @@ export default async function Page({
   }));
 
   return (
-    <EditClient
+    <TemplatesClient
       resumeId={resume.id}
       resumeTitle={resume.title}
-      initialExperiences={mappedExperiences}
-      initialEducations={mappedEducations}
-      initialSkills={mappedSkills}
+      experiences={mappedExperiences}
+      educations={mappedEducations}
+      skills={mappedSkills}
+      currentPlan={currentPlan}
     />
   );
 }

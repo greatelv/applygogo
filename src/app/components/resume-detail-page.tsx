@@ -23,6 +23,14 @@ interface TranslatedExperience {
   bulletsEn: string[];
 }
 
+const statusConfig = {
+  IDLE: { label: "업로드됨", variant: "outline" as const },
+  SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
+  TRANSLATED: { label: "번역됨", variant: "secondary" as const },
+  COMPLETED: { label: "완료", variant: "default" as const },
+  FAILED: { label: "실패", variant: "warning" as const },
+};
+
 interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
@@ -35,43 +43,6 @@ interface ResumeDetailPageProps {
   onEdit?: () => void;
 }
 
-// Mock 데이터
-const mockResumeDetail = {
-  id: "1",
-  title: "프론트엔드 개발자 이력서",
-  status: "COMPLETED" as const,
-  createdAt: "2024-01-15T10:00:00Z",
-  updatedAt: "2024-01-15T14:30:00Z",
-  template: "modern",
-  pdfUrl: "#",
-  experiences: [
-    {
-      id: "1",
-      company: "(주)테크스타트업",
-      companyEn: "TechStartup Inc.",
-      position: "프론트엔드 개발자",
-      positionEn: "Frontend Developer",
-      period: "2022.03 - 현재",
-      bullets: [
-        "React 및 TypeScript 기반 웹 애플리케이션 개발 및 유지보수",
-        "반응형 UI/UX 구현으로 모바일 사용자 경험 30% 개선",
-      ],
-      bulletsEn: [
-        "Developed and maintained web applications using React and TypeScript",
-        "Improved mobile user experience by 30% through responsive UI/UX implementation",
-      ],
-    },
-  ],
-};
-
-const statusConfig = {
-  IDLE: { label: "업로드됨", variant: "outline" as const },
-  SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
-  TRANSLATED: { label: "번역됨", variant: "secondary" as const },
-  COMPLETED: { label: "완료", variant: "default" as const },
-  FAILED: { label: "실패", variant: "warning" as const },
-};
-
 export function ResumeDetailPage({
   resumeId,
   resumeTitle,
@@ -83,17 +54,15 @@ export function ResumeDetailPage({
   onDownload,
   onEdit,
 }: ResumeDetailPageProps) {
-  // Use props data if provided (workflow mode), otherwise use mock data
-  const resume = isWorkflowComplete
-    ? {
-        id: resumeId || "temp",
-        title: resumeTitle || "새 이력서",
-        status: "COMPLETED" as const,
-        updatedAt: new Date().toISOString(),
-        template,
-        experiences: experiences || [],
-      }
-    : mockResumeDetail;
+  // Use props data
+  const resume = {
+    id: resumeId || "",
+    title: resumeTitle || "이력서",
+    status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED", // TODO: Pass status prop if needed
+    updatedAt: new Date().toISOString(), // This should ideally be passed as prop
+    template,
+    experiences: experiences || [],
+  };
 
   const config = statusConfig[resume.status];
 

@@ -172,14 +172,28 @@ ${JSON.stringify(work_experiences, null, 2)}
       await prisma.workExperience.createMany({
         data: mergedExperiences.map((exp: any, index: number) => ({
           resumeId: resumeId,
-          company_name_kr: exp.company_name_kr,
-          company_name_en: exp.company_name_en || exp.company_name_kr,
-          role_kr: exp.role_kr,
-          role_en: exp.role_en || exp.role_kr,
-          start_date: exp.start_date,
-          end_date: exp.end_date,
-          bullets_kr: exp.bullets_kr || [],
-          bullets_en: exp.bullets_en || exp.bullets_kr || [],
+          company_name_kr: exp.company_name_kr
+            ? String(exp.company_name_kr)
+            : "회사명 없음",
+          company_name_en: exp.company_name_en
+            ? String(exp.company_name_en)
+            : exp.company_name_kr
+            ? String(exp.company_name_kr)
+            : "Unknown Company",
+          role_kr: exp.role_kr ? String(exp.role_kr) : "-",
+          role_en: exp.role_en
+            ? String(exp.role_en)
+            : exp.role_kr
+            ? String(exp.role_kr)
+            : "-",
+          start_date: exp.start_date ? String(exp.start_date) : "",
+          end_date: exp.end_date ? String(exp.end_date) : "",
+          bullets_kr: Array.isArray(exp.bullets_kr) ? exp.bullets_kr : [],
+          bullets_en: Array.isArray(exp.bullets_en)
+            ? exp.bullets_en
+            : Array.isArray(exp.bullets_kr)
+            ? exp.bullets_kr
+            : [],
           order: index,
         })),
       });
@@ -190,14 +204,28 @@ ${JSON.stringify(work_experiences, null, 2)}
       await prisma.education.createMany({
         data: educations.map((edu: any, index: number) => ({
           resumeId: resumeId,
-          school_name: edu.school_name,
-          school_name_en: edu.school_name_en || edu.school_name,
-          major: edu.major || "-",
-          major_en: edu.major_en || edu.major || "-",
-          degree: edu.degree || "-",
-          degree_en: edu.degree_en || edu.degree || "-",
-          start_date: edu.start_date,
-          end_date: edu.end_date,
+          school_name: edu.school_name
+            ? String(edu.school_name)
+            : "학교명 없음",
+          school_name_en: edu.school_name_en
+            ? String(edu.school_name_en)
+            : edu.school_name
+            ? String(edu.school_name)
+            : "Unknown School",
+          major: edu.major ? String(edu.major) : "-",
+          major_en: edu.major_en
+            ? String(edu.major_en)
+            : edu.major
+            ? String(edu.major)
+            : "-",
+          degree: edu.degree ? String(edu.degree) : "-",
+          degree_en: edu.degree_en
+            ? String(edu.degree_en)
+            : edu.degree
+            ? String(edu.degree)
+            : "-",
+          start_date: edu.start_date ? String(edu.start_date) : "",
+          end_date: edu.end_date ? String(edu.end_date) : "",
           order: index,
         })),
       });
@@ -211,11 +239,15 @@ ${JSON.stringify(work_experiences, null, 2)}
           if (typeof skill === "object" && skill.name) return true;
           return false;
         })
-        .map((skill: any, index: number) => ({
-          resumeId: resumeId,
-          name: typeof skill === "string" ? skill : skill.name,
-          order: index,
-        }));
+        .map((skill: any, index: number) => {
+          const rawName = typeof skill === "string" ? skill : skill.name;
+          const safeName = rawName ? String(rawName) : "Unknown Skill";
+          return {
+            resumeId: resumeId,
+            name: safeName,
+            order: index,
+          };
+        });
 
       if (validSkills.length > 0) {
         await prisma.skill.createMany({

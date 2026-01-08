@@ -1,33 +1,31 @@
-"use client";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { ResumesClient } from "./resumes-client";
 
-import { ResumesPage } from "../../components/resumes-page";
-import { useRouter } from "next/navigation";
+export default async function Page() {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
 
-const mockResumes = [
-  {
-    id: "1",
-    title: "소프트웨어 엔지니어 이력서.pdf",
-    status: "COMPLETED" as const,
-    updatedAt: "2026-01-05",
-  },
-  {
-    id: "2",
-    title: "프로덕트 매니저 이력서.pdf",
-    status: "TRANSLATED" as const,
-    updatedAt: "2026-01-03",
-  },
-];
+  const resumes = await prisma.resume.findMany({
+    where: { userId: session.user.id },
+    orderBy: { updated_at: "desc" },
+  });
 
-export default function Page() {
-  const router = useRouter();
+  const mappedResumes = resumes.map((r) => ({
+    id: r.id,
+    title: r.title,
+    status: r.status as
+      | "IDLE"
+      | "SUMMARIZED"
+      | "TRANSLATED"
+      | "COMPLETED"
+      | "FAILED",
+    updatedAt: r.updated_at.toISOString().split("T")[0],
+  }));
 
-  return (
-    <ResumesPage
-      resumes={mockResumes}
-      quota={2}
-      onCreateNew={() => router.push("/resumes/new")}
-      onSelectResume={(id) => router.push(`/resumes/${id}`)}
-      onUpgrade={() => router.push("/billing")}
-    />
-  );
+  // Placeholder for quota
+  const quota = 10;
+
+  return <ResumesClient resumes={mappedResumes} quota={quota} />;
 }
