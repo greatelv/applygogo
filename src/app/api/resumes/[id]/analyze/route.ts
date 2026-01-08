@@ -256,12 +256,19 @@ ${JSON.stringify(work_experiences, null, 2)}
       }
     }
 
-    // 7. Update resume status to COMPLETED
+    // 7. Update resume status to COMPLETED and save personal info
+    const personalInfo = analysisResult.personal_info || {};
+
     await prisma.resume.update({
       where: { id: resumeId },
       data: {
         status: "COMPLETED",
         current_step: "EDIT",
+        name_kr: personalInfo.name_kr || "",
+        name_en: personalInfo.name_en || "",
+        email: personalInfo.email || "",
+        phone: personalInfo.phone || "",
+        links: personalInfo.links || [],
       },
     });
 

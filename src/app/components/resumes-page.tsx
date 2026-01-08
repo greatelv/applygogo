@@ -1,4 +1,4 @@
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 
@@ -13,6 +13,7 @@ interface ResumesPageProps {
   resumes: Resume[];
   onCreateNew: () => void;
   onSelectResume: (id: string) => void;
+  onDelete?: (id: string) => void;
   quota?: number;
   onUpgrade?: () => void;
 }
@@ -29,6 +30,7 @@ export function ResumesPage({
   resumes,
   onCreateNew,
   onSelectResume,
+  onDelete,
   quota = 0,
   onUpgrade,
 }: ResumesPageProps) {
@@ -97,12 +99,12 @@ export function ResumesPage({
         {resumes.map((resume) => {
           const config = statusConfig[resume.status];
           return (
-            <button
+            <div
               key={resume.id}
               onClick={() => onSelectResume(resume.id)}
-              className="w-full bg-card border border-border rounded-lg p-4 hover:border-foreground/20 hover:shadow-sm transition-all text-left cursor-pointer"
+              className="w-full bg-card border border-border rounded-lg p-4 hover:border-foreground/20 hover:shadow-sm transition-all text-left cursor-pointer group"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <div className="mt-1 shrink-0">
                     <FileText className="size-5 text-muted-foreground" />
@@ -117,9 +119,26 @@ export function ResumesPage({
                     </p>
                   </div>
                 </div>
-                <Badge variant={config.variant}>{config.label}</Badge>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant={config.variant}>{config.label}</Badge>
+                  {onDelete && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 text-muted-foreground hover:text-destructive shrink-0 -mr-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm("정말 이 이력서를 삭제하시겠습니까?")) {
+                          onDelete(resume.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

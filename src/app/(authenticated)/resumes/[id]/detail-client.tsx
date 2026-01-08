@@ -8,6 +8,7 @@ import { useEffect } from "react";
 interface DetailClientProps {
   resumeId: string;
   resumeTitle: string;
+  personalInfo?: any;
   experiences: any[];
   template: string;
   isWorkflowComplete?: boolean;
@@ -16,6 +17,7 @@ interface DetailClientProps {
 export function DetailClient({
   resumeId,
   resumeTitle,
+  personalInfo,
   experiences,
   template,
   isWorkflowComplete,
@@ -23,36 +25,47 @@ export function DetailClient({
   const router = useRouter();
   const { setWorkflowState } = useApp();
 
-  // Show stepper as "Complete" when viewing detail page if just completed
+  // Show stepper as "Complete" when viewing detail page
   useEffect(() => {
-    if (isWorkflowComplete) {
-      const steps = [
-        { id: "upload", label: "업로드" },
-        { id: "processing", label: "AI 처리" },
-        { id: "edit", label: "편집" },
-        { id: "preview", label: "템플릿 선택" },
-        { id: "complete", label: "완료" },
-      ];
-      setWorkflowState(steps, "complete");
-    }
+    const steps = [
+      { id: "upload", label: "업로드" },
+      { id: "processing", label: "AI 처리" },
+      { id: "edit", label: "편집" },
+      { id: "preview", label: "템플릿 선택" },
+      { id: "complete", label: "완료" },
+    ];
+    setWorkflowState(steps, "complete");
+
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState, isWorkflowComplete]);
+  }, [setWorkflowState]);
 
   return (
     <ResumeDetailPage
       resumeId={resumeId}
       resumeTitle={resumeTitle}
+      personalInfo={personalInfo}
       experiences={experiences}
       template={template}
       isWorkflowComplete={isWorkflowComplete}
       onBack={() => router.push("/resumes")}
       onEdit={() => router.push(`/resumes/${resumeId}/edit`)}
       onDelete={async (id) => {
-        // Implement delete API call here or pass handler
-        // For now, just a placeholder or call an action
-        console.log("Delete", id);
-        // await fetch...
-        router.push("/resumes");
+        try {
+          const res = await fetch(`/api/resumes/${id}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || "이력서 삭제에 실패했습니다.");
+          }
+
+          router.push("/resumes");
+          router.refresh();
+        } catch (error: any) {
+          console.error("Delete error:", error);
+          alert(error.message);
+        }
       }}
     />
   );

@@ -54,6 +54,14 @@ export default async function Page({
     level: s.level,
   }));
 
+  const initialPersonalInfo = {
+    name_kr: resume.name_kr || "",
+    name_en: resume.name_en || "",
+    email: resume.email || "",
+    phone: resume.phone || "",
+    links: (resume.links as any[]) || [],
+  };
+
   return (
     <EditClient
       resumeId={resume.id}
@@ -61,6 +69,7 @@ export default async function Page({
       initialExperiences={mappedExperiences}
       initialEducations={mappedEducations}
       initialSkills={mappedSkills}
+      initialPersonalInfo={initialPersonalInfo}
     />
   );
 }

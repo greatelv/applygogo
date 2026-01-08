@@ -34,6 +34,13 @@ const statusConfig = {
 interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
+  personalInfo?: {
+    name_kr: string;
+    name_en: string;
+    email: string;
+    phone: string;
+    links: any[];
+  };
   experiences?: TranslatedExperience[];
   template?: string;
   isWorkflowComplete?: boolean;
@@ -46,6 +53,7 @@ interface ResumeDetailPageProps {
 export function ResumeDetailPage({
   resumeId,
   resumeTitle,
+  personalInfo,
   experiences,
   template = "modern",
   isWorkflowComplete = false,
@@ -58,6 +66,7 @@ export function ResumeDetailPage({
   const resume = {
     id: resumeId || "",
     title: resumeTitle || "이력서",
+    personalInfo,
     status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED", // TODO: Pass status prop if needed
     updatedAt: new Date().toISOString(), // This should ideally be passed as prop
     template,
@@ -103,11 +112,6 @@ export function ResumeDetailPage({
 
       {/* 공통 헤더 */}
       <div className="mb-6">
-        <Button variant="ghost" onClick={onBack} className="mb-4">
-          <ArrowLeft className="size-4" />
-          목록으로
-        </Button>
-
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -131,22 +135,31 @@ export function ResumeDetailPage({
           </div>
 
           {/* 공통 액션 버튼 */}
-          <div className="flex gap-2">
-            <Button onClick={handleDownload}>
-              <Download className="size-4" />
-              PDF 다운로드
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={onBack}>
+              <ArrowLeft className="size-4" />
+              목록으로
             </Button>
+            {!isWorkflowComplete && onDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleDeleteConfirm}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
             {onEdit && (
               <Button variant="outline" onClick={onEdit}>
                 <Edit className="size-4" />
                 수정
               </Button>
             )}
-            {!isWorkflowComplete && onDelete && (
-              <Button variant="outline" onClick={handleDeleteConfirm}>
-                <Trash2 className="size-4 text-destructive" />
-              </Button>
-            )}
+            <Button onClick={handleDownload}>
+              <Download className="size-4" />
+              PDF 다운로드
+            </Button>
           </div>
         </div>
       </div>
@@ -155,7 +168,10 @@ export function ResumeDetailPage({
       <div className="bg-card border border-border rounded-lg overflow-hidden mb-6">
         <div className="bg-muted/30 p-4">
           <div className="aspect-[210/297] overflow-auto bg-white dark:bg-gray-900 shadow-lg mx-auto max-w-3xl">
-            <ModernTemplate experiences={resume.experiences || []} />
+            <ModernTemplate
+              personalInfo={resume.personalInfo}
+              experiences={resume.experiences || []}
+            />
           </div>
         </div>
       </div>

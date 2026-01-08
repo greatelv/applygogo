@@ -27,13 +27,23 @@ interface Skill {
   level?: string | null;
 }
 
+interface PersonalInfo {
+  name_kr?: string;
+  name_en?: string;
+  email?: string;
+  phone?: string;
+  links?: { label: string; url: string }[];
+}
+
 interface ModernTemplateProps {
+  personalInfo?: PersonalInfo;
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
 }
 
 export function ModernTemplate({
+  personalInfo,
   experiences,
   educations = [],
   skills = [],
@@ -42,14 +52,30 @@ export function ModernTemplate({
     <div className="bg-white text-black p-8 min-h-[800px] font-sans">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-gray-900">John Doe</h1>
-        <p className="text-xl text-gray-600 mb-3">Frontend Developer</p>
+        <h1 className="text-4xl font-bold mb-2 text-gray-900">
+          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+        </h1>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-          <span>john.doe@email.com</span>
-          <span>•</span>
-          <span>+82 10-1234-5678</span>
-          <span>•</span>
-          <span>Seoul, Korea</span>
+          {personalInfo?.email && <span>{personalInfo.email}</span>}
+          {personalInfo?.phone && (
+            <>
+              <span>•</span>
+              <span>{personalInfo.phone}</span>
+            </>
+          )}
+          {personalInfo?.links?.map((link, i) => (
+            <span key={i} className="flex gap-2">
+              <span>•</span>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                {link.label}
+              </a>
+            </span>
+          ))}
         </div>
       </div>
 

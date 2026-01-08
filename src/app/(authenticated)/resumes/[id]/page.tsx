@@ -33,10 +33,19 @@ export default async function Page({
     bulletsEn: (exp.bullets_en as string[]) || [],
   }));
 
+  const mappedPersonalInfo = {
+    name_kr: resume.name_kr || "",
+    name_en: resume.name_en || "",
+    email: resume.email || "",
+    phone: resume.phone || "",
+    links: (resume.links as any[]) || [],
+  };
+
   return (
     <DetailClient
       resumeId={resume.id}
       resumeTitle={resume.title}
+      personalInfo={mappedPersonalInfo}
       experiences={mappedExperiences}
       template="modern"
       isWorkflowComplete={false} // Default view

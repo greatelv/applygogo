@@ -23,6 +23,23 @@ export function ResumesClient({ resumes, quota }: ResumesClientProps) {
       resumes={resumes}
       onCreateNew={() => router.push("/resumes/new")}
       onSelectResume={(id) => router.push(`/resumes/${id}`)}
+      onDelete={async (id) => {
+        try {
+          const res = await fetch(`/api/resumes/${id}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || "이력서 삭제에 실패했습니다.");
+          }
+
+          router.refresh();
+        } catch (error: any) {
+          console.error("Delete error:", error);
+          alert(error.message);
+        }
+      }}
       onUpgrade={() => router.push("/pricing")}
       quota={quota}
     />

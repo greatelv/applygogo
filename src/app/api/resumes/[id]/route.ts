@@ -58,7 +58,16 @@ export async function PUT(
 
     const { id: resumeId } = await params;
     const body = await request.json();
-    const { work_experiences, educations, skills } = body;
+    const {
+      name_kr,
+      name_en,
+      email,
+      phone,
+      links,
+      work_experiences,
+      educations,
+      skills,
+    } = body;
 
     // Verify ownership
     const existingResume = await prisma.resume.findUnique({
@@ -127,6 +136,11 @@ export async function PUT(
       await tx.resume.update({
         where: { id: resumeId },
         data: {
+          name_kr,
+          name_en,
+          email,
+          phone,
+          links,
           current_step: "TEMPLATE", // Move to next step logic handled by frontend, but useful to track
           updated_at: new Date(),
         },
@@ -138,6 +152,47 @@ export async function PUT(
     console.error("Error updating resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update resume" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id: resumeId } = await params;
+
+    // Verify ownership and delete
+    // Prisma cascade delete should handle child records if configured in schema
+    const deletedResume = await prisma.resume.deleteMany({
+      where: {
+        id: resumeId,
+        userId: session.user.id,
+      },
+    });
+
+    if (deletedResume.count === 0) {
+      return NextResponse.json(
+        { error: "Resume not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Resume deleted successfully",
+    });
+  } catch (error: any) {
+    console.error("Error deleting resume:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to delete resume" },
       { status: 500 }
     );
   }

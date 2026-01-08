@@ -19,6 +19,7 @@ interface EditClientProps {
   initialExperiences: any[];
   initialEducations: any[];
   initialSkills: any[];
+  initialPersonalInfo: any;
 }
 
 export function EditClient({
@@ -27,6 +28,7 @@ export function EditClient({
   initialExperiences,
   initialEducations,
   initialSkills,
+  initialPersonalInfo,
 }: EditClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
@@ -38,6 +40,7 @@ export function EditClient({
   }, [setWorkflowState]);
 
   const handleNext = async (data: {
+    personalInfo: any;
     experiences: any[];
     educations: any[];
     skills: any[];
@@ -47,6 +50,11 @@ export function EditClient({
 
       // Map frontend data structure back to DB structure
       const payload = {
+        name_kr: data.personalInfo.name_kr,
+        name_en: data.personalInfo.name_en,
+        email: data.personalInfo.email,
+        phone: data.personalInfo.phone,
+        links: data.personalInfo.links,
         work_experiences: data.experiences.map((exp) => ({
           company_name_kr: exp.company,
           company_name_en: exp.companyEn,
@@ -83,10 +91,11 @@ export function EditClient({
   return (
     <ResumeEditPage
       resumeTitle={resumeTitle}
+      initialPersonalInfo={initialPersonalInfo}
       initialExperiences={initialExperiences}
       initialEducations={initialEducations}
       initialSkills={initialSkills}
-      onNext={handleNext}
+      onNext={(data) => handleNext(data)}
       onBack={() => router.back()} // Or router.push(`/resumes/${resumeId}/processing`)
       isEditingExisting={true} // Always treated as editing data loaded from DB
     />

@@ -48,14 +48,24 @@ interface Skill {
   level?: string | null;
 }
 
+interface PersonalInfo {
+  name_kr: string;
+  name_en: string;
+  email: string;
+  phone: string;
+  links: { label: string; url: string }[];
+}
+
 interface ResumeEditPageProps {
   resumeTitle: string;
+  initialPersonalInfo?: PersonalInfo;
   initialExperiences?: TranslatedExperience[];
   initialEducations?: Education[];
   initialSkills?: Skill[];
   isEditingExisting?: boolean;
   quota?: number;
   onNext: (data: {
+    personalInfo: PersonalInfo;
     experiences: TranslatedExperience[];
     educations: Education[];
     skills: Skill[];
@@ -66,6 +76,7 @@ interface ResumeEditPageProps {
 
 export function ResumeEditPage({
   resumeTitle,
+  initialPersonalInfo,
   initialExperiences,
   initialEducations,
   initialSkills,
@@ -75,6 +86,15 @@ export function ResumeEditPage({
   onBack,
   onRetranslate,
 }: ResumeEditPageProps) {
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
+    initialPersonalInfo || {
+      name_kr: "",
+      name_en: "",
+      email: "",
+      phone: "",
+      links: [],
+    }
+  );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
     initialExperiences || []
   );
@@ -87,6 +107,9 @@ export function ResumeEditPage({
   );
   const [highlightedBullets, setHighlightedBullets] = useState<
     Record<string, number[]>
+  >({});
+  const [highlightedPersonal, setHighlightedPersonal] = useState<
+    Record<string, boolean>
   >({});
   const [newSkill, setNewSkill] = useState("");
 
@@ -216,6 +239,59 @@ export function ResumeEditPage({
     }
   };
 
+  const handlePersonalInfoChange = (field: keyof PersonalInfo, value: any) => {
+    setPersonalInfo((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleTranslatePersonalInfo = async () => {
+    setIsTranslating((prev) => ({ ...prev, personal: true }));
+    try {
+      // Collect name and all link labels that need translation
+      const textsToTranslate = [personalInfo.name_kr];
+      personalInfo.links.forEach((link: any) => {
+        textsToTranslate.push(link.label);
+      });
+
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          texts: textsToTranslate,
+          type: "general",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Translation failed");
+
+      const { translatedTexts } = await response.json();
+
+      setPersonalInfo((prev) => {
+        const newLinks = [...prev.links];
+        // translatedTexts[0] is name, [1+] are link labels
+        translatedTexts
+          .slice(1)
+          .forEach((translatedLabel: string, i: number) => {
+            newLinks[i] = { ...newLinks[i], label: translatedLabel };
+          });
+
+        return {
+          ...prev,
+          name_en: translatedTexts[0],
+          links: newLinks,
+        };
+      });
+
+      // Highlight fields
+      setHighlightedPersonal({ name: true, links: true });
+      setTimeout(() => setHighlightedPersonal({}), 2000);
+    } catch (error) {
+      console.error(error);
+      alert("기본 정보 번역 중 오류가 발생했습니다.");
+    } finally {
+      setIsTranslating((prev) => ({ ...prev, personal: false }));
+    }
+  };
+
   // Education Handlers
   const handleEducationChange = (
     id: string,
@@ -318,6 +394,225 @@ export function ResumeEditPage({
       </div>
 
       <div className="space-y-8">
+        {/* Personal Info */}
+        <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold mb-1">
+                  한글 (원본)
+                </p>
+                <h3 className="font-semibold">기본 정보</h3>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold mb-1">
+                  English (번역)
+                </p>
+                <h3 className="font-semibold">Personal Info</h3>
+              </div>
+            </div>
+            <div className="absolute top-1/2 -translate-y-1/2 right-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleTranslatePersonalInfo}
+                disabled={isTranslating.personal}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {isTranslating.personal ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="size-4" />
+                )}
+                <span className="hidden lg:inline ml-2">
+                  {isTranslating.personal ? "처리 중..." : "동기화 후 번역"}
+                </span>
+              </Button>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Korean Info */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                    이름
+                  </label>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      handlePersonalInfoChange(
+                        "name_kr",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    className="text-lg font-semibold outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px]"
+                  >
+                    {personalInfo.name_kr}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                      이메일
+                    </label>
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handlePersonalInfoChange(
+                          "email",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="text-sm outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                    >
+                      {personalInfo.email}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                      전화번호
+                    </label>
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handlePersonalInfoChange(
+                          "phone",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="text-sm outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                    >
+                      {personalInfo.phone}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* English Info */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                    Name (English)
+                  </label>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      handlePersonalInfoChange(
+                        "name_en",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    className={`text-lg font-semibold outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-500 cursor-text min-h-[36px] ${
+                      highlightedPersonal.name
+                        ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
+                        : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
+                    }`}
+                  >
+                    {personalInfo.name_en}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase italic opacity-50">
+                      Shared Email
+                    </label>
+                    <div className="text-sm text-muted-foreground/60 px-2 py-1 -mx-2 -my-1 select-none">
+                      {personalInfo.email}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase italic opacity-50">
+                      Shared Phone
+                    </label>
+                    <div className="text-sm text-muted-foreground/60 px-2 py-1 -mx-2 -my-1 select-none">
+                      {personalInfo.phone}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Links Section */}
+            <div className="mt-8 border-t border-border pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase">
+                  링크 (GitHub, LinkedIn, 포트폴리오 등)
+                </h4>
+              </div>
+              <div className="space-y-3">
+                {personalInfo.links.map((link, index) => (
+                  <div key={index} className="flex gap-4 group items-center">
+                    <div className="flex-1 grid grid-cols-2 gap-8">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) => {
+                          const newLinks = [...personalInfo.links];
+                          newLinks[index] = {
+                            ...newLinks[index],
+                            label: e.currentTarget.textContent || "",
+                          };
+                          handlePersonalInfoChange("links", newLinks);
+                        }}
+                        className={`text-sm font-medium outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-500 cursor-text min-h-[24px] ${
+                          highlightedPersonal.links
+                            ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
+                            : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
+                        }`}
+                      >
+                        {link.label}
+                      </div>
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) => {
+                          const newLinks = [...personalInfo.links];
+                          newLinks[index] = {
+                            ...newLinks[index],
+                            url: e.currentTarget.textContent || "",
+                          };
+                          handlePersonalInfoChange("links", newLinks);
+                        }}
+                        className="text-sm text-blue-600 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] truncate"
+                      >
+                        {link.url}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const newLinks = personalInfo.links.filter(
+                          (_, i) => i !== index
+                        );
+                        handlePersonalInfoChange("links", newLinks);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-destructive/10 rounded shrink-0 translate-y-[-2px]"
+                    >
+                      <Trash2 className="size-4 text-destructive" />
+                    </button>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    handlePersonalInfoChange("links", [
+                      ...personalInfo.links,
+                      { label: "", url: "" },
+                    ]);
+                  }}
+                  className="w-full"
+                >
+                  <Plus className="size-4 mr-2" /> 링크 추가
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
         {/* Experiences */}
         {experiences.map((exp) => (
           <div
@@ -740,7 +1035,9 @@ export function ResumeEditPage({
           이전
         </Button>
         <Button
-          onClick={() => onNext({ experiences, educations, skills })}
+          onClick={() =>
+            onNext({ personalInfo, experiences, educations, skills })
+          }
           size="lg"
           className="flex-1"
         >

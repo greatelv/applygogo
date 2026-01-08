@@ -56,6 +56,11 @@ model Resume {
   id                String             @id @default(cuid())
   userId            String             @map("user_id")
   title             String
+  name_kr           String             @default("")
+  name_en           String?
+  email             String?
+  phone             String?
+  links             Json?              // [{label, url}]
   original_file_url String
   target_role       String?
   status            ResumeStatus       @default(IDLE)
