@@ -308,8 +308,8 @@ export function ResumeEditPage({
             내용을 클릭하여 직접 수정할 수 있습니다
           </h3>
           <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
-            한글 내용을 수정하고 <strong>[재번역]</strong> 버튼을 누르면 AI가
-            변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은 휴지통
+            한글 내용을 수정하고 <strong>[동기화 후 번역]</strong> 버튼을 누르면
+            AI가 변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은 휴지통
             아이콘을 눌러 삭제하세요.
           </p>
         </div>
@@ -322,45 +322,44 @@ export function ResumeEditPage({
             key={exp.id}
             className="bg-card border border-border rounded-lg overflow-hidden"
           >
-            <div className="bg-muted/50 px-6 py-4 border-b border-border">
-              <div className="flex items-center justify-between">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 flex-1">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">
-                      한글 (원본)
-                    </p>
-                    <h3 className="font-semibold">{exp.company}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {exp.position} • {exp.period}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">
-                      English (번역)
-                    </p>
-                    <h3 className="font-semibold">{exp.companyEn}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {exp.positionEn} • {exp.period}
-                    </p>
-                  </div>
+            <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <p className="text-xs text-muted-foreground font-semibold mb-1">
+                    한글 (원본)
+                  </p>
+                  <h3 className="font-semibold">{exp.company}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {exp.position} • {exp.period}
+                  </p>
                 </div>
-                <div className="flex gap-2 ml-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRetranslateExperience(exp.id)}
-                    disabled={isTranslating[exp.id]}
-                  >
-                    {isTranslating[exp.id] ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <RefreshCw className="size-4" />
-                    )}
-                    <span className="hidden lg:inline">
-                      {isTranslating[exp.id] ? "번역 중..." : "재번역"}
-                    </span>
-                  </Button>
+                <div>
+                  <p className="text-xs text-muted-foreground font-semibold mb-1">
+                    English (번역)
+                  </p>
+                  <h3 className="font-semibold">{exp.companyEn}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {exp.positionEn} • {exp.period}
+                  </p>
                 </div>
+              </div>
+              <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRetranslateExperience(exp.id)}
+                  disabled={isTranslating[exp.id]}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  {isTranslating[exp.id] ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="size-4" />
+                  )}
+                  <span className="hidden lg:inline ml-2">
+                    {isTranslating[exp.id] ? "처리 중..." : "동기화 후 번역"}
+                  </span>
+                </Button>
               </div>
             </div>
 
@@ -469,35 +468,38 @@ export function ResumeEditPage({
                 key={edu.id}
                 className="bg-card border border-border rounded-lg overflow-hidden"
               >
-                <div className="bg-muted/50 px-6 py-4 border-b border-border">
-                  <div className="flex items-center justify-between">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 flex-1">
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          한글 (원본)
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          English (번역)
-                        </p>
-                      </div>
+                <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">
+                        한글 (원본)
+                      </p>
                     </div>
-                    <div className="flex gap-2 ml-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleTranslateEducation(edu.id)}
-                        disabled={isTranslating[`edu-${edu.id}`]}
-                      >
-                        {isTranslating[`edu-${edu.id}`] ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <RefreshCw className="size-4" />
-                        )}
-                        <span className="ml-2 hidden lg:inline">재번역</span>
-                      </Button>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">
+                        English (번역)
+                      </p>
                     </div>
+                  </div>
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleTranslateEducation(edu.id)}
+                      disabled={isTranslating[`edu-${edu.id}`]}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      {isTranslating[`edu-${edu.id}`] ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="size-4" />
+                      )}
+                      <span className="ml-2 hidden lg:inline">
+                        {isTranslating[`edu-${edu.id}`]
+                          ? "처리 중..."
+                          : "동기화 후 번역"}
+                      </span>
+                    </Button>
                   </div>
                 </div>
 
@@ -732,15 +734,16 @@ export function ResumeEditPage({
       </div>
 
       <div className="mt-12 flex gap-3">
-        <Button variant="outline" onClick={onBack} className="flex-1">
+        <Button variant="outline" onClick={onBack} size="lg" className="flex-1">
           이전
         </Button>
         <Button
           onClick={() => onNext({ experiences, educations, skills })}
+          size="lg"
           className="flex-1"
         >
           다음
-          <ArrowRight className="size-4" />
+          <ArrowRight className="size-4 ml-2" />
         </Button>
       </div>
     </div>
