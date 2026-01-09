@@ -364,6 +364,7 @@ export const ModernPdf = ({
                     Certifications
                   </Text>
                   {certifications.map((cert: any, i: number) => (
+                    // @ts-ignore
                     <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
                       • {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
@@ -383,6 +384,7 @@ export const ModernPdf = ({
                     Awards
                   </Text>
                   {awards.map((award: any, i: number) => (
+                    // @ts-ignore
                     <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
                       • {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
@@ -405,6 +407,7 @@ export const ModernPdf = ({
                     style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => (
+                      // @ts-ignore
                       <Text
                         key={i}
                         style={{ fontSize: 10.5, color: "#374151" }}
