@@ -19,6 +19,9 @@ export default async function Page({
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
+      certifications: true,
+      awards: true,
+      languages: true,
       user: {
         include: {
           subscription: true,
@@ -66,12 +69,34 @@ export default async function Page({
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as { label: string; url: string }[]) || [],
+    summary: resume.summary || "",
   };
 
   const mappedSkills = resume.skills.map((s) => ({
     id: s.id,
     name: s.name,
     level: s.level,
+  }));
+
+  const mappedCertifications = resume.certifications.map((c) => ({
+    id: c.id,
+    name: c.name,
+    issuer: c.issuer,
+    date: c.date,
+  }));
+
+  const mappedAwards = resume.awards.map((a) => ({
+    id: a.id,
+    name: a.name,
+    issuer: a.issuer,
+    date: a.date,
+  }));
+
+  const mappedLanguages = resume.languages.map((l) => ({
+    id: l.id,
+    name: l.name,
+    level: l.level,
+    score: l.score,
   }));
 
   return (
@@ -82,6 +107,9 @@ export default async function Page({
       experiences={mappedExperiences}
       educations={mappedEducations}
       skills={mappedSkills}
+      certifications={mappedCertifications}
+      awards={mappedAwards}
+      languages={mappedLanguages}
       currentPlan={currentPlan}
       initialTemplate={resume.selected_template?.toLowerCase() || "modern"}
     />

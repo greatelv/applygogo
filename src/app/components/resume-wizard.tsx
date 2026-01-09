@@ -50,6 +50,9 @@ interface ResumeWizardProps {
     experiences: TranslatedExperience[];
     educations?: any[];
     skills?: any[];
+    certifications?: any[];
+    awards?: any[];
+    languages?: any[];
     personalInfo?: any;
     template?: string;
   };
@@ -75,6 +78,13 @@ export function ResumeWizard({
     initialData?.educations || []
   );
   const [skills, setSkills] = useState<any[]>(initialData?.skills || []);
+  const [certifications, setCertifications] = useState<any[]>(
+    initialData?.certifications || []
+  );
+  const [awards, setAwards] = useState<any[]>(initialData?.awards || []);
+  const [languages, setLanguages] = useState<any[]>(
+    initialData?.languages || []
+  );
   const [personalInfo, setPersonalInfo] = useState<any>(
     initialData?.personalInfo || null
   );
@@ -142,12 +152,16 @@ export function ResumeWizard({
           setExperiences(transformedExperiences);
           setEducations(data.educations || []);
           setSkills(data.skills || []);
+          setCertifications(data.certifications || []);
+          setAwards(data.awards || []);
+          setLanguages(data.languages || []);
           setPersonalInfo({
             name_kr: data.name_kr,
             name_en: data.name_en,
             email: data.email,
             phone: data.phone,
             links: (data.links as any[]) || [],
+            summary: data.summary || "",
           });
 
           if (data.selected_template) {
@@ -167,10 +181,16 @@ export function ResumeWizard({
     experiences: any[];
     educations: any[];
     skills: any[];
+    certifications: any[];
+    awards: any[];
+    languages: any[];
   }) => {
     setExperiences(data.experiences as any);
     setEducations(data.educations);
     setSkills(data.skills);
+    setCertifications(data.certifications);
+    setAwards(data.awards);
+    setLanguages(data.languages);
     setPersonalInfo(data.personalInfo);
 
     if (resumeId) {
@@ -238,6 +258,9 @@ export function ResumeWizard({
         initialExperiences={experiences}
         initialEducations={educations}
         initialSkills={skills}
+        initialCertifications={certifications}
+        initialAwards={awards}
+        initialLanguages={languages}
         isEditingExisting={initialMode === "edit"}
         quota={quota}
         onNext={handleEditNext}
@@ -261,6 +284,9 @@ export function ResumeWizard({
         experiences={experiences}
         educations={educations}
         skills={skills}
+        certifications={certifications}
+        awards={awards}
+        languages={languages}
         currentPlan={plan}
         onNext={handlePreviewNext}
         onBack={() => setStep("edit")}
@@ -279,6 +305,9 @@ export function ResumeWizard({
         experiences={experiences}
         educations={educations}
         skills={skills}
+        certifications={certifications}
+        awards={awards}
+        languages={languages}
         template={template}
         isWorkflowComplete={true}
         onBack={() => router.push("/resumes")}

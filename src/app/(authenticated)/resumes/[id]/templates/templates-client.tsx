@@ -20,6 +20,9 @@ interface TemplatesClientProps {
   experiences: any[];
   educations: any[];
   skills: any[];
+  certifications?: any[];
+  awards?: any[];
+  languages?: any[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
   initialTemplate?: string;
 }
@@ -31,6 +34,9 @@ export function TemplatesClient({
   experiences,
   educations,
   skills,
+  certifications = [],
+  awards = [],
+  languages = [],
   currentPlan,
   initialTemplate = "modern",
 }: TemplatesClientProps) {
@@ -82,6 +88,9 @@ export function TemplatesClient({
       experiences={experiences}
       educations={educations}
       skills={skills}
+      certifications={certifications}
+      awards={awards}
+      languages={languages}
       currentPlan={currentPlan}
       initialTemplate={initialTemplate}
       onNext={handleNext}

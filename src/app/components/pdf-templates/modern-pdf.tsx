@@ -327,11 +327,24 @@ export const ModernPdf = ({
                     <Text style={styles.companyName}>
                       {edu.school_name_en || edu.school_name}
                     </Text>
-                    <Text
-                      style={{ fontSize: 10.5, color: "#4b5563", marginTop: 2 }}
-                    >
-                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
-                    </Text>
+                    {((edu.degree_en && edu.degree_en !== "-") ||
+                      (edu.degree && edu.degree !== "-") ||
+                      (edu.major_en && edu.major_en !== "-") ||
+                      (edu.major && edu.major !== "-")) && (
+                      <Text
+                        style={{
+                          fontSize: 10.5,
+                          color: "#4b5563",
+                          marginTop: 2,
+                        }}
+                      >
+                        {edu.degree_en || edu.degree}
+                        {(edu.degree_en || edu.degree) &&
+                          (edu.major_en || edu.major) &&
+                          ", "}
+                        {edu.major_en || edu.major}
+                      </Text>
+                    )}
                   </View>
                   <Text style={styles.period}>
                     {formatDate(edu.start_date)} - {formatDate(edu.end_date)}

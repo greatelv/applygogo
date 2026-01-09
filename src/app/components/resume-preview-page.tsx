@@ -42,6 +42,9 @@ interface ResumePreviewPageProps {
   experiences: TranslatedExperience[];
   educations: Education[];
   skills: Skill[];
+  certifications: any[];
+  awards: any[];
+  languages: any[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
   onNext?: (templateId: string) => void;
   onComplete?: () => void;
@@ -56,6 +59,9 @@ export function ResumePreviewPage({
   experiences,
   educations,
   skills,
+  certifications = [],
+  awards = [],
+  languages = [],
   currentPlan = "FREE",
   onNext,
   onComplete,
@@ -67,6 +73,7 @@ export function ResumePreviewPage({
     initialTemplate.toLowerCase()
   );
 
+  // ... (type Template and templates array remain same)
   type Template = {
     id: string;
     name: string;
@@ -114,43 +121,24 @@ export function ResumePreviewPage({
   };
 
   const renderTemplate = () => {
+    const commonProps = {
+      personalInfo,
+      experiences,
+      educations,
+      skills,
+      certifications,
+      awards,
+      languages,
+    };
+
     switch (selectedTemplate) {
-      case "modern":
-        return (
-          <ModernTemplate
-            personalInfo={personalInfo}
-            experiences={experiences}
-            educations={educations}
-            skills={skills}
-          />
-        );
       case "classic":
-        return (
-          <ClassicTemplate
-            personalInfo={personalInfo}
-            experiences={experiences}
-            educations={educations}
-            skills={skills}
-          />
-        );
+        return <ClassicTemplate {...commonProps} />;
       case "minimal":
-        return (
-          <MinimalTemplate
-            personalInfo={personalInfo}
-            experiences={experiences}
-            educations={educations}
-            skills={skills}
-          />
-        );
+        return <MinimalTemplate {...commonProps} />;
+      case "modern":
       default:
-        return (
-          <ModernTemplate
-            personalInfo={personalInfo}
-            experiences={experiences}
-            educations={educations}
-            skills={skills}
-          />
-        );
+        return <ModernTemplate {...commonProps} />;
     }
   };
 

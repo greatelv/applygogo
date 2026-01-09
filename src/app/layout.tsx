@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/index.css";
 import { Providers } from "./providers";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -56,13 +57,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico?v=2" },
+      { url: "/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    apple: [{ url: "/apple-touch-icon.png?v=2" }],
   },
-  manifest: "/site.webmanifest",
+  manifest: "/site.webmanifest?v=2",
 };
 
 export default function RootLayout({
@@ -73,6 +74,17 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body>
+        <NextTopLoader
+          color="#2563eb"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #2563eb,0 0 5px #2563eb"
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

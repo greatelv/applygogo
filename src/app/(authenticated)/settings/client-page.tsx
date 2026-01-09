@@ -40,6 +40,13 @@ export function SettingsClientPage({
         return;
       }
 
+      if (!channelKey) {
+        alert(
+          "채널 키(Channel Key)가 설정되지 않았습니다. .env 파일을 확인해주세요."
+        );
+        return;
+      }
+
       // 1. Request Billing Key (Auth)
       // Use "EASY_PAY" for Toss Pay (App-based auth)
       const response = await PortOne.requestIssueBillingKey({

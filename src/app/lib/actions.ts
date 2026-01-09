@@ -162,6 +162,9 @@ export async function updateResumeAction(
     experiences: any[];
     educations: any[];
     skills: any[];
+    certifications?: any[];
+    awards?: any[];
+    languages?: any[];
   }
 ) {
   const session = await auth();
@@ -171,7 +174,15 @@ export async function updateResumeAction(
     throw new Error("로그인이 필요합니다.");
   }
 
-  const { personalInfo, experiences, educations, skills } = data;
+  const {
+    personalInfo,
+    experiences,
+    educations,
+    skills,
+    certifications,
+    awards,
+    languages,
+  } = data;
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -179,6 +190,9 @@ export async function updateResumeAction(
       await tx.workExperience.deleteMany({ where: { resumeId } });
       await tx.education.deleteMany({ where: { resumeId } });
       await tx.skill.deleteMany({ where: { resumeId } });
+      await tx.certification.deleteMany({ where: { resumeId } });
+      await tx.award.deleteMany({ where: { resumeId } });
+      await tx.language.deleteMany({ where: { resumeId } });
 
       // 2. Create Work Experiences
       if (experiences?.length > 0) {
@@ -228,7 +242,43 @@ export async function updateResumeAction(
         });
       }
 
-      // 5. Update Metadata
+      // 5. Create Certifications
+      if (certifications?.length > 0) {
+        await tx.certification.createMany({
+          data: certifications.map((cert: any) => ({
+            resumeId,
+            name: cert.name,
+            issuer: cert.issuer,
+            date: cert.date,
+          })),
+        });
+      }
+
+      // 6. Create Awards
+      if (awards?.length > 0) {
+        await tx.award.createMany({
+          data: awards.map((award: any) => ({
+            resumeId,
+            name: award.name,
+            issuer: award.issuer,
+            date: award.date,
+          })),
+        });
+      }
+
+      // 7. Create Languages
+      if (languages?.length > 0) {
+        await tx.language.createMany({
+          data: languages.map((lang: any) => ({
+            resumeId,
+            name: lang.name,
+            level: lang.level,
+            score: lang.score,
+          })),
+        });
+      }
+
+      // 8. Update Metadata
       await tx.resume.update({
         where: { id: resumeId, userId },
         data: {
@@ -237,6 +287,7 @@ export async function updateResumeAction(
           email: personalInfo.email,
           phone: personalInfo.phone,
           links: personalInfo.links,
+          summary: personalInfo.summary || "",
           current_step: "TEMPLATE",
         },
       });

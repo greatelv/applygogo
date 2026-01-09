@@ -54,6 +54,28 @@ interface PersonalInfo {
   email: string;
   phone: string;
   links: { label: string; url: string }[];
+  summary?: string;
+}
+
+interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+}
+
+interface Award {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+}
+
+interface Language {
+  id: string;
+  name: string;
+  level: string;
+  score?: string;
 }
 
 interface ResumeEditPageProps {
@@ -62,14 +84,20 @@ interface ResumeEditPageProps {
   initialExperiences?: TranslatedExperience[];
   initialEducations?: Education[];
   initialSkills?: Skill[];
+  initialCertifications?: Certification[];
+  initialAwards?: Award[];
+  initialLanguages?: Language[];
   isEditingExisting?: boolean;
   quota?: number;
-  isLoading?: boolean; // Add this prop
+  isLoading?: boolean;
   onNext: (data: {
     personalInfo: PersonalInfo;
     experiences: TranslatedExperience[];
     educations: Education[];
     skills: Skill[];
+    certifications: Certification[];
+    awards: Award[];
+    languages: Language[];
   }) => void;
   onBack: () => void;
   onRetranslate?: () => void;
@@ -81,6 +109,9 @@ export function ResumeEditPage({
   initialExperiences,
   initialEducations,
   initialSkills,
+  initialCertifications,
+  initialAwards,
+  initialLanguages,
   isEditingExisting,
   quota,
   isLoading = false, // Default to false
@@ -88,39 +119,6 @@ export function ResumeEditPage({
   onBack,
   onRetranslate,
 }: ResumeEditPageProps) {
-  // ... (rest of the component)
-
-  // Update buttons at the bottom
-  /* ... */
-  <div className="mt-12 flex gap-3">
-    <Button
-      variant="outline"
-      onClick={onBack}
-      size="lg"
-      className="flex-1"
-      disabled={isLoading}
-    >
-      {isEditingExisting ? "새로 만들기" : "이전"}
-    </Button>
-    <Button
-      onClick={() => onNext({ personalInfo, experiences, educations, skills })}
-      size="lg"
-      className="flex-1"
-      disabled={isLoading}
-    >
-      {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          처리 중...
-        </>
-      ) : (
-        <>
-          다음
-          <ArrowRight className="size-4 ml-2" />
-        </>
-      )}
-    </Button>
-  </div>;
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     initialPersonalInfo || {
       name_kr: "",
@@ -128,6 +126,7 @@ export function ResumeEditPage({
       email: "",
       phone: "",
       links: [],
+      summary: "",
     }
   );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
@@ -137,6 +136,14 @@ export function ResumeEditPage({
     initialEducations || []
   );
   const [skills, setSkills] = useState<Skill[]>(initialSkills || []);
+  const [certifications, setCertifications] = useState<Certification[]>(
+    initialCertifications || []
+  );
+  const [awards, setAwards] = useState<Award[]>(initialAwards || []);
+  const [languages, setLanguages] = useState<Language[]>(
+    initialLanguages || []
+  );
+
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
     {}
   );
@@ -148,7 +155,92 @@ export function ResumeEditPage({
   >({});
   const [newSkill, setNewSkill] = useState("");
 
+  // Handlers for New Sections
+  const handleCertificationChange = (
+    id: string,
+    field: keyof Certification,
+    value: string
+  ) => {
+    setCertifications((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleAddCertification = () => {
+    setCertifications((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}`,
+        name: "",
+        issuer: "",
+        date: "",
+      },
+    ]);
+  };
+
+  const handleRemoveCertification = (id: string) => {
+    setCertifications((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleAwardChange = (id: string, field: keyof Award, value: string) => {
+    setAwards((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleAddAward = () => {
+    setAwards((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}`,
+        name: "",
+        issuer: "",
+        date: "",
+      },
+    ]);
+  };
+
+  const handleRemoveAward = (id: string) => {
+    setAwards((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleLanguageChange = (
+    id: string,
+    field: keyof Language,
+    value: string
+  ) => {
+    setLanguages((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleAddLanguage = () => {
+    setLanguages((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}`,
+        name: "",
+        level: "",
+        score: "",
+      },
+    ]);
+  };
+
+  const handleRemoveLanguage = (id: string) => {
+    setLanguages((prev) => prev.filter((item) => item.id !== id));
+  };
+
   // Experience Handlers
+  const handleExperienceChange = (
+    id: string,
+    field: keyof TranslatedExperience,
+    value: string
+  ) => {
+    setExperiences((prev) =>
+      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
+    );
+  };
+
   const handleBulletEdit = (
     expId: string,
     index: number,
@@ -206,18 +298,27 @@ export function ResumeEditPage({
 
     if (!currentExp) return;
 
-    // Find changed or added bullets (Korean only)
-    const requestItems: { index: number; text: string }[] = [];
+    // Check for changes
+    const isCompanyChanged = currentExp.company !== initialExp?.company;
+    const isPositionChanged = currentExp.position !== initialExp?.position;
+    const isPeriodChanged = currentExp.period !== initialExp?.period;
 
+    // Find changed or added bullets (Korean only)
+    const changedBullets: { index: number; text: string }[] = [];
     currentExp.bullets.forEach((bullet, index) => {
       const initialBullet = initialExp?.bullets[index];
       // If content is different from original (and not empty)
       if (bullet !== initialBullet && bullet.trim()) {
-        requestItems.push({ index, text: bullet });
+        changedBullets.push({ index, text: bullet });
       }
     });
 
-    if (requestItems.length === 0) {
+    if (
+      !isCompanyChanged &&
+      !isPositionChanged &&
+      !isPeriodChanged &&
+      changedBullets.length === 0
+    ) {
       alert(
         "변경된 한글 내용이 없습니다. 한글 경력사항을 수정한 후 재번역을 클릭해주세요."
       );
@@ -227,37 +328,84 @@ export function ResumeEditPage({
     setIsTranslating((prev) => ({ ...prev, [expId]: true }));
 
     try {
-      const response = await fetch("/api/translate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          texts: requestItems.map((item) => item.text),
-          type: "bullets",
-        }),
-      });
+      const promises = [];
 
-      if (!response.ok) throw new Error("Translation failed");
+      // 1. Metadata translation (Company, Position, Period)
+      if (isCompanyChanged || isPositionChanged || isPeriodChanged) {
+        const textsToTranslate = [];
+        if (isCompanyChanged) textsToTranslate.push(currentExp.company);
+        if (isPositionChanged) textsToTranslate.push(currentExp.position);
+        if (isPeriodChanged) textsToTranslate.push(currentExp.period);
 
-      const { translatedTexts } = await response.json();
+        promises.push(
+          fetch("/api/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              texts: textsToTranslate,
+              type: "general",
+            }),
+          }).then((res) => res.json())
+        );
+      } else {
+        promises.push(Promise.resolve(null));
+      }
+
+      // 2. Bullets translation
+      if (changedBullets.length > 0) {
+        promises.push(
+          fetch("/api/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              texts: changedBullets.map((item) => item.text),
+              type: "bullets",
+            }),
+          }).then((res) => res.json())
+        );
+      } else {
+        promises.push(Promise.resolve(null));
+      }
+
+      // @ts-ignore
+      const [metaResult, bulletsResult] = await Promise.all(promises);
 
       setExperiences((prev) =>
         prev.map((exp) => {
           if (exp.id !== expId) return exp;
+          let newItem = { ...exp };
 
-          const newBulletsEn = [...exp.bulletsEn];
-          requestItems.forEach((item, i) => {
-            newBulletsEn[item.index] = translatedTexts[i];
-          });
+          // Handle metadata update
+          if (metaResult) {
+            const { translatedTexts } = metaResult;
+            let tIndex = 0;
+            if (isCompanyChanged) newItem.companyEn = translatedTexts[tIndex++];
+            if (isPositionChanged)
+              newItem.positionEn = translatedTexts[tIndex++];
+            if (isPeriodChanged) newItem.period = translatedTexts[tIndex++];
+          }
 
-          return { ...exp, bulletsEn: newBulletsEn };
+          // Handle bullets update
+          if (bulletsResult) {
+            const { translatedTexts } = bulletsResult;
+            const newBulletsEn = [...newItem.bulletsEn];
+            changedBullets.forEach((item, i) => {
+              newBulletsEn[item.index] = translatedTexts[i];
+            });
+            newItem.bulletsEn = newBulletsEn;
+          }
+          return newItem;
         })
       );
 
       // Highlight logic...
-      setHighlightedBullets((prev) => ({
-        ...prev,
-        [expId]: requestItems.map((item) => item.index),
-      }));
+      setHighlightedBullets((prev) => {
+        const newState = { ...prev };
+        if (changedBullets.length > 0) {
+          newState[expId] = changedBullets.map((item) => item.index);
+        }
+        return newState;
+      });
 
       setTimeout(() => {
         setHighlightedBullets((prev) => {
@@ -424,6 +572,9 @@ export function ResumeEditPage({
 
       <div className="space-y-8">
         {/* Personal Info */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">기본 정보</h2>
+        </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -431,13 +582,11 @@ export function ResumeEditPage({
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
                   한글 (원본)
                 </p>
-                <h3 className="font-semibold">기본 정보</h3>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
                   English (번역)
                 </p>
-                <h3 className="font-semibold">Personal Info</h3>
               </div>
             </div>
             <div className="absolute top-1/2 -translate-y-1/2 right-4">
@@ -476,7 +625,7 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className="text-lg font-semibold outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px]"
+                    className="text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px]"
                   >
                     {personalInfo.name_kr}
                   </div>
@@ -495,7 +644,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
                     >
                       {personalInfo.email}
                     </div>
@@ -513,7 +662,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
                     >
                       {personalInfo.phone}
                     </div>
@@ -536,7 +685,7 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className={`text-lg font-semibold outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-500 cursor-text min-h-[36px] ${
+                    className={`text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-all duration-500 cursor-text min-h-[36px] ${
                       highlightedPersonal.name
                         ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
                         : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
@@ -588,7 +737,7 @@ export function ResumeEditPage({
                           };
                           handlePersonalInfoChange("links", newLinks);
                         }}
-                        className={`text-sm font-medium outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-500 cursor-text min-h-[24px] ${
+                        className={`text-sm font-medium outline-none px-2 py-1 -mx-2 rounded transition-all duration-500 cursor-text min-h-[24px] ${
                           highlightedPersonal.links
                             ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
                             : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
@@ -607,7 +756,7 @@ export function ResumeEditPage({
                           };
                           handlePersonalInfoChange("links", newLinks);
                         }}
-                        className="text-sm text-blue-600 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] truncate"
+                        className="text-sm text-blue-600 outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] truncate"
                       >
                         {link.url}
                       </div>
@@ -640,9 +789,30 @@ export function ResumeEditPage({
                 </Button>
               </div>
             </div>
+
+            {/* Summary Section */}
+            <div className="mt-8 border-t border-border pt-6">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2">
+                Professional Summary (English)
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                AI가 작성한 요약글입니다. 필요에 따라 수정하세요.
+              </p>
+              <textarea
+                value={personalInfo.summary || ""}
+                onChange={(e) =>
+                  handlePersonalInfoChange("summary", e.target.value)
+                }
+                className="w-full min-h-[100px] p-3 rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Write your professional summary here..."
+              />
+            </div>
           </div>
         </div>
         {/* Experiences */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">경력</h2>
+        </div>
         {experiences.map((exp) => (
           <div
             key={exp.id}
@@ -654,18 +824,10 @@ export function ResumeEditPage({
                   <p className="text-xs text-muted-foreground font-semibold mb-1">
                     한글 (원본)
                   </p>
-                  <h3 className="font-semibold">{exp.company}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.position} • {exp.period}
-                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1">
                     English (번역)
-                  </p>
-                  <h3 className="font-semibold">{exp.companyEn}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.positionEn} • {exp.period}
                   </p>
                 </div>
               </div>
@@ -693,13 +855,60 @@ export function ResumeEditPage({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Korean Bullets */}
                 <div>
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
-                    한글 경력사항
-                  </h4>
+                  <div className="mb-4 space-y-1">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handleExperienceChange(
+                          exp.id,
+                          "company",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px]"
+                    >
+                      {exp.company}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleExperienceChange(
+                            exp.id,
+                            "position",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                      >
+                        {exp.position}
+                      </div>
+                      <span className="text-muted-foreground select-none">
+                        •
+                      </span>
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleExperienceChange(
+                            exp.id,
+                            "period",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                      >
+                        {exp.period}
+                      </div>
+                    </div>
+                  </div>
+
                   <ul className="space-y-3">
                     {exp.bullets.map((bullet, index) => (
-                      <li key={index} className="flex gap-2 text-sm group">
-                        <span className="text-muted-foreground flex-shrink-0 mt-1">
+                      <li key={index} className="flex gap-4 text-sm group">
+                        <span className="text-muted-foreground flex-shrink-0">
                           •
                         </span>
                         <div
@@ -730,13 +939,60 @@ export function ResumeEditPage({
 
                 {/* English Bullets */}
                 <div>
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
-                    영문 번역
-                  </h4>
+                  <div className="mb-4 space-y-1">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handleExperienceChange(
+                          exp.id,
+                          "companyEn",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px]"
+                    >
+                      {exp.companyEn}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleExperienceChange(
+                            exp.id,
+                            "positionEn",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                      >
+                        {exp.positionEn}
+                      </div>
+                      <span className="text-muted-foreground select-none">
+                        •
+                      </span>
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleExperienceChange(
+                            exp.id,
+                            "period",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                      >
+                        {exp.period}
+                      </div>
+                    </div>
+                  </div>
+
                   <ul className="space-y-3">
                     {exp.bulletsEn.map((bullet, index) => (
-                      <li key={index} className="flex gap-2 text-sm group">
-                        <span className="text-muted-foreground flex-shrink-0 mt-1">
+                      <li key={index} className="flex gap-4 text-sm group">
+                        <span className="text-muted-foreground flex-shrink-0">
                           •
                         </span>
                         <div
@@ -843,44 +1099,47 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[100px]"
+                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px]"
                       >
                         {edu.school_name}
                       </div>
-                      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "major",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
-                        >
-                          {edu.major}
+                      {((edu.major && edu.major !== "-") ||
+                        (edu.degree && edu.degree !== "-")) && (
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleEducationChange(
+                                edu.id,
+                                "major",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px]"
+                          >
+                            {edu.major}
+                          </div>
+                          <span className="text-muted-foreground select-none">
+                            •
+                          </span>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleEducationChange(
+                                edu.id,
+                                "degree",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px]"
+                          >
+                            {edu.degree}
+                          </div>
                         </div>
-                        <span className="text-muted-foreground select-none">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "degree",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
-                        >
-                          {edu.degree}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                      )}
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                         <div
                           contentEditable
                           suppressContentEditableWarning
@@ -891,7 +1150,7 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px]"
                         >
                           {edu.start_date}
                         </div>
@@ -908,7 +1167,7 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px]"
                         >
                           {edu.end_date}
                         </div>
@@ -927,44 +1186,47 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[100px]"
+                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px]"
                       >
                         {edu.school_name_en || edu.school_name}
                       </div>
-                      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "major_en",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
-                        >
-                          {edu.major_en || edu.major}
+                      {((edu.major_en && edu.major_en !== "-") ||
+                        (edu.degree_en && edu.degree_en !== "-")) && (
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleEducationChange(
+                                edu.id,
+                                "major_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px]"
+                          >
+                            {edu.major_en || edu.major}
+                          </div>
+                          <span className="text-muted-foreground select-none">
+                            •
+                          </span>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleEducationChange(
+                                edu.id,
+                                "degree_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
+                          >
+                            {edu.degree_en || edu.degree}
+                          </div>
                         </div>
-                        <span className="text-muted-foreground select-none">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "degree_en",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
-                        >
-                          {edu.degree_en || edu.degree}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                      )}
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                         <div
                           contentEditable
                           suppressContentEditableWarning
@@ -1057,6 +1319,233 @@ export function ResumeEditPage({
             </div>
           </div>
         </div>
+
+        {/* Certifications */}
+        <div className="mt-12">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">
+              자격증 (Certifications)
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              자격증 정보를 추가하세요.
+            </p>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            {certifications.map((cert) => (
+              <div key={cert.id} className="flex gap-4 items-start group">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      이름
+                    </label>
+                    <Input
+                      placeholder="Certificate Name"
+                      value={cert.name}
+                      onChange={(e) =>
+                        handleCertificationChange(
+                          cert.id,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      발행처
+                    </label>
+                    <Input
+                      placeholder="Issuer"
+                      value={cert.issuer}
+                      onChange={(e) =>
+                        handleCertificationChange(
+                          cert.id,
+                          "issuer",
+                          e.target.value
+                        )
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      취득일
+                    </label>
+                    <Input
+                      placeholder="Date (e.g. 2023-01)"
+                      value={cert.date}
+                      onChange={(e) =>
+                        handleCertificationChange(
+                          cert.id,
+                          "date",
+                          e.target.value
+                        )
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveCertification(cert.id)}
+                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAddCertification}
+              className="w-full h-9"
+            >
+              <Plus className="size-4 mr-2" /> 자격증 추가
+            </Button>
+          </div>
+        </div>
+
+        {/* Awards */}
+        <div className="mt-12">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">수상 경력 (Awards)</h2>
+            <p className="text-sm text-muted-foreground">
+              수상 내역을 추가하세요.
+            </p>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            {awards.map((award) => (
+              <div key={award.id} className="flex gap-4 items-start group">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      수상명
+                    </label>
+                    <Input
+                      placeholder="Award Name"
+                      value={award.name}
+                      onChange={(e) =>
+                        handleAwardChange(award.id, "name", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      수여기관
+                    </label>
+                    <Input
+                      placeholder="Issuer"
+                      value={award.issuer}
+                      onChange={(e) =>
+                        handleAwardChange(award.id, "issuer", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      수상일
+                    </label>
+                    <Input
+                      placeholder="Date (e.g. 2023-12)"
+                      value={award.date}
+                      onChange={(e) =>
+                        handleAwardChange(award.id, "date", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveAward(award.id)}
+                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAddAward}
+              className="w-full h-9"
+            >
+              <Plus className="size-4 mr-2" /> 수상 추가
+            </Button>
+          </div>
+        </div>
+
+        {/* Languages */}
+        <div className="mt-12">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">언어 (Languages)</h2>
+            <p className="text-sm text-muted-foreground">
+              언어 능력을 추가하세요.
+            </p>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            {languages.map((lang) => (
+              <div key={lang.id} className="flex gap-4 items-start group">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      언어
+                    </label>
+                    <Input
+                      placeholder="Language (e.g. English)"
+                      value={lang.name}
+                      onChange={(e) =>
+                        handleLanguageChange(lang.id, "name", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      수준
+                    </label>
+                    <Input
+                      placeholder="Level (e.g. Fluent)"
+                      value={lang.level}
+                      onChange={(e) =>
+                        handleLanguageChange(lang.id, "level", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground ml-1">
+                      점수 (선택)
+                    </label>
+                    <Input
+                      placeholder="Score"
+                      value={lang.score || ""}
+                      onChange={(e) =>
+                        handleLanguageChange(lang.id, "score", e.target.value)
+                      }
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveLanguage(lang.id)}
+                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAddLanguage}
+              className="w-full h-9"
+            >
+              <Plus className="size-4 mr-2" /> 언어 추가
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="mt-12 flex gap-3">
@@ -1069,9 +1558,18 @@ export function ResumeEditPage({
         >
           {isEditingExisting ? "새로 만들기" : "이전"}
         </Button>
+
         <Button
           onClick={() =>
-            onNext({ personalInfo, experiences, educations, skills })
+            onNext({
+              personalInfo,
+              experiences,
+              educations,
+              skills,
+              certifications,
+              awards,
+              languages,
+            })
           }
           size="lg"
           className="flex-1"

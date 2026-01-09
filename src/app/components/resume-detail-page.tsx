@@ -170,6 +170,9 @@ export function ResumeDetailPage({
       experiences: resume.experiences || [],
       educations: resume.educations,
       skills: resume.skills,
+      certifications: resume.certifications,
+      awards: resume.awards,
+      languages: resume.languages,
     };
     switch (templateKey) {
       case "classic":
@@ -397,9 +400,14 @@ export function ResumeDetailPage({
                   >
                     <div>
                       <h4 className="font-semibold">{edu.school_name}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {edu.degree}, {edu.major}
-                      </p>
+                      {((edu.degree && edu.degree !== "-") ||
+                        (edu.major && edu.major !== "-")) && (
+                        <p className="text-sm text-muted-foreground">
+                          {edu.degree}
+                          {edu.degree && edu.major && ", "}
+                          {edu.major}
+                        </p>
+                      )}
                     </div>
                     <span className="text-sm text-muted-foreground">
                       {edu.start_date} - {edu.end_date}

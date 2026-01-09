@@ -203,9 +203,18 @@ export function MinimalTemplate({
                     <h3 className="font-medium text-gray-900">
                       {edu.school_name_en || edu.school_name}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
-                    </p>
+                    {((edu.degree_en && edu.degree_en !== "-") ||
+                      (edu.degree && edu.degree !== "-") ||
+                      (edu.major_en && edu.major_en !== "-") ||
+                      (edu.major && edu.major !== "-")) && (
+                      <p className="text-sm text-gray-500">
+                        {edu.degree_en || edu.degree}
+                        {(edu.degree_en || edu.degree) &&
+                          (edu.major_en || edu.major) &&
+                          ", "}
+                        {edu.major_en || edu.major}
+                      </p>
+                    )}
                   </div>
                   <span className="text-xs text-gray-400 tabular-nums">
                     {formatDate(edu.start_date)} - {formatDate(edu.end_date)}

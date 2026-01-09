@@ -55,6 +55,7 @@ export default async function Page({
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as any[]) || [],
+    summary: resume.summary || "",
   };
 
   const mappedEducations = resume.educations.map((edu) => ({
@@ -104,6 +105,9 @@ export default async function Page({
       experiences={mappedExperiences}
       educations={mappedEducations}
       skills={mappedSkills}
+      certifications={mappedCertifications}
+      awards={mappedAwards}
+      languages={mappedLanguages}
       template={resume.selected_template?.toLowerCase() || "modern"}
       updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}
