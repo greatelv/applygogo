@@ -6,6 +6,7 @@ import {
   X,
   Plus,
   Settings,
+  Info,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
@@ -21,6 +22,7 @@ interface SidebarProps {
 const navItems = [
   { id: "resumes", label: "이력서 관리", icon: FileText },
   { id: "settings", label: "설정", icon: Settings },
+  { id: "home", label: "서비스 소개", icon: Info, href: "/" },
   { id: "help", label: "도움말", icon: CircleHelp },
 ];
 
@@ -60,11 +62,6 @@ export function Sidebar({
             </button>
           </div>
 
-          {/* Logo */}
-          <div className="p-6 border-b border-border hidden lg:block">
-            <h2 className="text-xl tracking-tight">지원고고</h2>
-          </div>
-
           {/* Navigation */}
           <nav className="flex-1 p-4">
             {/* Create New Button */}
@@ -88,21 +85,34 @@ export function Sidebar({
                 const Icon = item.icon;
                 return (
                   <li key={item.id}>
-                    <button
-                      onClick={() => {
-                        onNavigate(item.id);
-                        onClose();
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                        activeItem === item.id
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                      )}
-                    >
-                      <Icon className="size-4 shrink-0" />
-                      {item.label}
-                    </button>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        )}
+                        target="_self"
+                      >
+                        <Icon className="size-4 shrink-0" />
+                        {item.label}
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          onNavigate(item.id);
+                          onClose();
+                        }}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                          activeItem === item.id
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        )}
+                      >
+                        <Icon className="size-4 shrink-0" />
+                        {item.label}
+                      </button>
+                    )}
                   </li>
                 );
               })}

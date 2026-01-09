@@ -1,4 +1,5 @@
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, Settings, Info } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -61,21 +62,52 @@ export function Header({
   return (
     <header className="sticky top-0 z-30 bg-background border-b border-border">
       <div className="flex items-center justify-between h-16 px-4 lg:px-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
           {/* Mobile menu button */}
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 hover:bg-accent rounded-md"
+            className="lg:hidden p-2 hover:bg-accent rounded-md mr-4"
           >
             <Menu className="size-5" />
           </button>
 
-          {/* Mobile logo */}
-          <h1 className="text-lg tracking-tight lg:hidden">지원고고</h1>
+          {/* Logo Container - Desktop: Fixed Width to match Sidebar */}
+          <Link
+            href="/resumes"
+            className="hidden lg:flex items-center w-[13.5rem] border-r border-border/40 mr-6 h-8 hover:opacity-80 transition-opacity"
+          >
+            <img
+              src="/logo-for-light.svg"
+              alt="지원고고"
+              className="h-6 w-auto dark:hidden"
+            />
+            <img
+              src="/logo-for-dark.svg"
+              alt="지원고고"
+              className="h-6 w-auto hidden dark:block"
+            />
+          </Link>
 
-          {/* Workflow Stepper - Desktop left side */}
+          {/* Mobile Logo Only */}
+          <Link
+            href="/resumes"
+            className="lg:hidden flex items-center mr-4 hover:opacity-80 transition-opacity"
+          >
+            <img
+              src="/logo-for-light.svg"
+              alt="지원고고"
+              className="h-6 w-auto dark:hidden"
+            />
+            <img
+              src="/logo-for-dark.svg"
+              alt="지원고고"
+              className="h-6 w-auto hidden dark:block"
+            />
+          </Link>
+
+          {/* Workflow Stepper - starts after logo container */}
           {workflowSteps && currentStep && (
-            <div className="hidden lg:block">
+            <div className="hidden lg:flex items-center">
               <WorkflowStepper
                 steps={workflowSteps}
                 currentStep={currentStep}
@@ -140,6 +172,20 @@ export function Header({
                 <span className="ml-2 font-semibold">{quota}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="sm:hidden" />
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="cursor-pointer">
+                  <Settings className="size-4 mr-2" />
+                  설정
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/" className="cursor-pointer">
+                  <Info className="size-4 mr-2" />
+                  서비스 소개
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onLogout}>
                 <LogOut className="size-4 mr-2" />
                 로그아웃

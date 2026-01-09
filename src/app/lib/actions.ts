@@ -45,7 +45,7 @@ export async function getUserSettings() {
     (log) => log.created_at >= currentMonthStart
   ).length;
 
-  const planQuota = user.subscription?.plan?.monthly_quota || 2; // Default to free tier quota
+  const planQuota = user.subscription?.plan?.monthly_quota || 3; // Default to free tier quota
   const remainingQuota = Math.max(0, planQuota - usageCount);
 
   return {

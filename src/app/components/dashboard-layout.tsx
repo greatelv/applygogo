@@ -35,26 +35,26 @@ export function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <div className="flex">
-        <Sidebar
-          activeItem={activeItem}
-          onNavigate={onNavigate}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          onCreateNew={onCreateNew}
+      <div className="flex flex-col min-h-screen">
+        <Header
+          plan={plan}
+          quota={quota}
+          userName={userName}
+          userEmail={userEmail}
+          userImage={userImage}
+          onLogout={onLogout}
+          onMenuClick={() => setIsSidebarOpen(true)}
+          workflowSteps={workflowSteps}
+          currentStep={currentStep}
         />
 
-        <div className="flex-1 flex flex-col min-h-screen">
-          <Header
-            plan={plan}
-            quota={quota}
-            userName={userName}
-            userEmail={userEmail}
-            userImage={userImage}
-            onLogout={onLogout}
-            onMenuClick={() => setIsSidebarOpen(true)}
-            workflowSteps={workflowSteps}
-            currentStep={currentStep}
+        <div className="flex flex-1">
+          <Sidebar
+            activeItem={activeItem}
+            onNavigate={onNavigate}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            onCreateNew={onCreateNew}
           />
 
           <main className="flex-1 p-4 lg:p-8">{children}</main>
