@@ -10,16 +10,27 @@ interface SettingsClientPageProps {
     email?: string | null;
     image?: string | null;
   };
+  settings?: any; // Type strictly if shared types available
 }
 
-export function SettingsClientPage({ user }: SettingsClientPageProps) {
+export function SettingsClientPage({
+  user,
+  settings,
+}: SettingsClientPageProps) {
   const router = useRouter();
-  const { plan, quota, setPlan } = useApp();
+  const { setPlan } = useApp();
 
-  const handleUpgrade = (newPlan: "STANDARD" | "PRO") => {
-    // Mock upgrade logic
+  // derived from server data
+  const serverPlan = settings?.subscription?.planCode || "FREE";
+  const serverQuota = settings?.remainingQuota ?? 2;
+  const createdAt = settings?.created_at
+    ? new Date(settings.created_at).toISOString()
+    : "2024-01-01";
+
+  const handleUpgrade = (newPlan: "PRO") => {
+    // Mock upgrade logic - fully implementing payment is separate task
     setPlan(newPlan);
-    alert(`${newPlan} 플랜으로 업그레이드되었습니다!`);
+    alert(`${newPlan} 플랜으로 업그레이드되었습니다! (결제 모듈 연동 필요)`);
   };
 
   const handleCancel = () => {
@@ -43,11 +54,10 @@ export function SettingsClientPage({ user }: SettingsClientPageProps) {
       userName={user.name || "사용자"}
       userEmail={user.email || ""}
       userImage={user.image || undefined}
-      // Mock data for now, ideally passed from server or context
-      createdAt="2024-01-01"
+      createdAt={createdAt}
       onDeleteAccount={handleDeleteAccount}
-      currentPlan={plan}
-      quota={quota}
+      currentPlan={serverPlan}
+      quota={serverQuota}
       onUpgrade={handleUpgrade}
       onCancel={handleCancel}
     />

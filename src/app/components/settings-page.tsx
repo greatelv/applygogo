@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { User, Mail, Calendar, Trash2, CreditCard, Crown } from "lucide-react";
+import {
+  User,
+  Mail,
+  Calendar,
+  Trash2,
+  CreditCard,
+  Crown,
+  CreditCard as PaymentIcon,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -15,15 +22,14 @@ interface SettingsPageProps {
   onDeleteAccount?: () => void;
 
   // Billing Props
-  currentPlan: "FREE" | "STANDARD" | "PRO";
+  currentPlan: "FREE" | "PRO";
   quota: number;
-  onUpgrade: (plan: "STANDARD" | "PRO") => void;
+  onUpgrade: (plan: "PRO") => void;
   onCancel: () => void;
 }
 
 const planConfig = {
   FREE: { label: "Free", variant: "outline" as const },
-  STANDARD: { label: "Standard", variant: "secondary" as const },
   PRO: { label: "Pro", variant: "default" as const },
 };
 
@@ -32,30 +38,21 @@ const plans = [
     id: "FREE" as const,
     name: "Free",
     price: 0,
-    quota: 2,
+    quota: 3,
     resumes: 1,
-    features: ["월 2 크레딧", "이력서 1개 보관", "기본 템플릿"],
-  },
-  {
-    id: "STANDARD" as const,
-    name: "Standard",
-    price: 9900,
-    quota: 6,
-    resumes: 3,
-    features: ["월 6 크레딧", "이력서 3개 보관", "모든 템플릿", "우선 지원"],
+    features: ["월 3 크레딧", "이력서 1개 보관", "Modern, Classic 템플릿"],
   },
   {
     id: "PRO" as const,
     name: "Pro",
-    price: 29900,
-    quota: 20,
+    price: 9900,
+    quota: 100,
     resumes: "무제한",
     features: [
-      "월 20 크레딧",
+      "월 100 크레딧",
       "무제한 이력서 보관",
-      "모든 템플릿",
+      "모든 템플릿 (Minimal 포함)",
       "우선 지원",
-      "커스텀 템플릿",
     ],
   },
 ];
@@ -71,9 +68,6 @@ export function SettingsPage({
   onUpgrade,
   onCancel,
 }: SettingsPageProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState(userName);
-
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -81,13 +75,7 @@ export function SettingsPage({
     .toUpperCase()
     .slice(0, 2);
 
-  const config = planConfig[currentPlan];
-
-  const handleSave = () => {
-    // 프로필 업데이트 로직
-    setIsEditing(false);
-    alert("프로필이 업데이트되었습니다.");
-  };
+  const config = planConfig[currentPlan || "FREE"]; // Fallback for safety
 
   const handleDeleteAccount = () => {
     if (
@@ -100,7 +88,7 @@ export function SettingsPage({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 pb-12">
+    <div className="max-w-5xl mx-auto space-y-12 pb-12">
       <div>
         <h1 className="text-2xl mb-2">설정</h1>
         <p className="text-sm text-muted-foreground">
@@ -112,91 +100,52 @@ export function SettingsPage({
       <section className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2">프로필 정보</h2>
 
-        {/* Profile Card */}
-        <div className="bg-card border border-border rounded-lg p-8">
-          <div className="flex items-start gap-6">
-            <Avatar className="size-24">
-              <AvatarImage src={userImage} alt={userName} />
-              <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
-            </Avatar>
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
+          {/* Profile Card */}
+          <div className="bg-card border border-border rounded-lg p-8 flex flex-col justify-center h-full">
+            <div className="flex items-center gap-6">
+              <Avatar className="size-24">
+                <AvatarImage src={userImage} alt={userName} />
+                <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+              </Avatar>
 
-            <div className="flex-1">
-              {isEditing ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      이름
-                    </label>
-                    <input
-                      type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="w-full p-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleSave} size="sm">
-                      저장
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setIsEditing(false);
-                        setEditName(userName);
-                      }}
-                      size="sm"
-                    >
-                      취소
-                    </Button>
-                  </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-semibold">{userName}</h2>
+                  <Badge variant={config.variant}>{config.label}</Badge>
                 </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h2 className="text-2xl font-semibold">{userName}</h2>
-                    <Badge variant={config.variant}>{config.label}</Badge>
-                  </div>
-                  <p className="text-muted-foreground mb-4">{userEmail}</p>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(true)}
-                    size="sm"
-                  >
-                    프로필 수정
-                  </Button>
-                </>
-              )}
+                <p className="text-muted-foreground">{userEmail}</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Account Details */}
-        <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="font-semibold mb-4">계정 상세</h3>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-              <User className="size-5 text-muted-foreground" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">사용자 이름</p>
-                <p className="text-sm text-muted-foreground">{userName}</p>
+          {/* Account Details */}
+          <div className="bg-card border border-border rounded-lg p-6 flex flex-col justify-center h-full">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
+                <User className="size-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">사용자 이름</p>
+                  <p className="text-sm text-muted-foreground">{userName}</p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-              <Mail className="size-5 text-muted-foreground" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">이메일</p>
-                <p className="text-sm text-muted-foreground">{userEmail}</p>
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
+                <Mail className="size-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">이메일</p>
+                  <p className="text-sm text-muted-foreground">{userEmail}</p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
-              <Calendar className="size-5 text-muted-foreground" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">가입일</p>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(createdAt).toLocaleDateString("ko-KR")}
-                </p>
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
+                <Calendar className="size-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">가입일</p>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(createdAt).toLocaleDateString("ko-KR")}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -209,53 +158,95 @@ export function SettingsPage({
           결제 및 플랜 관리
         </h2>
 
-        {/* Subscription Info */}
-        <div className="bg-card border border-border rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Crown className="size-5 text-primary" />
-            <h3 className="font-semibold">구독 정보</h3>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-              <span className="text-sm font-medium">현재 플랜</span>
-              <Badge variant={config.variant}>{config.label}</Badge>
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
+          {/* Subscription Info */}
+          <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
+            <div className="flex items-center gap-3 mb-4">
+              <Crown className="size-5 text-primary" />
+              <h3 className="font-semibold">구독 정보</h3>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-              <span className="text-sm font-medium">남은 크레딧</span>
-              <span className="text-sm font-semibold">{quota}</span>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-              <div className="flex items-center gap-2">
-                <Calendar className="size-4 text-muted-foreground" />
-                <span className="text-sm font-medium">다음 갱신일</span>
+            <div className="space-y-3 flex-1">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
+                <span className="text-sm font-medium">현재 플랜</span>
+                <Badge variant={config.variant}>{config.label}</Badge>
               </div>
-              <span className="text-sm text-muted-foreground">
-                {currentPlan === "FREE" ? "없음" : "2026-02-01"}
-              </span>
+
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
+                <span className="text-sm font-medium">남은 크레딧</span>
+                <span className="text-sm font-semibold">{quota}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
+                <div className="flex items-center gap-2">
+                  <Calendar className="size-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">다음 갱신일</span>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {currentPlan === "FREE" ? "없음" : "2026-02-01"}
+                </span>
+              </div>
             </div>
+
+            {currentPlan !== "FREE" && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <Button variant="outline" onClick={onCancel} className="w-full">
+                  플랜 해지
+                </Button>
+              </div>
+            )}
           </div>
 
-          {currentPlan !== "FREE" && (
-            <div className="mt-4 pt-4 border-t border-border">
-              <Button variant="outline" onClick={onCancel} className="w-full">
-                플랜 해지
-              </Button>
+          {/* Payment Method (Mock) */}
+          <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
+            <div className="flex items-center gap-3 mb-4">
+              <PaymentIcon className="size-5 text-muted-foreground" />
+              <h3 className="font-semibold">결제 수단</h3>
             </div>
-          )}
+
+            <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
+              {currentPlan === "FREE" ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    등록된 결제 수단이 없습니다.
+                  </p>
+                  <Button variant="outline" size="sm" disabled>
+                    카드 등록
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg w-full">
+                    <div className="w-12 h-8 bg-black rounded flex items-center justify-center text-white text-xs font-bold">
+                      VISA
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className="text-sm font-medium">Hyundai Card</p>
+                      <p className="text-xs text-muted-foreground">
+                        **** **** **** 1234
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary/90"
+                  >
+                    결제 수단 변경
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Plans */}
         <div className="space-y-4">
           <h3 className="font-semibold">플랜 변경</h3>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             {plans.map((plan) => {
               const isCurrent = plan.id === currentPlan;
-              const isDowngrade =
-                (currentPlan === "PRO" && plan.id !== "PRO") ||
-                (currentPlan === "STANDARD" && plan.id === "FREE");
+              const isDowngrade = currentPlan === "PRO" && plan.id === "FREE";
 
               return (
                 <div

@@ -48,6 +48,7 @@ interface ResumeDetailPageProps {
   educations?: any[];
   skills?: any[];
   template?: string;
+  updatedAt?: string;
   isWorkflowComplete?: boolean;
   onBack: () => void;
   onDelete?: (id: string) => void;
@@ -70,6 +71,7 @@ export function ResumeDetailPage({
   onDownload,
   onEdit,
   onChangeTemplate,
+  updatedAt,
 }: ResumeDetailPageProps) {
   // Use props data
   const resume = {
@@ -77,7 +79,7 @@ export function ResumeDetailPage({
     title: resumeTitle || "이력서",
     personalInfo,
     status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED", // TODO: Pass status prop if needed
-    updatedAt: new Date().toISOString(), // This should ideally be passed as prop
+    updatedAt: updatedAt || new Date().toISOString(),
     template,
     experiences: experiences || [],
     educations,
@@ -221,54 +223,54 @@ export function ResumeDetailPage({
                 suppressHydrationWarning
               >
                 <Clock className="size-4" />
-                {isWorkflowComplete
-                  ? "방금 전"
-                  : `최종 수정: ${new Date(resume.updatedAt).toLocaleString(
-                      "ko-KR"
-                    )}`}
+                {`최종 수정: ${new Date(resume.updatedAt).toLocaleString(
+                  "ko-KR"
+                )}`}
               </span>
-              <span>
-                템플릿:{" "}
-                {resume.template.charAt(0).toUpperCase() +
-                  resume.template.slice(1)}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span>템플릿:</span>
+                <Badge variant="secondary" className="text-xs font-normal">
+                  {resume.template.charAt(0).toUpperCase() +
+                    resume.template.slice(1)}
+                </Badge>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={onBack}>
-              <ArrowLeft className="size-4" />
-              {isWorkflowComplete ? "이전" : "목록으로"}
+              <ArrowLeft className="size-4 mr-1.5" />
+              목록
             </Button>
 
-            {!isWorkflowComplete && onDelete && (
+            {onDelete && (
               <Button
                 variant="outline"
-                size="icon"
                 onClick={handleDeleteConfirm}
                 className="text-muted-foreground hover:text-destructive"
               >
-                <Trash2 className="size-4" />
-              </Button>
-            )}
-
-            {onChangeTemplate && (
-              <Button variant="outline" onClick={onChangeTemplate}>
-                <Layout className="size-4" />
-                템플릿 변경
+                <Trash2 className="size-4 mr-1.5" />
+                삭제
               </Button>
             )}
 
             {onEdit && (
               <Button variant="outline" onClick={onEdit}>
-                <Edit className="size-4" />
+                <Edit className="size-4 mr-1.5" />
                 편집
               </Button>
             )}
 
+            {onChangeTemplate && (
+              <Button variant="outline" onClick={onChangeTemplate}>
+                <Layout className="size-4 mr-1.5" />
+                템플릿 선택
+              </Button>
+            )}
+
             <Button onClick={handleDownload} className="shadow-sm">
-              <Download className="size-4" />
+              <Download className="size-4 mr-1.5" />
               PDF 다운로드
             </Button>
           </div>

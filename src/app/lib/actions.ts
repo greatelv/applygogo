@@ -13,6 +13,48 @@ export async function logOut() {
   await signOut({ redirectTo: "/" });
 }
 
+export async function getUserSettings() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      subscription: {
+        include: {
+          plan: true,
+        },
+      },
+      usage_logs: true,
+    },
+  });
+
+  if (!user) return null;
+
+  // Calculate quota
+  // For now, assume simplified monthly usage calc
+  const currentMonthStart = new Date();
+  currentMonthStart.setDate(1);
+  currentMonthStart.setHours(0, 0, 0, 0);
+
+  const usageCount = user.usage_logs.filter(
+    (log) => log.created_at >= currentMonthStart
+  ).length;
+
+  const planQuota = user.subscription?.plan?.monthly_quota || 2; // Default to free tier quota
+  const remainingQuota = Math.max(0, planQuota - usageCount);
+
+  return {
+    ...user,
+    subscription: user.subscription,
+    remainingQuota,
+  };
+}
+
 export async function uploadResumeAction(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {

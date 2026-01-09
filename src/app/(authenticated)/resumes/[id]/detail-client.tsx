@@ -13,6 +13,7 @@ interface DetailClientProps {
   educations?: any[];
   skills?: any[];
   template: string;
+  updatedAt?: string;
   isWorkflowComplete?: boolean;
 }
 
@@ -24,6 +25,7 @@ export function DetailClient({
   educations = [],
   skills = [],
   template,
+  updatedAt,
   isWorkflowComplete,
 }: DetailClientProps) {
   const router = useRouter();
@@ -52,13 +54,10 @@ export function DetailClient({
       educations={educations}
       skills={skills}
       template={template}
+      updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}
       onBack={() => {
-        if (isWorkflowComplete) {
-          router.push(`/resumes/${resumeId}/templates`);
-        } else {
-          router.push("/resumes");
-        }
+        router.push("/resumes");
       }}
       onEdit={() => router.push(`/resumes/${resumeId}/edit`)}
       onDelete={async (id) => {

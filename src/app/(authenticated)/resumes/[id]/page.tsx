@@ -86,6 +86,7 @@ export default async function Page({
       educations={mappedEducations}
       skills={mappedSkills}
       template={resume.selected_template?.toLowerCase() || "modern"}
+      updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}
     />
   );

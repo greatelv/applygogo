@@ -1,6 +1,7 @@
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 import { SettingsClientPage } from "./client-page";
+import { getUserSettings } from "../../lib/actions";
 
 export default async function Page() {
   const session = await auth();
@@ -9,5 +10,7 @@ export default async function Page() {
     redirect("/login");
   }
 
-  return <SettingsClientPage user={session.user} />;
+  const userSettings = await getUserSettings();
+
+  return <SettingsClientPage user={session.user} settings={userSettings} />;
 }
