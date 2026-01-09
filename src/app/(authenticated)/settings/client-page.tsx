@@ -31,53 +31,53 @@ export function SettingsClientPage({
 
   const handleUpgrade = async (newPlan: "PRO") => {
     try {
-      const paymentId = `payment-${crypto.randomUUID()}`;
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+      // You should add this channel key in .env for Toss Payments
+      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
 
       if (!storeId) {
-        alert("상점 ID가 설정되지 않았습니다.");
+        alert("상점 ID(Store ID)가 설정되지 않았습니다.");
         return;
       }
 
-      const response = await PortOne.requestPayment({
+      // 1. Request Billing Key (Auth)
+      // Use "CARD" to open the standard Card Input UI provided by Toss Payments
+      const response = await PortOne.requestIssueBillingKey({
         storeId,
-        paymentId,
-        orderName: "ApplyGogo Pro 플랜 구독",
-        totalAmount: 9900,
-        currency: "CURRENCY_KRW",
-        channelKey: undefined, // Optional if multiple channels
-        payMethod: "CARD",
+        channelKey, // Ensure this maps to your Toss Payments Channel in PortOne Console
+        billingKeyMethod: "CARD",
+        issueName: "지원고고 정기 결제 등록",
         customer: {
-          fullName: user.name || "고객",
-          email: user.email || "",
-          phoneNumber: "010-0000-0000", // Required by some PG, better to ask user or use dummy
-        },
+          id: user.email || crypto.randomUUID(), // Unique Customer ID is REQUIRED
+        } as any,
       });
 
       if (response?.code != null) {
-        // Error occurred
-        console.error("Payment failed:", response);
-        alert(`결제 실패: ${response.message}`);
+        console.error("Billing key issue failed:", response);
+        alert(`인증 실패: ${response.message}`);
         return;
       }
 
-      // Payment successful, verifying...
-      const verifyRes = await fetch("/api/payment/complete", {
+      const billingKey = response.billingKey; // Captured billing key
+
+      // 2. Register Billing Key & Charge Initial Payment on Server
+      const res = await fetch("/api/billing/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentId }),
+        body: JSON.stringify({ billingKey, channelKey }),
       });
 
-      if (!verifyRes.ok) {
-        throw new Error("Payment verification failed on server");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "서버 결제 처리 실패");
       }
 
-      alert("결제가 완료되었습니다! Pro 플랜이 시작됩니다.");
+      alert("정기 결제가 등록되고 첫 달 구독이 시작되었습니다!");
       setPlan("PRO");
       router.refresh();
-    } catch (error) {
-      console.error("Payment flow error:", error);
-      alert("결제 처리 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+    } catch (error: any) {
+      console.error("Subscription flow error:", error);
+      alert(`구독 처리 중 오류가 발생했습니다: ${error.message}`);
     }
   };
 
