@@ -1271,9 +1271,6 @@ export function ResumeEditPage({
         <div className="mt-12">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
-            <p className="text-sm text-muted-foreground">
-              기술 스택을 추가하거나 제거하세요.
-            </p>
           </div>
 
           <div className="bg-card border border-border rounded-lg p-6">
@@ -1321,231 +1318,237 @@ export function ResumeEditPage({
         </div>
 
         {/* Certifications */}
-        <div className="mt-12">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">
-              자격증 (Certifications)
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              자격증 정보를 추가하세요.
-            </p>
-          </div>
-          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-            {certifications.map((cert) => (
-              <div key={cert.id} className="flex gap-4 items-start group">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      이름
-                    </label>
-                    <Input
-                      placeholder="Certificate Name"
-                      value={cert.name}
-                      onChange={(e) =>
-                        handleCertificationChange(
-                          cert.id,
-                          "name",
-                          e.target.value
-                        )
-                      }
-                      className="h-9 text-sm"
-                    />
+        {certifications.length > 0 && (
+          <div className="mt-12">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">
+                자격증 (Certifications)
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                자격증 정보를 추가하세요.
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+              {certifications.map((cert) => (
+                <div key={cert.id} className="flex gap-4 items-start group">
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        이름
+                      </label>
+                      <Input
+                        placeholder="Certificate Name"
+                        value={cert.name}
+                        onChange={(e) =>
+                          handleCertificationChange(
+                            cert.id,
+                            "name",
+                            e.target.value
+                          )
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        발행처
+                      </label>
+                      <Input
+                        placeholder="Issuer"
+                        value={cert.issuer}
+                        onChange={(e) =>
+                          handleCertificationChange(
+                            cert.id,
+                            "issuer",
+                            e.target.value
+                          )
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        취득일
+                      </label>
+                      <Input
+                        placeholder="Date (e.g. 2023-01)"
+                        value={cert.date}
+                        onChange={(e) =>
+                          handleCertificationChange(
+                            cert.id,
+                            "date",
+                            e.target.value
+                          )
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      발행처
-                    </label>
-                    <Input
-                      placeholder="Issuer"
-                      value={cert.issuer}
-                      onChange={(e) =>
-                        handleCertificationChange(
-                          cert.id,
-                          "issuer",
-                          e.target.value
-                        )
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      취득일
-                    </label>
-                    <Input
-                      placeholder="Date (e.g. 2023-01)"
-                      value={cert.date}
-                      onChange={(e) =>
-                        handleCertificationChange(
-                          cert.id,
-                          "date",
-                          e.target.value
-                        )
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
+                  <button
+                    onClick={() => handleRemoveCertification(cert.id)}
+                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleRemoveCertification(cert.id)}
-                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAddCertification}
-              className="w-full h-9"
-            >
-              <Plus className="size-4 mr-2" /> 자격증 추가
-            </Button>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddCertification}
+                className="w-full h-9"
+              >
+                <Plus className="size-4 mr-2" /> 자격증 추가
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Awards */}
-        <div className="mt-12">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">수상 경력 (Awards)</h2>
-            <p className="text-sm text-muted-foreground">
-              수상 내역을 추가하세요.
-            </p>
-          </div>
-          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-            {awards.map((award) => (
-              <div key={award.id} className="flex gap-4 items-start group">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      수상명
-                    </label>
-                    <Input
-                      placeholder="Award Name"
-                      value={award.name}
-                      onChange={(e) =>
-                        handleAwardChange(award.id, "name", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
+        {awards.length > 0 && (
+          <div className="mt-12">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">수상 경력 (Awards)</h2>
+              <p className="text-sm text-muted-foreground">
+                수상 내역을 추가하세요.
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+              {awards.map((award) => (
+                <div key={award.id} className="flex gap-4 items-start group">
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        수상명
+                      </label>
+                      <Input
+                        placeholder="Award Name"
+                        value={award.name}
+                        onChange={(e) =>
+                          handleAwardChange(award.id, "name", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        수여기관
+                      </label>
+                      <Input
+                        placeholder="Issuer"
+                        value={award.issuer}
+                        onChange={(e) =>
+                          handleAwardChange(award.id, "issuer", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        수상일
+                      </label>
+                      <Input
+                        placeholder="Date (e.g. 2023-12)"
+                        value={award.date}
+                        onChange={(e) =>
+                          handleAwardChange(award.id, "date", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      수여기관
-                    </label>
-                    <Input
-                      placeholder="Issuer"
-                      value={award.issuer}
-                      onChange={(e) =>
-                        handleAwardChange(award.id, "issuer", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      수상일
-                    </label>
-                    <Input
-                      placeholder="Date (e.g. 2023-12)"
-                      value={award.date}
-                      onChange={(e) =>
-                        handleAwardChange(award.id, "date", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
+                  <button
+                    onClick={() => handleRemoveAward(award.id)}
+                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleRemoveAward(award.id)}
-                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAddAward}
-              className="w-full h-9"
-            >
-              <Plus className="size-4 mr-2" /> 수상 추가
-            </Button>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddAward}
+                className="w-full h-9"
+              >
+                <Plus className="size-4 mr-2" /> 수상 추가
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Languages */}
-        <div className="mt-12">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">언어 (Languages)</h2>
-            <p className="text-sm text-muted-foreground">
-              언어 능력을 추가하세요.
-            </p>
-          </div>
-          <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-            {languages.map((lang) => (
-              <div key={lang.id} className="flex gap-4 items-start group">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      언어
-                    </label>
-                    <Input
-                      placeholder="Language (e.g. English)"
-                      value={lang.name}
-                      onChange={(e) =>
-                        handleLanguageChange(lang.id, "name", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
+        {languages.length > 0 && (
+          <div className="mt-12">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">언어 (Languages)</h2>
+              <p className="text-sm text-muted-foreground">
+                언어 능력을 추가하세요.
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+              {languages.map((lang) => (
+                <div key={lang.id} className="flex gap-4 items-start group">
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        언어
+                      </label>
+                      <Input
+                        placeholder="Language (e.g. English)"
+                        value={lang.name}
+                        onChange={(e) =>
+                          handleLanguageChange(lang.id, "name", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        수준
+                      </label>
+                      <Input
+                        placeholder="Level (e.g. Fluent)"
+                        value={lang.level}
+                        onChange={(e) =>
+                          handleLanguageChange(lang.id, "level", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground ml-1">
+                        점수 (선택)
+                      </label>
+                      <Input
+                        placeholder="Score"
+                        value={lang.score || ""}
+                        onChange={(e) =>
+                          handleLanguageChange(lang.id, "score", e.target.value)
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      수준
-                    </label>
-                    <Input
-                      placeholder="Level (e.g. Fluent)"
-                      value={lang.level}
-                      onChange={(e) =>
-                        handleLanguageChange(lang.id, "level", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground ml-1">
-                      점수 (선택)
-                    </label>
-                    <Input
-                      placeholder="Score"
-                      value={lang.score || ""}
-                      onChange={(e) =>
-                        handleLanguageChange(lang.id, "score", e.target.value)
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
+                  <button
+                    onClick={() => handleRemoveLanguage(lang.id)}
+                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleRemoveLanguage(lang.id)}
-                  className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAddLanguage}
-              className="w-full h-9"
-            >
-              <Plus className="size-4 mr-2" /> 언어 추가
-            </Button>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddLanguage}
+                className="w-full h-9"
+              >
+                <Plus className="size-4 mr-2" /> 언어 추가
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="mt-12 flex gap-3">

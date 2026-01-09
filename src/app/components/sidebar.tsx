@@ -63,7 +63,7 @@ export function Sidebar({
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className="flex-1 p-4 overflow-y-auto">
             {/* Create New Button */}
             {onCreateNew && (
               <div className="mb-4">

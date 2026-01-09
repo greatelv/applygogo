@@ -130,7 +130,7 @@ export function ProcessingPage({
       <div className="mb-8">
         <h1 className="text-2xl mb-2">AI 처리</h1>
         <p className="text-sm text-muted-foreground">
-          {resumeTitle} • 이력서를 분석하고 요약 및 번역하고 있습니다
+          이력서를 분석하고 요약 및 번역하고 있습니다
         </p>
       </div>
 

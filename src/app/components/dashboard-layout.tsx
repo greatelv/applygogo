@@ -35,8 +35,8 @@ export function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="flex flex-col min-h-screen">
+    <div className="h-screen overflow-hidden bg-muted/30">
+      <div className="flex flex-col h-full">
         <Header
           plan={plan}
           quota={quota}
@@ -49,7 +49,7 @@ export function DashboardLayout({
           currentStep={currentStep}
         />
 
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           <Sidebar
             activeItem={activeItem}
             onNavigate={onNavigate}
@@ -58,7 +58,7 @@ export function DashboardLayout({
             onCreateNew={onCreateNew}
           />
 
-          <div className="flex flex-col flex-1 min-w-0">
+          <div className="flex flex-col flex-1 min-w-0 overflow-y-auto">
             <main className="flex-1 p-4 lg:p-8">{children}</main>
             <SiteFooter simple={true} />
           </div>
