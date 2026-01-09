@@ -201,19 +201,19 @@ export const ModernPdf = ({
               </>
             )}
             {personalInfo?.links?.map((link: any, i: number) => (
-              // @ts-ignore
-              <View
-                key={i}
-                style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
-              >
-                <Text>•</Text>
-                <Link src={link.url} style={styles.linkText}>
-                  <Text style={{ color: "#374151", fontWeight: "bold" }}>
-                    {link.label}:{" "}
-                  </Text>
-                  {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                </Link>
-              </View>
+              <React.Fragment key={i}>
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+                >
+                  <Text>•</Text>
+                  <Link src={link.url} style={styles.linkText}>
+                    <Text style={{ color: "#374151", fontWeight: "bold" }}>
+                      {link.label}:{" "}
+                    </Text>
+                    {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </Link>
+                </View>
+              </React.Fragment>
             ))}
           </View>
         </View>
