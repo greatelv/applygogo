@@ -47,6 +47,9 @@ interface ResumeDetailPageProps {
   experiences?: TranslatedExperience[];
   educations?: any[];
   skills?: any[];
+  certifications?: any[];
+  awards?: any[];
+  languages?: any[];
   template?: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
@@ -64,6 +67,9 @@ export function ResumeDetailPage({
   experiences,
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
   template = "modern",
   isWorkflowComplete = false,
   onBack,
@@ -78,12 +84,15 @@ export function ResumeDetailPage({
     id: resumeId || "",
     title: resumeTitle || "이력서",
     personalInfo,
-    status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED", // TODO: Pass status prop if needed
+    status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED",
     updatedAt: updatedAt || new Date().toISOString(),
     template,
     experiences: experiences || [],
     educations,
     skills,
+    certifications,
+    awards,
+    languages,
   };
 
   const config = statusConfig[resume.status];
@@ -115,18 +124,24 @@ export function ResumeDetailPage({
         experiences: resume.experiences,
         educations: resume.educations,
         skills: resume.skills,
+        certifications: resume.certifications,
+        awards: resume.awards,
+        languages: resume.languages,
       };
 
       const templateKey = resume.template.toLowerCase();
       switch (templateKey) {
         case "classic":
+          // @ts-ignore
           doc = <ClassicPdf {...commonProps} />;
           break;
         case "minimal":
+          // @ts-ignore
           doc = <MinimalPdf {...commonProps} />;
           break;
         case "modern":
         default:
+          // @ts-ignore
           doc = <ModernPdf {...commonProps} />;
           break;
       }
@@ -150,35 +165,20 @@ export function ResumeDetailPage({
 
   const renderTemplate = () => {
     const templateKey = resume.template.toLowerCase();
+    const commonProps = {
+      personalInfo: resume.personalInfo,
+      experiences: resume.experiences || [],
+      educations: resume.educations,
+      skills: resume.skills,
+    };
     switch (templateKey) {
       case "classic":
-        return (
-          <ClassicTemplate
-            personalInfo={resume.personalInfo}
-            experiences={resume.experiences || []}
-            educations={resume.educations}
-            skills={resume.skills}
-          />
-        );
+        return <ClassicTemplate {...commonProps} />;
       case "minimal":
-        return (
-          <MinimalTemplate
-            personalInfo={resume.personalInfo}
-            experiences={resume.experiences || []}
-            educations={resume.educations}
-            skills={resume.skills}
-          />
-        );
+        return <MinimalTemplate {...commonProps} />;
       case "modern":
       default:
-        return (
-          <ModernTemplate
-            personalInfo={resume.personalInfo}
-            experiences={resume.experiences || []}
-            educations={resume.educations}
-            skills={resume.skills}
-          />
-        );
+        return <ModernTemplate {...commonProps} />;
     }
   };
 
@@ -421,6 +421,89 @@ export function ResumeDetailPage({
                   <Badge key={skill.id} variant="outline">
                     {skill.name}
                   </Badge>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Certifications */}
+          {resume.certifications && resume.certifications.length > 0 && (
+            <section className="pt-6 border-t border-border/50">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                자격증
+              </h4>
+              <div className="space-y-2">
+                {resume.certifications.map((cert: any) => (
+                  <div key={cert.id} className="text-sm flex justify-between">
+                    <div>
+                      <span className="font-medium">{cert.name}</span>
+                      {cert.issuer && (
+                        <span className="text-muted-foreground ml-2">
+                          ({cert.issuer})
+                        </span>
+                      )}
+                    </div>
+                    {cert.date && (
+                      <span className="text-muted-foreground">{cert.date}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Awards */}
+          {resume.awards && resume.awards.length > 0 && (
+            <section className="pt-6 border-t border-border/50">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                수상 경력
+              </h4>
+              <div className="space-y-2">
+                {resume.awards.map((award: any) => (
+                  <div key={award.id} className="text-sm flex justify-between">
+                    <div>
+                      <span className="font-medium">{award.name}</span>
+                      {award.issuer && (
+                        <span className="text-muted-foreground ml-2">
+                          ({award.issuer})
+                        </span>
+                      )}
+                    </div>
+                    {award.date && (
+                      <span className="text-muted-foreground">
+                        {award.date}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Languages */}
+          {resume.languages && resume.languages.length > 0 && (
+            <section className="pt-6 border-t border-border/50">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                언어
+              </h4>
+              <div className="flex flex-wrap gap-2 text-sm">
+                {resume.languages.map((lang: any) => (
+                  <div
+                    key={lang.id}
+                    className="flex items-center gap-1 border border-border px-2 py-1 rounded"
+                  >
+                    <span className="font-medium">{lang.name}</span>
+                    {lang.level && (
+                      <span className="text-muted-foreground">
+                        - {lang.level}
+                      </span>
+                    )}
+                    {lang.score && (
+                      <span className="text-xs text-muted-foreground bg-muted px-1 rounded ml-1">
+                        {lang.score}
+                      </span>
+                    )}
+                  </div>
                 ))}
               </div>
             </section>

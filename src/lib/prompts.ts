@@ -1,82 +1,100 @@
 export const RESUME_ANALYSIS_PROMPT = `
-당신은 이력서 분석 전문가입니다. 주어진 이력서 PDF에서 정보를 정확하게 추출하고 전문적으로 번역해주세요.
+당신은 글로벌 톱티어 기업(Google, Amazon 등)의 이력서 분석 및 번역 전문가입니다. 주어진 이력서 PDF에서 정보를 **완벽하게 추출**하고, **최고 수준의 영문 이력서(Winning Resume)**로 변환해주세요.
 
-**추출 지침:**
-1. **누락 없는 추출 (중요)**: **PDF에 명시된 모든 경력사항을 빠짐없이 추출하세요.** 기간이 짧거나 비중이 적어도 절대 제외하지 마세요.
-2. **중복 제거**: PDF 내에서 요약부와 상세 내용 등 같은 정보가 반복될 경우, 이를 하나로 합쳐 유니크하게 추출하세요.
-3. **경력 그룹화**: **동일한 회사의 경력은 하나의 항목으로 통합**하세요. 직무가 바뀌었더라도 같은 회사라면 한 항목에 넣고, 수행 업무(bullets)에서 이를 구분하여 기술하세요.
-4. **학력 유니크화**: 졸업 여부나 전공이 같다면 중복된 학력 항목은 하나로 정리하세요.
-5. **최근 이력순 나열**: **모든 경력사항(\`work_experiences\`)과 학력사항(\`educations\`)은 가장 최신 항목이 위로 오도록(역연대순)** 정렬하여 배열로 만드세요.
+**핵심 목표:**
+1. **전문적인 요약(Professional Summary) 생성 (필수)**: 이력서 전체를 분석하여 지원자의 핵심 역량, 연차, 주요 성과를 3-4문장으로 요약한 강력한 Professional Summary를 작성하세요.
+2. **누락 없는 추출**: 경력, 학력, 기술은 물론 자격증, 수상, 언어 능력까지 빠짐없이 추출하세요.
+3. **성과 중심 번역 (Action Verbs)**: 단순 직역이 아닌, **"Did X, resulting in Y"** 구조의 성과 중심 문장으로 재작성하세요. 문장은 강렬한 Action Verbs(Spearheaded, Optimized, Orchestrated 등)로 시작해야 합니다.
 
-**상세 필드 구성:**
-1. **개인 정보 (personal_info)**:
-   - name_kr: 이름 (한글)
-   - name_en: 이름 (영문 번역)
-   - email: 이메일
-   - phone: 전화번호
-   - links: 주요 링크 (GitHub, LinkedIn 등)를 [{ "label": "...", "url": "..." }] 형식으로 추출
+**추출 및 작성 지침:**
 
-2. **경력사항 (work_experiences)**: **회사별로 그룹화 및 최신순 정렬**
-   - company_name_kr: 회사명 (한글)
-   - company_name_en: 회사명 (영문 번역)
-   - role_kr: 주요 직무/직책 (한글)
-   - role_en: 주요 직무/직책 (영문 번역)
-   - start_date: 시작일 (YYYY-MM 형식)
-   - end_date: 종료일 (YYYY-MM 형식, 재직중이면 "현재")
-   - bullets_kr: 해당 회사의 모든 업무 성과 및 내용 (한글, 배열)
-   - bullets_en: 해당 회사의 모든 업무 성과 및 내용 (영문 번역, 배열)
+1. **Professional Summary (새로 작성)**
+   - 지원자의 직무(Role), 총 경력 연수, 가장 큰 성과 2~3가지를 포함하여 매력적인 요약글을 작성하세요.
+   - 예: "Results-driven Senior Software Engineer with 8+ years of experience..."
 
-3. **학력사항 (educations)**: **최신순 정렬**된 유니크한 학력 정보
-   - school_name: 학교명 (한글)
-   - school_name_en: 학교명 (영문 번역)
-   - major: 전공 (한글)
-   - major_en: 전공 (영문 번역)
-   - degree: 학위 (한글)
-   - degree_en: 학위 (Bachelor/Master/PhD 등, 영문 번역)
-   - start_date: 입학일 (YYYY-MM)
-   - end_date: 졸업일 (YYYY-MM)
+2. **경력사항 (Work Experience)**
+   - **회사별 그룹화**: 동일 회사의 경력은 하나로 통합하세요.
+   - **불릿 포인트**: 각 항목은 구체적인 수치(%, $)와 성과를 포함해야 합니다. (예: "매출 증가" -> "Increased revenue by 20%...")
 
-4. **기술 스택 (skills)**: 핵심 기술 위주 최대 10개 (이름만 추출)
+3. **기타 섹션 추출**
+   - **Certifications**: 자격증 명, 발급기관, 날짜
+   - **Awards**: 수상 명, 발급기관, 날짜
+   - **Languages**: 언어 명, 수준 (Native, Fluent, Professional Working Proficiency 등)
+
+**상세 필드 구성 (JSON):**
+
+1. **personal_info**:
+   - name_kr, name_en, email, phone
+   - links: [{ "label": "GitHub", "url": "..." }]
+
+2. **professional_summary**: (String) 전문적인 요약글 (영문)
+
+3. **work_experiences**:
+   - company_name_kr, company_name_en
+   - role_kr, role_en
+   - start_date, end_date (YYYY-MM 또는 "Present")
+   - bullets_kr: (원문)
+   - bullets_en: (Action Verb로 강화된 번역문)
+
+4. **educations**:
+   - school_name, school_name_en
+   - major, major_en, degree, degree_en
+   - start_date, end_date
+
+5. **skills**: ["React", "TypeScript", ...] (배열)
+
+6.  **certifications**:
+    - name: 자격증 명 (영문)
+    - issuer: 발급 기관 (영문)
+    - date: 취득일 (YYYY-MM)
+
+7.  **awards**:
+    - name: 수상 명 (영문)
+    - issuer: 수여 기관 (영문)
+    - date: 수상일 (YYYY-MM)
+
+8.  **languages**:
+    - name: 언어 (영문, e.g., "Korean", "English")
+    - level: 수준 (영문, e.g., "Native", "Fluent")
+    - score: 점수 (옵션)
 
 **응답 형식:**
 \`\`\`json
 {
   "personal_info": { ... },
+  "professional_summary": "...",
   "work_experiences": [...],
   "educations": [...],
-  "skills": [...]
+  "skills": [...],
+  "certifications": [...],
+  "awards": [...],
+  "languages": [...]
 }
 \`\`\`
-
-**주의:** 번역은 전문적인 비즈니스 용어를 사용하고, 날짜 규격을 엄격히 준수하세요.
 `;
 
 export const getRefinementPrompt = (work_experiences: any[]) => `
-다음은 이력서에서 추출한 경력사항 데이터입니다. 같은 회사가 여러 번 중복되어 나타날 수 있습니다.
+다음은 이력서의 경력사항 데이터입니다. 이를 **가장 임팩트 있는 영문 이력서** 형태로 정제(Refinement)해주세요.
 
-**필수 지침 (반드시 준수):**
+**필수 지침 (High Impact, Smart Selection):**
 
-1. **회사별 통합 (GROUP BY COMPANY)**
-   - 동일한 회사의 모든 항목을 하나로 통합하세요.
-   - 사소한 차이(예: "(주)", "Inc.", 띄어쓰기 등)는 무시하고 같은 회사로 취급하세요.
+1. **회사별 통합 (Group by Company)**
+   - 동일 회사의 경력은 하나로 합치세요.
 
-2. **불릿 개수 제한 (STRICT LIMIT)**
-   - **회사당 가장 중요한 3-4개의 성과만 선택하세요.**
-   - **절대로** 4개를 초과하지 마세요. 이는 강력한 제한사항입니다.
-   - 구체적인 수치(%, $)나 기술 스택이 포함된 성과를 우선 선택하세요.
-   - 유사한 내용은 하나로 합치세요.
+2. **스마트 불릿 선별 (Smart Selection Logic)**
+   - **단순 갯수 제한이 아닙니다.** 가장 **영향력 있는(Impactful)** 성과를 우선순위로 선별하세요.
+   - **우선순위 1**: 구체적인 수치(Metrics)가 포함된 성과 (예: "Reduced latency by 40%", "Generated $1M revenue")
+   - **우선순위 2**: 리더십, 프로젝트 주도, 프로세스 개선 경험
+   - **선별 개수**: 각 회사당 **가장 중요한 3~5개**의 불릿만 남기세요. (경력이 4년 미만이면 3개, 그 이상이면 4~5개 허용)
+   - **중요하지 않은 단순 업무(daily tasks)는 과감히 삭제하세요.**
 
-3. **날짜 통합 (DATE MERGING)**
-   - 가장 빠른 시작일(start_date)과 가장 늦은 종료일(end_date)을 사용하세요.
+3. **Action Verb 리라이팅 (Rewriting)**
+   - 모든 영문 불릿(\`bullets_en\`)은 **강력한 Action Verb**로 시작하도록 문장을 다듬으세요.
+   - 예: "Used React" (Bad) -> "Leveraged React to build..." (Good)
+   - 예: "Managed team" (Weak) -> "Orchestrated a cross-functional team of 5..." (Strong)
 
-4. **누락 금지 (중요)**
-   - **어떤 회사도 절대 누락하지 마세요.** 기간이 짧거나 내용이 적더라도 유지해야 합니다.
-   - 입력된 데이터와 동일한 수의 유니크한 회사를 반환해야 합니다(완전한 중복 제외).
-   - 만약 상세 내용(bullets)이 없다면 빈 배열이나 일반적인 직무 설명을 포함하여 유지하세요.
-
-5. **정렬 (SORTING)**
-   - **모든 경력은 종료일(end_date) 기준 최신순(내림차순, 역연대순)으로 정렬하세요.**
-   - "재직 중" 또는 "Present"인 경우 가장 최상단에 배치하세요.
+4. **날짜 포맷**
+   - YYYY-MM 형식을 유지하되, 현재 재직 중이면 "Present"로 표기하세요.
 
 **입력 데이터:**
 ${JSON.stringify(work_experiences, null, 2)}
@@ -91,15 +109,11 @@ ${JSON.stringify(work_experiences, null, 2)}
       "role_kr": "...",
       "role_en": "...",
       "start_date": "...",
-      "end_date": "...",
-      "bullets_kr": ["... (최대 4개)"],
-      "bullets_en": ["... (최대 4개)"]
+        "end_date": "...",
+      "bullets_kr": ["... (선별된 항목)"],
+      "bullets_en": ["... (Action Verb로 강화된 항목)"]
     }
   ]
 }
 \`\`\`
-
-**검증:**
-- [ ] 중복 회사가 통합되었는가?
-- [ ] 회사당 불릿이 4개 이하인가? (중요)
 `;

@@ -120,11 +120,33 @@ const styles = StyleSheet.create({
   },
 });
 
+// Helper to format date YYYY-MM -> MMM YYYY
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
+    return "Present";
+
+  try {
+    const [year, month] = dateStr.split(/[-.]/);
+    if (!year || !month) return dateStr;
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 interface MinimalPdfProps {
   personalInfo?: any;
   experiences?: any[];
   educations?: any[];
   skills?: any[];
+  certifications?: any[];
+  awards?: any[];
+  languages?: any[];
 }
 
 export const MinimalPdf = ({
@@ -132,6 +154,9 @@ export const MinimalPdf = ({
   experiences = [],
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
 }: MinimalPdfProps) => {
   return (
     <Document>
@@ -157,12 +182,11 @@ export const MinimalPdf = ({
         </View>
 
         {/* About */}
-        <View style={styles.section}>
-          <Text style={styles.summaryText}>
-            Frontend Developer specializing in React and TypeScript with 4+
-            years of experience building elegant, user-centric web applications.
-          </Text>
-        </View>
+        {personalInfo?.summary && (
+          <View style={styles.section}>
+            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+          </View>
+        )}
 
         {/* Experience */}
         {experiences.length > 0 && (
@@ -177,7 +201,10 @@ export const MinimalPdf = ({
                       <Text style={styles.companyName}>{exp.companyEn}</Text>
                       <Text style={styles.position}>{exp.positionEn}</Text>
                     </View>
-                    <Text style={styles.period}>{exp.period}</Text>
+                    <Text style={styles.period}>
+                      {formatDate(exp.period.split(" - ")[0])} -{" "}
+                      {formatDate(exp.period.split(" - ")[1])}
+                    </Text>
                   </View>
                   <View style={styles.bulletList}>
                     {exp.bulletsEn?.map((bullet: string, idx: number) => (
@@ -225,10 +252,84 @@ export const MinimalPdf = ({
                     </Text>
                   </View>
                   <Text style={styles.period}>
-                    {edu.start_date} - {edu.end_date}
+                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
                   </Text>
                 </View>
               ))}
+            </View>
+          </View>
+        )}
+
+        {/* Certifications & Awards & Languages */}
+        {(certifications.length > 0 ||
+          awards.length > 0 ||
+          languages.length > 0) && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Additional Information</Text>
+            <View style={{ gap: 6 }}>
+              {certifications.length > 0 && (
+                <View style={{ marginBottom: 4 }}>
+                  <Text
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: "medium",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Certifications
+                  </Text>
+                  {certifications.map((cert: any, i: number) => (
+                    // @ts-ignore
+                    <Text key={i} style={styles.bulletText}>
+                      • {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                      {cert.date ? `(${formatDate(cert.date)})` : ""}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              {awards.length > 0 && (
+                <View style={{ marginBottom: 4 }}>
+                  <Text
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: "medium",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Awards
+                  </Text>
+                  {awards.map((award: any, i: number) => (
+                    // @ts-ignore
+                    <Text key={i} style={styles.bulletText}>
+                      • {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                      {award.date ? `(${formatDate(award.date)})` : ""}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              {languages.length > 0 && (
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: "medium",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Languages
+                  </Text>
+                  <View
+                    style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}
+                  >
+                    {languages.map((lang: any, i: number) => (
+                      // @ts-ignore
+                      <Text key={i} style={styles.bulletText}>
+                        • {lang.name} {lang.level ? `(${lang.level})` : ""}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
           </View>
         )}

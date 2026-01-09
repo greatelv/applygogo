@@ -252,7 +252,45 @@ export async function POST(
       }
     }
 
-    // 7. Update resume status to COMPLETED and save personal info
+    // Save certifications
+    const { certifications, awards, languages } = analysisResult;
+
+    if (certifications && certifications.length > 0) {
+      await prisma.certification.createMany({
+        data: certifications.map((cert: any) => ({
+          resumeId: resumeId,
+          name: cert.name ? String(cert.name) : "Unknown Certification",
+          issuer: cert.issuer ? String(cert.issuer) : undefined,
+          date: cert.date ? String(cert.date) : undefined,
+        })),
+      });
+    }
+
+    // Save awards
+    if (awards && awards.length > 0) {
+      await prisma.award.createMany({
+        data: awards.map((award: any) => ({
+          resumeId: resumeId,
+          name: award.name ? String(award.name) : "Unknown Award",
+          issuer: award.issuer ? String(award.issuer) : undefined,
+          date: award.date ? String(award.date) : undefined,
+        })),
+      });
+    }
+
+    // Save languages
+    if (languages && languages.length > 0) {
+      await prisma.language.createMany({
+        data: languages.map((lang: any) => ({
+          resumeId: resumeId,
+          name: lang.name ? String(lang.name) : "Unknown Language",
+          level: lang.level ? String(lang.level) : undefined,
+          score: lang.score ? String(lang.score) : undefined,
+        })),
+      });
+    }
+
+    // 7. Update resume status to COMPLETED and save personal info & summary
     const personalInfo = analysisResult.personal_info || {};
 
     await prisma.resume.update({
@@ -265,6 +303,7 @@ export async function POST(
         email: personalInfo.email || "",
         phone: personalInfo.phone || "",
         links: personalInfo.links || [],
+        summary: analysisResult.professional_summary || "",
       },
     });
 

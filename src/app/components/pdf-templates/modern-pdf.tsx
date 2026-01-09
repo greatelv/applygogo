@@ -171,11 +171,33 @@ const styles = StyleSheet.create({
   },
 });
 
+// Helper to format date YYYY-MM -> MMM YYYY
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
+    return "Present";
+
+  try {
+    const [year, month] = dateStr.split(/[-.]/);
+    if (!year || !month) return dateStr;
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 interface ModernPdfProps {
   personalInfo?: any;
   experiences?: any[];
   educations?: any[];
   skills?: any[];
+  certifications?: any[];
+  awards?: any[];
+  languages?: any[];
 }
 
 export const ModernPdf = ({
@@ -183,6 +205,9 @@ export const ModernPdf = ({
   experiences = [],
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
 }: ModernPdfProps) => {
   return (
     <Document>
@@ -219,18 +244,15 @@ export const ModernPdf = ({
         </View>
 
         {/* Summary */}
-        <View style={styles.section}>
-          <View style={styles.sectionTitleRow}>
-            <View style={styles.sectionTitleBar} />
-            <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
+        {personalInfo?.summary && (
+          <View style={styles.section}>
+            <View style={styles.sectionTitleRow}>
+              <View style={styles.sectionTitleBar} />
+              <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
+            </View>
+            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
           </View>
-          <Text style={styles.summaryText}>
-            Results-driven Frontend Developer with 4+ years of experience in
-            building responsive web applications. Proven track record of
-            improving user experience and team productivity through innovative
-            solutions.
-          </Text>
-        </View>
+        )}
 
         {/* Experience */}
         {experiences.length > 0 && (
@@ -248,7 +270,10 @@ export const ModernPdf = ({
                       <Text style={styles.companyName}>{exp.companyEn}</Text>
                       <Text style={styles.position}>{exp.positionEn}</Text>
                     </View>
-                    <Text style={styles.period}>{exp.period}</Text>
+                    <Text style={styles.period}>
+                      {formatDate(exp.period.split(" - ")[0])} -{" "}
+                      {formatDate(exp.period.split(" - ")[1])}
+                    </Text>
                   </View>
                   <View style={styles.bulletList}>
                     {exp.bulletsEn?.map((bullet: string, idx: number) => (
@@ -309,10 +334,87 @@ export const ModernPdf = ({
                     </Text>
                   </View>
                   <Text style={styles.period}>
-                    {edu.start_date} - {edu.end_date}
+                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
                   </Text>
                 </View>
               ))}
+            </View>
+          </View>
+        )}
+
+        {/* Certifications & Awards & Languages */}
+        {(certifications.length > 0 ||
+          awards.length > 0 ||
+          languages.length > 0) && (
+          <View style={styles.section}>
+            <View style={styles.sectionTitleRow}>
+              <View style={styles.sectionTitleBar} />
+              <Text style={styles.sectionTitle}>ADDITIONAL INFORMATION</Text>
+            </View>
+            <View style={{ gap: 8 }}>
+              {certifications.length > 0 && (
+                <View style={{ marginBottom: 4 }}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 11,
+                      marginBottom: 2,
+                    }}
+                  >
+                    Certifications
+                  </Text>
+                  {certifications.map((cert: any, i: number) => (
+                    <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
+                      • {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                      {cert.date ? `(${formatDate(cert.date)})` : ""}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              {awards.length > 0 && (
+                <View style={{ marginBottom: 4 }}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 11,
+                      marginBottom: 2,
+                    }}
+                  >
+                    Awards
+                  </Text>
+                  {awards.map((award: any, i: number) => (
+                    <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
+                      • {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                      {award.date ? `(${formatDate(award.date)})` : ""}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              {languages.length > 0 && (
+                <View>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 11,
+                      marginBottom: 2,
+                    }}
+                  >
+                    Languages
+                  </Text>
+                  <View
+                    style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
+                  >
+                    {languages.map((lang: any, i: number) => (
+                      <Text
+                        key={i}
+                        style={{ fontSize: 10.5, color: "#374151" }}
+                      >
+                        • {lang.name} {lang.level ? `(${lang.level})` : ""}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
           </View>
         )}

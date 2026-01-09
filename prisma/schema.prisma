@@ -63,6 +63,7 @@ model Resume {
   links             Json?              // [{label, url}]
   original_file_url String
   target_role       String?
+  summary           String?            @default("")
   status            ResumeStatus       @default(IDLE)
   failure_message   String?
   current_step      ResumeStep         @default(UPLOAD)
@@ -73,6 +74,9 @@ model Resume {
   user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills            Skill[]
   work_experiences  WorkExperience[]
+  certifications    Certification[]
+  awards            Award[]
+  languages         Language[]
 
   @@map("resumes")
 }
@@ -203,4 +207,37 @@ enum SubscriptionStatus {
   ACTIVE
   PAST_DUE
   CANCELED
+}
+
+model Certification {
+  id        String  @id @default(cuid())
+  resumeId  String  @map("resume_id")
+  name      String
+  issuer    String?
+  date      String?
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("certifications")
+}
+
+model Award {
+  id        String  @id @default(cuid())
+  resumeId  String  @map("resume_id")
+  name      String
+  date      String?
+  issuer    String?
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("awards")
+}
+
+model Language {
+  id        String  @id @default(cuid())
+  resumeId  String  @map("resume_id")
+  name      String
+  level     String? 
+  score     String? 
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("languages")
 }

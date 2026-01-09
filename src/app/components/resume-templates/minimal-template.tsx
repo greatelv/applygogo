@@ -1,3 +1,22 @@
+// Helper to format date YYYY-MM -> MMM YYYY
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
+    return "Present";
+
+  try {
+    const [year, month] = dateStr.split(/[-.]/);
+    if (!year || !month) return dateStr;
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 interface Experience {
   id: string;
   company: string;
@@ -27,12 +46,34 @@ interface Skill {
   level?: string | null;
 }
 
+interface Certification {
+  id: string;
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
+interface Award {
+  id: string;
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
+interface Language {
+  id: string;
+  name: string;
+  level?: string;
+  score?: string;
+}
+
 interface PersonalInfo {
   name_kr?: string;
   name_en?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
+  summary?: string;
 }
 
 interface MinimalTemplateProps {
@@ -40,6 +81,9 @@ interface MinimalTemplateProps {
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
+  certifications?: Certification[];
+  awards?: Award[];
+  languages?: Language[];
 }
 
 export function MinimalTemplate({
@@ -47,6 +91,9 @@ export function MinimalTemplate({
   experiences,
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
 }: MinimalTemplateProps) {
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-sans">
@@ -76,46 +123,50 @@ export function MinimalTemplate({
         </div>
 
         {/* About */}
-        <div className="mb-10">
-          <p className="text-sm text-gray-700 leading-relaxed font-light">
-            Frontend Developer specializing in React and TypeScript with 4+
-            years of experience building elegant, user-centric web applications.
-          </p>
-        </div>
+        {personalInfo?.summary && (
+          <div className="mb-10">
+            <p className="text-sm text-gray-700 leading-relaxed font-light">
+              {personalInfo.summary}
+            </p>
+          </div>
+        )}
 
         {/* Experience */}
-        <div className="mb-10">
-          <h2 className="text-xs font-semibold mb-6 text-gray-400 tracking-widest uppercase">
-            Experience
-          </h2>
-          <div className="space-y-8">
-            {experiences.map((exp) => (
-              <div key={exp.id} className="relative">
-                <div className="flex justify-between items-baseline mb-3">
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {exp.companyEn}
-                    </h3>
-                    <p className="text-sm text-gray-500">{exp.positionEn}</p>
+        {experiences.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xs font-semibold mb-6 text-gray-400 tracking-widest uppercase">
+              Experience
+            </h2>
+            <div className="space-y-8">
+              {experiences.map((exp) => (
+                <div key={exp.id} className="relative">
+                  <div className="flex justify-between items-baseline mb-3">
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {exp.companyEn}
+                      </h3>
+                      <p className="text-sm text-gray-500">{exp.positionEn}</p>
+                    </div>
+                    <span className="text-xs text-gray-400 tabular-nums">
+                      {formatDate(exp.period.split(" - ")[0])} -{" "}
+                      {formatDate(exp.period.split(" - ")[1])}
+                    </span>
                   </div>
-                  <span className="text-xs text-gray-400 tabular-nums">
-                    {exp.period}
-                  </span>
+                  <ul className="space-y-2">
+                    {exp.bulletsEn.map((bullet, index) => (
+                      <li
+                        key={index}
+                        className="text-sm text-gray-600 leading-relaxed font-light"
+                      >
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-2">
-                  {exp.bulletsEn.map((bullet, index) => (
-                    <li
-                      key={index}
-                      className="text-sm text-gray-600 leading-relaxed font-light"
-                    >
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Skills */}
         {skills.length > 0 && (
@@ -138,7 +189,7 @@ export function MinimalTemplate({
 
         {/* Education */}
         {educations.length > 0 && (
-          <div>
+          <div className="mb-10">
             <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
               Education
             </h2>
@@ -157,10 +208,81 @@ export function MinimalTemplate({
                     </p>
                   </div>
                   <span className="text-xs text-gray-400 tabular-nums">
-                    {edu.start_date} - {edu.end_date}
+                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Certifications & Awards & Languages */}
+        {(certifications.length > 0 ||
+          awards.length > 0 ||
+          languages.length > 0) && (
+          <div>
+            <h2 className="text-xs font-semibold mb-4 text-gray-400 tracking-widest uppercase">
+              Additional Information
+            </h2>
+            <div className="space-y-4">
+              {certifications.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-gray-900 mb-2">
+                    Certifications
+                  </h3>
+                  <div className="flex flex-col gap-1">
+                    {certifications.map((cert) => (
+                      <div
+                        key={cert.id}
+                        className="text-sm text-gray-600 font-light"
+                      >
+                        {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                        {cert.date ? `(${formatDate(cert.date)})` : ""}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {awards.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-gray-900 mb-2">
+                    Awards
+                  </h3>
+                  <div className="flex flex-col gap-1">
+                    {awards.map((award) => (
+                      <div
+                        key={award.id}
+                        className="text-sm text-gray-600 font-light"
+                      >
+                        {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                        {award.date ? `(${formatDate(award.date)})` : ""}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {languages.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-gray-900 mb-2">
+                    Languages
+                  </h3>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 font-light">
+                    {languages.map((lang, index) => (
+                      <span key={lang.id} className="flex items-center">
+                        {index > 0 && (
+                          <span className="mr-4 text-gray-300">|</span>
+                        )}
+                        <span className="font-medium mr-1 text-gray-800">
+                          {lang.name}
+                        </span>
+                        {lang.level && (
+                          <span className="text-gray-400">({lang.level})</span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -12,6 +12,9 @@ interface DetailClientProps {
   experiences: any[];
   educations?: any[];
   skills?: any[];
+  certifications?: any[];
+  awards?: any[];
+  languages?: any[];
   template: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
@@ -24,6 +27,9 @@ export function DetailClient({
   experiences,
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
   template,
   updatedAt,
   isWorkflowComplete,
@@ -53,6 +59,9 @@ export function DetailClient({
       experiences={experiences}
       educations={educations}
       skills={skills}
+      certifications={certifications}
+      awards={awards}
+      languages={languages}
       template={template}
       updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}

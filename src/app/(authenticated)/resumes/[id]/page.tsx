@@ -19,6 +19,9 @@ export default async function Page({
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
+      certifications: true,
+      awards: true,
+      languages: true,
     },
   });
 
@@ -30,13 +33,8 @@ export default async function Page({
   } else if (resume.current_step === "TEMPLATE") {
     redirect(`/resumes/${resume.id}/templates`);
   } else if (resume.current_step === "PROCESSING") {
-    // Assuming there is a processing page, if not, maybe edit?
-    // Let's assume there is one or default to edit, but let's check directory structure.
-    // There is a 'processing' directory seen earlier.
     redirect(`/resumes/${resume.id}/processing`);
   } else if (resume.current_step === "UPLOAD") {
-    // If stuck in upload, maybe invalid state or needs re-upload
-    // But usually this means just started.
     redirect(`/resumes/new`);
   }
 
@@ -75,6 +73,27 @@ export default async function Page({
     id: s.id,
     name: s.name,
     level: s.level,
+  }));
+
+  const mappedCertifications = resume.certifications.map((c) => ({
+    id: c.id,
+    name: c.name,
+    issuer: c.issuer,
+    date: c.date,
+  }));
+
+  const mappedAwards = resume.awards.map((a) => ({
+    id: a.id,
+    name: a.name,
+    issuer: a.issuer,
+    date: a.date,
+  }));
+
+  const mappedLanguages = resume.languages.map((l) => ({
+    id: l.id,
+    name: l.name,
+    level: l.level,
+    score: l.score,
   }));
 
   return (

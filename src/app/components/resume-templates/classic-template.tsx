@@ -1,3 +1,22 @@
+// Helper to format date YYYY-MM -> MMM YYYY
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return "";
+  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
+    return "Present";
+
+  try {
+    const [year, month] = dateStr.split(/[-.]/);
+    if (!year || !month) return dateStr;
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 interface Experience {
   id: string;
   company: string;
@@ -27,12 +46,34 @@ interface Skill {
   level?: string | null;
 }
 
+interface Certification {
+  id: string;
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
+interface Award {
+  id: string;
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
+interface Language {
+  id: string;
+  name: string;
+  level?: string;
+  score?: string;
+}
+
 interface PersonalInfo {
   name_kr?: string;
   name_en?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
+  summary?: string;
 }
 
 interface ClassicTemplateProps {
@@ -40,6 +81,9 @@ interface ClassicTemplateProps {
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
+  certifications?: Certification[];
+  awards?: Award[];
+  languages?: Language[];
 }
 
 export function ClassicTemplate({
@@ -47,6 +91,9 @@ export function ClassicTemplate({
   experiences,
   educations = [],
   skills = [],
+  certifications = [],
+  awards = [],
+  languages = [],
 }: ClassicTemplateProps) {
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-serif">
@@ -82,51 +129,54 @@ export function ClassicTemplate({
       </div>
 
       {/* Professional Summary */}
-      <div className="mb-6">
-        <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
-          PROFESSIONAL SUMMARY
-        </h2>
-        <p className="text-sm text-gray-800 leading-relaxed text-justify">
-          Accomplished Frontend Developer with over 4 years of progressive
-          experience in designing and implementing sophisticated web
-          applications. Demonstrated expertise in modern JavaScript frameworks
-          and a proven ability to enhance operational efficiency and user
-          satisfaction.
-        </p>
-      </div>
+      {personalInfo?.summary && (
+        <div className="mb-6">
+          <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
+            PROFESSIONAL SUMMARY
+          </h2>
+          <p className="text-sm text-gray-800 leading-relaxed text-justify">
+            {personalInfo.summary}
+          </p>
+        </div>
+      )}
 
       {/* Experience */}
-      <div className="mb-6">
-        <h2 className="text-base font-bold mb-3 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
-          PROFESSIONAL EXPERIENCE
-        </h2>
-        <div className="space-y-4">
-          {experiences.map((exp) => (
-            <div key={exp.id}>
-              <div className="mb-1">
-                <div className="flex justify-between items-baseline">
-                  <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
-                  <span className="text-xs text-gray-600 italic">
-                    {exp.period}
-                  </span>
+      {experiences.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-base font-bold mb-3 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
+            PROFESSIONAL EXPERIENCE
+          </h2>
+          <div className="space-y-4">
+            {experiences.map((exp) => (
+              <div key={exp.id}>
+                <div className="mb-1">
+                  <div className="flex justify-between items-baseline">
+                    <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
+                    <span className="text-xs text-gray-600 italic">
+                      {formatDate(exp.period.split(" - ")[0])} -{" "}
+                      {formatDate(exp.period.split(" - ")[1])}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700 italic">
+                    {exp.positionEn}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-700 italic">{exp.positionEn}</p>
+                <ul className="space-y-1">
+                  {exp.bulletsEn.map((bullet, index) => (
+                    <li
+                      key={index}
+                      className="text-sm text-gray-800 flex gap-2 leading-relaxed"
+                    >
+                      <span className="flex-shrink-0">•</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-1">
-                {exp.bulletsEn.map((bullet, index) => (
-                  <li
-                    key={index}
-                    className="text-sm text-gray-800 flex gap-2 leading-relaxed"
-                  >
-                    <span className="flex-shrink-0">•</span>
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Skills */}
       {skills.length > 0 && (
@@ -145,7 +195,7 @@ export function ClassicTemplate({
 
       {/* Education */}
       {educations.length > 0 && (
-        <div>
+        <div className="mb-6">
           <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
             EDUCATION
           </h2>
@@ -161,10 +211,60 @@ export function ClassicTemplate({
                   </p>
                 </div>
                 <span className="text-xs text-gray-600 italic">
-                  {edu.start_date} - {edu.end_date}
+                  {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Certifications & Awards & Languages */}
+      {(certifications.length > 0 ||
+        awards.length > 0 ||
+        languages.length > 0) && (
+        <div>
+          <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
+            ADDITIONAL INFORMATION
+          </h2>
+          <div className="space-y-3 text-sm text-gray-800">
+            {certifications.length > 0 && (
+              <div>
+                <span className="font-semibold">Certifications: </span>
+                {certifications.map((cert, i) => (
+                  <span key={cert.id}>
+                    {i > 0 && ", "}
+                    {cert.name}
+                    {cert.issuer && ` (${cert.issuer})`}
+                    {cert.date && ` - ${formatDate(cert.date)}`}
+                  </span>
+                ))}
+              </div>
+            )}
+            {awards.length > 0 && (
+              <div>
+                <span className="font-semibold">Awards: </span>
+                {awards.map((award, i) => (
+                  <span key={award.id}>
+                    {i > 0 && ", "}
+                    {award.name}
+                    {award.issuer && ` (${award.issuer})`}
+                    {award.date && ` - ${formatDate(award.date)}`}
+                  </span>
+                ))}
+              </div>
+            )}
+            {languages.length > 0 && (
+              <div>
+                <span className="font-semibold">Languages: </span>
+                {languages.map((lang, i) => (
+                  <span key={lang.id}>
+                    {i > 0 && ", "}
+                    {lang.name} {lang.level && `(${lang.level})`}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
