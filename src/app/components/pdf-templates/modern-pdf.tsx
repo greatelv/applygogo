@@ -407,13 +407,11 @@ export const ModernPdf = ({
                     style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => (
-                      // @ts-ignore
-                      <Text
-                        key={i}
-                        style={{ fontSize: 10.5, color: "#374151" }}
-                      >
-                        • {lang.name} {lang.level ? `(${lang.level})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                          • {lang.name} {lang.level ? `(${lang.level})` : ""}
+                        </Text>
+                      </React.Fragment>
                     ))}
                   </View>
                 </View>
