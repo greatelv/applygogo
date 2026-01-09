@@ -88,7 +88,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             {/* Business Info */}
             <div className="space-y-1 text-xs text-muted-foreground leading-relaxed">
               <p>
-                <span className="font-medium">케이코퍼레이션</span>
+                <span className="font-medium">케익코퍼레이션</span>
                 <span className="mx-2">|</span>
                 대표자: 전태경
                 <span className="mx-2">|</span>
