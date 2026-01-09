@@ -41,16 +41,14 @@ export function SettingsClientPage({
       }
 
       // 1. Request Billing Key (Auth)
-      // Use "CARD" to open the standard Card Input UI provided by Toss Payments
+      // Use "EASY_PAY" for Toss Pay (App-based auth)
       const response = await PortOne.requestIssueBillingKey({
         storeId,
-        channelKey, // Ensure this maps to your Toss Payments Channel in PortOne Console
-        billingKeyMethod: "CARD",
+        channelKey,
+        billingKeyMethod: "EASY_PAY",
         issueName: "지원고고 정기 결제 등록",
-        customer: {
-          id: user.email || crypto.randomUUID(), // Unique Customer ID is REQUIRED
-        } as any,
-      });
+        customerId: user.email || crypto.randomUUID(), // Moved to top-level
+      } as any);
 
       if (response?.code != null) {
         console.error("Billing key issue failed:", response);

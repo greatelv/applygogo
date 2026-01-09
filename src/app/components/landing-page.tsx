@@ -175,83 +175,209 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         </div>
       </section>
 
+      {/* Recommended For (New Section 1) */}
+      <section className="py-20 border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-3xl tracking-tight mb-6 leading-tight">
+                글로벌 커리어를 꿈꾸는
+                <br />
+                모든 분들을 위해 준비했습니다
+              </h3>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="size-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                    <Globe className="size-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold mb-1">
+                      해외/외국계 기업 지원자
+                    </h4>
+                    <p className="text-muted-foreground text-sm">
+                      영문 이력서 형식(CV/Resume)에 익숙하지 않아 막막하신
+                      분들께 글로벌 스탠다드 포맷을 제공합니다.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="size-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                    <Sparkles className="size-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold mb-1">바쁜 직장인</h4>
+                    <p className="text-muted-foreground text-sm">
+                      이직 기회는 왔는데 영문 이력서 준비할 시간이 부족하신가요?
+                      기존 한글 이력서만 올리면 5분 안에 완성됩니다.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="size-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
+                    <FileText className="size-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold mb-1">
+                      번역기 사용이 불안한 분
+                    </h4>
+                    <p className="text-muted-foreground text-sm">
+                      단순 직역이 아닌, '채용 문법'에 맞는 세련된 영어 표현으로
+                      당신의 경력을 빛내드립니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-muted/50 rounded-2xl p-8 border border-border">
+              {/* Abstract Visual Representation */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border shadow-sm">
+                  <div className="size-8 rounded bg-gray-100 dark:bg-gray-800 animate-pulse" />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-4 w-1/3 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+                    <div className="h-3 w-3/4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+                  </div>
+                </div>
+                <div className="flex justify-center text-muted-foreground">
+                  <ArrowRight className="size-5 rotate-90 my-2" />
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-primary/20 shadow-sm ring-1 ring-primary/10">
+                  <div className="size-8 rounded bg-primary/10 flex items-center justify-center">
+                    <Check className="size-4 text-primary" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <p className="text-sm font-medium">
+                      Professional English Resume
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Perfectly formatted & translated
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Preview */}
       <section className="py-20 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl tracking-tight mb-4">간단한 가격 정책</h3>
-            <p className="text-muted-foreground">필요한 만큼만 사용하세요</p>
+            <h3 className="text-3xl tracking-tight mb-4">심플한 요금제</h3>
+            <p className="text-muted-foreground">
+              복잡한 플랜 비교 없이, 합리적인 가격으로 시작하세요
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-card border border-border rounded-lg p-6 text-center">
+          <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
               <h4 className="text-lg font-semibold mb-2">Free</h4>
               <div className="text-3xl font-bold mb-4">무료</div>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
+              <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />월 2 크레딧
+                  <Check className="size-4 text-green-600 shrink-0" />월 3회
+                  변환 크레딧
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
+                  <Check className="size-4 text-green-600 shrink-0" />
                   이력서 1개 보관
                 </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  기본 템플릿 (Modern, Classic)
+                </li>
               </ul>
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={onGetStarted}
               >
-                시작하기
+                무료로 시작하기
               </Button>
             </div>
 
-            <div className="bg-card border border-foreground rounded-lg p-6 text-center shadow-lg relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full">
-                인기
+            <div className="bg-card border border-primary rounded-lg p-8 text-center shadow-lg relative ring-1 ring-primary/20">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
+                BEST CAPABILITY
               </div>
-              <h4 className="text-lg font-semibold mb-2">Standard</h4>
-              <div className="text-3xl font-bold mb-4">₩9,900</div>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
+              <h4 className="text-lg font-semibold mb-2">Pro</h4>
+              <div className="text-3xl font-bold mb-4">
+                ₩9,900{" "}
+                <span className="text-base font-normal text-muted-foreground">
+                  /월
+                </span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />월 6 크레딧
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  <span className="font-semibold text-foreground">
+                    월 100회
+                  </span>{" "}
+                  변환 크레딧
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  이력서 3개 보관
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  <span className="font-semibold text-foreground">
+                    무제한
+                  </span>{" "}
+                  이력서 보관
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  모든 템플릿
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  모든 템플릿 사용 가능
                 </li>
               </ul>
-              <Button className="w-full" onClick={onGetStarted}>
-                시작하기
+              <Button className="w-full" onClick={onGetStarted} size="lg">
+                Pro로 시작하기
               </Button>
             </div>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-8">
+            * 크레딧은 AI 생성 시 1, 재번역 시 0.5가 차감됩니다. 다운로드는
+            무제한입니다.
+          </p>
+        </div>
+      </section>
 
-            <div className="bg-card border border-border rounded-lg p-6 text-center">
-              <h4 className="text-lg font-semibold mb-2">Pro</h4>
-              <div className="text-3xl font-bold mb-4">₩29,900</div>
-              <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />월 20 크레딧
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  무제한 보관
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600" />
-                  커스텀 템플릿
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={onGetStarted}
-              >
-                시작하기
-              </Button>
+      {/* FAQ (New Section 2) */}
+      <section className="py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl tracking-tight mb-4">자주 묻는 질문</h3>
+            <p className="text-muted-foreground">궁금한 점을 확인하세요</p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="rounded-lg border border-border p-6 bg-card">
+              <h4 className="font-semibold mb-2">
+                Q. 한글 이력서 양식은 상관없나요?
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                네, PDF 형식의 이력서라면 자유 양식, 잡코리아/사람인 다운로드
+                양식 등 대부분 지원합니다. AI가 텍스트를 추출하여 내용을
+                분석하므로 형식이 복잡해도 괜찮습니다.
+              </p>
+            </div>
+            <div className="rounded-lg border border-border p-6 bg-card">
+              <h4 className="font-semibold mb-2">
+                Q. 번역된 내용은 제가 수정할 수 있나요?
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                물론입니다. AI 변환 후 제공되는 편집기에서 요약된 내용과 영문
+                번역을 자유롭게 수정하실 수 있습니다. Split View를 통해 원문과
+                비교하며 섬세하게 다듬어보세요.
+              </p>
+            </div>
+            <div className="rounded-lg border border-border p-6 bg-card">
+              <h4 className="font-semibold mb-2">
+                Q. 무료 플랜으로도 충분한가요?
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                체험을 위해 월 3회 무료 변환 크레딧을 제공합니다. 이력서를
+                완성하고 다운로드하기에 충분하지만, 다양한 템플릿과 무제한
+                수정을 원하시면 Pro 플랜을 추천드립니다.
+              </p>
             </div>
           </div>
         </div>
