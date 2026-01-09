@@ -47,7 +47,9 @@ export function SettingsClientPage({
         channelKey,
         billingKeyMethod: "EASY_PAY",
         issueName: "지원고고 정기 결제 등록",
-        customerId: user.email || crypto.randomUUID(), // Moved to top-level
+        customer: {
+          customerId: user.email || crypto.randomUUID(),
+        },
       } as any);
 
       if (response?.code != null) {

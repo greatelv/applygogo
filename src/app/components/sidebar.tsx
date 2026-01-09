@@ -118,21 +118,6 @@ export function Sidebar({
               })}
             </ul>
           </nav>
-
-          {/* Footer */}
-          <div className="p-4 border-t border-border">
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>© 2026 지원고고</p>
-              <div className="flex gap-3">
-                <a href="#" className="hover:text-foreground">
-                  문의
-                </a>
-                <a href="#" className="hover:text-foreground">
-                  도움말
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </aside>
     </>

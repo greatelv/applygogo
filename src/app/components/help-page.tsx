@@ -159,11 +159,11 @@ export function HelpPage() {
           이메일로 문의해주시면 24시간 내에 답변드리겠습니다
         </p>
         <a
-          href="mailto:support@applygogo.com"
+          href="mailto:patakeique@gmail.com"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
         >
           <Mail className="size-4" />
-          support@applygogo.com
+          patakeique@gmail.com
         </a>
       </div>
     </div>

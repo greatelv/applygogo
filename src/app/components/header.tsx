@@ -1,4 +1,4 @@
-import { Menu, LogOut, Settings, Info } from "lucide-react";
+import { Menu, LogOut, Settings, Info, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -119,6 +119,20 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* Theme toggle */}
           <ThemeToggle />
+
+          {/* Upgrade CTA - Only for FREE plan */}
+          {plan === "FREE" && (
+            <Button
+              asChild
+              size="sm"
+              className="hidden sm:inline-flex bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm border-0 font-semibold"
+            >
+              <Link href="/settings#payment-section">
+                <Sparkles className="w-3.5 h-3.5 mr-2" />
+                PRO 업그레이드
+              </Link>
+            </Button>
+          )}
 
           {/* Plan badge - Clickable */}
           <a href="/settings#payment-section" className="hidden sm:inline-flex">

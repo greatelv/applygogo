@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { SiteFooter } from "./site-footer";
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -399,25 +400,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>© 2026 지원고고. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-foreground">
-                서비스 약관
-              </a>
-              <a href="#" className="hover:text-foreground">
-                개인정보 처리방침
-              </a>
-              <a href="#" className="hover:text-foreground">
-                문의
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

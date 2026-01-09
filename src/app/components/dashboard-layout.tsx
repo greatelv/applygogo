@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
+import { SiteFooter } from "./site-footer";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -57,7 +58,10 @@ export function DashboardLayout({
             onCreateNew={onCreateNew}
           />
 
-          <main className="flex-1 p-4 lg:p-8">{children}</main>
+          <div className="flex flex-col flex-1 min-w-0">
+            <main className="flex-1 p-4 lg:p-8">{children}</main>
+            <SiteFooter simple={true} />
+          </div>
         </div>
       </div>
     </div>
