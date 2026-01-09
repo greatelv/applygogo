@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ArrowLeft,
   Edit,
+  Layout,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -44,12 +45,15 @@ interface ResumeDetailPageProps {
     links: any[];
   };
   experiences?: TranslatedExperience[];
+  educations?: any[];
+  skills?: any[];
   template?: string;
   isWorkflowComplete?: boolean;
   onBack: () => void;
   onDelete?: (id: string) => void;
   onDownload?: () => void;
   onEdit?: () => void;
+  onChangeTemplate?: () => void;
 }
 
 export function ResumeDetailPage({
@@ -57,12 +61,15 @@ export function ResumeDetailPage({
   resumeTitle,
   personalInfo,
   experiences,
+  educations = [],
+  skills = [],
   template = "modern",
   isWorkflowComplete = false,
   onBack,
   onDelete,
   onDownload,
   onEdit,
+  onChangeTemplate,
 }: ResumeDetailPageProps) {
   // Use props data
   const resume = {
@@ -73,6 +80,8 @@ export function ResumeDetailPage({
     updatedAt: new Date().toISOString(), // This should ideally be passed as prop
     template,
     experiences: experiences || [],
+    educations,
+    skills,
   };
 
   const config = statusConfig[resume.status];
@@ -102,13 +111,12 @@ export function ResumeDetailPage({
       const commonProps = {
         personalInfo: resume.personalInfo,
         experiences: resume.experiences,
-        // @ts-ignore
-        educations: [],
-        // @ts-ignore
-        skills: [],
+        educations: resume.educations,
+        skills: resume.skills,
       };
 
-      switch (resume.template) {
+      const templateKey = resume.template.toLowerCase();
+      switch (templateKey) {
         case "classic":
           doc = <ClassicPdf {...commonProps} />;
           break;
@@ -139,12 +147,15 @@ export function ResumeDetailPage({
   };
 
   const renderTemplate = () => {
-    switch (resume.template) {
+    const templateKey = resume.template.toLowerCase();
+    switch (templateKey) {
       case "classic":
         return (
           <ClassicTemplate
             personalInfo={resume.personalInfo}
             experiences={resume.experiences || []}
+            educations={resume.educations}
+            skills={resume.skills}
           />
         );
       case "minimal":
@@ -152,6 +163,8 @@ export function ResumeDetailPage({
           <MinimalTemplate
             personalInfo={resume.personalInfo}
             experiences={resume.experiences || []}
+            educations={resume.educations}
+            skills={resume.skills}
           />
         );
       case "modern":
@@ -160,10 +173,8 @@ export function ResumeDetailPage({
           <ModernTemplate
             personalInfo={resume.personalInfo}
             experiences={resume.experiences || []}
-            // @ts-ignore
-            educations={[]}
-            // @ts-ignore
-            skills={[]}
+            educations={resume.educations}
+            skills={resume.skills}
           />
         );
     }
@@ -216,19 +227,24 @@ export function ResumeDetailPage({
                       "ko-KR"
                     )}`}
               </span>
-              <span>템플릿: {resume.template}</span>
+              <span>
+                템플릿:{" "}
+                {resume.template.charAt(0).toUpperCase() +
+                  resume.template.slice(1)}
+              </span>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={onBack}>
+            <Button variant="outline" onClick={onBack}>
               <ArrowLeft className="size-4" />
               {isWorkflowComplete ? "이전" : "목록으로"}
             </Button>
+
             {!isWorkflowComplete && onDelete && (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 onClick={handleDeleteConfirm}
                 className="text-muted-foreground hover:text-destructive"
@@ -236,13 +252,22 @@ export function ResumeDetailPage({
                 <Trash2 className="size-4" />
               </Button>
             )}
+
+            {onChangeTemplate && (
+              <Button variant="outline" onClick={onChangeTemplate}>
+                <Layout className="size-4" />
+                템플릿 변경
+              </Button>
+            )}
+
             {onEdit && (
               <Button variant="outline" onClick={onEdit}>
                 <Edit className="size-4" />
-                수정
+                편집
               </Button>
             )}
-            <Button onClick={handleDownload}>
+
+            <Button onClick={handleDownload} className="shadow-sm">
               <Download className="size-4" />
               PDF 다운로드
             </Button>
@@ -271,32 +296,83 @@ export function ResumeDetailPage({
           </span>
         </summary>
         <div className="space-y-6 pt-4 border-t border-border">
-          {(resume.experiences || []).map((exp: any) => (
-            <div key={exp.id}>
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-semibold">{exp.company}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.position}
-                  </p>
+          {/* Experiences */}
+          <section>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+              경력 사항
+            </h4>
+            <div className="space-y-6">
+              {(resume.experiences || []).map((exp: any) => (
+                <div key={exp.id}>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">{exp.company}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {exp.position}
+                      </p>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {exp.period}
+                    </span>
+                  </div>
+                  <ul className="space-y-1">
+                    {exp.bullets.map((bullet: string, index: number) => (
+                      <li
+                        key={index}
+                        className="text-sm flex gap-2 text-muted-foreground"
+                      >
+                        <span className="flex-shrink-0">•</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  {exp.period}
-                </span>
-              </div>
-              <ul className="space-y-1">
-                {exp.bullets.map((bullet: string, index: number) => (
-                  <li
-                    key={index}
-                    className="text-sm flex gap-2 text-muted-foreground"
-                  >
-                    <span className="flex-shrink-0">•</span>
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
+              ))}
             </div>
-          ))}
+          </section>
+
+          {/* Educations */}
+          {resume.educations && resume.educations.length > 0 && (
+            <section className="pt-6 border-t border-border/50">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                학력 사항
+              </h4>
+              <div className="space-y-4">
+                {resume.educations.map((edu: any) => (
+                  <div
+                    key={edu.id}
+                    className="flex justify-between items-start"
+                  >
+                    <div>
+                      <h4 className="font-semibold">{edu.school_name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {edu.degree}, {edu.major}
+                      </p>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {edu.start_date} - {edu.end_date}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Skills */}
+          {resume.skills && resume.skills.length > 0 && (
+            <section className="pt-6 border-t border-border/50">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                보유 기술
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {resume.skills.map((skill: any) => (
+                  <Badge key={skill.id} variant="outline">
+                    {skill.name}
+                  </Badge>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </details>
     </div>

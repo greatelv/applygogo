@@ -12,66 +12,67 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8
+    paddingVertical: 36, // py-12
+    paddingHorizontal: 54, // Increase padding to simulate max-w-2xl mx-auto
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 36, // mb-12 (48px) -> 36pt
+    marginBottom: 36, // mb-12
   },
   name: {
     fontSize: 36, // text-5xl
     fontFamily: "NotoSansKR",
     fontWeight: 300, // font-light
-    marginBottom: 8, // Increased from 3pt to 8pt
+    marginBottom: 8,
     color: "#111827",
     letterSpacing: -0.75,
-    lineHeight: 1.2,
+    lineHeight: 1.1, // tighter for large names
   },
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 9, // gap-3 (12px) -> 9pt
+    gap: 12,
     fontSize: 9, // text-xs
     color: "#6b7280", // text-gray-500
-    marginTop: 6, // mt-2 (8px) -> 6pt
+    marginTop: 6,
   },
   contactItem: {
     flexDirection: "row",
     alignItems: "center",
   },
   section: {
-    marginBottom: 30, // mb-10 (40px) -> 30pt
+    marginBottom: 30, // mb-10
   },
   sectionTitle: {
     fontSize: 9, // text-xs
-    fontWeight: "bold", // font-semibold
+    fontWeight: 700, // font-semibold (bold in pdf-renderer)
     color: "#9ca3af", // text-gray-400
     letterSpacing: 2.25, // tracking-widest
-    marginBottom: 18, // mb-6 (24px) -> 18pt
+    marginBottom: 18,
     textTransform: "uppercase",
   },
   summaryText: {
     fontSize: 10.5, // text-sm
     color: "#374151", // text-gray-700
-    lineHeight: 1.625, // leading-relaxed
+    lineHeight: 1.625,
     fontWeight: 300, // font-light
   },
   expContainer: {
-    gap: 24, // space-y-8 (32px) -> 24pt
+    gap: 24, // space-y-8
   },
   expHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "baseline",
-    marginBottom: 9, // mb-3 (12px) -> 9pt
+    marginBottom: 9,
   },
   companyName: {
-    fontSize: 12, // default 16px -> 12pt (h3)
-    fontWeight: "medium", // font-medium
-    color: "#111827", // text-gray-900
+    fontSize: 12,
+    fontWeight: 500, // font-medium
+    color: "#111827",
   },
   position: {
     fontSize: 10.5, // text-sm
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     color: "#9ca3af", // text-gray-400
   },
   bulletList: {
-    gap: 6, // space-y-2 (8px) -> 6pt
+    gap: 6,
   },
   bulletText: {
     fontSize: 10.5, // text-sm
@@ -93,20 +94,20 @@ const styles = StyleSheet.create({
   skillRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 6, // gap-2 -> 4.5pt (approx 6pt)
+    gap: 6,
   },
   skillBadge: {
-    paddingVertical: 3, // py-1
-    paddingHorizontal: 9, // px-3
-    fontSize: 9, // text-xs
-    color: "#374151", // text-gray-700
-    backgroundColor: "#f9fafb", // bg-gray-50
+    paddingVertical: 3,
+    paddingHorizontal: 9,
+    fontSize: 9,
+    color: "#374151",
+    backgroundColor: "#f9fafb",
     borderRadius: 9999,
-    borderWidth: 0.75, // border
-    borderColor: "#e5e7eb", // border-gray-200
+    borderWidth: 0.75,
+    borderColor: "#e5e7eb",
   },
   eduContainer: {
-    gap: 12, // space-y-4 -> 12pt
+    gap: 12,
   },
   eduItem: {
     flexDirection: "row",
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: "baseline",
   },
   linkText: {
-    color: "#4b5563", // text-gray-600
+    color: "#4b5563",
     textDecoration: "none",
   },
 });

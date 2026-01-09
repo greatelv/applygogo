@@ -8,7 +8,11 @@ import { ResumeEditPage } from "./resume-edit-page";
 import { ResumePreviewPage } from "./resume-preview-page";
 import { ResumeDetailPage } from "./resume-detail-page";
 import { useApp } from "../context/app-context";
-import { uploadResumeAction } from "../lib/actions";
+import {
+  uploadResumeAction,
+  updateResumeTemplateAction,
+  updateResumeAction,
+} from "../lib/actions";
 
 interface Experience {
   id: string;
@@ -44,6 +48,9 @@ interface ResumeWizardProps {
     id?: string;
     title: string;
     experiences: TranslatedExperience[];
+    educations?: any[];
+    skills?: any[];
+    personalInfo?: any;
     template?: string;
   };
 }
@@ -57,15 +64,20 @@ export function ResumeWizard({
 
   const [isUploading, setIsUploading] = useState(false);
   const [step, setStep] = useState<
-    "upload" | "processing" | "edit" | "preview"
+    "upload" | "processing" | "edit" | "preview" | "complete"
   >(initialMode === "edit" ? "edit" : "upload");
 
   const [resumeTitle, setResumeTitle] = useState(initialData?.title || "");
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
     initialData?.experiences || []
   );
-  const [educations, setEducations] = useState<any[]>([]);
-  const [skills, setSkills] = useState<any[]>([]);
+  const [educations, setEducations] = useState<any[]>(
+    initialData?.educations || []
+  );
+  const [skills, setSkills] = useState<any[]>(initialData?.skills || []);
+  const [personalInfo, setPersonalInfo] = useState<any>(
+    initialData?.personalInfo || null
+  );
   const [template, setTemplate] = useState(initialData?.template || "modern");
   const [resumeId, setResumeId] = useState<string | null>(
     initialData?.id || null
@@ -130,6 +142,17 @@ export function ResumeWizard({
           setExperiences(transformedExperiences);
           setEducations(data.educations || []);
           setSkills(data.skills || []);
+          setPersonalInfo({
+            name_kr: data.name_kr,
+            name_en: data.name_en,
+            email: data.email,
+            phone: data.phone,
+            links: (data.links as any[]) || [],
+          });
+
+          if (data.selected_template) {
+            setTemplate(data.selected_template.toLowerCase());
+          }
         }
       } catch (error) {
         console.error("Failed to fetch resume data:", error);
@@ -139,7 +162,8 @@ export function ResumeWizard({
     setStep("edit");
   };
 
-  const handleEditNext = (data: {
+  const handleEditNext = async (data: {
+    personalInfo: any;
     experiences: any[];
     educations: any[];
     skills: any[];
@@ -147,16 +171,36 @@ export function ResumeWizard({
     setExperiences(data.experiences as any);
     setEducations(data.educations);
     setSkills(data.skills);
+    setPersonalInfo(data.personalInfo);
+
+    if (resumeId) {
+      try {
+        await updateResumeAction(resumeId, data);
+      } catch (error) {
+        console.error("Failed to save resume edits:", error);
+      }
+    }
     setStep("preview");
   };
 
-  const handlePreviewNext = (templateId: string) => {
+  const handlePreviewNext = async (templateId: string) => {
     setTemplate(templateId);
 
-    // Save data to sessionStorage to preserve it across redirect (decoupled from React state)
+    // Persist to DB if we have a resumeId
+    if (resumeId) {
+      try {
+        await updateResumeTemplateAction(
+          resumeId,
+          templateId as "modern" | "classic" | "minimal"
+        );
+      } catch (error) {
+        console.error("Failed to save template selection:", error);
+      }
+    }
+
     // Save data to sessionStorage to preserve it across redirect (decoupled from React state)
     const tempData = {
-      id: initialData?.id || "new-1", // Use existing ID or mock new one
+      id: resumeId || initialData?.id || "new-1",
       title: resumeTitle,
       experiences: experiences,
       educations: educations,
@@ -164,7 +208,7 @@ export function ResumeWizard({
       template: templateId,
       updatedAt: new Date().toISOString(),
       status: "COMPLETED",
-      isJustCompleted: true, // Flag to show success banner
+      isJustCompleted: true,
     };
     sessionStorage.setItem("tempResumeData", JSON.stringify(tempData));
 
@@ -190,6 +234,7 @@ export function ResumeWizard({
     return (
       <ResumeEditPage
         resumeTitle={resumeTitle}
+        initialPersonalInfo={personalInfo}
         initialExperiences={experiences}
         initialEducations={educations}
         initialSkills={skills}
@@ -212,13 +257,15 @@ export function ResumeWizard({
     return (
       <ResumePreviewPage
         resumeTitle={resumeTitle}
+        personalInfo={personalInfo}
         experiences={experiences}
         educations={educations}
         skills={skills}
         currentPlan={plan}
         onNext={handlePreviewNext}
         onBack={() => setStep("edit")}
-        onUpgrade={() => router.push("/billing")}
+        onUpgrade={() => router.push("/settings")}
+        initialTemplate={template}
       />
     );
   }
@@ -226,14 +273,18 @@ export function ResumeWizard({
   if (step === "complete") {
     return (
       <ResumeDetailPage
-        resumeId={initialData?.id || "1"}
+        resumeId={resumeId || initialData?.id || "1"}
         resumeTitle={resumeTitle}
+        personalInfo={personalInfo}
         experiences={experiences}
+        educations={educations}
+        skills={skills}
         template={template}
         isWorkflowComplete={true}
         onBack={() => router.push("/resumes")}
         onDelete={() => router.push("/resumes")}
-        onEdit={() => setStep("edit")} // Optional: Allow re-editing from complete step within wizard
+        onEdit={() => setStep("edit")}
+        onChangeTemplate={() => setStep("preview")}
       />
     );
   }

@@ -1,4 +1,12 @@
-import { FileText, CreditCard, CircleHelp, User, X, Plus } from "lucide-react";
+import {
+  FileText,
+  CreditCard,
+  CircleHelp,
+  User,
+  X,
+  Plus,
+  Settings,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 
@@ -12,8 +20,7 @@ interface SidebarProps {
 
 const navItems = [
   { id: "resumes", label: "이력서 관리", icon: FileText },
-  { id: "billing", label: "결제 관리", icon: CreditCard },
-  { id: "profile", label: "프로필", icon: User },
+  { id: "settings", label: "설정", icon: Settings },
   { id: "help", label: "도움말", icon: CircleHelp },
 ];
 

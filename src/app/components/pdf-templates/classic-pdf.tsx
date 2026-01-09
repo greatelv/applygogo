@@ -21,30 +21,36 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 24, // mb-8 -> 24pt
     paddingBottom: 18, // pb-6 (24px) -> 18pt
-    borderBottomWidth: 1.5, // border-b-2
+    borderBottomWidth: 2, // border-b-2
     borderBottomColor: "#1f2937", // border-gray-800
     textAlign: "center",
   },
   name: {
     fontSize: 22.5, // text-3xl
     fontWeight: "bold",
-    marginBottom: 10, // Increased from 6pt to 10pt
+    marginBottom: 10,
     color: "#111827",
     textTransform: "uppercase",
-    letterSpacing: 1,
+    letterSpacing: 1.5, // tracking-wide
     lineHeight: 1.2,
   },
   contactContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 6, // gap-2 -> 6pt (approx visual gap)
+    gap: 6,
     fontSize: 10.5, // text-sm
     color: "#4b5563", // text-gray-600
+    alignItems: "center",
   },
   contactItem: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
+  },
+  separator: {
+    color: "#4b5563", // Match text-gray-600
+    paddingHorizontal: 2,
   },
   section: {
     marginBottom: 18, // mb-6 -> 18pt
@@ -98,10 +104,18 @@ const styles = StyleSheet.create({
   bulletItem: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 6, // gap-2
+    gap: 6,
+  },
+  bulletIconContainer: {
+    width: 8,
+    // Classic uses leading-relaxed (lineHeight 1.625)
+    // height = 10.5 * 1.625 = 17.06
+    height: 17.06,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   bulletPoint: {
-    width: 10,
     fontSize: 10.5,
     color: "#1f2937", // text-gray-800
   },
@@ -110,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 10.5, // text-sm
     color: "#1f2937", // text-gray-800
     lineHeight: 1.625, // leading-relaxed
+    marginTop: -1, // Vertical alignment fix
   },
   skillText: {
     fontSize: 10.5, // text-sm
@@ -150,14 +165,14 @@ export const ClassicPdf = ({
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
             {personalInfo?.phone && (
               <View style={styles.contactItem}>
-                <Text>| </Text>
+                <Text style={styles.separator}>|</Text>
                 <Text>{personalInfo.phone}</Text>
               </View>
             )}
             {personalInfo?.links?.map((link: any, i: number) => (
               // @ts-ignore
               <View key={i} style={styles.contactItem}>
-                <Text>| </Text>
+                <Text style={styles.separator}>|</Text>
                 <Link
                   src={link.url}
                   style={{ color: "#4b5563", textDecoration: "none" }}
@@ -201,7 +216,9 @@ export const ClassicPdf = ({
                     {exp.bulletsEn?.map((bullet: string, idx: number) => (
                       // @ts-ignore
                       <View key={idx} style={styles.bulletItem}>
-                        <Text style={styles.bulletPoint}>•</Text>
+                        <View style={styles.bulletIconContainer}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                        </View>
                         <Text style={styles.bulletText}>{bullet}</Text>
                       </View>
                     ))}

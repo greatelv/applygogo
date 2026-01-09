@@ -17,6 +17,8 @@ export default async function Page({
     where: { id, userId: session.user.id },
     include: {
       work_experiences: { orderBy: { order: "asc" } },
+      educations: { orderBy: { order: "asc" } },
+      skills: { orderBy: { order: "asc" } },
     },
   });
 
@@ -57,14 +59,34 @@ export default async function Page({
     links: (resume.links as any[]) || [],
   };
 
+  const mappedEducations = resume.educations.map((edu) => ({
+    id: edu.id,
+    school_name: edu.school_name,
+    school_name_en: edu.school_name_en,
+    major: edu.major,
+    major_en: edu.major_en,
+    degree: edu.degree,
+    degree_en: edu.degree_en,
+    start_date: edu.start_date,
+    end_date: edu.end_date,
+  }));
+
+  const mappedSkills = resume.skills.map((s) => ({
+    id: s.id,
+    name: s.name,
+    level: s.level,
+  }));
+
   return (
     <DetailClient
       resumeId={resume.id}
       resumeTitle={resume.title}
       personalInfo={mappedPersonalInfo}
       experiences={mappedExperiences}
-      template="modern"
-      isWorkflowComplete={false} // Default view
+      educations={mappedEducations}
+      skills={mappedSkills}
+      template={resume.selected_template?.toLowerCase() || "modern"}
+      isWorkflowComplete={resume.current_step === "COMPLETED"}
     />
   );
 }

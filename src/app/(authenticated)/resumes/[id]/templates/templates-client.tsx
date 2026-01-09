@@ -21,6 +21,7 @@ interface TemplatesClientProps {
   educations: any[];
   skills: any[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
+  initialTemplate?: string;
 }
 
 export function TemplatesClient({
@@ -31,6 +32,7 @@ export function TemplatesClient({
   educations,
   skills,
   currentPlan,
+  initialTemplate = "modern",
 }: TemplatesClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
@@ -81,6 +83,7 @@ export function TemplatesClient({
       educations={educations}
       skills={skills}
       currentPlan={currentPlan}
+      initialTemplate={initialTemplate}
       onNext={handleNext}
       onBack={() => router.push(`/resumes/${resumeId}/edit`)}
       onUpgrade={() => router.push("/pricing")}

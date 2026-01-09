@@ -47,6 +47,7 @@ interface ResumePreviewPageProps {
   onComplete?: () => void;
   onBack: () => void;
   onUpgrade?: () => void;
+  initialTemplate?: string;
 }
 
 export function ResumePreviewPage({
@@ -60,8 +61,11 @@ export function ResumePreviewPage({
   onComplete,
   onBack,
   onUpgrade,
+  initialTemplate = "modern",
 }: ResumePreviewPageProps) {
-  const [selectedTemplate, setSelectedTemplate] = useState("modern");
+  const [selectedTemplate, setSelectedTemplate] = useState(
+    initialTemplate.toLowerCase()
+  );
 
   type Template = {
     id: string;

@@ -72,3 +72,138 @@ export async function uploadResumeAction(formData: FormData) {
     throw new Error("데이터베이스 저장 중 오류가 발생했습니다.");
   }
 }
+
+export async function updateResumeTemplateAction(
+  resumeId: string,
+  template: "modern" | "classic" | "minimal"
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  // Map template string to Prisma enum
+  const templateEnumMap = {
+    modern: "MODERN",
+    classic: "CLASSIC",
+    minimal: "MINIMAL",
+  };
+
+  try {
+    await prisma.resume.update({
+      where: {
+        id: resumeId,
+        userId: userId, // Security check
+      },
+      data: {
+        selected_template: templateEnumMap[template] as any,
+        status: "COMPLETED",
+        current_step: "COMPLETED",
+      },
+    });
+
+    revalidatePath("/resumes");
+    revalidatePath(`/resumes/${resumeId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Template update error:", error);
+    throw new Error("템플릿 변경 사항을 저장하는 중 오류가 발생했습니다.");
+  }
+}
+
+export async function updateResumeAction(
+  resumeId: string,
+  data: {
+    personalInfo: any;
+    experiences: any[];
+    educations: any[];
+    skills: any[];
+  }
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  const { personalInfo, experiences, educations, skills } = data;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete existing
+      await tx.workExperience.deleteMany({ where: { resumeId } });
+      await tx.education.deleteMany({ where: { resumeId } });
+      await tx.skill.deleteMany({ where: { resumeId } });
+
+      // 2. Create Work Experiences
+      if (experiences?.length > 0) {
+        await tx.workExperience.createMany({
+          data: experiences.map((exp: any, index: number) => ({
+            resumeId,
+            company_name_kr: exp.company,
+            company_name_en: exp.companyEn,
+            role_kr: exp.position,
+            role_en: exp.positionEn,
+            start_date: exp.period.split(" ~ ")[0] || "",
+            end_date: exp.period.split(" ~ ")[1] || "",
+            bullets_kr: exp.bullets,
+            bullets_en: exp.bulletsEn,
+            order: index,
+          })),
+        });
+      }
+
+      // 3. Create Educations
+      if (educations?.length > 0) {
+        await tx.education.createMany({
+          data: educations.map((edu: any, index: number) => ({
+            resumeId,
+            school_name: edu.school_name,
+            school_name_en: edu.school_name_en,
+            major: edu.major,
+            major_en: edu.major_en,
+            degree: edu.degree,
+            degree_en: edu.degree_en,
+            start_date: edu.start_date,
+            end_date: edu.end_date,
+            order: index,
+          })),
+        });
+      }
+
+      // 4. Create Skills
+      if (skills?.length > 0) {
+        await tx.skill.createMany({
+          data: skills.map((skill: any, index: number) => ({
+            resumeId,
+            name: skill.name,
+            level: skill.level,
+            order: index,
+          })),
+        });
+      }
+
+      // 5. Update Metadata
+      await tx.resume.update({
+        where: { id: resumeId, userId },
+        data: {
+          name_kr: personalInfo.name_kr,
+          name_en: personalInfo.name_en,
+          email: personalInfo.email,
+          phone: personalInfo.phone,
+          links: personalInfo.links,
+          current_step: "TEMPLATE",
+        },
+      });
+    });
+
+    revalidatePath(`/resumes/${resumeId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update resume:", error);
+    throw new Error("이력서 수정 사항을 저장하는 중 오류가 발생했습니다.");
+  }
+}

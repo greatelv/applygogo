@@ -83,6 +83,7 @@ export default async function Page({
       educations={mappedEducations}
       skills={mappedSkills}
       currentPlan={currentPlan}
+      initialTemplate={resume.selected_template?.toLowerCase() || "modern"}
     />
   );
 }
