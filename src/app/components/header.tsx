@@ -88,10 +88,15 @@ export function Header({
           {/* Theme toggle */}
           <ThemeToggle />
 
-          {/* Plan badge */}
-          <Badge variant={config.variant} className="hidden sm:inline-flex">
-            {config.label}
-          </Badge>
+          {/* Plan badge - Clickable */}
+          <a href="/settings#payment-section" className="hidden sm:inline-flex">
+            <Badge
+              variant={config.variant}
+              className="hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              {config.label}
+            </Badge>
+          </a>
 
           {/* Quota display - Desktop */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-muted rounded-md">

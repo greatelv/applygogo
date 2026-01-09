@@ -298,6 +298,56 @@ export function ResumeDetailPage({
           </span>
         </summary>
         <div className="space-y-6 pt-4 border-t border-border">
+          {/* Basic Info */}
+          <section>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+              기본 정보
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div className="grid grid-cols-[100px_1fr] gap-2">
+                <span className="font-medium text-muted-foreground">이름</span>
+                <span>{resume.personalInfo?.name_kr || "-"}</span>
+              </div>
+              {resume.personalInfo?.email && (
+                <div className="grid grid-cols-[100px_1fr] gap-2">
+                  <span className="font-medium text-muted-foreground">
+                    이메일
+                  </span>
+                  <span>{resume.personalInfo.email}</span>
+                </div>
+              )}
+              {resume.personalInfo?.phone && (
+                <div className="grid grid-cols-[100px_1fr] gap-2">
+                  <span className="font-medium text-muted-foreground">
+                    연락처
+                  </span>
+                  <span>{resume.personalInfo.phone}</span>
+                </div>
+              )}
+              {resume.personalInfo?.links &&
+                resume.personalInfo.links.length > 0 && (
+                  <div className="grid grid-cols-[100px_1fr] gap-2">
+                    <span className="font-medium text-muted-foreground">
+                      링크
+                    </span>
+                    <div className="flex flex-col gap-1">
+                      {resume.personalInfo.links.map((link: any, i: number) => (
+                        <a
+                          key={i}
+                          href={link.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-primary hover:underline truncate"
+                        >
+                          {link.label || link.url}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
+          </section>
+
           {/* Experiences */}
           <section>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">

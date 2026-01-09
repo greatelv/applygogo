@@ -213,7 +213,7 @@ export function ResumePreviewPage({
               이전
             </Button>
             <Button onClick={handleNext} className="w-full" size="lg">
-              {isProTemplateSelected ? "PRO로 업그레이드" : "다음"}
+              {isProTemplateSelected ? "PRO로 업그레이드" : "완료"}
             </Button>
           </div>
         </div>

@@ -12,72 +12,72 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8 (32px) -> 24pt
+    padding: 18, // Reduced from 20
     fontFamily: "NotoSerifKR",
-    fontSize: 10.5, // 14px -> 10.5pt
+    fontSize: 9, // Reduced from 9.5
     color: "#000000",
     lineHeight: 1.5,
   },
   header: {
-    marginBottom: 24, // mb-8 -> 24pt
-    paddingBottom: 18, // pb-6 (24px) -> 18pt
-    borderBottomWidth: 2, // border-b-2
-    borderBottomColor: "#1f2937", // border-gray-800
+    marginBottom: 16, // Reduced from 18
+    paddingBottom: 12, // Reduced from 14
+    borderBottomWidth: 2,
+    borderBottomColor: "#1f2937",
     textAlign: "center",
   },
   name: {
-    fontSize: 22.5, // text-3xl
+    fontSize: 18, // Reduced from 20
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 6, // Reduced from 8
     color: "#111827",
     textTransform: "uppercase",
-    letterSpacing: 1.5, // tracking-wide
+    letterSpacing: 1.5,
     lineHeight: 1.2,
   },
   contactContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 6,
-    fontSize: 10.5, // text-sm
-    color: "#4b5563", // text-gray-600
+    gap: 4, // Reduced from 5
+    fontSize: 9, // Reduced from 9.5
+    color: "#4b5563",
     alignItems: "center",
   },
   contactItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 4, // Reduced from 5
   },
   separator: {
-    color: "#4b5563", // Match text-gray-600
+    color: "#4b5563",
     paddingHorizontal: 2,
   },
   section: {
-    marginBottom: 18, // mb-6 -> 18pt
+    marginBottom: 12, // Reduced from 14
   },
   sectionTitle: {
-    fontSize: 12, // text-base (16px) -> 12pt
+    fontSize: 10.5, // Reduced from 11
     fontWeight: "bold",
-    color: "#111827", // text-gray-900
-    marginBottom: 6, // mb-2
-    paddingBottom: 3, // pb-1 (4px) -> 3pt
-    borderBottomWidth: 0.75, // border-b (1px)
-    borderBottomColor: "#d1d5db", // border-gray-300
+    color: "#111827",
+    marginBottom: 4, // Reduced from 5
+    paddingBottom: 2, // Reduced from 2.5
+    borderBottomWidth: 0.75,
+    borderBottomColor: "#d1d5db",
     textAlign: "left",
-    letterSpacing: 1.5, // tracking-wider
+    letterSpacing: 1.5,
     textTransform: "uppercase",
   },
   summaryText: {
-    fontSize: 10.5, // text-sm
-    color: "#1f2937", // text-gray-800
-    lineHeight: 1.625, // leading-relaxed
-    textAlign: "justify", // text-justify
+    fontSize: 9, // Reduced from 9.5
+    color: "#1f2937",
+    lineHeight: 1.625,
+    textAlign: "justify",
   },
   expContainer: {
-    gap: 12, // space-y-4 (16px) -> 12pt
+    gap: 8, // Reduced from 10
   },
   expItemHeader: {
-    marginBottom: 3, // mb-1 (4px) -> 3pt
+    marginBottom: 2, // Reduced from 2.5
   },
   expRow: {
     flexDirection: "row",
@@ -85,53 +85,51 @@ const styles = StyleSheet.create({
     alignItems: "baseline",
   },
   companyName: {
-    fontSize: 10.5, // inherited size but bold
+    fontSize: 9, // Reduced from 9.5
     fontWeight: "bold",
-    color: "#111827", // text-gray-900
+    color: "#111827",
   },
   period: {
-    fontSize: 9, // text-xs
-    color: "#4b5563", // text-gray-600
+    fontSize: 7.5, // Reduced from 8
+    color: "#4b5563",
   },
   position: {
-    fontSize: 10.5, // text-sm
-    color: "#374151", // text-gray-700
+    fontSize: 9, // Reduced from 9.5
+    color: "#374151",
   },
   bulletList: {
     marginTop: 0,
-    gap: 3, // space-y-1 (4px) -> 3pt
+    gap: 2, // Reduced from 2.5
   },
   bulletItem: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 6,
+    gap: 4, // Reduced from 5
   },
   bulletIconContainer: {
-    width: 8,
-    // Classic uses leading-relaxed (lineHeight 1.625)
-    // height = 10.5 * 1.625 = 17.06
-    height: 17.06,
+    width: 6, // Reduced from 7
+    height: 14.6, // 9 * 1.625
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
   bulletPoint: {
-    fontSize: 10.5,
-    color: "#1f2937", // text-gray-800
+    fontSize: 9, // Reduced from 9.5
+    color: "#1f2937",
   },
   bulletText: {
     flex: 1,
-    fontSize: 10.5, // text-sm
-    color: "#1f2937", // text-gray-800
-    lineHeight: 1.625, // leading-relaxed
-    marginTop: -1, // Vertical alignment fix
+    fontSize: 9, // Reduced from 9.5
+    color: "#1f2937",
+    lineHeight: 1.625,
+    marginTop: -1,
   },
   skillText: {
-    fontSize: 10.5, // text-sm
-    color: "#1f2937", // text-gray-800
+    fontSize: 9, // Reduced from 9.5
+    color: "#1f2937",
   },
   eduContainer: {
-    gap: 9, // space-y-3 (12px) -> 9pt
+    gap: 6, // Reduced from 7.5
   },
   eduItem: {
     flexDirection: "row",

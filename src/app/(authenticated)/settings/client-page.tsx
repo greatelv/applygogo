@@ -3,6 +3,7 @@
 import { useApp } from "../../context/app-context";
 import { SettingsPage } from "../../components/settings-page";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface SettingsClientPageProps {
   user: {
@@ -32,6 +33,19 @@ export function SettingsClientPage({
     setPlan(newPlan);
     alert(`${newPlan} 플랜으로 업그레이드되었습니다! (결제 모듈 연동 필요)`);
   };
+
+  useEffect(() => {
+    // Check for hash in URL to handle anchor scrolling after hydration
+    if (window.location.hash === "#payment-section") {
+      const element = document.getElementById("payment-section");
+      if (element) {
+        // Short timeout to ensure layout is stable
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, []);
 
   const handleCancel = () => {
     if (

@@ -154,7 +154,10 @@ export function SettingsPage({
 
       {/* --- Section 2: Payment Information (Billing) --- */}
       <section className="space-y-6">
-        <h2 className="text-xl font-semibold border-b pb-2">
+        <h2
+          id="payment-section"
+          className="text-xl font-semibold border-b pb-2 scroll-mt-20"
+        >
           결제 및 플랜 관리
         </h2>
 
