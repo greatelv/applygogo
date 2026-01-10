@@ -1352,6 +1352,17 @@ export function ResumeEditPage({
             </Button>
           </div>
           <div className="space-y-6">
+            {educations.length === 0 && (
+              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  위의{" "}
+                  <span className="font-medium text-foreground">
+                    + 항목 추가
+                  </span>{" "}
+                  버튼을 눌러 학력을 추가해주세요.
+                </p>
+              </div>
+            )}
             {educations.map((edu) => (
               <div
                 key={edu.id}
@@ -1418,44 +1429,41 @@ export function ResumeEditPage({
                       >
                         {edu.school_name}
                       </div>
-                      {((edu.major && edu.major !== "-") ||
-                        (edu.degree && edu.degree !== "-")) && (
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleEducationChange(
-                                edu.id,
-                                "major",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="전공 (예: 경영학)"
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {edu.major}
-                          </div>
-                          <span className="text-muted-foreground select-none">
-                            •
-                          </span>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleEducationChange(
-                                edu.id,
-                                "degree",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="학위 (예: 학사)"
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {edu.degree}
-                          </div>
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "major",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          data-placeholder="전공 (예: 경영학)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                        >
+                          {edu.major}
                         </div>
-                      )}
+                        <span className="text-muted-foreground select-none">
+                          •
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "degree",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          data-placeholder="학위 (예: 학사)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                        >
+                          {edu.degree}
+                        </div>
+                      </div>
                       <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                         <div
                           contentEditable
@@ -1510,44 +1518,41 @@ export function ResumeEditPage({
                       >
                         {edu.school_name_en || edu.school_name}
                       </div>
-                      {((edu.major_en && edu.major_en !== "-") ||
-                        (edu.degree_en && edu.degree_en !== "-")) && (
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleEducationChange(
-                                edu.id,
-                                "major_en",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="Major (EN)"
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {edu.major_en || edu.major}
-                          </div>
-                          <span className="text-muted-foreground select-none">
-                            •
-                          </span>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleEducationChange(
-                                edu.id,
-                                "degree_en",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="Degree (EN)"
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {edu.degree_en || edu.degree}
-                          </div>
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "major_en",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          data-placeholder="Major (EN)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                        >
+                          {edu.major_en || edu.major}
                         </div>
-                      )}
+                        <span className="text-muted-foreground select-none">
+                          •
+                        </span>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleEducationChange(
+                              edu.id,
+                              "degree_en",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          data-placeholder="Degree (EN)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                        >
+                          {edu.degree_en || edu.degree}
+                        </div>
+                      </div>
                       <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                         <div
                           contentEditable
@@ -1663,6 +1668,17 @@ export function ResumeEditPage({
             </Button>
           </div>
           <div className="space-y-8">
+            {additionalItems.length === 0 && (
+              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  위의{" "}
+                  <span className="font-medium text-foreground">
+                    + 항목 추가
+                  </span>{" "}
+                  버튼을 눌러 자격증, 수상, 활동 등을 추가해주세요.
+                </p>
+              </div>
+            )}
             {additionalItems.map((item) => (
               <div
                 key={item.id}
