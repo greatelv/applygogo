@@ -446,6 +446,47 @@ export function ResumeEditPage({
     );
   };
 
+  const handleRetranslateAdditionalItem = async (id: string) => {
+    const item = additionalItems.find((i) => i.id === id);
+    if (!item) return;
+
+    setIsTranslating((prev) => ({ ...prev, [id]: true }));
+
+    try {
+      const textsToTranslate = [item.name_kr, item.description_kr].filter(
+        Boolean
+      );
+
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          texts: textsToTranslate,
+          type: "general",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Translation failed");
+
+      const { translatedTexts } = await response.json();
+
+      setAdditionalItems((prev) =>
+        prev.map((i) => {
+          if (i.id !== id) return i;
+          return {
+            ...i,
+            name_en: translatedTexts[0] || i.name_en,
+            description_en: translatedTexts[1] || i.description_en,
+          };
+        })
+      );
+    } catch (error) {
+      console.error("Translation error:", error);
+    } finally {
+      setIsTranslating((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
   const handleTranslateEducation = async (eduId: string) => {
     const edu = educations.find((e) => e.id === eduId);
     if (!edu) return;
@@ -585,7 +626,8 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className="text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px]"
+                    data-placeholder="이름 (한국어)"
+                    className="text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.name_kr}
                   </div>
@@ -622,7 +664,8 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                      data-placeholder="전화번호"
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.phone}
                     </div>
@@ -652,7 +695,8 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1"
+                            data-placeholder="링크 라벨"
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
                           </div>
@@ -667,7 +711,8 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all"
+                            data-placeholder="링크 URL"
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
                           </div>
@@ -705,7 +750,8 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text ${
+                    data-placeholder="Name (English)"
+                    className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.name
                         ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
                         : ""
@@ -730,7 +776,8 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all"
+                      data-placeholder="이메일 주소"
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.email}
                     </div>
@@ -782,7 +829,8 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1"
+                            data-placeholder="Link Label"
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
                           </div>
@@ -797,7 +845,8 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all"
+                            data-placeholder="Link URL"
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
                           </div>
@@ -855,7 +904,8 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
+                    data-placeholder="Professional Summary (Korean) - 전문적인 요약을 입력하세요."
+                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.summary_kr}
                   </div>
@@ -872,7 +922,8 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
+                    data-placeholder="Professional Summary (English) - Write a professional summary."
+                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.summary}
                   </div>
@@ -938,7 +989,8 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px]"
+                      data-placeholder="회사명"
+                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {exp.company}
                     </div>
@@ -953,7 +1005,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        data-placeholder="직무"
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {exp.position}
                       </div>
@@ -970,7 +1023,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        data-placeholder="기간 (예: 2020.01 - 2023.12)"
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {exp.period}
                       </div>
@@ -994,7 +1048,8 @@ export function ResumeEditPage({
                               false
                             )
                           }
-                          className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                          data-placeholder="업무 성과 및 활동 내용"
+                          className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                         >
                           {bullet}
                         </div>
@@ -1022,7 +1077,8 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px]"
+                      data-placeholder="Company Name (EN)"
+                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {exp.companyEn}
                     </div>
@@ -1037,7 +1093,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        data-placeholder="Position (EN)"
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {exp.positionEn}
                       </div>
@@ -1054,7 +1111,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px]"
+                        data-placeholder="Period (EN)"
+                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {exp.period}
                       </div>
@@ -1078,7 +1136,8 @@ export function ResumeEditPage({
                               true
                             )
                           }
-                          className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] ${
+                          data-placeholder="Achievements and activities (EN)"
+                          className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                             highlightedBullets[exp.id]?.includes(index)
                               ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
                               : ""
@@ -1171,7 +1230,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px]"
+                        data-placeholder="학교명 (예: 한국대학교)"
+                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {edu.school_name}
                       </div>
@@ -1188,7 +1248,8 @@ export function ResumeEditPage({
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px]"
+                            data-placeholder="전공 (예: 경영학)"
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {edu.major}
                           </div>
@@ -1205,7 +1266,8 @@ export function ResumeEditPage({
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px]"
+                            data-placeholder="학위 (예: 학사)"
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {edu.degree}
                           </div>
@@ -1222,7 +1284,8 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px]"
+                          data-placeholder="입학일 (예: 2016.03)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                         >
                           {edu.start_date}
                         </div>
@@ -1239,7 +1302,8 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px]"
+                          data-placeholder="졸업일 (예: 2020.02)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                         >
                           {edu.end_date}
                         </div>
@@ -1258,7 +1322,8 @@ export function ResumeEditPage({
                             e.currentTarget.textContent || ""
                           )
                         }
-                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px]"
+                        data-placeholder="School Name (EN)"
+                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                       >
                         {edu.school_name_en || edu.school_name}
                       </div>
@@ -1275,7 +1340,8 @@ export function ResumeEditPage({
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px]"
+                            data-placeholder="Major (EN)"
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {edu.major_en || edu.major}
                           </div>
@@ -1292,7 +1358,8 @@ export function ResumeEditPage({
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px]"
+                            data-placeholder="Degree (EN)"
+                            className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {edu.degree_en || edu.degree}
                           </div>
@@ -1309,7 +1376,8 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                          data-placeholder="Start Date (EN)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                         >
                           {edu.start_date}
                         </div>
@@ -1326,7 +1394,8 @@ export function ResumeEditPage({
                               e.currentTarget.textContent || ""
                             )
                           }
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px]"
+                          data-placeholder="End Date (EN)"
+                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                         >
                           {edu.end_date}
                         </div>
@@ -1392,9 +1461,10 @@ export function ResumeEditPage({
         {/* Additional Information Items */}
         <div className="mt-12">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-foreground">
-              추가 정보 (Additional Information)
-            </h2>
+            <h2 className="text-xl font-semibold text-foreground">추가 정보</h2>
+            <p className="text-sm text-muted-foreground">
+              자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
+            </p>
           </div>
           <div className="space-y-8">
             {additionalItems.map((item) => (
@@ -1402,125 +1472,85 @@ export function ResumeEditPage({
                 key={item.id}
                 className="bg-card border border-border rounded-lg overflow-hidden group"
               >
-                <div className="bg-muted px-6 py-3 border-b border-border flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <select
-                      value={item.type}
-                      onChange={(e) =>
-                        handleAdditionalItemChange(
-                          item.id,
-                          "type",
-                          e.target.value
-                        )
-                      }
-                      className="bg-transparent text-sm font-semibold text-muted-foreground uppercase outline-none focus:ring-0 cursor-pointer hover:text-foreground transition-colors"
-                    >
-                      <option value="CERTIFICATION">
-                        자격증 (Certification)
-                      </option>
-                      <option value="AWARD">수상 (Award)</option>
-                      <option value="LANGUAGE">언어 (Language)</option>
-                      <option value="ACTIVITY">활동 (Activity)</option>
-                      <option value="OTHER">기타 (Other)</option>
-                    </select>
+                <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">
+                        한글 (원본)
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">
+                        English (번역)
+                      </p>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleRemoveAdditionalItem(item.id)}
-                    className="p-1.5 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5"
-                  >
-                    <Trash2 className="size-4" />
-                    <span className="text-xs">삭제</span>
-                  </button>
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRetranslateAdditionalItem(item.id)}
+                      disabled={isTranslating[item.id]}
+                      className="text-muted-foreground hover:text-foreground h-8 px-2"
+                    >
+                      {isTranslating[item.id] ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="size-4" />
+                      )}
+                      <span className="hidden lg:inline ml-2 text-xs">
+                        {isTranslating[item.id]
+                          ? "처리 중..."
+                          : "동기화 후 번역"}
+                      </span>
+                    </Button>
+                    <button
+                      onClick={() => handleRemoveAdditionalItem(item.id)}
+                      className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="size-4" />
+                      <span className="text-xs hidden lg:inline">삭제</span>
+                    </button>
+                  </div>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* Left: Original (KR) */}
                     <div className="space-y-4">
-                      <div>
-                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                          Item Name (KR)
-                        </label>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleAdditionalItemChange(
-                              item.id,
-                              "name_kr",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="text-base font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                        >
-                          {item.name_kr}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                          Description/Issuer/Level (KR)
-                        </label>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleAdditionalItemChange(
-                              item.id,
-                              "description_kr",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                        >
-                          {item.description_kr}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Translated (EN) */}
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase text-primary/80">
-                          Item Name (EN)
-                        </label>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleAdditionalItemChange(
-                              item.id,
-                              "name_en",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          className="text-base font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                        >
-                          {item.name_en || item.name_kr}
-                        </div>
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleAdditionalItemChange(
+                            item.id,
+                            "name_kr",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
+                        className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      >
+                        {item.name_kr}
                       </div>
                       <div className="grid grid-cols-3 gap-6">
                         <div className="col-span-2">
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase text-primary/80">
-                            Description/Issuer/Level (EN)
-                          </label>
                           <div
                             contentEditable
                             suppressContentEditableWarning
                             onBlur={(e) =>
                               handleAdditionalItemChange(
                                 item.id,
-                                "description_en",
+                                "description_kr",
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
+                            className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
-                            {item.description_en || item.description_kr}
+                            {item.description_kr}
                           </div>
                         </div>
                         <div className="col-span-1">
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                            Date
-                          </label>
                           <div
                             contentEditable
                             suppressContentEditableWarning
@@ -1531,7 +1561,63 @@ export function ResumeEditPage({
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            data-placeholder="YYYY.MM"
+                            className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                          >
+                            {item.date}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Translated (EN) */}
+                    <div className="space-y-4">
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          handleAdditionalItemChange(
+                            item.id,
+                            "name_en",
+                            e.currentTarget.textContent || ""
+                          )
+                        }
+                        data-placeholder="Item Name (EN)"
+                        className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      >
+                        {item.name_en}
+                      </div>
+                      <div className="grid grid-cols-3 gap-6">
+                        <div className="col-span-2">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleAdditionalItemChange(
+                                item.id,
+                                "description_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            data-placeholder="Description/Issuer/Level (EN)"
+                            className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                          >
+                            {item.description_en}
+                          </div>
+                        </div>
+                        <div className="col-span-1">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleAdditionalItemChange(
+                                item.id,
+                                "date",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            data-placeholder="YYYY.MM"
+                            className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {item.date}
                           </div>
