@@ -4,17 +4,16 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log("[Webhook Received]", body);
-
     const { type, data } = body;
-    // PortOne V2 Webhook types: Transaction.Paid, Transaction.Failed, etc.
+
+    // 결제 성공 이벤트가 아니면 무시
     if (type !== "Transaction.Paid") {
       return NextResponse.json({ received: true });
     }
 
     const { paymentId } = data;
 
-    // 1. Get payment details from PortOne
+    // 1. 포트원으로부터 상세 결제 정보 조회
     const payRes = await fetch(
       `https://api.portone.io/payments/${encodeURIComponent(paymentId)}`,
       {
@@ -28,22 +27,10 @@ export async function POST(req: NextRequest) {
       throw new Error("Failed to fetch payment details from PortOne");
     const payment = await payRes.json();
 
-    // 2. Update Subscription in DB
     const customerId = payment.customer.id;
     const billingKey = payment.billingKey;
 
-    const sub = await prisma.subscription.findUnique({
-      where: { userId: customerId },
-    });
-
-    if (!sub) {
-      console.error("Subscription not found for user:", customerId);
-      return NextResponse.json(
-        { message: "Subscription not found" },
-        { status: 404 }
-      );
-    }
-
+    // 2. DB 구독 정보 갱신
     const newStart = new Date();
     const newEnd = new Date(newStart);
     newEnd.setMonth(newEnd.getMonth() + 1);
@@ -57,7 +44,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3. Schedule NEXT payment
+    // 3. 그다음 달 결제 예약 (연쇄 예약)
     const nextPaymentId = `sub_${customerId}_${newEnd.getTime()}`;
     await fetch(
       `https://api.portone.io/payments/${encodeURIComponent(
@@ -71,14 +58,10 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           payment: {
-            billingKey: billingKey,
+            billingKey,
             orderName: "지원고고 정기 구독",
-            customer: {
-              id: customerId,
-            },
-            amount: {
-              total: 29000,
-            },
+            customer: { id: customerId },
+            amount: { total: 29000 },
             currency: "KRW",
           },
           timeToPay: newEnd.toISOString(),
@@ -86,10 +69,6 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    console.log(
-      "[Webhook Success] Subscription extended and next payment scheduled:",
-      nextPaymentId
-    );
     return NextResponse.json({ received: true });
   } catch (err) {
     console.error("[Webhook Error]", err);

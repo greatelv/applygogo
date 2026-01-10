@@ -12,5 +12,15 @@ export default async function Page() {
 
   const userSettings = await getUserSettings();
 
-  return <SettingsClientPage user={session.user} settings={userSettings} />;
+  return (
+    <SettingsClientPage
+      user={{
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+      }}
+      settings={userSettings}
+    />
+  );
 }

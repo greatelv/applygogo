@@ -190,9 +190,7 @@ export async function updateResumeAction(
       await tx.workExperience.deleteMany({ where: { resumeId } });
       await tx.education.deleteMany({ where: { resumeId } });
       await tx.skill.deleteMany({ where: { resumeId } });
-      await tx.certification.deleteMany({ where: { resumeId } });
-      await tx.award.deleteMany({ where: { resumeId } });
-      await tx.language.deleteMany({ where: { resumeId } });
+      await tx.additionalItem.deleteMany({ where: { resumeId } });
 
       // 2. Create Work Experiences
       if (experiences?.length > 0) {
@@ -243,37 +241,44 @@ export async function updateResumeAction(
       }
 
       // 5. Create Certifications
+      // 5. Create Certifications (as Additional Items)
       if (certifications?.length > 0) {
-        await tx.certification.createMany({
+        await tx.additionalItem.createMany({
           data: certifications.map((cert: any) => ({
             resumeId,
-            name: cert.name,
-            issuer: cert.issuer,
+            type: "CERTIFICATION",
+            name_kr: cert.name,
+            description_kr: cert.issuer,
             date: cert.date,
           })),
         });
       }
 
       // 6. Create Awards
+      // 6. Create Awards (as Additional Items)
       if (awards?.length > 0) {
-        await tx.award.createMany({
+        await tx.additionalItem.createMany({
           data: awards.map((award: any) => ({
             resumeId,
-            name: award.name,
-            issuer: award.issuer,
+            type: "AWARD",
+            name_kr: award.name,
+            description_kr: award.issuer,
             date: award.date,
           })),
         });
       }
 
       // 7. Create Languages
+      // 7. Create Languages (as Additional Items)
       if (languages?.length > 0) {
-        await tx.language.createMany({
+        await tx.additionalItem.createMany({
           data: languages.map((lang: any) => ({
             resumeId,
-            name: lang.name,
-            level: lang.level,
-            score: lang.score,
+            type: "LANGUAGE",
+            name_kr: lang.name,
+            description_kr: [lang.level, lang.score]
+              .filter(Boolean)
+              .join(" / "),
           })),
         });
       }

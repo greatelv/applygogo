@@ -182,21 +182,34 @@ export function ResumeWizard({
     experiences: any[];
     educations: any[];
     skills: any[];
-    certifications: any[];
-    awards: any[];
-    languages: any[];
+    additionalItems: any[];
   }) => {
+    const { additionalItems, ...rest } = data;
+
+    const certifications = additionalItems.filter(
+      (item) => item.type === "CERTIFICATION"
+    );
+    const awards = additionalItems.filter((item) => item.type === "AWARD");
+    const languages = additionalItems.filter(
+      (item) => item.type === "LANGUAGE"
+    );
+
     setExperiences(data.experiences as any);
     setEducations(data.educations);
     setSkills(data.skills);
-    setCertifications(data.certifications);
-    setAwards(data.awards);
-    setLanguages(data.languages);
+    setCertifications(certifications);
+    setAwards(awards);
+    setLanguages(languages);
     setPersonalInfo(data.personalInfo);
 
     if (resumeId) {
       try {
-        await updateResumeAction(resumeId, data);
+        await updateResumeAction(resumeId, {
+          ...rest,
+          certifications,
+          awards,
+          languages,
+        });
       } catch (error) {
         console.error("Failed to save resume edits:", error);
       }
@@ -259,9 +272,7 @@ export function ResumeWizard({
         initialExperiences={experiences}
         initialEducations={educations}
         initialSkills={skills}
-        initialCertifications={certifications}
-        initialAwards={awards}
-        initialLanguages={languages}
+        initialAdditionalItems={[...certifications, ...awards, ...languages]}
         isEditingExisting={initialMode === "edit"}
         quota={quota}
         onNext={handleEditNext}
@@ -285,9 +296,7 @@ export function ResumeWizard({
         experiences={experiences}
         educations={educations}
         skills={skills}
-        certifications={certifications}
-        awards={awards}
-        languages={languages}
+        additionalItems={[...certifications, ...awards, ...languages]}
         currentPlan={plan}
         onNext={handlePreviewNext}
         onBack={() => setStep("edit")}
@@ -306,9 +315,7 @@ export function ResumeWizard({
         experiences={experiences}
         educations={educations}
         skills={skills}
-        certifications={certifications}
-        awards={awards}
-        languages={languages}
+        additionalItems={[...certifications, ...awards, ...languages]}
         template={template}
         isWorkflowComplete={true}
         onBack={() => router.push("/resumes")}
