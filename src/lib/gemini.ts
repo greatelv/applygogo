@@ -3,10 +3,32 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const apiKey = process.env.GEMINI_API_KEY!;
 const genAI = new GoogleGenerativeAI(apiKey);
 
-// Export configured model for multimodal use (PDF analysis)
-export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite", // Explicit version (DO NOT CHANGE)
+// ============================================================================
+// 3단계 AI 프로세싱 - 단계별 모델 설정
+// ============================================================================
+
+// 1단계: 추출 (Extraction) - gemini-2.5-flash
+// PDF 멀티모달 처리, 정확한 OCR, 로고 vs 본문 구분 필요
+export const extractionModel = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash-lite",
 });
+
+// 2단계: 정제 (Refinement) - gemini-2.5-flash
+// 단순 텍스트 처리, 불릿 선별/압축
+export const refinementModel = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash",
+});
+
+// 3단계: 번역 (Translation) - gemini-2.5-flash-lite
+// 한글 → 영문 번역, Action Verb 사용
+export const translationModel = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash-lite",
+});
+
+// ============================================================================
+// 레거시 호환성 (기존 코드에서 사용 중인 경우)
+// ============================================================================
+export const geminiModel = extractionModel;
 
 // Retry helper function
 export async function generateContentWithRetry(
@@ -36,7 +58,7 @@ export async function generateContentWithRetry(
         throw error;
       }
 
-      // Exponential backoff: 2s, 4s, 8s
+      // Exponential backoff: 5s, 10s, 20s
       const delay = initialDelay * Math.pow(2, attempt);
       console.log(
         `Gemini API error (attempt ${

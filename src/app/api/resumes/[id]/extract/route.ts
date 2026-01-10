@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase";
-import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
+import { extractionModel, generateContentWithRetry } from "@/lib/gemini";
 import { RESUME_EXTRACTION_PROMPT } from "@/lib/prompts";
 
 // ============================================================================
@@ -69,7 +69,7 @@ export async function POST(
     // 5. Extract with Gemini AI
     console.log("[Extract API] Starting extraction...");
 
-    const extractionResult = await generateContentWithRetry(geminiModel, [
+    const extractionResult = await generateContentWithRetry(extractionModel, [
       {
         inlineData: {
           mimeType: "application/pdf",

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
+import { refinementModel, generateContentWithRetry } from "@/lib/gemini";
 import { getRefinementPrompt } from "@/lib/prompts";
 
 // ============================================================================
@@ -69,7 +69,7 @@ export async function POST(
 
       const refinementPrompt = getRefinementPrompt(extractedData);
       const refinementResult = await generateContentWithRetry(
-        geminiModel,
+        refinementModel,
         refinementPrompt
       );
 

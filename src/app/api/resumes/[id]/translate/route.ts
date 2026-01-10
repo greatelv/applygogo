@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
+import { translationModel, generateContentWithRetry } from "@/lib/gemini";
 import { getResumeTranslationPrompt } from "@/lib/prompts";
 
 // ============================================================================
@@ -62,7 +62,7 @@ export async function POST(
 
     const translationPrompt = getResumeTranslationPrompt(refinedData);
     const translationResult = await generateContentWithRetry(
-      geminiModel,
+      translationModel,
       translationPrompt
     );
 
