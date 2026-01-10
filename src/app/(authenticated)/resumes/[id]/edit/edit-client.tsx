@@ -65,6 +65,18 @@ export function EditClient({
     try {
       setIsSaving(true);
 
+      // Filter out empty items before saving
+      const filteredExperiences = data.experiences.filter(
+        (exp) => exp.company?.trim() || exp.position?.trim()
+      );
+      const filteredEducations = data.educations.filter((edu) =>
+        edu.school_name?.trim()
+      );
+      const filteredSkills = data.skills.filter((skill) => skill.name?.trim());
+      const filteredAdditionalItems = (data.additionalItems || []).filter(
+        (item) => item.name_kr?.trim() || item.description_kr?.trim()
+      );
+
       // Map frontend data structure back to DB structure
       const payload = {
         name_kr: data.personalInfo.name_kr,
@@ -74,19 +86,19 @@ export function EditClient({
         links: data.personalInfo.links,
         summary: data.personalInfo.summary,
         summary_kr: data.personalInfo.summary_kr,
-        work_experiences: data.experiences.map((exp) => ({
+        work_experiences: filteredExperiences.map((exp) => ({
           company_name_kr: exp.company,
           company_name_en: exp.companyEn,
           role_kr: exp.position,
           role_en: exp.positionEn,
           start_date: exp.period.split(" - ")[0] || "",
           end_date: exp.period.split(" - ")[1] || "",
-          bullets_kr: exp.bullets,
-          bullets_en: exp.bulletsEn,
+          bullets_kr: exp.bullets.filter((b: string) => b?.trim()),
+          bullets_en: exp.bulletsEn.filter((b: string) => b?.trim()),
         })),
-        educations: data.educations,
-        skills: data.skills,
-        additional_items: data.additionalItems || [],
+        educations: filteredEducations,
+        skills: filteredSkills,
+        additional_items: filteredAdditionalItems,
       };
 
       const res = await fetch(`/api/resumes/${resumeId}`, {

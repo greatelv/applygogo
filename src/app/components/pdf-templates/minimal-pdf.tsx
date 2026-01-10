@@ -154,12 +154,20 @@ export const MinimalPdf = ({
   skills = [],
   additionalItems = [],
 }: MinimalPdfProps) => {
-  const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+  // Filter out empty items first
+  const validExperiences = experiences.filter(
+    (exp) => exp.company?.trim() || exp.companyEn?.trim()
   );
-  const awards = additionalItems.filter((i) => i.type === "AWARD");
-  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
-  const others = additionalItems.filter(
+  const validEducations = educations.filter(
+    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+  );
+  const validItems = additionalItems.filter(
+    (i) => i.name_kr?.trim() || i.name_en?.trim()
+  );
+  const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
+  const awards = validItems.filter((i) => i.type === "AWARD");
+  const languages = validItems.filter((i) => i.type === "LANGUAGE");
+  const others = validItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
@@ -193,11 +201,11 @@ export const MinimalPdf = ({
         )}
 
         {/* Experience */}
-        {experiences.length > 0 && (
+        {validExperiences.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Experience</Text>
             <View style={styles.expContainer}>
-              {experiences.map((exp) => (
+              {validExperiences.map((exp) => (
                 // @ts-ignore
                 <View key={exp.id}>
                   <View style={styles.expHeader}>
@@ -240,11 +248,11 @@ export const MinimalPdf = ({
         )}
 
         {/* Education */}
-        {educations.length > 0 && (
+        {validEducations.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Education</Text>
             <View style={styles.eduContainer}>
-              {educations.map((edu) => (
+              {validEducations.map((edu) => (
                 // @ts-ignore
                 <View key={edu.id} style={styles.eduItem}>
                   <View>

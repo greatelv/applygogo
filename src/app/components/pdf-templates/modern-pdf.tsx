@@ -205,12 +205,20 @@ export const ModernPdf = ({
   skills = [],
   additionalItems = [],
 }: ModernPdfProps) => {
-  const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+  // Filter out empty items first
+  const validExperiences = experiences.filter(
+    (exp) => exp.company?.trim() || exp.companyEn?.trim()
   );
-  const awards = additionalItems.filter((i) => i.type === "AWARD");
-  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
-  const others = additionalItems.filter(
+  const validEducations = educations.filter(
+    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+  );
+  const validItems = additionalItems.filter(
+    (i) => i.name_kr?.trim() || i.name_en?.trim()
+  );
+  const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
+  const awards = validItems.filter((i) => i.type === "AWARD");
+  const languages = validItems.filter((i) => i.type === "LANGUAGE");
+  const others = validItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
@@ -259,14 +267,14 @@ export const ModernPdf = ({
         )}
 
         {/* Experience */}
-        {experiences.length > 0 && (
+        {validExperiences.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
               <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
             </View>
             <View style={styles.expContainer}>
-              {experiences.map((exp) => (
+              {validExperiences.map((exp) => (
                 // @ts-ignore
                 <View key={exp.id}>
                   <View style={styles.expHeader}>
@@ -317,14 +325,14 @@ export const ModernPdf = ({
         )}
 
         {/* Education */}
-        {educations.length > 0 && (
+        {validEducations.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
               <Text style={styles.sectionTitle}>EDUCATION</Text>
             </View>
             <View style={{ gap: 12 }}>
-              {educations.map((edu) => (
+              {validEducations.map((edu) => (
                 // @ts-ignore
                 <View key={edu.id} style={styles.eduItem}>
                   <View>
