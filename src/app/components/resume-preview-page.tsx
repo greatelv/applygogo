@@ -42,9 +42,7 @@ interface ResumePreviewPageProps {
   experiences: TranslatedExperience[];
   educations: Education[];
   skills: Skill[];
-  certifications: any[];
-  awards: any[];
-  languages: any[];
+  additionalItems?: any[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
   onNext?: (templateId: string) => void;
   onComplete?: () => void;
@@ -59,9 +57,7 @@ export function ResumePreviewPage({
   experiences,
   educations,
   skills,
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
   currentPlan = "FREE",
   onNext,
   onComplete,
@@ -126,9 +122,7 @@ export function ResumePreviewPage({
       experiences,
       educations,
       skills,
-      certifications,
-      awards,
-      languages,
+      additionalItems,
     };
 
     switch (selectedTemplate) {
@@ -147,13 +141,12 @@ export function ResumePreviewPage({
       <div className="mb-8">
         <h1 className="text-2xl mb-2">템플릿 선택</h1>
         <p className="text-sm text-muted-foreground">
-          {resumeTitle} • 원하는 템플릿을 선택하세요
+          원하는 템플릿을 선택하세요
         </p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-1 space-y-4">
-          <h3 className="font-semibold">템플릿 선택</h3>
           <div className="space-y-3">
             {templates.map((template) => (
               <button
@@ -204,6 +197,14 @@ export function ResumePreviewPage({
               {isProTemplateSelected ? "PRO로 업그레이드" : "완료"}
             </Button>
           </div>
+
+          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
+            <p className="text-sm text-blue-800 dark:text-blue-400">
+              💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에
+              최적화되어 있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을
+              선택하세요.
+            </p>
+          </div>
         </div>
 
         <div className="lg:col-span-2">
@@ -216,13 +217,6 @@ export function ResumePreviewPage({
             실시간 미리보기 • 스크롤하여 전체 내용을 확인하세요
           </p>
         </div>
-      </div>
-
-      <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에 최적화되어
-          있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을 선택하세요.
-        </p>
       </div>
     </div>
   );

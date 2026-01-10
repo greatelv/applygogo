@@ -29,6 +29,9 @@ export async function GET(
         skills: {
           orderBy: { order: "asc" },
         },
+        additionalItems: {
+          orderBy: { order: "asc" },
+        },
       },
     });
 
