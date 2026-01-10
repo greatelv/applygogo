@@ -18,6 +18,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 0. Get user from DB
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     const secret = process.env.PORTONE_API_SECRET;
 
     // 1. (Optional) In V2, billing key is already issued. We can verify it or just use it.
@@ -36,14 +44,15 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           billingKey,
+          channelKey,
           orderName: "지원고고 Pro 플랜 (매월 자동 결제)",
           customer: {
-            id: session.user.id, // Good practice to track customer
+            id: user.id, // Consistent with client-side user.id
           },
           amount: {
             total: 9900,
-            currency: "KRW",
           },
+          currency: "KRW",
         }),
       }
     );
@@ -58,23 +67,32 @@ export async function POST(req: NextRequest) {
     }
 
     const paymentData = await payRes.json();
+    console.log(
+      "[Billing Register] PortOne Payment Data:",
+      JSON.stringify(paymentData, null, 2)
+    );
 
-    if (paymentData.status !== "PAID") {
+    const status = paymentData.status || paymentData.payment?.status;
+    const isPaid = status === "PAID" || !!paymentData.payment?.paidAt;
+
+    console.log("[Billing Register] Status Check:", { status, isPaid });
+
+    if (!isPaid) {
+      console.error(
+        "[Billing Register] Payment status failure. Full data:",
+        paymentData
+      );
       return NextResponse.json(
-        { message: "결제 상태가 PAID가 아닙니다." },
+        {
+          message: "결제 상태가 PAID가 아닙니다.",
+          status: status || "UNKNOWN",
+          detail: paymentData,
+        },
         { status: 400 }
       );
     }
 
     // 2. Update Database (Subscription)
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
     const now = new Date();
     const periodEnd = new Date(now);
     periodEnd.setMonth(periodEnd.getMonth() + 1);
@@ -113,9 +131,56 @@ export async function POST(req: NextRequest) {
       });
     });
 
-    return NextResponse.json({ success: true });
+    // 3. Schedule next payment via PortOne V2 API
+    try {
+      const nextPaymentId = `sub_${user.id}_${periodEnd.getTime()}`;
+      const scheduleRes = await fetch(
+        `https://api.portone.io/payments/${encodeURIComponent(
+          nextPaymentId
+        )}/schedule`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `PortOne ${process.env.PORTONE_API_SECRET}`,
+          },
+          body: JSON.stringify({
+            payment: {
+              billingKey: billingKey,
+              orderName: "지원고고 정기 구독",
+              customer: {
+                id: user.id,
+                fullName: user.name || undefined,
+                email: user.email || undefined,
+              },
+              amount: {
+                total: 29000, // 실제 상품 가격으로 설정 필요
+              },
+              currency: "KRW",
+            },
+            timeToPay: periodEnd.toISOString(),
+          }),
+        }
+      );
+
+      if (!scheduleRes.ok) {
+        const error = await scheduleRes.json();
+        console.error("[Schedule Error]", error);
+      } else {
+        console.log(
+          "[Schedule Success] Next payment scheduled:",
+          nextPaymentId
+        );
+      }
+    } catch (err) {
+      console.error("[Schedule Exception]", err);
+    }
+
+    return NextResponse.json({
+      message: "Subscription registered and next payment scheduled",
+    });
   } catch (error) {
-    console.error("Billing register error:", error);
+    console.error("[Billing Register Error]", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

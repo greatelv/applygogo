@@ -8,6 +8,7 @@ import * as PortOne from "@portone/browser-sdk/v2";
 
 interface SettingsClientPageProps {
   user: {
+    id: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -49,30 +50,48 @@ export function SettingsClientPage({
 
       // 1. Request Billing Key (Auth)
       // Use "EASY_PAY" for Toss Pay (App-based auth)
+      console.log("[Client Page] Requesting billing key with data:", {
+        storeId,
+        channelKey,
+        billingKeyMethod: "EASY_PAY",
+        issueName: "지원고고 정기 결제 등록",
+        customer: {
+          customerId: user.id || user.email || crypto.randomUUID(),
+        },
+      });
       const response = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
         billingKeyMethod: "EASY_PAY",
         issueName: "지원고고 정기 결제 등록",
         customer: {
-          customerId: user.email || crypto.randomUUID(),
+          customerId: user.id || user.email || crypto.randomUUID(),
         },
       } as any);
 
+      console.log("[Client Page] PortOne Response:", response);
+
       if (response?.code != null) {
-        console.error("Billing key issue failed:", response);
+        console.error("[Client Page] PortOne Error:", response);
         alert(`인증 실패: ${response.message}`);
         return;
       }
 
       const billingKey = response.billingKey; // Captured billing key
+      console.log("[Client Page] Received billingKey:", billingKey);
 
       // 2. Register Billing Key & Charge Initial Payment on Server
+      console.log("[Client Page] Registering billing key with data:", {
+        billingKey,
+        channelKey,
+      });
       const res = await fetch("/api/billing/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ billingKey, channelKey }),
       });
+
+      console.log("[Client Page] API Response Status:", res.status);
 
       if (!res.ok) {
         const errorData = await res.json();
