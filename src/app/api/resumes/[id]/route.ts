@@ -135,7 +135,7 @@ export async function PUT(
       }
 
       // 5. Update resume metadata
-      await tx.resume.update({
+      await (tx as any).resume.update({
         where: { id: resumeId },
         data: {
           name_kr,
@@ -150,46 +150,19 @@ export async function PUT(
         },
       });
 
-      // Certifications
-      await tx.certification.deleteMany({ where: { resumeId } });
-      if (body.certifications && body.certifications.length > 0) {
-        await tx.certification.createMany({
-          data: body.certifications.map((cert: any) => ({
+      // Additional Items (Certifications, Awards, Languages, etc.)
+      await (tx as any).additionalItem.deleteMany({ where: { resumeId } });
+      if (body.additional_items && body.additional_items.length > 0) {
+        await (tx as any).additionalItem.createMany({
+          data: body.additional_items.map((item: any, index: number) => ({
             resumeId,
-            name: cert.name,
-            name_en: cert.name_en,
-            issuer: cert.issuer,
-            issuer_en: cert.issuer_en,
-            date: cert.date,
-          })),
-        });
-      }
-
-      // Awards
-      await tx.award.deleteMany({ where: { resumeId } });
-      if (body.awards && body.awards.length > 0) {
-        await tx.award.createMany({
-          data: body.awards.map((award: any) => ({
-            resumeId,
-            name: award.name,
-            name_en: award.name_en,
-            issuer: award.issuer,
-            issuer_en: award.issuer_en,
-            date: award.date,
-          })),
-        });
-      }
-
-      // Languages
-      await tx.language.deleteMany({ where: { resumeId } });
-      if (body.languages && body.languages.length > 0) {
-        await tx.language.createMany({
-          data: body.languages.map((lang: any) => ({
-            resumeId,
-            name: lang.name,
-            name_en: lang.name_en,
-            level: lang.level,
-            score: lang.score,
+            type: item.type,
+            name_kr: item.name_kr,
+            name_en: item.name_en,
+            description_kr: item.description_kr,
+            description_en: item.description_en,
+            date: item.date,
+            order: index,
           })),
         });
       }

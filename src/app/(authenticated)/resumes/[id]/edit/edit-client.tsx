@@ -19,9 +19,10 @@ interface EditClientProps {
   initialExperiences: any[];
   initialEducations: any[];
   initialSkills: any[];
-  initialCertifications?: any[];
+  initialCertifications?: any[]; // Keep for compatibility if needed, but unused
   initialAwards?: any[];
   initialLanguages?: any[];
+  initialAdditionalItems?: any[];
   initialPersonalInfo: any;
 }
 
@@ -34,6 +35,7 @@ export function EditClient({
   initialCertifications,
   initialAwards,
   initialLanguages,
+  initialAdditionalItems,
   initialPersonalInfo,
 }: EditClientProps) {
   const router = useRouter();
@@ -58,6 +60,7 @@ export function EditClient({
     experiences: any[];
     educations: any[];
     skills: any[];
+    additionalItems: any[];
   }) => {
     try {
       setIsSaving(true);
@@ -83,9 +86,7 @@ export function EditClient({
         })),
         educations: data.educations,
         skills: data.skills,
-        certifications: data.certifications,
-        awards: data.awards,
-        languages: data.languages,
+        additional_items: data.additionalItems || [],
       };
 
       const res = await fetch(`/api/resumes/${resumeId}`, {
@@ -114,10 +115,8 @@ export function EditClient({
       initialExperiences={initialExperiences}
       initialEducations={initialEducations}
       initialSkills={initialSkills}
-      initialCertifications={initialCertifications}
-      initialAwards={initialAwards}
-      initialLanguages={initialLanguages}
-      onNext={(data) => handleNext(data)}
+      initialAdditionalItems={initialAdditionalItems}
+      onNext={handleNext}
       onBack={() => {
         setIsSaving(true); // Reuse saving state for loading spinner
         router.push("/resumes/new");

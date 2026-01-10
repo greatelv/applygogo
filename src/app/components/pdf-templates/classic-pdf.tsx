@@ -162,9 +162,7 @@ interface ClassicPdfProps {
   experiences?: any[];
   educations?: any[];
   skills?: any[];
-  certifications?: any[];
-  awards?: any[];
-  languages?: any[];
+  additionalItems?: any[];
 }
 
 export const ClassicPdf = ({
@@ -172,10 +170,16 @@ export const ClassicPdf = ({
   experiences = [],
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
 }: ClassicPdfProps) => {
+  const certifications = additionalItems.filter(
+    (i) => i.type === "CERTIFICATION"
+  );
+  const awards = additionalItems.filter((i) => i.type === "AWARD");
+  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  const others = additionalItems.filter(
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+  );
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -310,7 +314,10 @@ export const ClassicPdf = ({
                   {certifications.map((cert: any, i: number) => (
                     // @ts-ignore
                     <Text key={i} style={styles.skillText}>
-                      • {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                      • {cert.name_en || cert.name}{" "}
+                      {cert.description_en || cert.description
+                        ? `| ${cert.description_en || cert.description}`
+                        : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </Text>
                   ))}
@@ -330,7 +337,10 @@ export const ClassicPdf = ({
                   {awards.map((award: any, i: number) => (
                     // @ts-ignore
                     <Text key={i} style={styles.skillText}>
-                      • {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                      • {award.name_en || award.name}{" "}
+                      {award.description_en || award.description
+                        ? `| ${award.description_en || award.description}`
+                        : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </Text>
                   ))}
@@ -350,7 +360,10 @@ export const ClassicPdf = ({
                   {languages.map((lang: any, i: number) => (
                     // @ts-ignore
                     <Text key={i} style={styles.skillText}>
-                      • {lang.name} {lang.level ? `(${lang.level})` : ""}
+                      • {lang.name_en || lang.name}{" "}
+                      {lang.description_en || lang.description
+                        ? `(${lang.description_en || lang.description})`
+                        : ""}
                     </Text>
                   ))}
                 </View>

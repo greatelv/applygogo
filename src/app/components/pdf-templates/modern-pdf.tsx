@@ -195,9 +195,7 @@ interface ModernPdfProps {
   experiences?: any[];
   educations?: any[];
   skills?: any[];
-  certifications?: any[];
-  awards?: any[];
-  languages?: any[];
+  additionalItems?: any[];
 }
 
 export const ModernPdf = ({
@@ -205,10 +203,16 @@ export const ModernPdf = ({
   experiences = [],
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
 }: ModernPdfProps) => {
+  const certifications = additionalItems.filter(
+    (i) => i.type === "CERTIFICATION"
+  );
+  const awards = additionalItems.filter((i) => i.type === "AWARD");
+  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  const others = additionalItems.filter(
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+  );
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -379,7 +383,10 @@ export const ModernPdf = ({
                   {certifications.map((cert: any, i: number) => (
                     // @ts-ignore
                     <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
-                      • {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                      • {cert.name_en || cert.name}{" "}
+                      {cert.description_en || cert.description
+                        ? `| ${cert.description_en || cert.description}`
+                        : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </Text>
                   ))}
@@ -399,7 +406,10 @@ export const ModernPdf = ({
                   {awards.map((award: any, i: number) => (
                     // @ts-ignore
                     <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
-                      • {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                      • {award.name_en || award.name}{" "}
+                      {award.description_en || award.description
+                        ? `| ${award.description_en || award.description}`
+                        : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </Text>
                   ))}
@@ -422,7 +432,10 @@ export const ModernPdf = ({
                     {languages.map((lang: any, i: number) => (
                       <React.Fragment key={i}>
                         <Text style={{ fontSize: 10.5, color: "#374151" }}>
-                          • {lang.name} {lang.level ? `(${lang.level})` : ""}
+                          • {lang.name_en || lang.name}{" "}
+                          {lang.description_en || lang.description
+                            ? `(${lang.description_en || lang.description})`
+                            : ""}
                         </Text>
                       </React.Fragment>
                     ))}

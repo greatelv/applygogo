@@ -58,30 +58,21 @@ interface PersonalInfo {
   summary_kr?: string;
 }
 
-interface Certification {
-  id: string;
-  name: string;
-  name_en?: string;
-  issuer: string;
-  issuer_en?: string;
-  date: string;
-}
+export type ItemType =
+  | "CERTIFICATION"
+  | "AWARD"
+  | "LANGUAGE"
+  | "ACTIVITY"
+  | "OTHER";
 
-interface Award {
+export interface AdditionalItem {
   id: string;
-  name: string;
+  type: ItemType;
+  name_kr: string;
   name_en?: string;
-  issuer: string;
-  issuer_en?: string;
-  date: string;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  name_en?: string;
-  level: string;
-  score?: string;
+  description_kr?: string;
+  description_en?: string;
+  date?: string;
 }
 
 interface ResumeEditPageProps {
@@ -90,9 +81,7 @@ interface ResumeEditPageProps {
   initialExperiences?: TranslatedExperience[];
   initialEducations?: Education[];
   initialSkills?: Skill[];
-  initialCertifications?: Certification[];
-  initialAwards?: Award[];
-  initialLanguages?: Language[];
+  initialAdditionalItems?: AdditionalItem[];
   isEditingExisting?: boolean;
   quota?: number;
   isLoading?: boolean;
@@ -101,9 +90,7 @@ interface ResumeEditPageProps {
     experiences: TranslatedExperience[];
     educations: Education[];
     skills: Skill[];
-    certifications: Certification[];
-    awards: Award[];
-    languages: Language[];
+    additionalItems: AdditionalItem[];
   }) => void;
   onBack: () => void;
   onRetranslate?: () => void;
@@ -115,9 +102,7 @@ export function ResumeEditPage({
   initialExperiences,
   initialEducations,
   initialSkills,
-  initialCertifications,
-  initialAwards,
-  initialLanguages,
+  initialAdditionalItems,
   isEditingExisting,
   quota,
   isLoading = false, // Default to false
@@ -143,12 +128,8 @@ export function ResumeEditPage({
     initialEducations || []
   );
   const [skills, setSkills] = useState<Skill[]>(initialSkills || []);
-  const [certifications, setCertifications] = useState<Certification[]>(
-    initialCertifications || []
-  );
-  const [awards, setAwards] = useState<Award[]>(initialAwards || []);
-  const [languages, setLanguages] = useState<Language[]>(
-    initialLanguages || []
+  const [additionalItems, setAdditionalItems] = useState<AdditionalItem[]>(
+    initialAdditionalItems || []
   );
 
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
@@ -163,78 +144,34 @@ export function ResumeEditPage({
   const [newSkill, setNewSkill] = useState("");
 
   // Handlers for New Sections
-  const handleCertificationChange = (
+  // Handlers for Additional Items
+  const handleAdditionalItemChange = (
     id: string,
-    field: keyof Certification,
-    value: string
+    field: keyof AdditionalItem,
+    value: any
   ) => {
-    setCertifications((prev) =>
+    setAdditionalItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
-  const handleAddCertification = () => {
-    setCertifications((prev) => [
+  const handleAddAdditionalItem = (type: ItemType = "CERTIFICATION") => {
+    setAdditionalItems((prev) => [
       ...prev,
       {
         id: `new-${Date.now()}`,
-        name: "",
-        issuer: "",
+        type,
+        name_kr: "",
+        name_en: "",
+        description_kr: "",
+        description_en: "",
         date: "",
       },
     ]);
   };
 
-  const handleRemoveCertification = (id: string) => {
-    setCertifications((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const handleAwardChange = (id: string, field: keyof Award, value: string) => {
-    setAwards((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
-    );
-  };
-
-  const handleAddAward = () => {
-    setAwards((prev) => [
-      ...prev,
-      {
-        id: `new-${Date.now()}`,
-        name: "",
-        issuer: "",
-        date: "",
-      },
-    ]);
-  };
-
-  const handleRemoveAward = (id: string) => {
-    setAwards((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const handleLanguageChange = (
-    id: string,
-    field: keyof Language,
-    value: string
-  ) => {
-    setLanguages((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
-    );
-  };
-
-  const handleAddLanguage = () => {
-    setLanguages((prev) => [
-      ...prev,
-      {
-        id: `new-${Date.now()}`,
-        name: "",
-        level: "",
-        score: "",
-      },
-    ]);
-  };
-
-  const handleRemoveLanguage = (id: string) => {
-    setLanguages((prev) => prev.filter((item) => item.id !== id));
+  const handleRemoveAdditionalItem = (id: string) => {
+    setAdditionalItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   // Experience Handlers
@@ -653,7 +590,7 @@ export function ResumeEditPage({
                     {personalInfo.name_kr}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                       이메일
@@ -691,13 +628,73 @@ export function ResumeEditPage({
                     </div>
                   </div>
                 </div>
+
+                {/* Links KR (Original rendering style but shared logic) */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
+                    링크
+                  </label>
+                  <div className="space-y-2">
+                    {personalInfo.links.map((link, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 group p-2 rounded -mx-2 transition-colors hover:bg-accent/50"
+                      >
+                        <div className="flex-1 grid grid-cols-3 gap-2">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) => {
+                              const newLinks = [...personalInfo.links];
+                              newLinks[index] = {
+                                ...link,
+                                label: e.currentTarget.textContent || "",
+                              };
+                              handlePersonalInfoChange("links", newLinks);
+                            }}
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1"
+                          >
+                            {link.label}
+                          </div>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) => {
+                              const newLinks = [...personalInfo.links];
+                              newLinks[index] = {
+                                ...link,
+                                url: e.currentTarget.textContent || "",
+                              };
+                              handlePersonalInfoChange("links", newLinks);
+                            }}
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all"
+                          >
+                            {link.url}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const newLinks = personalInfo.links.filter(
+                              (_, i) => i !== index
+                            );
+                            handlePersonalInfoChange("links", newLinks);
+                          }}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-destructive/10 rounded shrink-0"
+                        >
+                          <Trash2 className="size-4 text-destructive" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* English Info */}
               <div className="space-y-4">
+                {/* Name EN */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                    Name (English)
+                    Name
                   </label>
                   <div
                     contentEditable
@@ -708,112 +705,138 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    className={`text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-all duration-500 cursor-text min-h-[36px] ${
+                    className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text ${
                       highlightedPersonal.name
-                        ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
-                        : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
+                        ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
+                        : ""
                     }`}
                   >
                     {personalInfo.name_en}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-8">
+
+                {/* Shared Contact Info (EN Side) */}
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase italic opacity-50">
-                      Shared Email
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                      Email
                     </label>
-                    <div className="text-sm text-muted-foreground/60 px-2 py-1 -mx-2 -my-1 select-none">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handlePersonalInfoChange(
+                          "email",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all"
+                    >
                       {personalInfo.email}
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase italic opacity-50">
-                      Shared Phone
+                    <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                      Phone
                     </label>
-                    <div className="text-sm text-muted-foreground/60 px-2 py-1 -mx-2 -my-1 select-none">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        handlePersonalInfoChange(
+                          "phone",
+                          e.currentTarget.textContent || ""
+                        )
+                      }
+                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text"
+                    >
                       {personalInfo.phone}
                     </div>
+                  </div>
+                </div>
+
+                {/* Shared Links (EN Side) */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
+                    Links
+                  </label>
+                  <div className="space-y-2">
+                    {personalInfo.links.map((link, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-center gap-2 group p-2 rounded -mx-2 transition-all duration-1000 ${
+                          highlightedPersonal.links
+                            ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
+                            : "hover:bg-accent/50"
+                        }`}
+                      >
+                        <div className="flex-1 grid grid-cols-3 gap-2">
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) => {
+                              const newLinks = [...personalInfo.links];
+                              newLinks[index] = {
+                                ...link,
+                                label: e.currentTarget.textContent || "",
+                              };
+                              handlePersonalInfoChange("links", newLinks);
+                            }}
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1"
+                          >
+                            {link.label}
+                          </div>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) => {
+                              const newLinks = [...personalInfo.links];
+                              newLinks[index] = {
+                                ...link,
+                                url: e.currentTarget.textContent || "",
+                              };
+                              handlePersonalInfoChange("links", newLinks);
+                            }}
+                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all"
+                          >
+                            {link.url}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const newLinks = personalInfo.links.filter(
+                              (_, i) => i !== index
+                            );
+                            handlePersonalInfoChange("links", newLinks);
+                          }}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-destructive/10 rounded shrink-0"
+                        >
+                          <Trash2 className="size-4 text-destructive" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Links Section */}
-            <div className="mt-8 border-t border-border pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase">
-                  링크 (GitHub, LinkedIn, 포트폴리오 등)
-                </h4>
-              </div>
-              <div className="space-y-2">
-                {personalInfo.links.map((link, index) => (
-                  <div key={index} className="flex gap-4 group items-center">
-                    <div className="flex-1 grid grid-cols-2 gap-8">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) => {
-                          const newLinks = [...personalInfo.links];
-                          newLinks[index] = {
-                            ...newLinks[index],
-                            label: e.currentTarget.textContent || "",
-                          };
-                          handlePersonalInfoChange("links", newLinks);
-                        }}
-                        className={`text-sm font-medium outline-none px-2 py-1 -mx-2 rounded transition-all duration-500 cursor-text min-h-[24px] ${
-                          highlightedPersonal.links
-                            ? "bg-blue-100 dark:bg-blue-900/40 ring-2 ring-blue-500/20"
-                            : "hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20"
-                        }`}
-                      >
-                        {link.label}
-                      </div>
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) => {
-                          const newLinks = [...personalInfo.links];
-                          newLinks[index] = {
-                            ...newLinks[index],
-                            url: e.currentTarget.textContent || "",
-                          };
-                          handlePersonalInfoChange("links", newLinks);
-                        }}
-                        className="text-sm text-blue-600 outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] truncate"
-                      >
-                        {link.url}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        const newLinks = personalInfo.links.filter(
-                          (_, i) => i !== index
-                        );
-                        handlePersonalInfoChange("links", newLinks);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-destructive/10 rounded shrink-0 translate-y-[-2px]"
-                    >
-                      <Trash2 className="size-4 text-destructive" />
-                    </button>
-                  </div>
-                ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    handlePersonalInfoChange("links", [
-                      ...personalInfo.links,
-                      { label: "", url: "" },
-                    ]);
-                  }}
-                  className="w-full"
-                >
-                  <Plus className="size-4 mr-2" /> 링크 추가
-                </Button>
-              </div>
+            {/* Consolidated Add Link Button */}
+            <div className="mt-6 mb-8">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  handlePersonalInfoChange("links", [
+                    ...personalInfo.links,
+                    { label: "", url: "" },
+                  ]);
+                }}
+                className="w-full"
+              >
+                <Plus className="size-4 mr-2" /> 링크 추가 (Add Link)
+              </Button>
             </div>
 
-            {/* Summary Section */}
             {/* Summary Section */}
             <div className="mt-8 border-t border-border pt-6">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
@@ -833,7 +856,6 @@ export function ResumeEditPage({
                       )
                     }
                     className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
-                    data-placeholder="국문 요약이 여기에 표시됩니다..."
                   >
                     {personalInfo.summary_kr}
                   </div>
@@ -851,7 +873,6 @@ export function ResumeEditPage({
                       )
                     }
                     className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
-                    data-placeholder="Write your professional summary here..."
                   >
                     {personalInfo.summary}
                   </div>
@@ -1368,464 +1389,172 @@ export function ResumeEditPage({
           </div>
         </div>
 
-        {/* Certifications */}
-        {certifications.length > 0 && (
-          <div className="mt-12">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">자격증 (Certifications)</h2>
-            </div>
-            <div className="space-y-6">
-              {certifications.map((cert) => (
-                <div
-                  key={cert.id}
-                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
-                >
-                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          한글 (원본)
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          English (번역)
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
-                      <button
-                        onClick={() => handleRemoveCertification(cert.id)}
-                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
+        {/* Additional Information Items */}
+        <div className="mt-12">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-foreground">
+              추가 정보 (Additional Information)
+            </h2>
+          </div>
+          <div className="space-y-8">
+            {additionalItems.map((item) => (
+              <div
+                key={item.id}
+                className="bg-card border border-border rounded-lg overflow-hidden group"
+              >
+                <div className="bg-muted px-6 py-3 border-b border-border flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={item.type}
+                      onChange={(e) =>
+                        handleAdditionalItemChange(
+                          item.id,
+                          "type",
+                          e.target.value
+                        )
+                      }
+                      className="bg-transparent text-sm font-semibold text-muted-foreground uppercase outline-none focus:ring-0 cursor-pointer hover:text-foreground transition-colors"
+                    >
+                      <option value="CERTIFICATION">
+                        자격증 (Certification)
+                      </option>
+                      <option value="AWARD">수상 (Award)</option>
+                      <option value="LANGUAGE">언어 (Language)</option>
+                      <option value="ACTIVITY">활동 (Activity)</option>
+                      <option value="OTHER">기타 (Other)</option>
+                    </select>
                   </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Korean Cert */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            이름
-                          </label>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleCertificationChange(
-                                cert.id,
-                                "name",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                          >
-                            {cert.name}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              발행처
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleCertificationChange(
-                                  cert.id,
-                                  "issuer",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {cert.issuer}
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              취득일
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleCertificationChange(
-                                  cert.id,
-                                  "date",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {cert.date}
-                            </div>
-                          </div>
+                  <button
+                    onClick={() => handleRemoveAdditionalItem(item.id)}
+                    className="p-1.5 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5"
+                  >
+                    <Trash2 className="size-4" />
+                    <span className="text-xs">삭제</span>
+                  </button>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    {/* Left: Original (KR) */}
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                          Item Name (KR)
+                        </label>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleAdditionalItemChange(
+                              item.id,
+                              "name_kr",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="text-base font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                        >
+                          {item.name_kr}
                         </div>
                       </div>
+                      <div>
+                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                          Description/Issuer/Level (KR)
+                        </label>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleAdditionalItemChange(
+                              item.id,
+                              "description_kr",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                        >
+                          {item.description_kr}
+                        </div>
+                      </div>
+                    </div>
 
-                      {/* English Cert */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            Name
+                    {/* Right: Translated (EN) */}
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase text-primary/80">
+                          Item Name (EN)
+                        </label>
+                        <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) =>
+                            handleAdditionalItemChange(
+                              item.id,
+                              "name_en",
+                              e.currentTarget.textContent || ""
+                            )
+                          }
+                          className="text-base font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                        >
+                          {item.name_en || item.name_kr}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-6">
+                        <div className="col-span-2">
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase text-primary/80">
+                            Description/Issuer/Level (EN)
                           </label>
                           <div
                             contentEditable
                             suppressContentEditableWarning
                             onBlur={(e) =>
-                              handleCertificationChange(
-                                cert.id,
-                                "name_en",
+                              handleAdditionalItemChange(
+                                item.id,
+                                "description_en",
                                 e.currentTarget.textContent || ""
                               )
                             }
-                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
                           >
-                            {cert.name_en || cert.name}
+                            {item.description_en || item.description_kr}
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              Issuer
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleCertificationChange(
-                                  cert.id,
-                                  "issuer_en",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {cert.issuer_en || cert.issuer}
-                            </div>
+                        <div className="col-span-1">
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
+                            Date
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleAdditionalItemChange(
+                                item.id,
+                                "date",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {item.date}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
-              <div className="mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAddCertification}
-                  className="w-full h-9"
-                >
-                  <Plus className="size-4 mr-2" /> 자격증 추가
-                </Button>
               </div>
+            ))}
+
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                onClick={() => handleAddAdditionalItem("CERTIFICATION")}
+                className="w-full h-11 border-dashed hover:border-primary hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary"
+              >
+                <Plus className="size-4 mr-2" />
+                항목 추가 (Add Item)
+              </Button>
             </div>
           </div>
-        )}
-
-        {/* Awards */}
-        {awards.length > 0 && (
-          <div className="mt-12">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">수상 경력 (Awards)</h2>
-            </div>
-            <div className="space-y-6">
-              {awards.map((award) => (
-                <div
-                  key={award.id}
-                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
-                >
-                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          한글 (원본)
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          English (번역)
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
-                      <button
-                        onClick={() => handleRemoveAward(award.id)}
-                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Korean Award */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            수상명
-                          </label>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAwardChange(
-                                award.id,
-                                "name",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                          >
-                            {award.name}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              수여기관
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleAwardChange(
-                                  award.id,
-                                  "issuer",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {award.issuer}
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              수상일
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleAwardChange(
-                                  award.id,
-                                  "date",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {award.date}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* English Award */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            Name
-                          </label>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAwardChange(
-                                award.id,
-                                "name_en",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                          >
-                            {award.name_en || award.name}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              Issuer
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleAwardChange(
-                                  award.id,
-                                  "issuer_en",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {award.issuer_en || award.issuer}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAddAward}
-                  className="w-full h-9"
-                >
-                  <Plus className="size-4 mr-2" /> 수상 추가
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Languages */}
-        {languages.length > 0 && (
-          <div className="mt-12">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">언어 (Languages)</h2>
-            </div>
-            <div className="space-y-6">
-              {languages.map((lang) => (
-                <div
-                  key={lang.id}
-                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
-                >
-                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          한글 (원본)
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-semibold">
-                          English (번역)
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
-                      <button
-                        onClick={() => handleRemoveLanguage(lang.id)}
-                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Korean Language */}
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              언어
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleLanguageChange(
-                                  lang.id,
-                                  "name",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {lang.name}
-                            </div>
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                              수준
-                            </label>
-                            <div
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleLanguageChange(
-                                  lang.id,
-                                  "level",
-                                  e.currentTarget.textContent || ""
-                                )
-                              }
-                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                            >
-                              {lang.level}
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            점수 (선택)
-                          </label>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleLanguageChange(
-                                lang.id,
-                                "score",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[28px]"
-                          >
-                            {lang.score}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* English Language */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                            Language (EN)
-                          </label>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleLanguageChange(
-                                lang.id,
-                                "name_en",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
-                          >
-                            {lang.name_en || lang.name}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAddLanguage}
-                  className="w-full h-9"
-                >
-                  <Plus className="size-4 mr-2" /> 언어 추가
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
 
       <div className="mt-12 flex gap-3">
@@ -1846,9 +1575,7 @@ export function ResumeEditPage({
               experiences,
               educations,
               skills,
-              certifications,
-              awards,
-              languages,
+              additionalItems,
             })
           }
           size="lg"

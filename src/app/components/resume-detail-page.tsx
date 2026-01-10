@@ -47,9 +47,7 @@ interface ResumeDetailPageProps {
   experiences?: TranslatedExperience[];
   educations?: any[];
   skills?: any[];
-  certifications?: any[];
-  awards?: any[];
-  languages?: any[];
+  additionalItems?: any[];
   template?: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
@@ -67,9 +65,7 @@ export function ResumeDetailPage({
   experiences,
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
   template = "modern",
   isWorkflowComplete = false,
   onBack,
@@ -90,9 +86,7 @@ export function ResumeDetailPage({
     experiences: experiences || [],
     educations,
     skills,
-    certifications,
-    awards,
-    languages,
+    additionalItems,
   };
 
   const config = statusConfig[resume.status];
@@ -124,9 +118,7 @@ export function ResumeDetailPage({
         experiences: resume.experiences,
         educations: resume.educations,
         skills: resume.skills,
-        certifications: resume.certifications,
-        awards: resume.awards,
-        languages: resume.languages,
+        additionalItems: resume.additionalItems,
       };
 
       const templateKey = resume.template.toLowerCase();
@@ -170,9 +162,7 @@ export function ResumeDetailPage({
       experiences: resume.experiences || [],
       educations: resume.educations,
       skills: resume.skills,
-      certifications: resume.certifications,
-      awards: resume.awards,
-      languages: resume.languages,
+      additionalItems: resume.additionalItems,
     };
     switch (templateKey) {
       case "classic":
@@ -434,85 +424,63 @@ export function ResumeDetailPage({
             </section>
           )}
 
-          {/* Certifications */}
-          {resume.certifications && resume.certifications.length > 0 && (
+          {/* Additional Items regrouped for KR View */}
+          {resume.additionalItems && resume.additionalItems.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                자격증
+                추가 정보
               </h4>
-              <div className="space-y-2">
-                {resume.certifications.map((cert: any) => (
-                  <div key={cert.id} className="text-sm flex justify-between">
-                    <div>
-                      <span className="font-medium">{cert.name}</span>
-                      {cert.issuer && (
-                        <span className="text-muted-foreground ml-2">
-                          ({cert.issuer})
-                        </span>
-                      )}
-                    </div>
-                    {cert.date && (
-                      <span className="text-muted-foreground">{cert.date}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+              <div className="space-y-4">
+                {[
+                  "CERTIFICATION",
+                  "AWARD",
+                  "LANGUAGE",
+                  "ACTIVITY",
+                  "OTHER",
+                ].map((type) => {
+                  const items = resume.additionalItems.filter(
+                    (i) => i.type === type
+                  );
+                  if (items.length === 0) return null;
 
-          {/* Awards */}
-          {resume.awards && resume.awards.length > 0 && (
-            <section className="pt-6 border-t border-border/50">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                수상 경력
-              </h4>
-              <div className="space-y-2">
-                {resume.awards.map((award: any) => (
-                  <div key={award.id} className="text-sm flex justify-between">
-                    <div>
-                      <span className="font-medium">{award.name}</span>
-                      {award.issuer && (
-                        <span className="text-muted-foreground ml-2">
-                          ({award.issuer})
-                        </span>
-                      )}
-                    </div>
-                    {award.date && (
-                      <span className="text-muted-foreground">
-                        {award.date}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  const typeLabels: Record<string, string> = {
+                    CERTIFICATION: "자격증",
+                    AWARD: "수상 경력",
+                    LANGUAGE: "언어",
+                    ACTIVITY: "활동",
+                    OTHER: "기타",
+                  };
 
-          {/* Languages */}
-          {resume.languages && resume.languages.length > 0 && (
-            <section className="pt-6 border-t border-border/50">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                언어
-              </h4>
-              <div className="flex flex-wrap gap-2 text-sm">
-                {resume.languages.map((lang: any) => (
-                  <div
-                    key={lang.id}
-                    className="flex items-center gap-1 border border-border px-2 py-1 rounded"
-                  >
-                    <span className="font-medium">{lang.name}</span>
-                    {lang.level && (
-                      <span className="text-muted-foreground">
-                        - {lang.level}
-                      </span>
-                    )}
-                    {lang.score && (
-                      <span className="text-xs text-muted-foreground bg-muted px-1 rounded ml-1">
-                        {lang.score}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                  return (
+                    <div key={type}>
+                      <h5 className="text-xs font-medium text-muted-foreground mb-2">
+                        {typeLabels[type]}
+                      </h5>
+                      <div className="space-y-2">
+                        {items.map((item) => (
+                          <div
+                            key={item.id}
+                            className="text-sm flex justify-between"
+                          >
+                            <div>
+                              <span className="font-medium">{item.name}</span>
+                              {item.description && (
+                                <span className="text-muted-foreground ml-2">
+                                  ({item.description})
+                                </span>
+                              )}
+                            </div>
+                            {item.date && (
+                              <span className="text-muted-foreground">
+                                {item.date}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}

@@ -13,17 +13,15 @@ export default async function Page({
 
   const { id } = await params;
 
-  const resume = await prisma.resume.findUnique({
+  const resume = (await prisma.resume.findUnique({
     where: { id, userId: session.user.id },
     include: {
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
-      certifications: true,
-      awards: true,
-      languages: true,
+      additionalItems: { orderBy: { order: "asc" } },
     },
-  });
+  })) as any;
 
   if (!resume) notFound();
 
@@ -76,25 +74,15 @@ export default async function Page({
     level: s.level,
   }));
 
-  const mappedCertifications = resume.certifications.map((c) => ({
-    id: c.id,
-    name: c.name,
-    issuer: c.issuer,
-    date: c.date,
-  }));
-
-  const mappedAwards = resume.awards.map((a) => ({
-    id: a.id,
-    name: a.name,
-    issuer: a.issuer,
-    date: a.date,
-  }));
-
-  const mappedLanguages = resume.languages.map((l) => ({
-    id: l.id,
-    name: l.name,
-    level: l.level,
-    score: l.score,
+  const mappedAdditionalItems = resume.additionalItems.map((item) => ({
+    id: item.id,
+    type: item.type,
+    name: item.name_kr,
+    name_en: item.name_en || item.name_kr,
+    description: item.description_kr || "",
+    description_en: item.description_en || "",
+    date: item.date || "",
+    order: item.order,
   }));
 
   return (
@@ -105,9 +93,7 @@ export default async function Page({
       experiences={mappedExperiences}
       educations={mappedEducations}
       skills={mappedSkills}
-      certifications={mappedCertifications}
-      awards={mappedAwards}
-      languages={mappedLanguages}
+      additionalItems={mappedAdditionalItems}
       template={resume.selected_template?.toLowerCase() || "modern"}
       updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}

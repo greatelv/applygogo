@@ -7,44 +7,44 @@ datasource db {
 }
 
 model Account {
-  userId             String   @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String   @map("provider_account_id")
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
   @@map("accounts")
 }
 
 model Education {
-  id              String  @id @default(cuid())
-  resumeId        String  @map("resume_id")
-  school_name     String
-  school_name_en  String?
-  major           String
-  major_en        String?
-  degree          String
-  degree_en       String?
-  start_date      String
-  end_date        String
-  order           Int     @default(0)
-  resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id             String  @id @default(cuid())
+  resumeId       String  @map("resume_id")
+  school_name    String
+  major          String
+  degree         String
+  start_date     String
+  end_date       String
+  order          Int     @default(0)
+  degree_en      String?
+  major_en       String?
+  school_name_en String?
+  resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("educations")
 }
 
 model Plan {
-  code          PlanCode        @id
+  code          PlanCode       @id
   monthly_quota Float
   max_resumes   Int
   subscriptions Subscription[]
@@ -56,28 +56,26 @@ model Resume {
   id                String             @id @default(cuid())
   userId            String             @map("user_id")
   title             String
-  name_kr           String             @default("")
-  name_en           String?
-  email             String?
-  phone             String?
-  links             Json?              // [{label, url}]
   original_file_url String
   target_role       String?
-  summary           String?            @default("")
-  summary_kr        String?            @default("")
   status            ResumeStatus       @default(IDLE)
   failure_message   String?
   current_step      ResumeStep         @default(UPLOAD)
   selected_template ResumeTemplate?
   created_at        DateTime           @default(now())
   updated_at        DateTime           @updatedAt
+  email             String?
+  links             Json?
+  name_en           String?
+  name_kr           String             @default("")
+  phone             String?
+  summary           String?            @default("")
+  summary_kr        String?            @default("")
+  additionalItems   AdditionalItem[]
   educations        Education[]
   user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills            Skill[]
   work_experiences  WorkExperience[]
-  certifications    Certification[]
-  awards            Award[]
-  languages         Language[]
 
   @@map("resumes")
 }
@@ -94,12 +92,12 @@ model Session {
 }
 
 model Skill {
-  id        String  @id @default(cuid())
-  resumeId  String  @map("resume_id")
-  name      String
-  level     String?
-  order     Int     @default(0)
-  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id       String  @id @default(cuid())
+  resumeId String  @map("resume_id")
+  name     String
+  level    String?
+  order    Int     @default(0)
+  resume   Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("skills")
 }
@@ -107,7 +105,7 @@ model Skill {
 model Subscription {
   id                   String             @id @default(cuid())
   userId               String             @unique @map("user_id")
-  planCode            PlanCode           @map("plan_code")
+  planCode             PlanCode           @map("plan_code")
   status               SubscriptionStatus @default(ACTIVE)
   current_period_start DateTime           @default(now())
   current_period_end   DateTime
@@ -133,16 +131,16 @@ model UsageLog {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String         @unique
+  email         String        @unique
   emailVerified DateTime?
   image         String?
   phone_number  String?
   linkedin_url  String?
   portfolio_url String?
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
   accounts      Account[]
   resumes       Resume[]
   sessions      Session[]
@@ -178,6 +176,21 @@ model WorkExperience {
   @@map("work_experiences")
 }
 
+model AdditionalItem {
+  id             String   @id @default(cuid())
+  resumeId      String   @map("resume_id")
+  type           ItemType @default(OTHER)
+  name_kr        String
+  name_en        String?
+  description_kr String?  @default("")
+  description_en String?  @default("")
+  date           String?
+  order          Int      @default(0)
+  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("additional_items")
+}
+
 enum PlanCode {
   FREE
   PRO
@@ -210,40 +223,10 @@ enum SubscriptionStatus {
   CANCELED
 }
 
-model Certification {
-  id        String  @id @default(cuid())
-  resumeId  String  @map("resume_id")
-  name      String
-  name_en   String?
-  issuer    String?
-  issuer_en String?
-  date      String?
-  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@map("certifications")
-}
-
-model Award {
-  id        String  @id @default(cuid())
-  resumeId  String  @map("resume_id")
-  name      String
-  name_en   String?
-  date      String?
-  issuer    String?
-  issuer_en String?
-  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@map("awards")
-}
-
-model Language {
-  id        String  @id @default(cuid())
-  resumeId  String  @map("resume_id")
-  name      String
-  name_en   String?
-  level     String? 
-  score     String? 
-  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@map("languages")
+enum ItemType {
+  CERTIFICATION
+  AWARD
+  LANGUAGE
+  ACTIVITY
+  OTHER
 }

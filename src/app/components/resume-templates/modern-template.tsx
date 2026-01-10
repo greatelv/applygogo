@@ -81,9 +81,7 @@ interface ModernTemplateProps {
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
-  certifications?: Certification[];
-  awards?: Award[];
-  languages?: Language[];
+  additionalItems?: any[];
 }
 
 export function ModernTemplate({
@@ -91,10 +89,16 @@ export function ModernTemplate({
   experiences,
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
 }: ModernTemplateProps) {
+  const certifications = additionalItems.filter(
+    (i) => i.type === "CERTIFICATION"
+  );
+  const awards = additionalItems.filter((i) => i.type === "AWARD");
+  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  const others = additionalItems.filter(
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+  );
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-sans">
       {/* Header */}
@@ -255,7 +259,10 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {certifications.map((cert) => (
                     <li key={cert.id}>
-                      {cert.name} {cert.issuer ? `| ${cert.issuer}` : ""}{" "}
+                      {cert.name_en || cert.name}{" "}
+                      {cert.description_en || cert.description
+                        ? `| ${cert.description_en || cert.description}`
+                        : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </li>
                   ))}
@@ -268,7 +275,10 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {awards.map((award) => (
                     <li key={award.id}>
-                      {award.name} {award.issuer ? `| ${award.issuer}` : ""}{" "}
+                      {award.name_en || award.name}{" "}
+                      {award.description_en || award.description
+                        ? `| ${award.description_en || award.description}`
+                        : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </li>
                   ))}
@@ -286,9 +296,13 @@ export function ModernTemplate({
                       {index > 0 && (
                         <span className="mr-4 text-gray-300">|</span>
                       )}
-                      <span className="font-medium mr-1">{lang.name}</span>
-                      {lang.level && (
-                        <span className="text-gray-500">({lang.level})</span>
+                      <span className="font-medium mr-1">
+                        {lang.name_en || lang.name}
+                      </span>
+                      {(lang.description_en || lang.description) && (
+                        <span className="text-gray-500">
+                          ({lang.description_en || lang.description})
+                        </span>
                       )}
                     </span>
                   ))}

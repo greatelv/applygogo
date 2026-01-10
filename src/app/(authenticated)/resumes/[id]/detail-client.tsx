@@ -8,13 +8,11 @@ import { useEffect } from "react";
 interface DetailClientProps {
   resumeId: string;
   resumeTitle: string;
-  personalInfo: any; // Added personalInfo to the interface
+  personalInfo: any;
   experiences: any[];
   educations?: any[];
   skills?: any[];
-  certifications?: any[];
-  awards?: any[];
-  languages?: any[];
+  additionalItems?: any[];
   template: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
@@ -27,9 +25,7 @@ export function DetailClient({
   experiences,
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
   template,
   updatedAt,
   isWorkflowComplete,
@@ -59,9 +55,7 @@ export function DetailClient({
       experiences={experiences}
       educations={educations}
       skills={skills}
-      certifications={certifications}
-      awards={awards}
-      languages={languages}
+      additionalItems={additionalItems}
       template={template}
       updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}

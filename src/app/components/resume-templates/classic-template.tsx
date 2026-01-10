@@ -81,9 +81,7 @@ interface ClassicTemplateProps {
   experiences: Experience[];
   educations?: Education[];
   skills?: Skill[];
-  certifications?: Certification[];
-  awards?: Award[];
-  languages?: Language[];
+  additionalItems?: any[];
 }
 
 export function ClassicTemplate({
@@ -91,10 +89,16 @@ export function ClassicTemplate({
   experiences,
   educations = [],
   skills = [],
-  certifications = [],
-  awards = [],
-  languages = [],
+  additionalItems = [],
 }: ClassicTemplateProps) {
+  const certifications = additionalItems.filter(
+    (i) => i.type === "CERTIFICATION"
+  );
+  const awards = additionalItems.filter((i) => i.type === "AWARD");
+  const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  const others = additionalItems.filter(
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+  );
   return (
     <div className="bg-white text-black p-8 min-h-[800px] font-serif">
       {/* Header */}
@@ -243,8 +247,9 @@ export function ClassicTemplate({
                 {certifications.map((cert, i) => (
                   <span key={cert.id}>
                     {i > 0 && ", "}
-                    {cert.name}
-                    {cert.issuer && ` (${cert.issuer})`}
+                    {cert.name_en || cert.name}
+                    {(cert.description_en || cert.description) &&
+                      ` (${cert.description_en || cert.description})`}
                     {cert.date && ` - ${formatDate(cert.date)}`}
                   </span>
                 ))}
@@ -256,8 +261,9 @@ export function ClassicTemplate({
                 {awards.map((award, i) => (
                   <span key={award.id}>
                     {i > 0 && ", "}
-                    {award.name}
-                    {award.issuer && ` (${award.issuer})`}
+                    {award.name_en || award.name}
+                    {(award.description_en || award.description) &&
+                      ` (${award.description_en || award.description})`}
                     {award.date && ` - ${formatDate(award.date)}`}
                   </span>
                 ))}
@@ -269,7 +275,9 @@ export function ClassicTemplate({
                 {languages.map((lang, i) => (
                   <span key={lang.id}>
                     {i > 0 && ", "}
-                    {lang.name} {lang.level && `(${lang.level})`}
+                    {lang.name_en || lang.name}{" "}
+                    {(lang.description_en || lang.description) &&
+                      `(${lang.description_en || lang.description})`}
                   </span>
                 ))}
               </div>

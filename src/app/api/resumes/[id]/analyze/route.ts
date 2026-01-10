@@ -252,40 +252,57 @@ export async function POST(
       }
     }
 
-    // Save certifications
+    // Save additional items (certifications, awards, languages)
     const { certifications, awards, languages } = analysisResult;
+    const additionalItemsData: any[] = [];
 
     if (certifications && certifications.length > 0) {
-      await prisma.certification.createMany({
-        data: certifications.map((cert: any) => ({
+      certifications.forEach((cert: any) => {
+        additionalItemsData.push({
           resumeId: resumeId,
-          name: cert.name ? String(cert.name) : "Unknown Certification",
-          issuer: cert.issuer ? String(cert.issuer) : undefined,
+          type: "CERTIFICATION",
+          name_kr: cert.name ? String(cert.name) : "Unknown Certification",
+          name_en: cert.name_en ? String(cert.name_en) : undefined,
+          description_kr: cert.issuer ? String(cert.issuer) : undefined,
+          description_en: cert.issuer_en ? String(cert.issuer_en) : undefined,
           date: cert.date ? String(cert.date) : undefined,
-        })),
+        });
       });
     }
 
-    // Save awards
     if (awards && awards.length > 0) {
-      await prisma.award.createMany({
-        data: awards.map((award: any) => ({
+      awards.forEach((award: any) => {
+        additionalItemsData.push({
           resumeId: resumeId,
-          name: award.name ? String(award.name) : "Unknown Award",
-          issuer: award.issuer ? String(award.issuer) : undefined,
+          type: "AWARD",
+          name_kr: award.name ? String(award.name) : "Unknown Award",
+          name_en: award.name_en ? String(award.name_en) : undefined,
+          description_kr: award.issuer ? String(award.issuer) : undefined,
+          description_en: award.issuer_en ? String(award.issuer_en) : undefined,
           date: award.date ? String(award.date) : undefined,
-        })),
+        });
       });
     }
 
-    // Save languages
     if (languages && languages.length > 0) {
-      await prisma.language.createMany({
-        data: languages.map((lang: any) => ({
+      languages.forEach((lang: any) => {
+        additionalItemsData.push({
           resumeId: resumeId,
-          name: lang.name ? String(lang.name) : "Unknown Language",
-          level: lang.level ? String(lang.level) : undefined,
-          score: lang.score ? String(lang.score) : undefined,
+          type: "LANGUAGE",
+          name_kr: lang.name ? String(lang.name) : "Unknown Language",
+          name_en: lang.name_en ? String(lang.name_en) : undefined,
+          description_kr: lang.level ? String(lang.level) : undefined,
+          description_en: lang.score ? String(lang.score) : undefined,
+          date: undefined,
+        });
+      });
+    }
+
+    if (additionalItemsData.length > 0) {
+      await (prisma as any).additionalItem.createMany({
+        data: additionalItemsData.map((item, index) => ({
+          ...item,
+          order: index,
         })),
       });
     }
@@ -293,7 +310,7 @@ export async function POST(
     // 7. Update resume status to COMPLETED and save personal info & summary
     const personalInfo = analysisResult.personal_info || {};
 
-    await prisma.resume.update({
+    await (prisma as any).resume.update({
       where: { id: resumeId },
       data: {
         status: "COMPLETED",
