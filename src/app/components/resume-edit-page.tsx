@@ -236,6 +236,47 @@ export function ResumeEditPage({
     );
   };
 
+  const handleAddExperience = () => {
+    setExperiences((prev) => [
+      ...prev,
+      {
+        id: `new-exp-${Date.now()}`,
+        company: "",
+        position: "",
+        period: "",
+        bullets: [""],
+        companyEn: "",
+        positionEn: "",
+        bulletsEn: [""],
+      },
+    ]);
+  };
+
+  const handleAddEducation = () => {
+    setEducations((prev) => [
+      ...prev,
+      {
+        id: `new-edu-${Date.now()}`,
+        school_name: "",
+        major: "",
+        degree: "",
+        start_date: "",
+        end_date: "",
+        school_name_en: "",
+        major_en: "",
+        degree_en: "",
+      },
+    ]);
+  };
+
+  const handleRemoveExperience = (id: string) => {
+    setExperiences((prev) => prev.filter((exp) => exp.id !== id));
+  };
+
+  const handleRemoveEducation = (id: string) => {
+    setEducations((prev) => prev.filter((edu) => edu.id !== id));
+  };
+
   const handleRetranslateExperience = async (expId: string) => {
     const currentExp = experiences.find((e) => e.id === expId);
     const initialExp = initialExperiences?.find((e) => e.id === expId);
@@ -575,6 +616,9 @@ export function ResumeEditPage({
         {/* Personal Info */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2">기본 정보</h2>
+          <p className="text-sm text-muted-foreground">
+            이름, 연락처, 프로페셔널 요약 등 필수 인적 사항을 관리합니다.
+          </p>
         </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
@@ -933,8 +977,21 @@ export function ResumeEditPage({
           </div>
         </div>
         {/* Experiences */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">경력</h2>
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-semibold mb-1">경력</h2>
+            <p className="text-sm text-muted-foreground">
+              주요 경력사항과 업무 성과를 최신순으로 작성해주세요.
+            </p>
+          </div>
+          <Button
+            size="sm"
+            onClick={handleAddExperience}
+            className="h-9 px-4 shadow-sm text-sm font-semibold"
+          >
+            <Plus className="size-4 mr-1.5" />
+            항목 추가
+          </Button>
         </div>
         {experiences.map((exp) => (
           <div
@@ -954,23 +1011,30 @@ export function ResumeEditPage({
                   </p>
                 </div>
               </div>
-              <div className="absolute top-1/2 -translate-y-1/2 right-4">
+              <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleRetranslateExperience(exp.id)}
                   disabled={isTranslating[exp.id]}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground h-8 px-2"
                 >
                   {isTranslating[exp.id] ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
                     <RefreshCw className="size-4" />
                   )}
-                  <span className="hidden lg:inline ml-2">
+                  <span className="hidden lg:inline ml-2 text-xs">
                     {isTranslating[exp.id] ? "처리 중..." : "동기화 후 번역"}
                   </span>
                 </Button>
+                <button
+                  onClick={() => handleRemoveExperience(exp.id)}
+                  className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+                >
+                  <Trash2 className="size-4" />
+                  <span className="text-xs hidden lg:inline">삭제</span>
+                </button>
               </div>
             </div>
 
@@ -1158,12 +1222,12 @@ export function ResumeEditPage({
               </div>
               <div className="mt-6">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => handleAddBullet(exp.id)}
-                  className="w-full"
+                  className="w-full h-10 border border-border shadow-sm hover:bg-accent transition-colors text-sm font-medium"
                 >
-                  <Plus className="size-4" /> 항목 추가
+                  <Plus className="size-4 mr-2" /> 항목 추가
                 </Button>
               </div>
             </div>
@@ -1172,8 +1236,21 @@ export function ResumeEditPage({
 
         {/* Educations */}
         <div className="mt-12">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">학력사항</h2>
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">학력사항</h2>
+              <p className="text-sm text-muted-foreground">
+                최종 학력부터 학위 및 전공 정보를 입력해주세요.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              onClick={handleAddEducation}
+              className="h-9 px-4 shadow-sm text-sm font-semibold"
+            >
+              <Plus className="size-4 mr-1.5" />
+              항목 추가
+            </Button>
           </div>
           <div className="space-y-6">
             {educations.map((edu) => (
@@ -1194,25 +1271,32 @@ export function ResumeEditPage({
                       </p>
                     </div>
                   </div>
-                  <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleTranslateEducation(edu.id)}
                       disabled={isTranslating[`edu-${edu.id}`]}
-                      className="text-muted-foreground hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground h-8 px-2"
                     >
                       {isTranslating[`edu-${edu.id}`] ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
                         <RefreshCw className="size-4" />
                       )}
-                      <span className="ml-2 hidden lg:inline">
+                      <span className="ml-2 hidden lg:inline text-xs">
                         {isTranslating[`edu-${edu.id}`]
                           ? "처리 중..."
                           : "동기화 후 번역"}
                       </span>
                     </Button>
+                    <button
+                      onClick={() => handleRemoveEducation(edu.id)}
+                      className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="size-4" />
+                      <span className="text-xs hidden lg:inline">삭제</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1412,6 +1496,9 @@ export function ResumeEditPage({
         <div className="mt-12">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
+            <p className="text-sm text-muted-foreground">
+              보유한 핵심 기술 및 도구들을 태그로 관리해보세요.
+            </p>
           </div>
 
           <div className="bg-card border border-border rounded-lg p-6">
@@ -1460,11 +1547,21 @@ export function ResumeEditPage({
 
         {/* Additional Information Items */}
         <div className="mt-12">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-foreground">추가 정보</h2>
-            <p className="text-sm text-muted-foreground">
-              자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
-            </p>
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">추가 정보</h2>
+              <p className="text-sm text-muted-foreground">
+                자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => handleAddAdditionalItem("CERTIFICATION")}
+              className="h-9 px-4 shadow-sm text-sm font-semibold"
+            >
+              <Plus className="size-4 mr-1.5" />
+              항목 추가
+            </Button>
           </div>
           <div className="space-y-8">
             {additionalItems.map((item) => (
@@ -1628,17 +1725,6 @@ export function ResumeEditPage({
                 </div>
               </div>
             ))}
-
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                onClick={() => handleAddAdditionalItem("CERTIFICATION")}
-                className="w-full h-11 border-dashed hover:border-primary hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary"
-              >
-                <Plus className="size-4 mr-2" />
-                항목 추가 (Add Item)
-              </Button>
-            </div>
           </div>
         </div>
       </div>
