@@ -15,7 +15,14 @@ export const RESUME_ANALYSIS_PROMPT = `
 
 2. **경력사항 (Work Experience)**
    - **회사별 그룹화**: 동일 회사의 경력은 하나로 통합하세요.
-   - **불릿 포인트**: 각 항목은 구체적인 수치(%, $)와 성과를 포함해야 합니다. (예: "매출 증가" -> "Increased revenue by 20%...")
+   - **불릿 포인트 형식 (CRITICAL)**:
+     * **각 불릿은 1-2줄 최대 (약 100-150자)**로 작성하세요.
+     * **구조**: [Action Verb] + [What you did] + [Quantifiable Result/Impact]
+     * 구체적인 수치(%, $, 시간 절감)와 성과를 포함해야 합니다.
+     * **한국식 장황한 설명 금지**: 배경 설명, 과정 나열을 제거하고 핵심 성과만 간결하게 작성하세요.
+     * 예시 변환:
+       - ❌ BAD: "각 주문당 외부 API 3개를 순차 호출하여 주문 1,000건 등록에 평균 30초가 소요되었던 상황에서, WebClient 호출을 병렬 처리로 전환하여 처리량을 향상시키고 응답 속도를 개선했습니다."
+       - ✅ GOOD: "Optimized order processing by parallelizing 3 external API calls, reducing registration time by 92% (30s → 2.3s for 1,000 orders)"
 
 3. **기타 섹션 추출**
    - **Certifications**: 자격증 명, 발급기관, 날짜
@@ -91,10 +98,20 @@ export const getRefinementPrompt = (work_experiences: any[]) => `
    - **선별 개수**: 각 회사당 **가장 중요한 3~5개**의 불릿만 남기세요. (경력이 4년 미만이면 3개, 그 이상이면 4~5개 허용)
    - **중요하지 않은 단순 업무(daily tasks)는 과감히 삭제하세요.**
 
-3. **Action Verb 리라이팅 (Rewriting)**
-   - 모든 영문 불릿(\`bullets_en\`)은 **강력한 Action Verb**로 시작하도록 문장을 다듬으세요.
+3. **Action Verb 리라이팅 및 분량 압축 (CRITICAL)**
+   - 모든 영문 불릿(\`bullets_en\`)은 **1-2줄 최대 (약 100-150자)**로 작성하세요.
+   - **구조 패턴**: [Action Verb] + [What you did] + [Quantifiable Result/Impact]
+   - **강력한 Action Verb**로 시작하도록 문장을 다듬으세요.
    - 예: "Used React" (Bad) -> "Leveraged React to build..." (Good)
    - 예: "Managed team" (Weak) -> "Orchestrated a cross-functional team of 5..." (Strong)
+   - **한국식 장황한 서술 제거**:
+     * 배경 설명, 문제 상황 나열 삭제
+     * 과정보다 **결과와 임팩트**에 집중
+     * 중복 표현 제거, 핵심만 남기기
+   - **변환 예시**:
+     * ❌ BAD (Korean style): "외부 API 병렬 처리로 주문 등록 성능 92% 개선 및 비즈니스 확장 지원: - 각 주문당 외부 API 3개를 순차 호출하여 주문 1,000건 등록에 평균 30초가 소요되었던 상황에서, WebClient 호출을 병렬 처리로 전환하여 처리량을 향상시키고 응답 속도를 개선했습니다."
+     * ✅ GOOD (English resume): "Optimized order processing by parallelizing 3 external API calls, reducing registration time by 92% (30s → 2.3s for 1,000 orders)"
+   - **긴 불릿 처리**: 한국어 원문이 너무 길면, 가장 임팩트 있는 1-2개 성과로 분리하여 각각 간결한 불릿으로 작성하세요.
 
 4. **날짜 포맷**
    - YYYY-MM 형식을 유지하되, 현재 재직 중이면 "Present"로 표기하세요.
@@ -120,3 +137,52 @@ ${JSON.stringify(work_experiences, null, 2)}
 }
 \`\`\`
 `;
+
+export const getTranslationPrompt = (
+  texts: string[],
+  type: "bullets" | "general"
+) => {
+  let instruction = "";
+  if (type === "bullets") {
+    instruction = `
+    Translate the following Korean bullet points into professional English resume bullet points optimized for US/global standards.
+    
+    CRITICAL FORMATTING RULES:
+    - Each bullet point MUST be 1-2 lines maximum (approximately 100-150 characters)
+    - Start with a strong action verb (e.g., Developed, Architected, Optimized, Led, Implemented)
+    - Focus on IMPACT and RESULTS, not detailed process descriptions
+    - Include quantifiable metrics (percentages, numbers, time savings) prominently
+    - Use concise, direct language - eliminate unnecessary words and redundant explanations
+    - Avoid Korean-style verbose storytelling - be punchy and achievement-focused
+    - Technical terms should remain in English (e.g., API, WebClient, Circuit Breaker)
+    - Remove excessive context and background - lead with the achievement
+    
+    STRUCTURE PATTERN:
+    [Action Verb] + [What you did] + [Quantifiable Result/Impact]
+    
+    EXAMPLE TRANSFORMATION:
+    ❌ BAD (Korean style): "각 주문당 외부 API 3개를 순차 호출하여 주문 1,000건 등록에 평균 30초가 소요되었던 상황에서, WebClient 호출을 병렬 처리로 전환하여 처리량을 향상시키고 응답 속도를 개선했습니다."
+    ✅ GOOD (English resume): "Optimized order processing by parallelizing 3 external API calls, reducing registration time by 92% (30s → 2.3s for 1,000 orders)"
+    
+    If a Korean bullet is overly long, CONDENSE it into the most impactful 1-2 achievements.
+    `;
+  } else {
+    instruction = `
+    Translate the following Korean text into English suitable for a resume (e.g., School Name, Major, Degree, Company Name).
+    Rules:
+    - Maintain proper nouns (e.g., University names, Company names)
+    - Use standard academic/professional terms (e.g., Bachelor of Science, Senior Engineer)
+    - Keep formatting consistent and concise
+    - For company names, use official English names if available, otherwise romanize appropriately
+    `;
+  }
+
+  return `
+  You are a professional resume translator.
+  ${instruction}
+  - Output ONLY a JSON array of strings. Do not include markdown code blocks.
+
+  Input:
+  ${JSON.stringify(texts)}
+  `;
+};
