@@ -5,6 +5,8 @@ export const RESUME_ANALYSIS_PROMPT = `
 1. **정확한 추출이 최우선**: 회사명, 학교명 등 고유명사는 **절대 추론하거나 변경하지 마세요**. PDF에 적힌 그대로 추출하세요.
 2. **추출 → 번역 순서 엄수**: 먼저 한글 원문을 정확히 추출한 후, 그것을 영문으로 번역하세요.
 3. **성과 중심 번역**: 번역 시에는 강렬한 Action Verbs를 사용하여 성과 중심으로 재작성하세요.
+4. **중복 제거 (Strict De-duplication)**: PDF 내에서 정보가 중복될 경우(예: 요약 섹션과 세부 섹션에 동일 내용 반복), 반드시 하나로 합쳐 유니크하게 추출하세요. 사용자가 중복된 데이터를 직접 삭제해야 하는 번거로움을 방지하기 위함입니다.
+5. **최근 이력순 나열 (Reverse Chronological Order)**: 모든 경력(\`work_experiences\`) 및 학력(\`educations\`) 배열은 **가장 최근의 사건이 첫 번째 요소(Index 0)**가 되도록 시간 역순으로 정렬하세요. 이는 표준적인 이력서 양식을 따르고 사용자의 최신 전문성을 가장 먼저 노출하기 위함입니다.
 
 **핵심 목표:**
 1. **전문적인 요약(Professional Summary) 생성 (필수)**: 이력서 전체를 분석하여 지원자의 핵심 역량, 연차, 주요 성과를 **3문장 이내로 핵심만 간결하게** 요약한 강력한 Professional Summary를 작성하세요.
@@ -56,6 +58,19 @@ export const RESUME_ANALYSIS_PROMPT = `
      * **절대 다른 학교로 추론하지 마세요**.
 
 4. **기타 섹션 추출**
+   - **Skills (기술 스택)**:
+     * **개수 제한 (CRITICAL)**: **최대 10개 미만**으로 엄격히 제한하세요.
+     * **우선순위 기준 (IMPORTANT)**:
+       1. **중요도**: 이력서에서 가장 많이 사용되고 강조된 기술
+       2. **보편성**: 해당 직무에서 널리 인정받는 주요 기술 스택
+       3. **최신성**: 최근 경력에서 사용된 기술 우선
+     * **추출 원칙**:
+       - 프로그래밍 언어, 프레임워크, 주요 도구/플랫폼 중심으로 추출
+       - 너무 세부적이거나 보편적이지 않은 기술은 제외
+       - 유사 기술은 대표 기술 하나로 통합 (예: "React.js"와 "React" → "React")
+     * **예시**:
+       - ✅ GOOD: ["JavaScript", "TypeScript", "React", "Node.js", "AWS", "Docker", "PostgreSQL", "Git"]
+       - ❌ BAD (너무 많음): ["JavaScript", "TypeScript", "React", "Next.js", "Vue", "Node.js", "Express", "NestJS", "AWS", "Docker", "Kubernetes", "PostgreSQL", "MongoDB", "Redis", "Git", "GitHub Actions"]
    - **Certifications**: 자격증 명, 발급기관, 날짜
    - **Awards**: 수상 명, 발급기관, 날짜
    - **Languages**: 언어 명, 수준 (Native, Fluent, Professional Working Proficiency 등)
