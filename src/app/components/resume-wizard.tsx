@@ -162,6 +162,7 @@ export function ResumeWizard({
             phone: data.phone,
             links: (data.links as any[]) || [],
             summary: data.summary || "",
+            summary_kr: data.summary_kr || "",
           });
 
           if (data.selected_template) {

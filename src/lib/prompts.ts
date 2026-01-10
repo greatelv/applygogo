@@ -2,14 +2,15 @@ export const RESUME_ANALYSIS_PROMPT = `
 당신은 글로벌 톱티어 기업(Google, Amazon 등)의 이력서 분석 및 번역 전문가입니다. 주어진 이력서 PDF에서 정보를 **완벽하게 추출**하고, **최고 수준의 영문 이력서(Winning Resume)**로 변환해주세요.
 
 **핵심 목표:**
-1. **전문적인 요약(Professional Summary) 생성 (필수)**: 이력서 전체를 분석하여 지원자의 핵심 역량, 연차, 주요 성과를 3-4문장으로 요약한 강력한 Professional Summary를 작성하세요.
+1. **전문적인 요약(Professional Summary) 생성 (필수)**: 이력서 전체를 분석하여 지원자의 핵심 역량, 연차, 주요 성과를 **3문장 이내로 핵심만 간결하게** 요약한 강력한 Professional Summary를 작성하세요.
 2. **누락 없는 추출**: 경력, 학력, 기술은 물론 자격증, 수상, 언어 능력까지 빠짐없이 추출하세요.
 3. **성과 중심 번역 (Action Verbs)**: 단순 직역이 아닌, **"Did X, resulting in Y"** 구조의 성과 중심 문장으로 재작성하세요. 문장은 강렬한 Action Verbs(Spearheaded, Optimized, Orchestrated 등)로 시작해야 합니다.
 
 **추출 및 작성 지침:**
 
 1. **Professional Summary (새로 작성)**
-   - 지원자의 직무(Role), 총 경력 연수, 가장 큰 성과 2~3가지를 포함하여 매력적인 요약글을 작성하세요.
+   - 지원자의 직무(Role), 총 경력 연수, 가장 큰 성과 2~3가지를 포함하여 **매우 간결한(Concise)** 요약글을 작성하세요.
+   - **길어지지 않도록 주의하세요 (3~4줄 이내 권장).**
    - 예: "Results-driven Senior Software Engineer with 8+ years of experience..."
 
 2. **경력사항 (Work Experience)**
@@ -27,9 +28,10 @@ export const RESUME_ANALYSIS_PROMPT = `
    - name_kr, name_en, email, phone
    - links: [{ "label": "GitHub", "url": "..." }]
 
-2. **professional_summary**: (String) 전문적인 요약글 (영문)
+2. **professional_summary_kr**: (String) 전문적인 요약글 (한글 - 핵심 역량, 연차, 주요 성과 포함 **3문장 이내**)
+3. **professional_summary**: (String) 전문적인 요약글 (영문 - Action Verb 사용, **3문장 이내**)
 
-3. **work_experiences**:
+4. **work_experiences**:
    - company_name_kr, company_name_en
    - role_kr, role_en
    - start_date, end_date (YYYY-MM 또는 "Present")
@@ -62,6 +64,7 @@ export const RESUME_ANALYSIS_PROMPT = `
 \`\`\`json
 {
   "personal_info": { ... },
+  "professional_summary_kr": "...",
   "professional_summary": "...",
   "work_experiences": [...],
   "educations": [...],

@@ -304,6 +304,7 @@ export async function POST(
         phone: personalInfo.phone || "",
         links: personalInfo.links || [],
         summary: analysisResult.professional_summary || "",
+        summary_kr: analysisResult.professional_summary_kr || "",
       },
     });
 

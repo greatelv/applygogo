@@ -55,25 +55,31 @@ interface PersonalInfo {
   phone: string;
   links: { label: string; url: string }[];
   summary?: string;
+  summary_kr?: string;
 }
 
 interface Certification {
   id: string;
   name: string;
+  name_en?: string;
   issuer: string;
+  issuer_en?: string;
   date: string;
 }
 
 interface Award {
   id: string;
   name: string;
+  name_en?: string;
   issuer: string;
+  issuer_en?: string;
   date: string;
 }
 
 interface Language {
   id: string;
   name: string;
+  name_en?: string;
   level: string;
   score?: string;
 }
@@ -127,6 +133,7 @@ export function ResumeEditPage({
       phone: "",
       links: [],
       summary: "",
+      summary_kr: "",
     }
   );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
@@ -429,8 +436,14 @@ export function ResumeEditPage({
   const handleTranslatePersonalInfo = async () => {
     setIsTranslating((prev) => ({ ...prev, personal: true }));
     try {
-      // Collect name and all link labels that need translation
+      // Collect name, summary, and all link labels that need translation
       const textsToTranslate = [personalInfo.name_kr];
+      const hasSummary = !!personalInfo.summary_kr;
+
+      if (hasSummary && personalInfo.summary_kr) {
+        textsToTranslate.push(personalInfo.summary_kr);
+      }
+
       personalInfo.links.forEach((link: any) => {
         textsToTranslate.push(link.label);
       });
@@ -450,9 +463,18 @@ export function ResumeEditPage({
 
       setPersonalInfo((prev) => {
         const newLinks = [...prev.links];
-        // translatedTexts[0] is name, [1+] are link labels
+
+        let summaryEn = prev.summary;
+        let linkStartIndex = 1;
+
+        if (hasSummary) {
+          summaryEn = translatedTexts[1];
+          linkStartIndex = 2;
+        }
+
+        // translatedTexts[0] is name, [1 or 2+] are link labels
         translatedTexts
-          .slice(1)
+          .slice(linkStartIndex)
           .forEach((translatedLabel: string, i: number) => {
             newLinks[i] = { ...newLinks[i], label: translatedLabel };
           });
@@ -460,6 +482,7 @@ export function ResumeEditPage({
         return {
           ...prev,
           name_en: translatedTexts[0],
+          summary: summaryEn,
           links: newLinks,
         };
       });
@@ -550,7 +573,7 @@ export function ResumeEditPage({
       <div className="mb-8">
         <h1 className="text-2xl mb-2">편집</h1>
         <p className="text-sm text-muted-foreground">
-          {resumeTitle} • AI가 분석한 내용을 검토하고 수정하세요.
+          AI가 분석한 내용을 검토하고 수정하세요.
         </p>
       </div>
 
@@ -722,7 +745,7 @@ export function ResumeEditPage({
                   링크 (GitHub, LinkedIn, 포트폴리오 등)
                 </h4>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {personalInfo.links.map((link, index) => (
                   <div key={index} className="flex gap-4 group items-center">
                     <div className="flex-1 grid grid-cols-2 gap-8">
@@ -791,21 +814,49 @@ export function ResumeEditPage({
             </div>
 
             {/* Summary Section */}
+            {/* Summary Section */}
             <div className="mt-8 border-t border-border pt-6">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-2">
-                Professional Summary (English)
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
+                Professional Summary
               </h4>
-              <p className="text-xs text-muted-foreground mb-3">
-                AI가 작성한 요약글입니다. 필요에 따라 수정하세요.
-              </p>
-              <textarea
-                value={personalInfo.summary || ""}
-                onChange={(e) =>
-                  handlePersonalInfoChange("summary", e.target.value)
-                }
-                className="w-full min-h-[100px] p-3 rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Write your professional summary here..."
-              />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Korean Summary */}
+                <div>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      handlePersonalInfoChange(
+                        "summary_kr",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
+                    data-placeholder="국문 요약이 여기에 표시됩니다..."
+                  >
+                    {personalInfo.summary_kr}
+                  </div>
+                </div>
+
+                {/* English Summary */}
+                <div>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      handlePersonalInfoChange(
+                        "summary",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed"
+                    data-placeholder="Write your professional summary here..."
+                  >
+                    {personalInfo.summary}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1320,86 +1371,159 @@ export function ResumeEditPage({
         {/* Certifications */}
         {certifications.length > 0 && (
           <div className="mt-12">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">
-                자격증 (Certifications)
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                자격증 정보를 추가하세요.
-              </p>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">자격증 (Certifications)</h2>
             </div>
-            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            <div className="space-y-6">
               {certifications.map((cert) => (
-                <div key={cert.id} className="flex gap-4 items-start group">
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        이름
-                      </label>
-                      <Input
-                        placeholder="Certificate Name"
-                        value={cert.name}
-                        onChange={(e) =>
-                          handleCertificationChange(
-                            cert.id,
-                            "name",
-                            e.target.value
-                          )
-                        }
-                        className="h-9 text-sm"
-                      />
+                <div
+                  key={cert.id}
+                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
+                >
+                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          한글 (원본)
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          English (번역)
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        발행처
-                      </label>
-                      <Input
-                        placeholder="Issuer"
-                        value={cert.issuer}
-                        onChange={(e) =>
-                          handleCertificationChange(
-                            cert.id,
-                            "issuer",
-                            e.target.value
-                          )
-                        }
-                        className="h-9 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        취득일
-                      </label>
-                      <Input
-                        placeholder="Date (e.g. 2023-01)"
-                        value={cert.date}
-                        onChange={(e) =>
-                          handleCertificationChange(
-                            cert.id,
-                            "date",
-                            e.target.value
-                          )
-                        }
-                        className="h-9 text-sm"
-                      />
+                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                      <button
+                        onClick={() => handleRemoveCertification(cert.id)}
+                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemoveCertification(cert.id)}
-                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Korean Cert */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            이름
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleCertificationChange(
+                                cert.id,
+                                "name",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {cert.name}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              발행처
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleCertificationChange(
+                                  cert.id,
+                                  "issuer",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {cert.issuer}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              취득일
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleCertificationChange(
+                                  cert.id,
+                                  "date",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {cert.date}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* English Cert */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            Name
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleCertificationChange(
+                                cert.id,
+                                "name_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {cert.name_en || cert.name}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              Issuer
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleCertificationChange(
+                                  cert.id,
+                                  "issuer_en",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {cert.issuer_en || cert.issuer}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAddCertification}
-                className="w-full h-9"
-              >
-                <Plus className="size-4 mr-2" /> 자격증 추가
-              </Button>
+              <div className="mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddCertification}
+                  className="w-full h-9"
+                >
+                  <Plus className="size-4 mr-2" /> 자격증 추가
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1407,72 +1531,159 @@ export function ResumeEditPage({
         {/* Awards */}
         {awards.length > 0 && (
           <div className="mt-12">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">수상 경력 (Awards)</h2>
-              <p className="text-sm text-muted-foreground">
-                수상 내역을 추가하세요.
-              </p>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">수상 경력 (Awards)</h2>
             </div>
-            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            <div className="space-y-6">
               {awards.map((award) => (
-                <div key={award.id} className="flex gap-4 items-start group">
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        수상명
-                      </label>
-                      <Input
-                        placeholder="Award Name"
-                        value={award.name}
-                        onChange={(e) =>
-                          handleAwardChange(award.id, "name", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
+                <div
+                  key={award.id}
+                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
+                >
+                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          한글 (원본)
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          English (번역)
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        수여기관
-                      </label>
-                      <Input
-                        placeholder="Issuer"
-                        value={award.issuer}
-                        onChange={(e) =>
-                          handleAwardChange(award.id, "issuer", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        수상일
-                      </label>
-                      <Input
-                        placeholder="Date (e.g. 2023-12)"
-                        value={award.date}
-                        onChange={(e) =>
-                          handleAwardChange(award.id, "date", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
+                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                      <button
+                        onClick={() => handleRemoveAward(award.id)}
+                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemoveAward(award.id)}
-                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Korean Award */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            수상명
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleAwardChange(
+                                award.id,
+                                "name",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {award.name}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              수여기관
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleAwardChange(
+                                  award.id,
+                                  "issuer",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {award.issuer}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              수상일
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleAwardChange(
+                                  award.id,
+                                  "date",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {award.date}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* English Award */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            Name
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleAwardChange(
+                                award.id,
+                                "name_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {award.name_en || award.name}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              Issuer
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleAwardChange(
+                                  award.id,
+                                  "issuer_en",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {award.issuer_en || award.issuer}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAddAward}
-                className="w-full h-9"
-              >
-                <Plus className="size-4 mr-2" /> 수상 추가
-              </Button>
+              <div className="mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddAward}
+                  className="w-full h-9"
+                >
+                  <Plus className="size-4 mr-2" /> 수상 추가
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1480,72 +1691,138 @@ export function ResumeEditPage({
         {/* Languages */}
         {languages.length > 0 && (
           <div className="mt-12">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">언어 (Languages)</h2>
-              <p className="text-sm text-muted-foreground">
-                언어 능력을 추가하세요.
-              </p>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">언어 (Languages)</h2>
             </div>
-            <div className="bg-card border border-border rounded-lg p-6 space-y-4">
+            <div className="space-y-6">
               {languages.map((lang) => (
-                <div key={lang.id} className="flex gap-4 items-start group">
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        언어
-                      </label>
-                      <Input
-                        placeholder="Language (e.g. English)"
-                        value={lang.name}
-                        onChange={(e) =>
-                          handleLanguageChange(lang.id, "name", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
+                <div
+                  key={lang.id}
+                  className="bg-card border border-border rounded-lg overflow-hidden relative group"
+                >
+                  <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          한글 (원본)
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">
+                          English (번역)
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        수준
-                      </label>
-                      <Input
-                        placeholder="Level (e.g. Fluent)"
-                        value={lang.level}
-                        onChange={(e) =>
-                          handleLanguageChange(lang.id, "level", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground ml-1">
-                        점수 (선택)
-                      </label>
-                      <Input
-                        placeholder="Score"
-                        value={lang.score || ""}
-                        onChange={(e) =>
-                          handleLanguageChange(lang.id, "score", e.target.value)
-                        }
-                        className="h-9 text-sm"
-                      />
+                    <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                      <button
+                        onClick={() => handleRemoveLanguage(lang.id)}
+                        className="p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemoveLanguage(lang.id)}
-                    className="mt-6 p-2 hover:bg-destructive/10 rounded text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
+                  <div className="p-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Korean Language */}
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              언어
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleLanguageChange(
+                                  lang.id,
+                                  "name",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {lang.name}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                              수준
+                            </label>
+                            <div
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleLanguageChange(
+                                  lang.id,
+                                  "level",
+                                  e.currentTarget.textContent || ""
+                                )
+                              }
+                              className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                            >
+                              {lang.level}
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            점수 (선택)
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleLanguageChange(
+                                lang.id,
+                                "score",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[28px]"
+                          >
+                            {lang.score}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* English Language */}
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                            Language (EN)
+                          </label>
+                          <div
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                              handleLanguageChange(
+                                lang.id,
+                                "name_en",
+                                e.currentTarget.textContent || ""
+                              )
+                            }
+                            className="font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text"
+                          >
+                            {lang.name_en || lang.name}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAddLanguage}
-                className="w-full h-9"
-              >
-                <Plus className="size-4 mr-2" /> 언어 추가
-              </Button>
+              <div className="mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddLanguage}
+                  className="w-full h-9"
+                >
+                  <Plus className="size-4 mr-2" /> 언어 추가
+                </Button>
+              </div>
             </div>
           </div>
         )}

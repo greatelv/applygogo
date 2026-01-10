@@ -19,6 +19,9 @@ export default async function Page({
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
+      certifications: true,
+      awards: true,
+      languages: true,
     },
   });
 
@@ -54,12 +57,40 @@ export default async function Page({
     level: s.level,
   }));
 
+  const mappedCertifications = resume.certifications.map((c) => ({
+    id: c.id,
+    name: c.name,
+    name_en: c.name_en || c.name,
+    issuer: c.issuer || "",
+    issuer_en: c.issuer_en || c.issuer || "",
+    date: c.date || "",
+  }));
+
+  const mappedAwards = resume.awards.map((a) => ({
+    id: a.id,
+    name: a.name,
+    name_en: a.name_en || a.name,
+    issuer: a.issuer || "",
+    issuer_en: a.issuer_en || a.issuer || "",
+    date: a.date || "",
+  }));
+
+  const mappedLanguages = resume.languages.map((l) => ({
+    id: l.id,
+    name: l.name,
+    name_en: l.name_en || l.name,
+    level: l.level || "",
+    score: l.score || "",
+  }));
+
   const initialPersonalInfo = {
     name_kr: resume.name_kr || "",
     name_en: resume.name_en || "",
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as any[]) || [],
+    summary: resume.summary || "",
+    summary_kr: resume.summary_kr || "",
   };
 
   return (
@@ -69,6 +100,9 @@ export default async function Page({
       initialExperiences={mappedExperiences}
       initialEducations={mappedEducations}
       initialSkills={mappedSkills}
+      initialCertifications={mappedCertifications}
+      initialAwards={mappedAwards}
+      initialLanguages={mappedLanguages}
       initialPersonalInfo={initialPersonalInfo}
     />
   );

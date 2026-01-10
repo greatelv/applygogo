@@ -64,6 +64,8 @@ export async function PUT(
       email,
       phone,
       links,
+      summary,
+      summary_kr,
       work_experiences,
       educations,
       skills,
@@ -141,10 +143,56 @@ export async function PUT(
           email,
           phone,
           links,
+          summary,
+          summary_kr,
           current_step: body.current_step || "TEMPLATE",
           updated_at: new Date(),
         },
       });
+
+      // Certifications
+      await tx.certification.deleteMany({ where: { resumeId } });
+      if (body.certifications && body.certifications.length > 0) {
+        await tx.certification.createMany({
+          data: body.certifications.map((cert: any) => ({
+            resumeId,
+            name: cert.name,
+            name_en: cert.name_en,
+            issuer: cert.issuer,
+            issuer_en: cert.issuer_en,
+            date: cert.date,
+          })),
+        });
+      }
+
+      // Awards
+      await tx.award.deleteMany({ where: { resumeId } });
+      if (body.awards && body.awards.length > 0) {
+        await tx.award.createMany({
+          data: body.awards.map((award: any) => ({
+            resumeId,
+            name: award.name,
+            name_en: award.name_en,
+            issuer: award.issuer,
+            issuer_en: award.issuer_en,
+            date: award.date,
+          })),
+        });
+      }
+
+      // Languages
+      await tx.language.deleteMany({ where: { resumeId } });
+      if (body.languages && body.languages.length > 0) {
+        await tx.language.createMany({
+          data: body.languages.map((lang: any) => ({
+            resumeId,
+            name: lang.name,
+            name_en: lang.name_en,
+            level: lang.level,
+            score: lang.score,
+          })),
+        });
+      }
     });
 
     return NextResponse.json({ success: true });
