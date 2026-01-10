@@ -31,6 +31,8 @@ export const RESUME_ANALYSIS_PROMPT = `
 
 2. **경력사항 (Work Experience)**
    - **회사별 그룹화**: 동일 회사의 경력은 하나로 통합하세요.
+     * 동일 회사에서 직무가 변경된 경우(승진 등): 가장 최근 직무를 \`role\`로 사용하세요.
+     * 예: "Junior Engineer" → "Senior Engineer"로 승진한 경우, role_en: "Senior Software Engineer"로 표기
    - **회사명 추출 (CRITICAL - 정확성 최우선)**:
      * **절대 추론하거나 변경하지 마세요**: PDF에 적힌 회사명을 **정확히 그대로** 추출하세요.
      * 예: PDF에 "컬리"라고 적혀있으면 → company_name_kr: "컬리" (❌ "쿠팡" 아님)
@@ -38,10 +40,10 @@ export const RESUME_ANALYSIS_PROMPT = `
      * **영문 회사명**: 공식 영문명이 명확하면 사용, 없으면 한글을 로마자 표기 (예: "컬리" → "Kurly")
      * **절대 유사 회사로 대체하지 마세요**: AI가 임의로 판단하여 다른 회사명으로 바꾸는 것을 엄격히 금지합니다.
    - **불릿 포인트 형식 (CRITICAL)**:
-     * **추출 개수 (IMPORTANT)**: 각 회사당 **모든 주요 성과를 빠짐없이 추출**하세요 (목표: 5~7개).
+     * **추출 개수 (IMPORTANT)**: 각 회사당 **최소 5~7개 이상** 추출하되, PDF에 더 많은 성과가 기술되어 있다면 모두 추출하세요.
        - PDF에 기술된 업무 성과를 **최대한 많이** 추출하세요. 이후 Refinement 단계에서 선별됩니다.
        - **절대 이 단계에서 필터링하지 마세요**: 중요도 판단은 Refinement 단계에서 수행합니다.
-       - 업무 내용이 정말 적은 경우(1~2년 미만 경력)에만 3~4개로 제한하세요.
+       - 업무 내용이 정말 적은 경우(해당 회사 근무 기간 1~2년 미만)에만 3~4개로 제한하세요.
      * **각 불릿은 1-2줄 최대 (약 100-150자)**로 작성하세요.
      * **구조**: [Action Verb] + [What you did] + [Quantifiable Result/Impact]
      * 구체적인 수치(%, $, 시간 절감)와 성과를 포함해야 합니다.
@@ -59,7 +61,7 @@ export const RESUME_ANALYSIS_PROMPT = `
 
 4. **기타 섹션 추출**
    - **Skills (기술 스택)**:
-     * **개수 제한 (CRITICAL)**: **최대 10개 미만**으로 엄격히 제한하세요.
+     * **개수 제한 (CRITICAL)**: **최대 10개 이하**로 엄격히 제한하세요.
      * **우선순위 기준 (IMPORTANT)**:
        1. **중요도**: 이력서에서 가장 많이 사용되고 강조된 기술
        2. **보편성**: 해당 직무에서 널리 인정받는 주요 기술 스택
@@ -67,7 +69,8 @@ export const RESUME_ANALYSIS_PROMPT = `
      * **추출 원칙**:
        - 프로그래밍 언어, 프레임워크, 주요 도구/플랫폼 중심으로 추출
        - 너무 세부적이거나 보편적이지 않은 기술은 제외
-       - 유사 기술은 대표 기술 하나로 통합 (예: "React.js"와 "React" → "React")
+       - **동일 기술의 표기 차이만 통합** (예: "React.js"와 "React" → "React")
+       - **프레임워크와 기반 기술은 별도 유지** (예: "React"와 "Next.js"는 둘 다 포함 가능)
      * **예시**:
        - ✅ GOOD: ["JavaScript", "TypeScript", "React", "Node.js", "AWS", "Docker", "PostgreSQL", "Git"]
        - ❌ BAD (너무 많음): ["JavaScript", "TypeScript", "React", "Next.js", "Vue", "Node.js", "Express", "NestJS", "AWS", "Docker", "Kubernetes", "PostgreSQL", "MongoDB", "Redis", "Git", "GitHub Actions"]
@@ -87,14 +90,16 @@ export const RESUME_ANALYSIS_PROMPT = `
 4. **work_experiences**:
    - company_name_kr, company_name_en
    - role_kr, role_en
-   - start_date, end_date (YYYY-MM 또는 "Present")
+   - start_date, end_date (YYYY-MM 형식으로 정규화, 현재 재직 중이면 end_date는 "Present")
+     * 날짜 형식 예외 처리: "2020년 3월", "2020.03", "Mar 2020" 등은 모두 "2020-03"으로 변환
+     * 날짜 정보가 없으면 빈 문자열("")로 처리
    - bullets_kr: (원문)
    - bullets_en: (Action Verb로 강화된 번역문)
 
 4. **educations**:
    - school_name, school_name_en
    - major, major_en, degree, degree_en
-   - start_date, end_date
+   - start_date, end_date (YYYY-MM 형식으로 정규화, 현재 재학 중이면 end_date는 "Present", 날짜 정보가 없으면 빈 문자열)
 
 5. **skills**: ["React", "TypeScript", ...] (배열)
 
@@ -141,7 +146,7 @@ export const getRefinementPrompt = (work_experiences: any[]) => `
    - **단순 갯수 제한이 아닙니다.** 가장 **영향력 있는(Impactful)** 성과를 우선순위로 선별하세요.
    - **우선순위 1**: 구체적인 수치(Metrics)가 포함된 성과 (예: "Reduced latency by 40%", "Generated $1M revenue")
    - **우선순위 2**: 리더십, 프로젝트 주도, 프로세스 개선 경험
-   - **선별 개수**: 각 회사당 **가장 중요한 3~5개**의 불릿만 남기세요. (경력이 4년 미만이면 3개, 그 이상이면 4~5개 허용)
+   - **선별 개수**: 각 회사당 **가장 중요한 3~5개**의 불릿만 남기세요. (**해당 회사에서의 근무 기간**이 2년 미만이면 3개, 2년 이상이면 4~5개 허용)
    - **중요하지 않은 단순 업무(daily tasks)는 과감히 삭제하세요.**
 
 3. **Action Verb 리라이팅 및 분량 압축 (CRITICAL)**
