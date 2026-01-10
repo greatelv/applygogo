@@ -5,6 +5,7 @@ import {
   Languages,
   CheckCircle,
   Upload,
+  Filter,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -14,7 +15,13 @@ interface ProcessingPageProps {
   onComplete: () => void;
 }
 
-type ProcessingPhase = "uploading" | "extracting" | "grouping" | "done";
+// 3단계 AI 프로세싱 단계 (추출 → 정제 → 번역)
+type ProcessingPhase =
+  | "uploading"
+  | "extracting"
+  | "refining"
+  | "translating"
+  | "done";
 
 export function ProcessingPage({
   resumeTitle,
@@ -41,27 +48,69 @@ export function ProcessingPage({
 
         if (isCancelled) return;
 
-        // Phase 2: Extraction + Translation
+        // ================================================================
+        // Phase 2: Extraction (1단계 API 호출)
+        // ================================================================
         setCurrentPhase("extracting");
 
-        const response = await fetch(`/api/resumes/${resumeId}/analyze`, {
+        const extractResponse = await fetch(
+          `/api/resumes/${resumeId}/extract`,
+          { method: "POST" }
+        );
+
+        if (!extractResponse.ok) {
+          const errorData = await extractResponse.json();
+          throw new Error(errorData.error || "Extraction failed");
+        }
+
+        const { data: extractedData } = await extractResponse.json();
+
+        if (isCancelled) return;
+
+        // ================================================================
+        // Phase 3: Refinement (2단계 API 호출)
+        // ================================================================
+        setCurrentPhase("refining");
+
+        const refineResponse = await fetch(`/api/resumes/${resumeId}/refine`, {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ extractedData }),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Analysis failed");
+        if (!refineResponse.ok) {
+          const errorData = await refineResponse.json();
+          throw new Error(errorData.error || "Refinement failed");
+        }
+
+        const { data: refinedData } = await refineResponse.json();
+
+        if (isCancelled) return;
+
+        // ================================================================
+        // Phase 4: Translation (3단계 API 호출)
+        // ================================================================
+        setCurrentPhase("translating");
+
+        const translateResponse = await fetch(
+          `/api/resumes/${resumeId}/translate`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refinedData }),
+          }
+        );
+
+        if (!translateResponse.ok) {
+          const errorData = await translateResponse.json();
+          throw new Error(errorData.error || "Translation failed");
         }
 
         if (isCancelled) return;
 
-        // Phase 3: Grouping + Selection (happens in backend, show for UX)
-        setCurrentPhase("grouping");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        if (isCancelled) return;
-
-        // Phase 4: Done
+        // ================================================================
+        // Phase 5: Done
+        // ================================================================
         setCurrentPhase("done");
 
         // Auto-proceed after showing completion
@@ -82,6 +131,7 @@ export function ProcessingPage({
     };
   }, [resumeId, onComplete]);
 
+  // 3단계 AI 프로세싱 UI (추출 → 정제 → 번역)
   const processingSteps = [
     {
       id: "uploading",
@@ -91,15 +141,24 @@ export function ProcessingPage({
     },
     {
       id: "extracting",
-      label: "추출 + 번역",
+      label: "1단계: 추출",
       icon: FileText,
-      description: "PDF에서 경력사항 추출 및 영문 번역 중...",
+      description: "PDF에서 한글 원문을 정확하게 추출 중...",
+      detail: "회사명, 학교명 등 고유명사를 그대로 추출합니다",
     },
     {
-      id: "grouping",
-      label: "그룹화 + 선택",
-      icon: Loader2,
-      description: "회사별 그룹화 및 핵심 경력 선택 중...",
+      id: "refining",
+      label: "2단계: 정제",
+      icon: Filter,
+      description: "한글 기준으로 핵심 경력 선별 중...",
+      detail: "가장 임팩트 있는 성과를 3~5개로 선별합니다",
+    },
+    {
+      id: "translating",
+      label: "3단계: 번역",
+      icon: Languages,
+      description: "선별된 한글을 영문으로 번역 중...",
+      detail: "Action Verb를 사용하여 성과 중심으로 번역합니다",
     },
     {
       id: "done",
@@ -113,7 +172,8 @@ export function ProcessingPage({
     const stepOrder: ProcessingPhase[] = [
       "uploading",
       "extracting",
-      "grouping",
+      "refining",
+      "translating",
       "done",
     ];
     const currentStepIndex = stepOrder.indexOf(currentPhase);
@@ -130,7 +190,7 @@ export function ProcessingPage({
       <div className="mb-8">
         <h1 className="text-2xl mb-2">AI 처리</h1>
         <p className="text-sm text-muted-foreground">
-          이력서를 분석하고 요약 및 번역하고 있습니다
+          이력서를 3단계로 분석하고 있습니다: 추출 → 정제 → 번역
         </p>
       </div>
 
@@ -169,9 +229,16 @@ export function ProcessingPage({
                     {step.label}
                   </p>
                   {status === "processing" && (
-                    <p className="text-sm text-muted-foreground">
-                      {step.description}
-                    </p>
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        {step.description}
+                      </p>
+                      {step.detail && (
+                        <p className="text-xs text-muted-foreground/70 mt-1">
+                          💡 {step.detail}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -211,8 +278,9 @@ export function ProcessingPage({
 
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
         <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>팁:</strong> AI가 경력사항을 불릿 포인트 3~4개로
-          요약합니다. 다음 단계에서 직접 수정할 수 있습니다.
+          💡 <strong>3단계 AI 프로세싱</strong>: 각 단계별로 실제 처리 시간이
+          반영됩니다. 한글 기준으로 먼저 핵심 경력을 선별한 후 번역하여 더
+          정확하고 효율적인 결과를 제공합니다.
         </p>
       </div>
     </div>

@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { supabaseAdmin } from "@/lib/supabase";
 import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
-import {
-  RESUME_EXTRACTION_PROMPT,
-  getRefinementPrompt,
-  getResumeTranslationPrompt,
-} from "@/lib/prompts";
+import { getResumeTranslationPrompt } from "@/lib/prompts";
 
 // ============================================================================
-// 3단계 AI 프로세싱 API
-// 1단계: 추출 (Extraction) - PDF에서 한글 원문만 정확히 추출
-// 2단계: 정제 (Refinement) - 한글 기준으로 회사별 통합, 불릿 선별
-// 3단계: 번역 (Translation) - 선별된 한글을 영문으로 번역
+// 3단계: 번역 API (TRANSLATION)
+// - 정제된 한글 데이터를 영문으로 번역
+// - 고유명사는 로마자 표기만
+// - Action Verb 사용하여 성과 중심으로
+// - 최종 결과를 DB에 저장
 // ============================================================================
 
 export async function POST(
@@ -28,7 +24,7 @@ export async function POST(
 
     const { id: resumeId } = await params;
 
-    // 1. Get resume from DB
+    // 1. Verify resume ownership
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId, userId: session.user.id },
     });
@@ -37,127 +33,32 @@ export async function POST(
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    // 2. Update status to PROCESSING
-    await prisma.resume.update({
-      where: { id: resumeId },
-      data: { status: "PROCESSING" },
-    });
+    // 2. Get refined data from request body
+    const { refinedData } = await request.json();
 
-    // 3. Download PDF from Supabase Storage
-    const { data: fileData, error: downloadError } = await supabaseAdmin.storage
-      .from("resumes")
-      .download(resume.original_file_url);
-
-    if (downloadError || !fileData) {
-      throw new Error("Failed to download PDF from storage");
+    if (!refinedData) {
+      return NextResponse.json(
+        { error: "Refined data is required" },
+        { status: 400 }
+      );
     }
-
-    // 4. Convert PDF to base64 for Gemini API
-    const arrayBuffer = await fileData.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64Data = buffer.toString("base64");
 
     // Helper function to clean JSON from markdown code blocks
     const cleanJsonText = (text: string) => {
-      // 1. Try to match markdown code blocks (flexible)
       const match = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
       if (match) return match[1];
 
-      // 2. If no code block, try to find the outermost braces
       const start = text.indexOf("{");
       const end = text.lastIndexOf("}");
       if (start !== -1 && end !== -1) {
         return text.substring(start, end + 1);
       }
 
-      // 3. Return original text as fallback
       return text;
     };
 
-    // ========================================================================
-    // PHASE 1: 추출 (Extraction)
-    // - PDF에서 한글 원문만 정확히 추출
-    // - 번역 없음, 고유명사 그대로
-    // ========================================================================
-    console.log("[Phase 1] Starting extraction...");
-
-    const extractionResult = await generateContentWithRetry(geminiModel, [
-      {
-        inlineData: {
-          mimeType: "application/pdf",
-          data: base64Data,
-        },
-      },
-      RESUME_EXTRACTION_PROMPT,
-    ]);
-
-    const extractionText = extractionResult.response.text();
-    const extractedData = JSON.parse(cleanJsonText(extractionText));
-
-    console.log(
-      `[Phase 1] Extraction complete. Found ${
-        extractedData.work_experiences?.length || 0
-      } experiences, ` +
-        `${
-          extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
-          ) || 0
-        } total bullets.`
-    );
-
-    // ========================================================================
-    // PHASE 2: 정제 (Refinement) - 한글 기준
-    // - 회사별 통합
-    // - 스마트 불릿 선별 (3~5개)
-    // - 아직 번역하지 않음
-    // ========================================================================
-    let refinedData = extractedData;
-
-    if (
-      extractedData.work_experiences &&
-      extractedData.work_experiences.length > 0
-    ) {
-      console.log("[Phase 2] Starting refinement (Korean-based selection)...");
-
-      try {
-        const refinementPrompt = getRefinementPrompt(extractedData);
-        const refinementResult = await generateContentWithRetry(
-          geminiModel,
-          refinementPrompt
-        );
-
-        const refinedText = refinementResult.response.text();
-        refinedData = JSON.parse(cleanJsonText(refinedText));
-
-        const totalBullets =
-          refinedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
-          ) || 0;
-
-        console.log(
-          `[Phase 2] Refinement complete. ${
-            refinedData.work_experiences?.length || 0
-          } companies, ${totalBullets} bullets selected.`
-        );
-      } catch (error) {
-        console.error(
-          "[Phase 2] Refinement failed, using extracted data:",
-          error
-        );
-        // Fall back to extracted data if refinement fails
-      }
-    } else {
-      console.log("[Phase 2] Skipped (no work experiences to refine)");
-    }
-
-    // ========================================================================
-    // PHASE 3: 번역 (Translation)
-    // - 정제된 한글 데이터를 영문으로 번역
-    // - 고유명사는 로마자 표기만
-    // ========================================================================
-    console.log("[Phase 3] Starting translation...");
+    // 3. Translate with Gemini AI
+    console.log("[Translate API] Starting translation...");
 
     const translationPrompt = getResumeTranslationPrompt(refinedData);
     const translationResult = await generateContentWithRetry(
@@ -168,11 +69,9 @@ export async function POST(
     const translationText = translationResult.response.text();
     const translatedData = JSON.parse(cleanJsonText(translationText));
 
-    console.log("[Phase 3] Translation complete.");
+    console.log("[Translate API] Translation complete.");
 
-    // ========================================================================
-    // Post-processing
-    // ========================================================================
+    // 4. Post-processing
     let finalExperiences = translatedData.work_experiences || [];
 
     // Sort experiences: Newest first (descending by end_date)
@@ -185,7 +84,7 @@ export async function POST(
           lower.includes("현재") ||
           lower.includes("재직")
         ) {
-          return new Date().getTime() + 1000000; // Future date to keep at top
+          return new Date().getTime() + 1000000;
         }
         const cleanDate = dateStr.replace(/\./g, "-");
         const date = new Date(cleanDate);
@@ -199,7 +98,7 @@ export async function POST(
       return getTime(b.end_date) - getTime(a.end_date);
     });
 
-    // Code-level enforcement of 4 bullets limit (safety net)
+    // Code-level enforcement of 5 bullets limit (safety net)
     if (finalExperiences && finalExperiences.length > 0) {
       finalExperiences = finalExperiences.map((exp: any) => ({
         ...exp,
@@ -212,9 +111,7 @@ export async function POST(
       }));
     }
 
-    // ========================================================================
-    // Save to Database
-    // ========================================================================
+    // 5. Save to Database
 
     // Save work experiences
     if (finalExperiences && finalExperiences.length > 0) {
@@ -380,14 +277,14 @@ export async function POST(
       },
     });
 
-    console.log("[Complete] 3-phase resume analysis finished successfully.");
+    console.log("[Translate API] All data saved successfully.");
 
     return NextResponse.json({
       success: true,
-      message: "Resume analyzed successfully",
+      message: "Resume analysis completed",
     });
   } catch (error: any) {
-    console.error("Resume analysis error:", error);
+    console.error("Translation error:", error);
 
     // Update resume status to FAILED
     try {
@@ -396,7 +293,7 @@ export async function POST(
         where: { id: resumeId },
         data: {
           status: "FAILED",
-          failure_message: error.message || "Analysis failed",
+          failure_message: error.message || "Translation failed",
         },
       });
     } catch (updateError) {
@@ -404,7 +301,7 @@ export async function POST(
     }
 
     return NextResponse.json(
-      { error: error.message || "Failed to analyze resume" },
+      { error: error.message || "Failed to translate resume" },
       { status: 500 }
     );
   }
