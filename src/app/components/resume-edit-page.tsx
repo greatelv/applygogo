@@ -11,7 +11,12 @@ import {
   Loader2,
   X,
   Pencil,
+  GripVertical,
 } from "lucide-react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -95,6 +100,920 @@ interface ResumeEditPageProps {
   onBack: () => void;
   onRetranslate?: () => void;
 }
+
+const ItemTypes = {
+  EXPERIENCE: "experience",
+  EDUCATION: "education",
+  ADDITIONAL_ITEM: "additional_item",
+};
+
+interface DraggableAdditionalItemProps {
+  item: AdditionalItem;
+  index: number;
+  moveAdditionalItem: (dragIndex: number, hoverIndex: number) => void;
+  isTranslating: boolean;
+  onRetranslate: (id: string) => void;
+  onRemove: (id: string) => void;
+  onChange: (id: string, field: keyof AdditionalItem, value: string) => void;
+}
+
+const DraggableAdditionalItem = ({
+  item,
+  index,
+  moveAdditionalItem,
+  isTranslating,
+  onRetranslate,
+  onRemove,
+  onChange,
+}: DraggableAdditionalItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [{ handlerId }, drop] = useDrop({
+    accept: ItemTypes.ADDITIONAL_ITEM,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover(item: any, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      moveAdditionalItem(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag, preview] = useDrag({
+    type: ItemTypes.ADDITIONAL_ITEM,
+    item: () => {
+      return { id: item.id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drop(preview(ref));
+
+  return (
+    <motion.div
+      ref={ref}
+      layout
+      initial={false}
+      style={{ opacity: isDragging ? 0.4 : 1 }}
+      data-handler-id={handlerId}
+      className={`relative flex group/item mb-6 ${isDragging ? "z-0" : "z-10"}`}
+    >
+      <div
+        ref={drag as any}
+        className="w-6 flex items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
+        title="드래그하여 순서 변경"
+      >
+        <GripVertical className="size-5" />
+      </div>
+
+      <div
+        className={`flex-1 bg-card border border-border rounded-lg overflow-hidden transition-colors duration-200 ${
+          isDragging ? "border-dashed border-2 bg-accent/20 shadow-none" : ""
+        }`}
+      >
+        <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold">
+                한글 (원본)
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold">
+                English (번역)
+              </p>
+            </div>
+          </div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onRetranslate(item.id)}
+              disabled={isTranslating}
+              className="text-muted-foreground hover:text-foreground h-8 px-2"
+            >
+              {isTranslating ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <RefreshCw className="size-4" />
+              )}
+              <span className="hidden lg:inline ml-2 text-xs">
+                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+              </span>
+            </Button>
+            <button
+              onClick={() => onRemove(item.id)}
+              className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+            >
+              <Trash2 className="size-4" />
+              <span className="text-xs hidden lg:inline">삭제</span>
+            </button>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Left: Original (KR) */}
+            <div className="space-y-4">
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) =>
+                  onChange(
+                    item.id,
+                    "name_kr",
+                    e.currentTarget.textContent || ""
+                  )
+                }
+                data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
+                className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+              >
+                {item.name_kr}
+              </div>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="col-span-2">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        item.id,
+                        "description_kr",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
+                    className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {item.description_kr}
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        item.id,
+                        "date",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="YYYY.MM"
+                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {item.date}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Translated (EN) */}
+            <div className="space-y-4">
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) =>
+                  onChange(
+                    item.id,
+                    "name_en",
+                    e.currentTarget.textContent || ""
+                  )
+                }
+                data-placeholder="Item Name (EN)"
+                className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+              >
+                {item.name_en}
+              </div>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="col-span-2">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        item.id,
+                        "description_en",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="Description/Issuer/Level (EN)"
+                    className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {item.description_en}
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        item.id,
+                        "date",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="YYYY.MM"
+                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {item.date}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+interface DraggableEducationItemProps {
+  edu: Education;
+  index: number;
+  moveEducation: (dragIndex: number, hoverIndex: number) => void;
+  isTranslating: boolean;
+  onTranslate: (id: string) => void;
+  onRemove: (id: string) => void;
+  onChange: (id: string, field: keyof Education, value: string) => void;
+}
+
+const DraggableEducationItem = ({
+  edu,
+  index,
+  moveEducation,
+  isTranslating,
+  onTranslate,
+  onRemove,
+  onChange,
+}: DraggableEducationItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [{ handlerId }, drop] = useDrop({
+    accept: ItemTypes.EDUCATION,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover(item: any, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      moveEducation(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag, preview] = useDrag({
+    type: ItemTypes.EDUCATION,
+    item: () => {
+      return { id: edu.id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drop(preview(ref));
+
+  return (
+    <motion.div
+      ref={ref}
+      layout
+      initial={false}
+      style={{ opacity: isDragging ? 0.4 : 1 }}
+      data-handler-id={handlerId}
+      className={`relative flex group/item mb-6 ${isDragging ? "z-0" : "z-10"}`}
+    >
+      <div
+        ref={drag as any}
+        className="w-6 flex items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
+        title="드래그하여 순서 변경"
+      >
+        <GripVertical className="size-5" />
+      </div>
+
+      <div
+        className={`flex-1 bg-card border border-border rounded-lg overflow-hidden transition-colors duration-200 ${
+          isDragging ? "border-dashed border-2 bg-accent/20 shadow-none" : ""
+        }`}
+      >
+        <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold">
+                한글 (원본)
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold">
+                English (번역)
+              </p>
+            </div>
+          </div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onTranslate(edu.id)}
+              disabled={isTranslating}
+              className="text-muted-foreground hover:text-foreground h-8 px-2"
+            >
+              {isTranslating ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <RefreshCw className="size-4" />
+              )}
+              <span className="ml-2 hidden lg:inline text-xs">
+                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+              </span>
+            </Button>
+            <button
+              onClick={() => onRemove(edu.id)}
+              className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+            >
+              <Trash2 className="size-4" />
+              <span className="text-xs hidden lg:inline">삭제</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Korean Education */}
+            <div className="space-y-1">
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) =>
+                  onChange(
+                    edu.id,
+                    "school_name",
+                    e.currentTarget.textContent || ""
+                  )
+                }
+                data-placeholder="학교명 (예: 한국대학교)"
+                className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+              >
+                {edu.school_name}
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(edu.id, "major", e.currentTarget.textContent || "")
+                  }
+                  data-placeholder="전공 (예: 경영학)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.major}
+                </div>
+                <span className="text-muted-foreground select-none">•</span>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "degree",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="학위 (예: 학사)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.degree}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "start_date",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="입학일 (예: 2016.03)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.start_date}
+                </div>
+                <span className="text-muted-foreground select-none">~</span>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "end_date",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="졸업일 (예: 2020.02)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.end_date}
+                </div>
+              </div>
+            </div>
+
+            {/* English Education */}
+            <div className="space-y-1">
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) =>
+                  onChange(
+                    edu.id,
+                    "school_name_en",
+                    e.currentTarget.textContent || ""
+                  )
+                }
+                data-placeholder="School Name (EN)"
+                className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+              >
+                {edu.school_name_en || edu.school_name}
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "major_en",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="Major (EN)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.major_en || edu.major}
+                </div>
+                <span className="text-muted-foreground select-none">•</span>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "degree_en",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="Degree (EN)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.degree_en || edu.degree}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "start_date",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="Start Date (EN)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.start_date}
+                </div>
+                <span className="text-muted-foreground select-none">~</span>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      edu.id,
+                      "end_date",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="End Date (EN)"
+                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {edu.end_date}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+interface DraggableExperienceItemProps {
+  exp: TranslatedExperience;
+  index: number;
+  moveExperience: (dragIndex: number, hoverIndex: number) => void;
+  isTranslating: boolean;
+  onRetranslate: (id: string) => void;
+  onRemove: (id: string) => void;
+  onChange: (
+    id: string,
+    field: keyof TranslatedExperience,
+    value: string
+  ) => void;
+  onBulletEdit: (
+    id: string,
+    index: number,
+    value: string,
+    isEnglish: boolean
+  ) => void;
+  onAddBullet: (id: string) => void;
+  onRemoveBullet: (id: string, index: number) => void;
+  highlightedBullets?: number[];
+}
+
+const DraggableExperienceItem = ({
+  exp,
+  index,
+  moveExperience,
+  isTranslating,
+  onRetranslate,
+  onRemove,
+  onChange,
+  onBulletEdit,
+  onAddBullet,
+  onRemoveBullet,
+  highlightedBullets,
+}: DraggableExperienceItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [{ handlerId }, drop] = useDrop({
+    accept: ItemTypes.EXPERIENCE,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      };
+    },
+    hover(item: any, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      // Don't replace items with themselves
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+
+      // Get pixels to the top
+      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      // Time to actually perform the action
+      moveExperience(dragIndex, hoverIndex);
+
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      item.index = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag, preview] = useDrag({
+    type: ItemTypes.EXPERIENCE,
+    item: () => {
+      // Return id and index to track drag state
+      return { id: exp.id, index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  // Apply drop ref to the container
+  drop(preview(ref));
+
+  return (
+    <motion.div
+      ref={ref}
+      layout
+      initial={false}
+      style={{ opacity: isDragging ? 0.4 : 1 }}
+      data-handler-id={handlerId}
+      className={`relative flex group/item mb-6 ${isDragging ? "z-0" : "z-10"}`}
+    >
+      {/* Notion-style Handle */}
+      <div
+        ref={drag as any}
+        className="w-6 flex items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
+        title="드래그하여 순서 변경"
+      >
+        <GripVertical className="size-5" />
+      </div>
+
+      <div
+        className={`flex-1 bg-card border border-border rounded-lg overflow-hidden transition-colors duration-200 ${
+          isDragging ? "border-dashed border-2 bg-accent/20 shadow-none" : ""
+        }`}
+      >
+        <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold mb-1">
+                한글 (원본)
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-semibold mb-1">
+                English (번역)
+              </p>
+            </div>
+          </div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onRetranslate(exp.id)}
+              disabled={isTranslating}
+              className="text-muted-foreground hover:text-foreground h-8 px-2"
+            >
+              {isTranslating ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <RefreshCw className="size-4" />
+              )}
+              <span className="hidden lg:inline ml-2 text-xs">
+                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+              </span>
+            </Button>
+            <button
+              onClick={() => onRemove(exp.id)}
+              className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
+            >
+              <Trash2 className="size-4" />
+              <span className="text-xs hidden lg:inline">삭제</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Korean Bullets */}
+            <div>
+              <div className="mb-4 space-y-1">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      exp.id,
+                      "company",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="회사명"
+                  className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {exp.company}
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "position",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="직무"
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.position}
+                  </div>
+                  <span className="text-muted-foreground select-none">•</span>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "period",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="기간 (예: 2020.01 - 2023.12)"
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.period}
+                  </div>
+                </div>
+              </div>
+
+              <ul className="space-y-3">
+                {exp.bullets.map((bullet, index) => (
+                  <li key={index} className="flex gap-4 text-sm group">
+                    <span className="text-muted-foreground flex-shrink-0">
+                      •
+                    </span>
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        onBulletEdit(
+                          exp.id,
+                          index,
+                          e.currentTarget.textContent || "",
+                          false
+                        )
+                      }
+                      data-placeholder="업무 성과 및 활동 내용"
+                      className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    >
+                      {bullet}
+                    </div>
+                    <button
+                      onClick={() => onRemoveBullet(exp.id, index)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
+                    >
+                      <Trash2 className="size-3.5 text-destructive" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* English Bullets */}
+            <div>
+              <div className="mb-4 space-y-1">
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      exp.id,
+                      "companyEn",
+                      e.currentTarget.textContent || ""
+                    )
+                  }
+                  data-placeholder="Company Name (EN)"
+                  className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {exp.companyEn}
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "positionEn",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="Position (EN)"
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.positionEn}
+                  </div>
+                  <span className="text-muted-foreground select-none">•</span>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "period",
+                        e.currentTarget.textContent || ""
+                      )
+                    }
+                    data-placeholder="Period (EN)"
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.period}
+                  </div>
+                </div>
+              </div>
+
+              <ul className="space-y-3">
+                {exp.bulletsEn.map((bullet, index) => (
+                  <li key={index} className="flex gap-4 text-sm group">
+                    <span className="text-muted-foreground flex-shrink-0">
+                      •
+                    </span>
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        onBulletEdit(
+                          exp.id,
+                          index,
+                          e.currentTarget.textContent || "",
+                          true
+                        )
+                      }
+                      data-placeholder="Achievements and activities (EN)"
+                      className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
+                        highlightedBullets?.includes(index)
+                          ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
+                          : ""
+                      }`}
+                    >
+                      {bullet}
+                    </div>
+                    <button
+                      onClick={() => onRemoveBullet(exp.id, index)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
+                    >
+                      <Trash2 className="size-3.5 text-destructive" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="mt-6">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => onAddBullet(exp.id)}
+              className="w-full h-10 border border-border shadow-sm hover:bg-accent transition-colors text-sm font-medium"
+            >
+              <Plus className="size-4 mr-2" /> 항목 추가
+            </Button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 export function ResumeEditPage({
   resumeTitle,
@@ -276,6 +1195,39 @@ export function ResumeEditPage({
   const handleRemoveEducation = (id: string) => {
     setEducations((prev) => prev.filter((edu) => edu.id !== id));
   };
+
+  const moveExperience = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      setExperiences((prev) => {
+        const updated = [...prev];
+        const [movedItem] = updated.splice(dragIndex, 1);
+        updated.splice(hoverIndex, 0, movedItem);
+        return updated;
+      });
+    },
+    []
+  );
+
+  const moveEducation = useCallback((dragIndex: number, hoverIndex: number) => {
+    setEducations((prev) => {
+      const updated = [...prev];
+      const [movedItem] = updated.splice(dragIndex, 1);
+      updated.splice(hoverIndex, 0, movedItem);
+      return updated;
+    });
+  }, []);
+
+  const moveAdditionalItem = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      setAdditionalItems((prev) => {
+        const updated = [...prev];
+        const [movedItem] = updated.splice(dragIndex, 1);
+        updated.splice(hoverIndex, 0, movedItem);
+        return updated;
+      });
+    },
+    []
+  );
 
   const handleRetranslateExperience = async (expId: string) => {
     const currentExp = experiences.find((e) => e.id === expId);
@@ -1092,756 +2044,167 @@ export function ResumeEditPage({
             항목 추가
           </Button>
         </div>
-        {experiences.map((exp) => (
-          <div
-            key={exp.id}
-            className="bg-card border border-border rounded-lg overflow-hidden"
-          >
-            <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <p className="text-xs text-muted-foreground font-semibold mb-1">
-                    한글 (원본)
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground font-semibold mb-1">
-                    English (번역)
-                  </p>
-                </div>
-              </div>
-              <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRetranslateExperience(exp.id)}
-                  disabled={isTranslating[exp.id]}
-                  className="text-muted-foreground hover:text-foreground h-8 px-2"
-                >
-                  {isTranslating[exp.id] ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <RefreshCw className="size-4" />
-                  )}
-                  <span className="hidden lg:inline ml-2 text-xs">
-                    {isTranslating[exp.id] ? "처리 중..." : "동기화 후 번역"}
-                  </span>
-                </Button>
-                <button
-                  onClick={() => handleRemoveExperience(exp.id)}
-                  className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
-                >
-                  <Trash2 className="size-4" />
-                  <span className="text-xs hidden lg:inline">삭제</span>
-                </button>
-              </div>
-            </div>
+        <DndProvider backend={HTML5Backend}>
+          {experiences.map((exp, index) => (
+            <DraggableExperienceItem
+              key={exp.id}
+              index={index}
+              exp={exp}
+              moveExperience={moveExperience}
+              isTranslating={!!isTranslating[exp.id]}
+              onRetranslate={handleRetranslateExperience}
+              onRemove={handleRemoveExperience}
+              onChange={handleExperienceChange}
+              onBulletEdit={handleBulletEdit}
+              onAddBullet={handleAddBullet}
+              onRemoveBullet={handleRemoveBullet}
+              highlightedBullets={highlightedBullets[exp.id]}
+            />
+          ))}
 
-            <div className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Korean Bullets */}
-                <div>
-                  <div className="mb-4 space-y-1">
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handleExperienceChange(
-                          exp.id,
-                          "company",
-                          e.currentTarget.textContent || ""
-                        )
-                      }
-                      data-placeholder="회사명"
-                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                    >
-                      {exp.company}
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleExperienceChange(
-                            exp.id,
-                            "position",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="직무"
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {exp.position}
-                      </div>
-                      <span className="text-muted-foreground select-none">
-                        •
-                      </span>
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleExperienceChange(
-                            exp.id,
-                            "period",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="기간 (예: 2020.01 - 2023.12)"
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {exp.period}
-                      </div>
-                    </div>
-                  </div>
-
-                  <ul className="space-y-3">
-                    {exp.bullets.map((bullet, index) => (
-                      <li key={index} className="flex gap-4 text-sm group">
-                        <span className="text-muted-foreground flex-shrink-0">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleBulletEdit(
-                              exp.id,
-                              index,
-                              e.currentTarget.textContent || "",
-                              false
-                            )
-                          }
-                          data-placeholder="업무 성과 및 활동 내용"
-                          className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {bullet}
-                        </div>
-                        <button
-                          onClick={() => handleRemoveBullet(exp.id, index)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
-                        >
-                          <Trash2 className="size-3.5 text-destructive" />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* English Bullets */}
-                <div>
-                  <div className="mb-4 space-y-1">
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handleExperienceChange(
-                          exp.id,
-                          "companyEn",
-                          e.currentTarget.textContent || ""
-                        )
-                      }
-                      data-placeholder="Company Name (EN)"
-                      className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                    >
-                      {exp.companyEn}
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleExperienceChange(
-                            exp.id,
-                            "positionEn",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="Position (EN)"
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {exp.positionEn}
-                      </div>
-                      <span className="text-muted-foreground select-none">
-                        •
-                      </span>
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleExperienceChange(
-                            exp.id,
-                            "period",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="Period (EN)"
-                        className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {exp.period}
-                      </div>
-                    </div>
-                  </div>
-
-                  <ul className="space-y-3">
-                    {exp.bulletsEn.map((bullet, index) => (
-                      <li key={index} className="flex gap-4 text-sm group">
-                        <span className="text-muted-foreground flex-shrink-0">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleBulletEdit(
-                              exp.id,
-                              index,
-                              e.currentTarget.textContent || "",
-                              true
-                            )
-                          }
-                          data-placeholder="Achievements and activities (EN)"
-                          className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
-                            highlightedBullets[exp.id]?.includes(index)
-                              ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
-                              : ""
-                          }`}
-                        >
-                          {bullet}
-                        </div>
-                        <button
-                          onClick={() => handleRemoveBullet(exp.id, index)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
-                        >
-                          <Trash2 className="size-3.5 text-destructive" />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-6">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleAddBullet(exp.id)}
-                  className="w-full h-10 border border-border shadow-sm hover:bg-accent transition-colors text-sm font-medium"
-                >
-                  <Plus className="size-4 mr-2" /> 항목 추가
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Educations */}
-        <div className="mt-12">
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">학력사항</h2>
-              <p className="text-sm text-muted-foreground">
-                최종 학력부터 학위 및 전공 정보를 입력해주세요.
-              </p>
-            </div>
-            <Button
-              size="sm"
-              onClick={handleAddEducation}
-              className="h-9 px-4 shadow-sm text-sm font-semibold"
-            >
-              <Plus className="size-4 mr-1.5" />
-              항목 추가
-            </Button>
-          </div>
-          <div className="space-y-6">
-            {educations.length === 0 && (
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+          {/* Educations */}
+          <div className="mt-12">
+            <div className="mb-6 flex items-end justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-1">학력사항</h2>
                 <p className="text-sm text-muted-foreground">
-                  위의{" "}
-                  <span className="font-medium text-foreground">
-                    + 항목 추가
-                  </span>{" "}
-                  버튼을 눌러 학력을 추가해주세요.
+                  최종 학력부터 학위 및 전공 정보를 입력해주세요.
                 </p>
               </div>
-            )}
-            {educations.map((edu) => (
-              <div
-                key={edu.id}
-                className="bg-card border border-border rounded-lg overflow-hidden"
+              <Button
+                size="sm"
+                onClick={handleAddEducation}
+                className="h-9 px-4 shadow-sm text-sm font-semibold"
               >
-                <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div>
-                      <p className="text-xs text-muted-foreground font-semibold">
-                        한글 (원본)
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground font-semibold">
-                        English (번역)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleTranslateEducation(edu.id)}
-                      disabled={isTranslating[`edu-${edu.id}`]}
-                      className="text-muted-foreground hover:text-foreground h-8 px-2"
-                    >
-                      {isTranslating[`edu-${edu.id}`] ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <RefreshCw className="size-4" />
-                      )}
-                      <span className="ml-2 hidden lg:inline text-xs">
-                        {isTranslating[`edu-${edu.id}`]
-                          ? "처리 중..."
-                          : "동기화 후 번역"}
-                      </span>
-                    </Button>
-                    <button
-                      onClick={() => handleRemoveEducation(edu.id)}
-                      className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
-                    >
-                      <Trash2 className="size-4" />
-                      <span className="text-xs hidden lg:inline">삭제</span>
-                    </button>
-                  </div>
+                <Plus className="size-4 mr-1.5" />
+                항목 추가
+              </Button>
+            </div>
+            <div className="space-y-6">
+              {educations.length === 0 && (
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    위의{" "}
+                    <span className="font-medium text-foreground">
+                      + 항목 추가
+                    </span>{" "}
+                    버튼을 눌러 학력을 추가해주세요.
+                  </p>
                 </div>
-
-                <div className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Korean Education */}
-                    <div className="space-y-1">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleEducationChange(
-                            edu.id,
-                            "school_name",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="학교명 (예: 한국대학교)"
-                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {edu.school_name}
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "major",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="전공 (예: 경영학)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.major}
-                        </div>
-                        <span className="text-muted-foreground select-none">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "degree",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="학위 (예: 학사)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.degree}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "start_date",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="입학일 (예: 2016.03)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.start_date}
-                        </div>
-                        <span className="text-muted-foreground select-none">
-                          ~
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "end_date",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="졸업일 (예: 2020.02)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.end_date}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* English Education */}
-                    <div className="space-y-1">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleEducationChange(
-                            edu.id,
-                            "school_name_en",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="School Name (EN)"
-                        className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {edu.school_name_en || edu.school_name}
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "major_en",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="Major (EN)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.major_en || edu.major}
-                        </div>
-                        <span className="text-muted-foreground select-none">
-                          •
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "degree_en",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="Degree (EN)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.degree_en || edu.degree}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "start_date",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="Start Date (EN)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.start_date}
-                        </div>
-                        <span className="text-muted-foreground select-none">
-                          ~
-                        </span>
-                        <div
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) =>
-                            handleEducationChange(
-                              edu.id,
-                              "end_date",
-                              e.currentTarget.textContent || ""
-                            )
-                          }
-                          data-placeholder="End Date (EN)"
-                          className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                        >
-                          {edu.end_date}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Skills */}
-        <div className="mt-12">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
-            <p className="text-sm text-muted-foreground">
-              보유한 핵심 기술 및 도구들을 태그로 관리해보세요.
-            </p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6">
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <Badge
-                  key={skill.id}
-                  variant="secondary"
-                  className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8"
-                >
-                  {skill.name}
-                  <button
-                    onClick={() => handleRemoveSkill(skill.id)}
-                    className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
-                  >
-                    <X className="size-3" />
-                  </button>
-                </Badge>
-              ))}
-
-              <div className="flex gap-2 max-w-xs relative top-0.5">
-                <Input
-                  placeholder="새 기술 스택"
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddSkill();
-                    }
-                  }}
-                  className="h-8 text-sm w-32"
+              )}
+              {educations.map((edu, index) => (
+                <DraggableEducationItem
+                  key={edu.id}
+                  index={index}
+                  edu={edu}
+                  moveEducation={moveEducation}
+                  isTranslating={!!isTranslating[`edu-${edu.id}`]}
+                  onTranslate={handleTranslateEducation}
+                  onRemove={handleRemoveEducation}
+                  onChange={handleEducationChange}
                 />
-                <Button
-                  onClick={handleAddSkill}
-                  variant="secondary"
-                  size="sm"
-                  className="h-8 px-2"
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Additional Information Items */}
-        <div className="mt-12">
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">추가 정보</h2>
+          {/* Skills */}
+          <div className="mt-12">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
               <p className="text-sm text-muted-foreground">
-                자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
+                보유한 핵심 기술 및 도구들을 태그로 관리해보세요.
               </p>
             </div>
-            <Button
-              size="sm"
-              onClick={() => handleAddAdditionalItem("CERTIFICATION")}
-              className="h-9 px-4 shadow-sm text-sm font-semibold"
-            >
-              <Plus className="size-4 mr-1.5" />
-              항목 추가
-            </Button>
+
+            <div className="bg-card border border-border rounded-lg p-6">
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <Badge
+                    key={skill.id}
+                    variant="secondary"
+                    className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8"
+                  >
+                    {skill.name}
+                    <button
+                      onClick={() => handleRemoveSkill(skill.id)}
+                      className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </Badge>
+                ))}
+
+                <div className="flex gap-2 max-w-xs relative top-0.5">
+                  <Input
+                    placeholder="새 기술 스택"
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddSkill();
+                      }
+                    }}
+                    className="h-8 text-sm w-32"
+                  />
+                  <Button
+                    onClick={handleAddSkill}
+                    variant="secondary"
+                    size="sm"
+                    className="h-8 px-2"
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="space-y-8">
-            {additionalItems.length === 0 && (
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+
+          {/* Additional Information Items */}
+          <div className="mt-12">
+            <div className="mb-6 flex items-end justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-1">추가 정보</h2>
                 <p className="text-sm text-muted-foreground">
-                  위의{" "}
-                  <span className="font-medium text-foreground">
-                    + 항목 추가
-                  </span>{" "}
-                  버튼을 눌러 자격증, 수상, 활동 등을 추가해주세요.
+                  자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
                 </p>
               </div>
-            )}
-            {additionalItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-card border border-border rounded-lg overflow-hidden group"
+              <Button
+                size="sm"
+                onClick={() => handleAddAdditionalItem("CERTIFICATION")}
+                className="h-9 px-4 shadow-sm text-sm font-semibold"
               >
-                <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div>
-                      <p className="text-xs text-muted-foreground font-semibold">
-                        한글 (원본)
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground font-semibold">
-                        English (번역)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRetranslateAdditionalItem(item.id)}
-                      disabled={isTranslating[item.id]}
-                      className="text-muted-foreground hover:text-foreground h-8 px-2"
-                    >
-                      {isTranslating[item.id] ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <RefreshCw className="size-4" />
-                      )}
-                      <span className="hidden lg:inline ml-2 text-xs">
-                        {isTranslating[item.id]
-                          ? "처리 중..."
-                          : "동기화 후 번역"}
-                      </span>
-                    </Button>
-                    <button
-                      onClick={() => handleRemoveAdditionalItem(item.id)}
-                      className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
-                    >
-                      <Trash2 className="size-4" />
-                      <span className="text-xs hidden lg:inline">삭제</span>
-                    </button>
-                  </div>
+                <Plus className="size-4 mr-1.5" />
+                항목 추가
+              </Button>
+            </div>
+            <div className="space-y-8">
+              {additionalItems.length === 0 && (
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    위의{" "}
+                    <span className="font-medium text-foreground">
+                      + 항목 추가
+                    </span>{" "}
+                    버튼을 눌러 자격증, 수상, 활동 등을 추가해주세요.
+                  </p>
                 </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    {/* Left: Original (KR) */}
-                    <div className="space-y-4">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleAdditionalItemChange(
-                            item.id,
-                            "name_kr",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
-                        className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {item.name_kr}
-                      </div>
-                      <div className="grid grid-cols-3 gap-6">
-                        <div className="col-span-2">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAdditionalItemChange(
-                                item.id,
-                                "description_kr",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
-                            className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {item.description_kr}
-                          </div>
-                        </div>
-                        <div className="col-span-1">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAdditionalItemChange(
-                                item.id,
-                                "date",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="YYYY.MM"
-                            className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {item.date}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Translated (EN) */}
-                    <div className="space-y-4">
-                      <div
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) =>
-                          handleAdditionalItemChange(
-                            item.id,
-                            "name_en",
-                            e.currentTarget.textContent || ""
-                          )
-                        }
-                        data-placeholder="Item Name (EN)"
-                        className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                      >
-                        {item.name_en}
-                      </div>
-                      <div className="grid grid-cols-3 gap-6">
-                        <div className="col-span-2">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAdditionalItemChange(
-                                item.id,
-                                "description_en",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="Description/Issuer/Level (EN)"
-                            className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {item.description_en}
-                          </div>
-                        </div>
-                        <div className="col-span-1">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) =>
-                              handleAdditionalItemChange(
-                                item.id,
-                                "date",
-                                e.currentTarget.textContent || ""
-                              )
-                            }
-                            data-placeholder="YYYY.MM"
-                            className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {item.date}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              )}
+              {additionalItems.map((item, index) => (
+                <DraggableAdditionalItem
+                  key={item.id}
+                  index={index}
+                  item={item}
+                  moveAdditionalItem={moveAdditionalItem}
+                  isTranslating={!!isTranslating[item.id]}
+                  onRetranslate={handleRetranslateAdditionalItem}
+                  onRemove={handleRemoveAdditionalItem}
+                  onChange={handleAdditionalItemChange}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </DndProvider>
       </div>
 
       <div className="mt-12 flex gap-3">

@@ -21,6 +21,16 @@ export default async function Page() {
         image: session.user.image,
       }}
       settings={userSettings}
+      portoneConfig={{
+        storeId:
+          process.env.NEXT_PUBLIC_PORTONE_STORE_ID ||
+          process.env.PORTONE_STORE_ID ||
+          "",
+        channelKey:
+          process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY ||
+          process.env.PORTONE_CHANNEL_KEY ||
+          "",
+      }}
     />
   );
 }

@@ -3,118 +3,280 @@
 import { useApp } from "../../context/app-context";
 import { SettingsPage } from "../../components/settings-page";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../../components/ui/alert-dialog";
 
 interface SettingsClientPageProps {
   user: {
-    id?: string | null;
+    id: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
   };
-  settings?: any;
+  settings: any;
+  portoneConfig: {
+    storeId: string;
+    channelKey: string;
+  };
 }
 
 export function SettingsClientPage({
   user,
   settings,
+  portoneConfig,
 }: SettingsClientPageProps) {
   const router = useRouter();
   const { setPlan } = useApp();
 
-  const serverPlan = settings?.subscription?.planCode || "FREE";
-  const serverQuota = settings?.remainingQuota ?? 2;
-  const createdAt = settings?.created_at
-    ? new Date(settings.created_at).toISOString()
-    : "2024-01-01";
+  // Dialog State
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
 
+  const serverPlan = settings?.subscription?.planCode || "FREE";
+  const serverQuota = settings?.remainingQuota ?? 0;
+  const createdAt = settings?.created_at
+    ? new Date(settings.created_at).toLocaleDateString()
+    : "";
+
+  const [paymentHistory, setPaymentHistory] = useState([]);
+
+  // 결제 내역 조회
+  useEffect(() => {
+    async function fetchHistory() {
+      if (serverPlan === "FREE" && !settings?.subscription) return; // PRO 유저 혹은 구독 이력 있는 유저만 조회
+
+      try {
+        const res = await fetch("/api/billing/history");
+        if (res.ok) {
+          const data = await res.json();
+          setPaymentHistory(data.items || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch payment history:", error);
+      }
+    }
+    fetchHistory();
+  }, [serverPlan, settings?.subscription]);
+
+  // 초기 플랜 동기화
+  useEffect(() => {
+    if (serverPlan === "PRO") {
+      setPlan("PRO");
+    } else {
+      setPlan("FREE");
+    }
+  }, [serverPlan, setPlan]);
+
+  // 업그레이드 (구독 시작) 로직
   const handleUpgrade = async (newPlan: "PRO") => {
     try {
-      const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-
-      if (!storeId || !channelKey) {
-        alert("결제 설정 정보가 부족합니다. 관리자에게 문의하세요.");
-        return;
-      }
-
-      // 1. Request Billing Key (Auth)
-      const response = await PortOne.requestIssueBillingKey({
-        storeId,
-        channelKey,
+      // 1. 빌링키 발급 요청 (카드 등록)
+      const issueRes = await PortOne.requestIssueBillingKey({
+        storeId: portoneConfig.storeId,
+        channelKey: portoneConfig.channelKey,
         billingKeyMethod: "EASY_PAY",
-        issueName: "지원고고 정기 결제 등록",
+        issueName: "지원고고 PRO 정기 구독",
         customer: {
-          customerId: user.id || user.email || "guest",
+          customerId: user.id,
+          fullName: user.name || undefined,
+          email: user.email || undefined,
         },
-      } as any);
+      });
 
-      if (response?.code != null) {
-        alert(`인증 실패: ${response.message}`);
+      if (issueRes.code != null) {
+        // 취소 혹은 실패
         return;
       }
 
-      const billingKey = response.billingKey;
-
-      // 2. Register Billing Key & Charge Initial Payment on Server
+      // 2. 서버에 구독 등록 요청 (빌링키 전달)
       const res = await fetch("/api/billing/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ billingKey, channelKey }),
+        body: JSON.stringify({
+          billingKey: issueRes.billingKey,
+          channelKey: portoneConfig.channelKey,
+        }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "서버 결제 처리 실패");
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "구독 처리에 실패했습니다.");
 
-      alert("정기 결제가 등록되고 첫 달 구독이 시작되었습니다!");
-      setPlan("PRO");
+      toast.success("PRO 플랜 구독이 시작되었습니다! 감사합니다.");
       router.refresh();
+
+      // 즉시 플랜 상태 업데이트 (낙관적 업데이트)
+      setPlan("PRO");
     } catch (error: any) {
-      console.error("Subscription flow error:", error);
-      alert(`구독 처리 중 오류가 발생했습니다: ${error.message}`);
+      console.error(error);
+      toast.error(`구독 오류: ${error.message}`);
     }
   };
 
-  useEffect(() => {
-    if (window.location.hash === "#payment-section") {
-      const element = document.getElementById("payment-section");
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
-      }
-    }
-  }, []);
+  // 1. 해지 로직
+  const handleCancelClick = () => {
+    setShowCancelDialog(true);
+  };
 
-  const handleCancel = () => {
-    if (
-      confirm(
-        "정말 플랜을 해지하시겠습니까? 현재 결제 주기가 끝나면 Free 플랜으로 전환됩니다."
-      )
-    ) {
-      setPlan("FREE");
-      alert("플랜 해지가 예약되었습니다. (실제 해지 API 미구현)");
+  const executeCancel = async () => {
+    try {
+      const res = await fetch("/api/billing/subscription", {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "오류가 발생했습니다.");
+
+      toast.success(
+        "구독 해지가 예약되었습니다. 현재 기간까지 PRO 기능을 이용하실 수 있습니다."
+      );
+      router.refresh();
+    } catch (error: any) {
+      toast.error(`오류: ${error.message}`);
+    } finally {
+      setShowCancelDialog(false); // 다이얼로그 닫기
+    }
+  };
+
+  // 2. 해지 취소(구독 재개) 로직
+  const handleResumeClick = () => {
+    setShowResumeDialog(true);
+  };
+
+  const executeResume = async () => {
+    try {
+      const res = await fetch("/api/billing/subscription", {
+        method: "PATCH",
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "오류가 발생했습니다.");
+
+      toast.success("해지 예약이 취소되었습니다.");
+      router.refresh();
+    } catch (error: any) {
+      toast.error(`오류: ${error.message}`);
+    } finally {
+      setShowResumeDialog(false);
+    }
+  };
+
+  // 3. 결제 수단 변경 로직
+  const handleUpdateCard = async () => {
+    try {
+      const issueRes = await PortOne.requestIssueBillingKey({
+        storeId: portoneConfig.storeId,
+        channelKey: portoneConfig.channelKey,
+        billingKeyMethod: "EASY_PAY",
+        issueName: "지원고고 결제 수단 변경",
+        customer: {
+          customerId: user.id,
+          fullName: user.name || undefined,
+          email: user.email || undefined,
+        },
+      });
+
+      if (issueRes.code != null) {
+        // 사용자가 취소했거나 에러 발생 시
+        // console.log("Billing key issue cancelled/failed", issueRes);
+        return;
+      }
+
+      // 성공 시
+      const res = await fetch("/api/billing/card", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          billingKey: issueRes.billingKey,
+          channelKey: portoneConfig.channelKey,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "카드 변경 실패");
+
+      toast.success("결제 수단이 성공적으로 변경되었습니다.");
+      router.refresh();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`오류: ${error.message}`);
     }
   };
 
   const handleDeleteAccount = () => {
-    alert("계정 삭제가 요청되었습니다.");
+    toast.info("계정 삭제가 요청되었습니다.");
   };
 
   return (
-    <SettingsPage
-      userName={user.name || "사용자"}
-      userEmail={user.email || ""}
-      userImage={user.image || undefined}
-      createdAt={createdAt}
-      onDeleteAccount={handleDeleteAccount}
-      currentPlan={serverPlan}
-      quota={serverQuota}
-      onUpgrade={handleUpgrade}
-      onCancel={handleCancel}
-    />
+    <>
+      <SettingsPage
+        userName={user.name || "사용자"}
+        userEmail={user.email || ""}
+        userImage={user.image || undefined}
+        createdAt={createdAt}
+        onDeleteAccount={handleDeleteAccount}
+        currentPlan={serverPlan}
+        quota={serverQuota}
+        onUpgrade={handleUpgrade}
+        onCancel={handleCancelClick} // 클릭 시 다이얼로그 오픈
+        onResume={handleResumeClick} // 클릭 시 다이얼로그 오픈
+        onUpdateCard={handleUpdateCard}
+        cancelAtPeriodEnd={settings?.subscription?.cancel_at_period_end}
+        currentPeriodEnd={settings?.subscription?.current_period_end}
+        paymentInfo={{
+          cardName: settings?.subscription?.card_name,
+          cardNumber: settings?.subscription?.card_number,
+        }}
+        paymentHistory={paymentHistory}
+      />
+
+      {/* 해지 확인 다이얼로그 */}
+      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>정말 구독을 해지하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              해지하더라도 현재 결제 주기가 끝날 때까지는 PRO 기능을 계속
+              이용하실 수 있습니다. 다음 결제일부터 요금이 청구되지 않습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>계속 구독하기</AlertDialogCancel>
+            <AlertDialogAction onClick={executeCancel}>
+              해지 예약하기
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 해지 취소 확인 다이얼로그 */}
+      <AlertDialog open={showResumeDialog} onOpenChange={setShowResumeDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>해지 예약을 취소하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              구독을 유지하여 끊김 없이 서비스를 이용하실 수 있습니다. 기존 결제
+              수단으로 다음 결제일에 자동 결제됩니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>닫기</AlertDialogCancel>
+            <AlertDialogAction onClick={executeResume}>
+              구독 유지하기
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

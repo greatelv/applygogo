@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useApp } from "../context/app-context";
+import { useEffect } from "react";
 
 const DynamicDashboardLayout = dynamic(
   () =>
@@ -18,12 +19,16 @@ interface ClientDashboardWrapperProps {
     image?: string | null;
   };
   logOutAction: () => Promise<void>;
+  initialPlan: "FREE" | "STANDARD" | "PRO";
+  initialQuota: number;
 }
 
 export function ClientDashboardWrapper({
   children,
   user,
   logOutAction,
+  initialPlan,
+  initialQuota,
 }: ClientDashboardWrapperProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,7 +40,17 @@ export function ClientDashboardWrapper({
     router.push(`/${page}`);
   };
 
-  const { workflowSteps, currentStep, plan, quota } = useApp();
+  const { workflowSteps, currentStep, plan, quota, setPlan, setQuota } =
+    useApp();
+
+  useEffect(() => {
+    if (initialPlan) {
+      setPlan(initialPlan);
+    }
+    if (typeof initialQuota === "number") {
+      setQuota(initialQuota);
+    }
+  }, [initialPlan, initialQuota, setPlan, setQuota]);
 
   return (
     <DynamicDashboardLayout

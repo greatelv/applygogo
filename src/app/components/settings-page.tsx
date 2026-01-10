@@ -26,36 +26,29 @@ interface SettingsPageProps {
   quota: number;
   onUpgrade: (plan: "PRO") => void;
   onCancel: () => void;
+  onResume?: () => void;
+  onUpdateCard?: () => void; // Prop 추가
+  cancelAtPeriodEnd?: boolean;
+  currentPeriodEnd?: Date | string; // Prop 추가
+  paymentInfo?: {
+    cardName?: string;
+    cardNumber?: string;
+  };
+  paymentHistory?: Array<{
+    id: string;
+    name: string;
+    amount: number;
+    currency: string;
+    status: string;
+    paidAt: string;
+    method: string;
+  }>;
 }
 
 const planConfig = {
   FREE: { label: "Free", variant: "outline" as const },
   PRO: { label: "Pro", variant: "default" as const },
 };
-
-const plans = [
-  {
-    id: "FREE" as const,
-    name: "Free",
-    price: 0,
-    quota: 3,
-    resumes: 1,
-    features: ["월 3 크레딧", "이력서 1개 보관", "Modern, Classic 템플릿"],
-  },
-  {
-    id: "PRO" as const,
-    name: "Pro",
-    price: 9900,
-    quota: 100,
-    resumes: "무제한",
-    features: [
-      "월 100 크레딧",
-      "무제한 이력서 보관",
-      "모든 템플릿 (Minimal 포함)",
-      "우선 지원",
-    ],
-  },
-];
 
 export function SettingsPage({
   userName,
@@ -67,6 +60,12 @@ export function SettingsPage({
   quota,
   onUpgrade,
   onCancel,
+  onResume,
+  onUpdateCard,
+  cancelAtPeriodEnd,
+  currentPeriodEnd,
+  paymentInfo,
+  paymentHistory = [],
 }: SettingsPageProps) {
   const initials = userName
     .split(" ")
@@ -162,7 +161,7 @@ export function SettingsPage({
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
-          {/* Subscription Info */}
+          {/* Left: Subscription Info + Integrated Payment Info */}
           <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               <Crown className="size-5 text-primary" />
@@ -172,7 +171,14 @@ export function SettingsPage({
             <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
                 <span className="text-sm font-medium">현재 플랜</span>
-                <Badge variant={config.variant}>{config.label}</Badge>
+                <div className="flex gap-2">
+                  <Badge variant={config.variant}>{config.label}</Badge>
+                  {cancelAtPeriodEnd && (
+                    <Badge variant="outline" className="text-muted-foreground">
+                      해지 예약됨
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
@@ -183,140 +189,212 @@ export function SettingsPage({
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
                 <div className="flex items-center gap-2">
                   <Calendar className="size-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">다음 갱신일</span>
+                  <span className="text-sm font-medium">
+                    {cancelAtPeriodEnd ? "이용 만료일" : "다음 갱신일"}
+                  </span>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {currentPlan === "FREE" ? "없음" : "2026-02-01"}
+                  {currentPlan === "FREE"
+                    ? "없음"
+                    : currentPeriodEnd
+                    ? new Date(currentPeriodEnd).toLocaleDateString("ko-KR")
+                    : "정보 없음"}
                 </span>
               </div>
+
+              {/* Integrated Payment Method Info (Only for PRO) */}
+              {currentPlan === "PRO" && (
+                <div className="mt-4 pt-4 border-t border-border space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <PaymentIcon className="size-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">결제 수단</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto p-0 px-2 text-primary hover:text-primary/90"
+                      onClick={onUpdateCard}
+                    >
+                      변경
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
+                    {/* Toss Pay Badge */}
+                    <div className="h-6 px-2 bg-[#0064FF] rounded flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap">
+                      토스페이
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {paymentInfo?.cardName || "신용카드"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {paymentInfo?.cardNumber || "**** **** **** ****"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {currentPlan !== "FREE" && (
+            {/* Subscription Actions */}
+            {currentPlan !== "FREE" && !cancelAtPeriodEnd && (
               <div className="mt-4 pt-4 border-t border-border">
                 <Button variant="outline" onClick={onCancel} className="w-full">
                   플랜 해지
                 </Button>
               </div>
             )}
+
+            {currentPlan !== "FREE" && cancelAtPeriodEnd && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <Button variant="default" onClick={onResume} className="w-full">
+                  해지 예약 취소
+                </Button>
+                <p className="text-xs text-center text-muted-foreground mt-2">
+                  구독을 유지하고 혜택을 계속 받으세요.
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Payment Method (Mock) */}
-          <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
-            <div className="flex items-center gap-3 mb-4">
-              <PaymentIcon className="size-5 text-muted-foreground" />
-              <h3 className="font-semibold">결제 수단</h3>
+          {/* Right: PRO Plan Info (Always visible, state depends on subscription) */}
+          <div
+            className={`bg-card border rounded-lg p-6 flex flex-col ${
+              currentPlan === "PRO"
+                ? "border-primary/50 shadow-sm"
+                : "border-border"
+            }`}
+          >
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold">Pro Plan</h3>
+                {currentPlan === "PRO" && (
+                  <Badge variant="default">이용중</Badge>
+                )}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold">₩9,900</span>
+                <span className="text-sm text-muted-foreground">/월</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                전문적인 이력서 관리를 위한 최고의 선택
+              </p>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4">
-              {currentPlan === "FREE" ? (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    등록된 결제 수단이 없습니다.
-                  </p>
-                  <Button variant="outline" size="sm" disabled>
-                    카드 등록
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg w-full">
-                    <div className="w-12 h-8 bg-black rounded flex items-center justify-center text-white text-xs font-bold">
-                      VISA
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-medium">Hyundai Card</p>
-                      <p className="text-xs text-muted-foreground">
-                        **** **** **** 1234
-                      </p>
-                    </div>
+            <ul className="space-y-3 mb-6 flex-1">
+              {[
+                "월 100 크레딧 제공",
+                "무제한 이력서 보관",
+                "모든 프리미엄 템플릿 사용 가능",
+                "우선 고객 지원",
+                "PDF 다운로드 제한 없음",
+              ].map((feature, idx) => (
+                <li key={idx} className="text-sm flex items-start gap-2">
+                  <div className="rounded-full bg-primary/10 p-1 mt-0.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="size-2 text-primary"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary hover:text-primary/90"
-                  >
-                    결제 수단 변경
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
 
-        {/* Plans */}
-        <div className="space-y-4">
-          <h3 className="font-semibold">플랜 변경</h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            {plans.map((plan) => {
-              const isCurrent = plan.id === currentPlan;
-              const isDowngrade = currentPlan === "PRO" && plan.id === "FREE";
-
-              return (
-                <div
-                  key={plan.id}
-                  className={`
-                    bg-card border rounded-lg p-6 flex flex-col
-                    ${
-                      isCurrent
-                        ? "border-foreground shadow-md"
-                        : "border-border"
-                    }
-                    `}
-                >
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-1">{plan.name}</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold">
-                        {plan.price === 0
-                          ? "무료"
-                          : `₩${plan.price.toLocaleString()}`}
-                      </span>
-                      {plan.price > 0 && (
-                        <span className="text-sm text-muted-foreground">
-                          /월
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <ul className="space-y-2 mb-6 flex-1">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="text-sm flex items-start gap-2">
-                        <span className="text-green-600 dark:text-green-400 mt-0.5">
-                          ✓
-                        </span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    variant={isCurrent ? "outline" : "default"}
-                    disabled={isCurrent || isDowngrade}
-                    onClick={() => plan.id !== "FREE" && onUpgrade(plan.id)}
-                    className="w-full"
-                  >
-                    {isCurrent
-                      ? "현재 플랜"
-                      : isDowngrade
-                      ? "다운그레이드 불가"
-                      : "업그레이드"}
-                  </Button>
-                </div>
-              );
-            })}
+            <Button
+              variant={currentPlan === "PRO" ? "outline" : "default"}
+              disabled={currentPlan === "PRO"}
+              onClick={() => onUpgrade("PRO")}
+              className="w-full"
+              size="lg"
+            >
+              {currentPlan === "PRO"
+                ? "현재 이용중인 플랜입니다"
+                : "지금 프로 플랜 시작하기"}
+            </Button>
           </div>
         </div>
 
         {/* Payment History */}
         <div className="space-y-4">
           <h3 className="font-semibold">결제 내역</h3>
-          <div className="bg-card border border-border rounded-lg p-8 text-center">
-            <CreditCard className="size-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">
-              결제 내역이 없습니다
-            </p>
-          </div>
+          {paymentHistory.length > 0 ? (
+            <div className="bg-card border border-border rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted/50 border-b border-border">
+                    <tr>
+                      <th className="py-3 px-4 font-medium text-muted-foreground">
+                        결제일
+                      </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground">
+                        상품명
+                      </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground">
+                        결제 수단
+                      </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground text-right">
+                        금액
+                      </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground text-center">
+                        상태
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paymentHistory.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="border-b border-border last:border-0 hover:bg-muted/20"
+                      >
+                        <td className="py-3 px-4">
+                          {new Date(item.paidAt).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td className="py-3 px-4 font-medium">{item.name}</td>
+                        <td className="py-3 px-4 text-muted-foreground">
+                          {item.method}
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          {item.amount.toLocaleString()} {item.currency}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <Badge
+                            variant={
+                              item.status === "PAID" ? "outline" : "secondary"
+                            }
+                            className={
+                              item.status === "PAID"
+                                ? "text-green-600 border-green-200 bg-green-50"
+                                : ""
+                            }
+                          >
+                            {item.status === "PAID" ? "결제 완료" : item.status}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
+              <CreditCard className="size-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">
+                결제 내역이 없습니다
+              </p>
+            </div>
+          )}
         </div>
       </section>
 

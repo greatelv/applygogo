@@ -33,27 +33,36 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           billingKey,
-          orderName: "지원고고 정기 구독 (첫 달)",
+          orderName: "지원고고 PRO 구독 (첫 달)",
           customer: {
             id: user.id,
             fullName: user.name || undefined,
             email: user.email || undefined,
           },
           amount: {
-            total: 29000,
+            total: 9900,
           },
           currency: "KRW",
         }),
       }
     );
 
+    const paymentResult = await payRes.json();
+
     if (!payRes.ok) {
-      const error = await payRes.json();
       return NextResponse.json(
-        { message: "첫 결제 승인에 실패했습니다.", detail: error },
+        { message: "첫 결제 승인에 실패했습니다.", detail: paymentResult },
         { status: 400 }
       );
     }
+
+    // 카드 정보 추출 (포트원 응답 구조에 따라 유연하게 처리)
+    const method = paymentResult.payment?.method;
+    const card = method?.card;
+    // 카드사 이름 (publisher.name 또는 name)
+    const cardName = card?.publisher?.name || card?.name || "Credit Card";
+    // 마스킹된 번호
+    const cardNumber = card?.number || card?.mask_no || "****";
 
     // 2. Update Database (Subscription)
     const now = new Date();
@@ -81,6 +90,8 @@ export async function POST(req: NextRequest) {
           current_period_end: periodEnd,
           billing_key: billingKey,
           cancel_at_period_end: false,
+          card_name: cardName,
+          card_number: cardNumber,
         },
         create: {
           userId: user.id,
@@ -89,6 +100,23 @@ export async function POST(req: NextRequest) {
           current_period_start: now,
           current_period_end: periodEnd,
           billing_key: billingKey,
+          card_name: cardName,
+          card_number: cardNumber,
+        },
+      });
+
+      // 첫 결제 내역 기록
+      await tx.paymentHistory.create({
+        data: {
+          userId: user.id,
+          paymentId: paymentId,
+          orderName: "지원고고 PRO 구독 (첫 달)",
+          amount: 9900,
+          currency: "KRW",
+          status: "PAID",
+          method: cardName,
+          paidAt: now,
+          receiptUrl: paymentResult.payment?.receiptUrl || null,
         },
       });
     });
@@ -109,9 +137,9 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             payment: {
               billingKey,
-              orderName: "지원고고 정기 구독",
+              orderName: "지원고고 PRO 정기 구독",
               customer: { id: user.id },
-              amount: { total: 29000 },
+              amount: { total: 9900 },
               currency: "KRW",
             },
             timeToPay: periodEnd.toISOString(),

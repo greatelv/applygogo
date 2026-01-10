@@ -111,6 +111,8 @@ model Subscription {
   current_period_end   DateTime
   cancel_at_period_end Boolean            @default(false)
   billing_key          String?
+  card_name            String?
+  card_number          String?
   created_at           DateTime           @default(now())
   updated_at           DateTime           @updatedAt
   plan                 Plan               @relation(fields: [planCode], references: [code])
@@ -130,6 +132,24 @@ model UsageLog {
   @@map("usage_logs")
 }
 
+model PaymentHistory {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  paymentId   String   @unique @map("payment_id") // 포트원 결제 ID
+  orderName   String   @map("order_name")
+  amount      Float
+  currency    String   @default("KRW")
+  status      String   // PAID, CANCELLED, FAILED
+  method      String?  // 카드, 간편결제 등
+  paidAt      DateTime @default(now()) @map("paid_at")
+  receiptUrl  String?  @map("receipt_url")
+  details     Json?    // 기타 결제 상세 정보 (선택)
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payment_histories")
+}
+
 model User {
   id            String        @id @default(cuid())
   name          String?
@@ -146,6 +166,8 @@ model User {
   sessions      Session[]
   subscription  Subscription?
   usage_logs    UsageLog[]
+  paymentHistories PaymentHistory[]
+
 
   @@map("users")
 }
