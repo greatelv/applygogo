@@ -157,7 +157,6 @@ export function ResumeEditPage({
 
   const handleAddAdditionalItem = (type: ItemType = "CERTIFICATION") => {
     setAdditionalItems((prev) => [
-      ...prev,
       {
         id: `new-${Date.now()}`,
         type,
@@ -167,6 +166,7 @@ export function ResumeEditPage({
         description_en: "",
         date: "",
       },
+      ...prev,
     ]);
   };
 
@@ -238,7 +238,6 @@ export function ResumeEditPage({
 
   const handleAddExperience = () => {
     setExperiences((prev) => [
-      ...prev,
       {
         id: `new-exp-${Date.now()}`,
         company: "",
@@ -249,12 +248,12 @@ export function ResumeEditPage({
         positionEn: "",
         bulletsEn: [""],
       },
+      ...prev,
     ]);
   };
 
   const handleAddEducation = () => {
     setEducations((prev) => [
-      ...prev,
       {
         id: `new-edu-${Date.now()}`,
         school_name: "",
@@ -266,6 +265,7 @@ export function ResumeEditPage({
         major_en: "",
         degree_en: "",
       },
+      ...prev,
     ]);
   };
 
@@ -279,9 +279,48 @@ export function ResumeEditPage({
 
   const handleRetranslateExperience = async (expId: string) => {
     const currentExp = experiences.find((e) => e.id === expId);
-    const initialExp = initialExperiences?.find((e) => e.id === expId);
-
     if (!currentExp) return;
+
+    // 1. Cleanup and Trim
+    const trimmedCompany = currentExp.company?.trim() || "";
+    const trimmedPosition = currentExp.position?.trim() || "";
+    const trimmedPeriod = currentExp.period?.trim() || "";
+    const trimmedBullets = currentExp.bullets
+      .map((b) => b.trim())
+      .filter((b) => b !== "");
+
+    // Check if completely empty
+    if (
+      !trimmedCompany &&
+      !trimmedPosition &&
+      !trimmedPeriod &&
+      trimmedBullets.length === 0
+    ) {
+      handleRemoveExperience(expId);
+      return;
+    }
+
+    // Update state with trimmed values and filtered bullets before proceeding
+    setExperiences((prev) =>
+      prev.map((exp) =>
+        exp.id === expId
+          ? {
+              ...exp,
+              company: trimmedCompany,
+              position: trimmedPosition,
+              period: trimmedPeriod,
+              bullets: trimmedBullets.length > 0 ? trimmedBullets : [""],
+              // Re-initialize bulletsEn if bullets were changed/removed
+              bulletsEn:
+                trimmedBullets.length > 0
+                  ? trimmedBullets.map((_, i) => exp.bulletsEn[i] || "")
+                  : [""],
+            }
+          : exp
+      )
+    );
+
+    const initialExp = initialExperiences?.find((e) => e.id === expId);
 
     // Check for changes
     const isCompanyChanged = currentExp.company !== initialExp?.company;
@@ -304,9 +343,9 @@ export function ResumeEditPage({
       !isPeriodChanged &&
       changedBullets.length === 0
     ) {
-      alert(
-        "변경된 한글 내용이 없습니다. 한글 경력사항을 수정한 후 재번역을 클릭해주세요."
-      );
+      // alert(
+      //   "변경된 한글 내용이 없습니다. 한글 경력사항을 수정한 후 재번역을 클릭해주세요."
+      // );
       return;
     }
 
@@ -491,6 +530,31 @@ export function ResumeEditPage({
     const item = additionalItems.find((i) => i.id === id);
     if (!item) return;
 
+    // 1. Cleanup and Trim
+    const trimmedName = item.name_kr?.trim() || "";
+    const trimmedDesc = item.description_kr?.trim() || "";
+    const trimmedDate = item.date?.trim() || "";
+
+    // Check if empty
+    if (!trimmedName && !trimmedDesc && !trimmedDate) {
+      handleRemoveAdditionalItem(id);
+      return;
+    }
+
+    // Update state with trimmed values
+    setAdditionalItems((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? {
+              ...i,
+              name_kr: trimmedName,
+              description_kr: trimmedDesc,
+              date: trimmedDate,
+            }
+          : i
+      )
+    );
+
     setIsTranslating((prev) => ({ ...prev, [id]: true }));
 
     try {
@@ -531,6 +595,41 @@ export function ResumeEditPage({
   const handleTranslateEducation = async (eduId: string) => {
     const edu = educations.find((e) => e.id === eduId);
     if (!edu) return;
+
+    // 1. Cleanup and Trim
+    const trimmedSchool = edu.school_name?.trim() || "";
+    const trimmedMajor = edu.major?.trim() || "";
+    const trimmedDegree = edu.degree?.trim() || "";
+    const trimmedStart = edu.start_date?.trim() || "";
+    const trimmedEnd = edu.end_date?.trim() || "";
+
+    // Check if empty
+    if (
+      !trimmedSchool &&
+      !trimmedMajor &&
+      !trimmedDegree &&
+      !trimmedStart &&
+      !trimmedEnd
+    ) {
+      handleRemoveEducation(eduId);
+      return;
+    }
+
+    // Update state with trimmed values
+    setEducations((prev) =>
+      prev.map((e) =>
+        e.id === eduId
+          ? {
+              ...e,
+              school_name: trimmedSchool,
+              major: trimmedMajor,
+              degree: trimmedDegree,
+              start_date: trimmedStart,
+              end_date: trimmedEnd,
+            }
+          : e
+      )
+    );
 
     setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: true }));
 
