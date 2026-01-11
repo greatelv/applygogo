@@ -1,4 +1,11 @@
-import { Menu, LogOut, Settings, Info, Sparkles } from "lucide-react";
+import {
+  Menu,
+  LogOut,
+  Settings,
+  Info,
+  Sparkles,
+  PanelLeft,
+} from "lucide-react";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -10,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { cn } from "../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
@@ -22,6 +30,8 @@ interface HeaderProps {
   userImage?: string;
   onLogout: () => void;
   onMenuClick: () => void;
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
   workflowSteps?: Array<{ id: string; label: string; description?: string }>;
   currentStep?: string;
 }
@@ -48,6 +58,8 @@ export function Header({
   userImage,
   onLogout,
   onMenuClick,
+  onToggleSidebar,
+  isSidebarOpen = true,
   workflowSteps,
   currentStep,
 }: HeaderProps) {
@@ -61,7 +73,7 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-30 bg-background border-b border-border">
-      <div className="flex items-center justify-between h-16 px-4 lg:px-6">
+      <div className="flex items-center justify-between h-16 px-4 lg:pr-6 lg:pl-0">
         <div className="flex items-center">
           {/* Mobile menu button */}
           <button
@@ -71,22 +83,34 @@ export function Header({
             <Menu className="size-5" />
           </button>
 
-          {/* Logo Container - Desktop: Fixed Width to match Sidebar */}
-          <Link
-            href="/resumes"
-            className="hidden lg:flex items-center w-[13.5rem] border-r border-border/40 mr-6 h-8 hover:opacity-80 transition-opacity"
-          >
-            <img
-              src="/logo-for-light.svg"
-              alt="지원고고"
-              className="h-6 w-auto dark:hidden"
-            />
-            <img
-              src="/logo-for-dark.svg"
-              alt="지원고고"
-              className="h-6 w-auto hidden dark:block"
-            />
-          </Link>
+          {/* Desktop Logo Area + Toggle */}
+          <div className="hidden lg:flex items-center justify-between pl-6 h-full w-60 border-r border-border/40 shrink-0">
+            <Link
+              href="/resumes"
+              className="flex items-center hover:opacity-80 transition-opacity"
+            >
+              <img
+                src="/logo-for-light.svg"
+                alt="지원고고"
+                className="h-6 w-auto dark:hidden"
+              />
+              <img
+                src="/logo-for-dark.svg"
+                alt="지원고고"
+                className="h-6 w-auto hidden dark:block"
+              />
+            </Link>
+
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                className="mr-3 p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                title={isSidebarOpen ? "사이드바 숨기기" : "사이드바 보이기"}
+              >
+                <PanelLeft className="size-4" />
+              </button>
+            )}
+          </div>
 
           {/* Mobile Logo Only */}
           <Link
@@ -107,7 +131,7 @@ export function Header({
 
           {/* Workflow Stepper - starts after logo container */}
           {workflowSteps && currentStep && (
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:flex items-center pl-6">
               <WorkflowStepper
                 steps={workflowSteps}
                 currentStep={currentStep}

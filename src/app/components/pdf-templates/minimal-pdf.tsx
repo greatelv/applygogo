@@ -12,15 +12,14 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    paddingVertical: 36, // py-12
-    paddingHorizontal: 54, // Increase padding to simulate max-w-2xl mx-auto
+    padding: 24, // p-8 (32px) -> ~24pt
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 36, // mb-12
+    marginBottom: 24, // mb-8
   },
   name: {
     fontSize: 36, // text-5xl
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 30, // mb-10
+    marginBottom: 24, // mb-8
   },
   sectionTitle: {
     fontSize: 9, // text-xs

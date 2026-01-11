@@ -98,7 +98,7 @@ export async function uploadResumeAction(formData: FormData) {
     const resume = await prisma.resume.create({
       data: {
         userId: userId,
-        title: file.name,
+        title: file.name.replace(/\.[^/.]+$/, ""),
         original_file_url: uploadData.path,
         status: "IDLE",
         current_step: "UPLOAD",

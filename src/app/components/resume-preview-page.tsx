@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Eye, CheckCircle } from "lucide-react";
+import { ArrowRight, Eye, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { cn } from "../lib/utils";
@@ -49,6 +49,7 @@ interface ResumePreviewPageProps {
   onBack: () => void;
   onUpgrade?: () => void;
   initialTemplate?: string;
+  isCompleting?: boolean;
 }
 
 export function ResumePreviewPage({
@@ -64,6 +65,7 @@ export function ResumePreviewPage({
   onBack,
   onUpgrade,
   initialTemplate = "modern",
+  isCompleting = false,
 }: ResumePreviewPageProps) {
   const [selectedTemplate, setSelectedTemplate] = useState(
     initialTemplate.toLowerCase()
@@ -193,8 +195,22 @@ export function ResumePreviewPage({
             <Button variant="outline" onClick={onBack} className="w-full">
               이전
             </Button>
-            <Button onClick={handleNext} className="w-full" size="lg">
-              {isProTemplateSelected ? "PRO로 업그레이드" : "완료"}
+            <Button
+              onClick={handleNext}
+              className="w-full"
+              size="lg"
+              disabled={isCompleting}
+            >
+              {isCompleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : isProTemplateSelected ? (
+                "PRO로 업그레이드"
+              ) : (
+                "완료"
+              )}
             </Button>
           </div>
 

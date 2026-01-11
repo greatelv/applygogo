@@ -13,6 +13,7 @@ interface ProcessingPageProps {
   resumeTitle: string;
   resumeId: string | null;
   onComplete: () => void;
+  isCompleting?: boolean;
 }
 
 // 3단계 AI 프로세싱 단계 (추출 → 정제 → 번역)
@@ -27,6 +28,7 @@ export function ProcessingPage({
   resumeTitle,
   resumeId,
   onComplete,
+  isCompleting = false,
 }: ProcessingPageProps) {
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
@@ -271,7 +273,16 @@ export function ProcessingPage({
             <p className="text-sm text-muted-foreground mb-4">
               분석이 완료되었습니다! 다음 단계로 이동합니다...
             </p>
-            <Button onClick={onComplete}>요약 확인하기</Button>
+            <Button onClick={onComplete} disabled={isCompleting}>
+              {isCompleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : (
+                "요약 확인하기"
+              )}
+            </Button>
           </div>
         )}
       </div>

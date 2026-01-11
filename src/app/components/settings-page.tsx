@@ -8,6 +8,7 @@ import {
   CreditCard,
   Crown,
   CreditCard as PaymentIcon,
+  Loader2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -27,9 +28,9 @@ interface SettingsPageProps {
   onUpgrade: (plan: "PRO") => void;
   onCancel: () => void;
   onResume?: () => void;
-  onUpdateCard?: () => void; // Prop 추가
+  onUpdateCard?: () => void;
   cancelAtPeriodEnd?: boolean;
-  currentPeriodEnd?: Date | string; // Prop 추가
+  currentPeriodEnd?: Date | string;
   paymentInfo?: {
     cardName?: string;
     cardNumber?: string;
@@ -43,6 +44,9 @@ interface SettingsPageProps {
     paidAt: string;
     method: string;
   }>;
+  // Loading States
+  isUpgrading?: boolean;
+  isUpdatingCard?: boolean;
 }
 
 const planConfig = {
@@ -66,6 +70,8 @@ export function SettingsPage({
   currentPeriodEnd,
   paymentInfo,
   paymentHistory = [],
+  isUpgrading = false,
+  isUpdatingCard = false,
 }: SettingsPageProps) {
   const initials = userName
     .split(" ")
@@ -215,8 +221,13 @@ export function SettingsPage({
                       size="sm"
                       className="h-auto p-0 px-2 text-primary hover:text-primary/90"
                       onClick={onUpdateCard}
+                      disabled={isUpdatingCard}
                     >
-                      변경
+                      {isUpdatingCard ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        "변경"
+                      )}
                     </Button>
                   </div>
 
@@ -313,14 +324,21 @@ export function SettingsPage({
 
             <Button
               variant={currentPlan === "PRO" ? "outline" : "default"}
-              disabled={currentPlan === "PRO"}
+              disabled={currentPlan === "PRO" || isUpgrading}
               onClick={() => onUpgrade("PRO")}
               className="w-full"
               size="lg"
             >
-              {currentPlan === "PRO"
-                ? "현재 이용중인 플랜입니다"
-                : "지금 프로 플랜 시작하기"}
+              {isUpgrading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : currentPlan === "PRO" ? (
+                "현재 이용중인 플랜입니다"
+              ) : (
+                "지금 프로 플랜 시작하기"
+              )}
             </Button>
           </div>
         </div>

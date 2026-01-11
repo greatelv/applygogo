@@ -16,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
 
 interface SettingsClientPageProps {
   user: {
@@ -42,6 +43,14 @@ export function SettingsClientPage({
   // Dialog State
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
+
+  // Loading State
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isResuming, setIsResuming] = useState(false);
+
+  // New loading states for button protection
+  const [isUpgrading, setIsUpgrading] = useState(false);
+  const [isUpdatingCard, setIsUpdatingCard] = useState(false);
 
   const serverPlan = settings?.subscription?.planCode || "FREE";
   const serverQuota = settings?.remainingQuota ?? 0;
@@ -80,6 +89,9 @@ export function SettingsClientPage({
 
   // 업그레이드 (구독 시작) 로직
   const handleUpgrade = async (newPlan: "PRO") => {
+    if (isUpgrading) return;
+    setIsUpgrading(true);
+
     try {
       // 1. 빌링키 발급 요청 (카드 등록)
       const issueRes = await PortOne.requestIssueBillingKey({
@@ -96,6 +108,7 @@ export function SettingsClientPage({
 
       if (issueRes.code != null) {
         // 취소 혹은 실패
+        setIsUpgrading(false);
         return;
       }
 
@@ -120,6 +133,8 @@ export function SettingsClientPage({
     } catch (error: any) {
       console.error(error);
       toast.error(`구독 오류: ${error.message}`);
+    } finally {
+      setIsUpgrading(false);
     }
   };
 
@@ -129,6 +144,9 @@ export function SettingsClientPage({
   };
 
   const executeCancel = async () => {
+    if (isCancelling) return;
+    setIsCancelling(true);
+
     try {
       const res = await fetch("/api/billing/subscription", {
         method: "DELETE",
@@ -141,10 +159,11 @@ export function SettingsClientPage({
         "구독 해지가 예약되었습니다. 현재 기간까지 PRO 기능을 이용하실 수 있습니다."
       );
       router.refresh();
+      setShowCancelDialog(false); // 다이얼로그 닫기
     } catch (error: any) {
       toast.error(`오류: ${error.message}`);
     } finally {
-      setShowCancelDialog(false); // 다이얼로그 닫기
+      setIsCancelling(false);
     }
   };
 
@@ -154,6 +173,9 @@ export function SettingsClientPage({
   };
 
   const executeResume = async () => {
+    if (isResuming) return;
+    setIsResuming(true);
+
     try {
       const res = await fetch("/api/billing/subscription", {
         method: "PATCH",
@@ -164,15 +186,19 @@ export function SettingsClientPage({
 
       toast.success("해지 예약이 취소되었습니다.");
       router.refresh();
+      setShowResumeDialog(false);
     } catch (error: any) {
       toast.error(`오류: ${error.message}`);
     } finally {
-      setShowResumeDialog(false);
+      setIsResuming(false);
     }
   };
 
   // 3. 결제 수단 변경 로직
   const handleUpdateCard = async () => {
+    if (isUpdatingCard) return;
+    setIsUpdatingCard(true);
+
     try {
       const issueRes = await PortOne.requestIssueBillingKey({
         storeId: portoneConfig.storeId,
@@ -189,6 +215,7 @@ export function SettingsClientPage({
       if (issueRes.code != null) {
         // 사용자가 취소했거나 에러 발생 시
         // console.log("Billing key issue cancelled/failed", issueRes);
+        setIsUpdatingCard(false);
         return;
       }
 
@@ -210,6 +237,8 @@ export function SettingsClientPage({
     } catch (error: any) {
       console.error(error);
       toast.error(`오류: ${error.message}`);
+    } finally {
+      setIsUpdatingCard(false);
     }
   };
 
@@ -238,6 +267,9 @@ export function SettingsClientPage({
           cardNumber: settings?.subscription?.card_number,
         }}
         paymentHistory={paymentHistory}
+        // Loading Props
+        isUpgrading={isUpgrading}
+        isUpdatingCard={isUpdatingCard}
       />
 
       {/* 해지 확인 다이얼로그 */}
@@ -251,9 +283,24 @@ export function SettingsClientPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>계속 구독하기</AlertDialogCancel>
-            <AlertDialogAction onClick={executeCancel}>
-              해지 예약하기
+            <AlertDialogCancel disabled={isCancelling}>
+              계속 구독하기
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                executeCancel();
+              }}
+              disabled={isCancelling}
+            >
+              {isCancelling ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : (
+                "해지 예약하기"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -270,9 +317,22 @@ export function SettingsClientPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>닫기</AlertDialogCancel>
-            <AlertDialogAction onClick={executeResume}>
-              구독 유지하기
+            <AlertDialogCancel disabled={isResuming}>닫기</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                executeResume();
+              }}
+              disabled={isResuming}
+            >
+              {isResuming ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : (
+                "구독 유지하기"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

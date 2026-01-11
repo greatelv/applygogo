@@ -32,7 +32,8 @@ export function DashboardLayout({
   workflowSteps,
   currentStep,
 }: DashboardLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
 
   return (
     <div className="h-screen overflow-hidden bg-muted/30">
@@ -44,7 +45,9 @@ export function DashboardLayout({
           userEmail={userEmail}
           userImage={userImage}
           onLogout={onLogout}
-          onMenuClick={() => setIsSidebarOpen(true)}
+          onMenuClick={() => setIsMobileSidebarOpen(true)}
+          onToggleSidebar={() => setIsDesktopSidebarOpen((prev) => !prev)}
+          isSidebarOpen={isDesktopSidebarOpen}
           workflowSteps={workflowSteps}
           currentStep={currentStep}
         />
@@ -53,8 +56,9 @@ export function DashboardLayout({
           <Sidebar
             activeItem={activeItem}
             onNavigate={onNavigate}
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
+            isMobileOpen={isMobileSidebarOpen}
+            isDesktopOpen={isDesktopSidebarOpen}
+            onCloseMobile={() => setIsMobileSidebarOpen(false)}
             onCreateNew={onCreateNew}
           />
 

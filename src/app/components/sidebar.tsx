@@ -14,8 +14,9 @@ import { Button } from "./ui/button";
 interface SidebarProps {
   activeItem: string;
   onNavigate: (item: string) => void;
-  isOpen: boolean;
-  onClose: () => void;
+  isMobileOpen: boolean;
+  isDesktopOpen: boolean;
+  onCloseMobile: () => void;
   onCreateNew?: () => void;
 }
 
@@ -29,17 +30,18 @@ const navItems = [
 export function Sidebar({
   activeItem,
   onNavigate,
-  isOpen,
-  onClose,
+  isMobileOpen,
+  isDesktopOpen,
+  onCloseMobile,
   onCreateNew,
 }: SidebarProps) {
   return (
     <>
       {/* Mobile overlay */}
-      {isOpen && (
+      {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/20 z-40 lg:hidden"
-          onClick={onClose}
+          onClick={onCloseMobile}
         />
       )}
 
@@ -47,7 +49,8 @@ export function Sidebar({
       <aside
         className={cn(
           "fixed lg:static inset-y-0 left-0 z-50 w-60 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:transform-none",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          !isDesktopOpen && "lg:hidden"
         )}
       >
         <div className="h-full flex flex-col">
@@ -55,7 +58,7 @@ export function Sidebar({
           <div className="flex items-center justify-between p-4 lg:hidden border-b border-border">
             <span className="font-semibold">메뉴</span>
             <button
-              onClick={onClose}
+              onClick={onCloseMobile}
               className="p-2 hover:bg-accent rounded-md"
             >
               <X className="size-5" />
@@ -70,7 +73,7 @@ export function Sidebar({
                 <Button
                   onClick={() => {
                     onCreateNew();
-                    onClose();
+                    onCloseMobile();
                   }}
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
                   size="default"
@@ -100,7 +103,7 @@ export function Sidebar({
                       <button
                         onClick={() => {
                           onNavigate(item.id);
-                          onClose();
+                          onCloseMobile();
                         }}
                         className={cn(
                           "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",

@@ -14,13 +14,16 @@ export const metadata: Metadata = {
   description:
     "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요. 몇 분 만에 전문적인 영문/국문 이력서를 작성할 수 있습니다.",
   keywords: [
-    "이력서 작성",
-    "AI 이력서",
-    "영문 이력서",
-    "지원고고",
-    "해외 취업",
-    "자기소개서",
-    "CV 만들기",
+    "AI 영문 이력서",
+    "무료 영문 이력서 양식",
+    "외국계 기업 이력서",
+    "이력서 한영 번역",
+    "경력직 영문 이력서",
+    "CV 작성법",
+    "개발자 레주메",
+    "자기소개서 AI 첨삭",
+    "합격 이력서 샘플",
+    "해외 취업 사이트",
   ],
   authors: [{ name: "지원고고 팀" }],
   creator: "지원고고",
@@ -32,11 +35,20 @@ export const metadata: Metadata = {
     description:
       "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요. 몇 분 만에 전문적인 이력서를 작성할 수 있습니다.",
     siteName: "지원고고",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "지원고고 - AI 영문 이력서 빌더",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "지원고고 - 글로벌 표준 이력서 빌더",
     description: "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -50,9 +62,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "google-site-verification-id", // User to replace
+    google: "google-site-verification-id", // TODO: Google Search Console ID 입력
     other: {
-      "naver-site-verification": "naver-site-verification-id", // User to replace
+      "naver-site-verification": "naver-site-verification-id", // TODO: Naver Search Advisor ID 입력
     },
   },
   icons: {

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ResumePreviewPage } from "@/app/components/resume-preview-page";
 import { useApp } from "@/app/context/app-context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const steps = [
   { id: "upload", label: "업로드" },
@@ -52,7 +52,12 @@ export function TemplatesClient({
     return () => setWorkflowState(undefined, undefined);
   }, [setWorkflowState, resumeId]);
 
+  const [isCompleting, setIsCompleting] = useState(false);
+
   const handleNext = async (templateId: string) => {
+    if (isCompleting) return;
+    setIsCompleting(true);
+
     try {
       const res = await fetch(`/api/resumes/${resumeId}`, {
         method: "PATCH",
@@ -74,6 +79,7 @@ export function TemplatesClient({
       // Fallback navigation even on error? Or show alert?
       // router.push(`/resumes/${resumeId}`);
       alert("템플릿 저장 중 오류가 발생했습니다.");
+      setIsCompleting(false);
     }
   };
 
@@ -88,6 +94,7 @@ export function TemplatesClient({
       currentPlan={currentPlan}
       initialTemplate={initialTemplate}
       onNext={handleNext}
+      isCompleting={isCompleting}
       onBack={() => router.push(`/resumes/${resumeId}/edit`)}
       onUpgrade={() => router.push("/pricing")}
     />

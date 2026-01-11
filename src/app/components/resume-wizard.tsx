@@ -123,7 +123,14 @@ export function ResumeWizard({
     }
   };
 
+  // Loading states for workflow steps
+  const [isProcessingComplete, setIsProcessingComplete] = useState(false);
+  const [isSavingEdits, setIsSavingEdits] = useState(false);
+
   const handleProcessingComplete = async () => {
+    if (isProcessingComplete) return;
+    setIsProcessingComplete(true);
+
     if (quota > 0) {
       setQuota(quota - 1);
     }
@@ -171,10 +178,14 @@ export function ResumeWizard({
         }
       } catch (error) {
         console.error("Failed to fetch resume data:", error);
+        // On error, we might want to let them try again?
+        setIsProcessingComplete(false);
+        return;
       }
     }
 
     setStep("edit");
+    setIsProcessingComplete(false);
   };
 
   const handleEditNext = async (data: {
@@ -184,6 +195,9 @@ export function ResumeWizard({
     skills: any[];
     additionalItems: any[];
   }) => {
+    if (isSavingEdits) return;
+    setIsSavingEdits(true);
+
     const { additionalItems, ...rest } = data;
 
     const certifications = additionalItems.filter(
@@ -212,23 +226,30 @@ export function ResumeWizard({
         });
       } catch (error) {
         console.error("Failed to save resume edits:", error);
+        alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setIsSavingEdits(false);
+        return;
       }
     }
     setStep("preview");
+    setIsSavingEdits(false);
   };
 
+  const [isCompleting, setIsCompleting] = useState(false);
+
   const handlePreviewNext = async (templateId: string) => {
+    if (isCompleting) return;
+    setIsCompleting(true);
     setTemplate(templateId);
 
     // Persist to DB if we have a resumeId
     if (resumeId) {
-      try {
-        await updateResumeTemplateAction(
-          resumeId,
-          templateId as "modern" | "classic" | "minimal"
-        );
-      } catch (error) {
-        console.error("Failed to save template selection:", error);
+      const response = await updateResumeTemplateAction(
+        resumeId,
+        templateId as "modern" | "classic" | "minimal"
+      );
+      if (!response.success) {
+        console.error("Failed to save template selection");
       }
     }
 
@@ -248,6 +269,7 @@ export function ResumeWizard({
 
     // Advance to complete step instead of redirecting immediately
     setStep("complete");
+    setIsCompleting(false);
   };
 
   if (step === "upload") {
@@ -260,6 +282,7 @@ export function ResumeWizard({
         resumeTitle={resumeTitle}
         resumeId={resumeId}
         onComplete={handleProcessingComplete}
+        isCompleting={isProcessingComplete}
       />
     );
   }
@@ -275,6 +298,7 @@ export function ResumeWizard({
         initialAdditionalItems={[...certifications, ...awards, ...languages]}
         isEditingExisting={initialMode === "edit"}
         quota={quota}
+        isLoading={isSavingEdits}
         onNext={handleEditNext}
         onBack={() => {
           if (initialMode === "edit") {
@@ -302,6 +326,7 @@ export function ResumeWizard({
         onBack={() => setStep("edit")}
         onUpgrade={() => router.push("/settings")}
         initialTemplate={template}
+        isCompleting={isCompleting}
       />
     );
   }
