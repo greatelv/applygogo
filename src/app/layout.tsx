@@ -3,16 +3,19 @@ import "../styles/index.css";
 import { Providers } from "./providers";
 import NextTopLoader from "nextjs-toploader";
 
+const title = "AI로 완성하는 고품질의 영문 이력서 - 지원고고";
+const description =
+  "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 만들어보세요.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
   ),
   title: {
-    default: "지원고고 - 글로벌 표준 이력서 빌더",
+    default: title,
     template: "%s | 지원고고",
   },
-  description:
-    "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 첨삭받으세요.",
+  description: description,
   keywords: [
     "영문 이력서 변환",
     "영문 이력서 번역시",
@@ -46,9 +49,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     url: "/",
-    title: "지원고고 - 글로벌 표준 이력서 빌더",
-    description:
-      "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요. 몇 분 만에 전문적인 이력서를 작성할 수 있습니다.",
+    title: title,
+    description: description,
     siteName: "지원고고",
     images: [
       {
@@ -61,8 +63,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "지원고고 - 글로벌 표준 이력서 빌더",
-    description: "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요.",
+    title: title,
+    description: description,
     images: ["/og-image.png"],
   },
   robots: {
