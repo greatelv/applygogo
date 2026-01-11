@@ -107,10 +107,13 @@ export const getRefinementPrompt = (extractedData: any) => `
    - 불릿이 적거나 내용이 부실해도, **항목 자체는 반드시 남겨야 합니다.** (누락 방지)
    - 각 회사별로 **최소 1개 이상의 불릿**은 무조건 남기세요.
 
-**스마트 불릿 선별 (Smart Selection):**
-- 병합된 불릿들 중 **가장 임팩트 있는 3~6개**를 선정하세요.
-- **수치(Metrics)**가 있는 성과를 최우선으로 뽑으세요.
-- 단순 업무 나열은 제외하되, 불릿이 너무 적어지면 그거라도 남기세요.
+**스마트 불릿 선별 및 한글 요약 (Selection & Rewriting):**
+- **최대 4개 제한**: 병합된 불릿들 중 가장 임팩트 있는 **최대 4개**까지만 선정하세요. (양보다 질)
+- **간결한 요약 (Condense in Korean)**: 선정된 문장이 길거나 서술형이라면, **간결한 개조식(명사형 종결)**으로 다시 쓰세요.
+   - ❌ Bad: "트래픽이 몰리는 상황에서 서버 다운을 막기 위해 레디스를 도입하여 문제를 해결했고 결과적으로 응답속도를 50% 개선했습니다." (서술형, 장황함)
+   - ✅ Good: "Redis 도입을 통한 대용량 트래픽 처리 및 응답속도 50% 개선" (핵심만 요약)
+- **배경 설명 제거**: "당시 ~한 상황에서", "위기를 극복하고자" 같은 불필요한 서두를 가차 없이 삭제하세요.
+- **수치(Metrics)** 포함: 성과를 증명할 수 있는 수치가 있다면 반드시 포함하세요.
 
 **입력 데이터:**
 ${JSON.stringify(extractedData, null, 2)}
@@ -169,13 +172,18 @@ export const getResumeTranslationPrompt = (refinedData: any) => `
    - 입력 데이터의 순서를 그대로 유지하세요.
    - 정렬을 변경하지 마세요.
 
-4. **성과 중심 번역 (Action Verbs)**:
-   - 모든 불릿 포인트는 강렬한 Action Verb로 시작하세요
-   - 구조: [Action Verb] + [What you did] + [Quantifiable Result/Impact]
+4. **성과 중심의 요약 및 재작성 (Rewrite & Summarize) - 가장 중요**:
+   - 단순 번역이 아닙니다. **미국 스타일의 간결한 Professional Resume** 형태로 재작성하세요.
+   - **압축(Condense)**: 장황한 설명, 배경지식, "했다가", "상황에서" 같은 서술적 맥락을 모두 제거하고 **핵심 성과(Key Result)**만 남기세요.
+   - **길이 제한**: 각 불릿은 **반드시 1~2줄 이내**로 끝내야 합니다. (긴 문장은 과감히 자르거나 요약)
+   - **구조**: [Strong Action Verb] + [Quantifiable Metric] + [Key Task/Tech]
+   
+   **예시 (Example):**
+   ❌ Bad (Literal Translation): "Restored core product collection functionality... in a situation where it was broken... by implementing a hybrid approach... bypassing anti-scraping policies... resulting in recovering 300 million KRW." (Too long, narrative)
+   ✅ Good (Rewrite): "Recovered 300M KRW in monthly revenue by architecting a hybrid scraping engine (Server API + Scraping) to bypass anti-scraping policies." (Impact-first, concise)
 
-5. **간결하게 번역**:
-   - 각 불릿은 1-2줄 최대 (약 100-150자)
-   - 한국식 장황한 설명은 제거하고 핵심 성과만 남기세요
+5. **불필요한 수식어구 제거**:
+   - "In order to", "As a result of", "Responsible for" 등 불필요한 서두를 제거하고 바로 동사로 시작하세요.
 
 6. **Professional Summary 번역**:
    - 분량: **50-70 단어 (약 3줄)** 엄수

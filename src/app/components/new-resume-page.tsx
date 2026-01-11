@@ -3,6 +3,16 @@ import { Upload, FileText, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
+
 interface NewResumePageProps {
   onUpload: (file: File) => void;
   isUploading?: boolean;
@@ -18,6 +28,7 @@ const workflowSteps = [
 export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -39,7 +50,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
       onUpload(file);
       setSelectedFile(file);
     } else {
-      alert("PDF 파일만 업로드 가능합니다.");
+      setShowErrorDialog(true);
     }
   };
 
@@ -108,6 +119,22 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
           </>
         )}
       </div>
+
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>올바르지 않은 파일 형식</AlertDialogTitle>
+            <AlertDialogDescription>
+              PDF 파일만 업로드 가능합니다. 다시 시도해주세요.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowErrorDialog(false)}>
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
         <h4 className="text-sm font-semibold mb-2 text-blue-900 dark:text-blue-300">

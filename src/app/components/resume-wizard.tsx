@@ -13,6 +13,15 @@ import {
   updateResumeTemplateAction,
   updateResumeAction,
 } from "../lib/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface Experience {
   id: string;
@@ -117,7 +126,11 @@ export function ResumeWizard({
         setStep("processing");
       }
     } catch (error: any) {
-      alert(error.message || "업로드 중 오류가 발생했습니다.");
+      setAlertConfig({
+        open: true,
+        title: "오류 발생",
+        description: error.message || "업로드 중 오류가 발생했습니다.",
+      });
     } finally {
       setIsUploading(false);
     }
@@ -226,7 +239,11 @@ export function ResumeWizard({
         });
       } catch (error) {
         console.error("Failed to save resume edits:", error);
-        alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setAlertConfig({
+          open: true,
+          title: "저장 실패",
+          description: "저장 중 오류가 발생했습니다. 다시 시도해주세요.",
+        });
         setIsSavingEdits(false);
         return;
       }
@@ -272,84 +289,128 @@ export function ResumeWizard({
     setIsCompleting(false);
   };
 
-  if (step === "upload") {
-    return <NewResumePage onUpload={handleUpload} isUploading={isUploading} />;
-  }
+  const [alertConfig, setAlertConfig] = useState({
+    open: false,
+    title: "",
+    description: "",
+  });
 
-  if (step === "processing") {
-    return (
-      <ProcessingPage
-        resumeTitle={resumeTitle}
-        resumeId={resumeId}
-        onComplete={handleProcessingComplete}
-        isCompleting={isProcessingComplete}
-      />
-    );
-  }
+  const renderContent = () => {
+    if (step === "upload") {
+      return (
+        <NewResumePage onUpload={handleUpload} isUploading={isUploading} />
+      );
+    }
 
-  if (step === "edit") {
-    return (
-      <ResumeEditPage
-        resumeTitle={resumeTitle}
-        initialPersonalInfo={personalInfo}
-        initialExperiences={experiences}
-        initialEducations={educations}
-        initialSkills={skills}
-        initialAdditionalItems={[...certifications, ...awards, ...languages]}
-        isEditingExisting={initialMode === "edit"}
-        quota={quota}
-        isLoading={isSavingEdits}
-        onNext={handleEditNext}
-        onBack={() => {
-          if (initialMode === "edit") {
-            router.back();
-          } else {
-            setStep("upload");
+    if (step === "processing") {
+      return (
+        <ProcessingPage
+          resumeTitle={resumeTitle}
+          resumeId={resumeId}
+          onComplete={handleProcessingComplete}
+          isCompleting={isProcessingComplete}
+        />
+      );
+    }
+
+    if (step === "edit") {
+      return (
+        <ResumeEditPage
+          resumeTitle={resumeTitle}
+          initialPersonalInfo={personalInfo}
+          initialExperiences={experiences}
+          initialEducations={educations}
+          initialSkills={skills}
+          initialAdditionalItems={[...certifications, ...awards, ...languages]}
+          isEditingExisting={initialMode === "edit"}
+          quota={quota}
+          isLoading={isSavingEdits}
+          onNext={handleEditNext}
+          onBack={() => {
+            if (initialMode === "edit") {
+              router.back();
+            } else {
+              setStep("upload");
+            }
+          }}
+          onRetranslate={() =>
+            setAlertConfig({
+              open: true,
+              title: "알림",
+              description: "재번역 기능 (Prototype)",
+            })
           }
-        }}
-        onRetranslate={() => alert("재번역 기능 (Prototype)")}
-      />
-    );
-  }
+        />
+      );
+    }
 
-  if (step === "preview") {
-    return (
-      <ResumePreviewPage
-        resumeTitle={resumeTitle}
-        personalInfo={personalInfo}
-        experiences={experiences}
-        educations={educations}
-        skills={skills}
-        additionalItems={[...certifications, ...awards, ...languages]}
-        currentPlan={plan}
-        onNext={handlePreviewNext}
-        onBack={() => setStep("edit")}
-        onUpgrade={() => router.push("/settings")}
-        initialTemplate={template}
-        isCompleting={isCompleting}
-      />
-    );
-  }
+    if (step === "preview") {
+      return (
+        <ResumePreviewPage
+          resumeTitle={resumeTitle}
+          personalInfo={personalInfo}
+          experiences={experiences}
+          educations={educations}
+          skills={skills}
+          additionalItems={[...certifications, ...awards, ...languages]}
+          currentPlan={plan}
+          onNext={handlePreviewNext}
+          onBack={() => setStep("edit")}
+          onUpgrade={() => router.push("/settings")}
+          initialTemplate={template}
+          isCompleting={isCompleting}
+        />
+      );
+    }
 
-  if (step === "complete") {
-    return (
-      <ResumeDetailPage
-        resumeId={resumeId || initialData?.id || "1"}
-        resumeTitle={resumeTitle}
-        personalInfo={personalInfo}
-        experiences={experiences}
-        educations={educations}
-        skills={skills}
-        additionalItems={[...certifications, ...awards, ...languages]}
-        template={template}
-        isWorkflowComplete={true}
-        onBack={() => router.push("/resumes")}
-        onDelete={() => router.push("/resumes")}
-        onEdit={() => setStep("edit")}
-        onChangeTemplate={() => setStep("preview")}
-      />
-    );
-  }
+    if (step === "complete") {
+      return (
+        <ResumeDetailPage
+          resumeId={resumeId || initialData?.id || "1"}
+          resumeTitle={resumeTitle}
+          personalInfo={personalInfo}
+          experiences={experiences}
+          educations={educations}
+          skills={skills}
+          additionalItems={[...certifications, ...awards, ...languages]}
+          template={template}
+          isWorkflowComplete={true}
+          onBack={() => router.push("/resumes")}
+          onDelete={() => router.push("/resumes")}
+          onEdit={() => setStep("edit")}
+          onChangeTemplate={() => setStep("preview")}
+        />
+      );
+    }
 
-  return null;
+    return null;
+  };
+
+  return (
+    <>
+      {renderContent()}
+      <AlertDialog
+        open={alertConfig.open}
+        onOpenChange={(open) => setAlertConfig((prev) => ({ ...prev, open }))}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{alertConfig.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {alertConfig.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() =>
+                setAlertConfig((prev) => ({ ...prev, open: false }))
+              }
+            >
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }

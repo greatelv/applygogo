@@ -1,6 +1,17 @@
 import { FileText, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface Resume {
   id: string;
@@ -45,6 +56,7 @@ export function ResumesPage({
   onUpgrade,
 }: ResumesPageProps) {
   const hasNoCredits = quota === 0;
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   if (resumes.length === 0) {
     return (
@@ -141,9 +153,7 @@ export function ResumesPage({
                       className="size-8 text-muted-foreground hover:text-destructive shrink-0 -mr-2"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm("정말 이 이력서를 삭제하시겠습니까?")) {
-                          onDelete(resume.id);
-                        }
+                        setDeleteId(resume.id);
                       }}
                     >
                       <Trash2 className="size-4" />
@@ -155,6 +165,35 @@ export function ResumesPage({
           );
         })}
       </div>
+
+      <AlertDialog
+        open={!!deleteId}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+            <AlertDialogDescription>
+              정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
+              없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteId && onDelete) {
+                  onDelete(deleteId);
+                }
+                setDeleteId(null);
+              }}
+            >
+              삭제
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

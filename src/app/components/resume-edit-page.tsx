@@ -20,6 +20,15 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface Experience {
   id: string;
@@ -1062,6 +1071,12 @@ export function ResumeEditPage({
   >({});
   const [newSkill, setNewSkill] = useState("");
 
+  const [alertConfig, setAlertConfig] = useState({
+    open: false,
+    title: "",
+    description: "",
+  });
+
   // Handlers for New Sections
   // Handlers for Additional Items
   const handleAdditionalItemChange = (
@@ -1392,7 +1407,11 @@ export function ResumeEditPage({
       }, 2000);
     } catch (error) {
       console.error(error);
-      alert("번역 중 오류가 발생했습니다.");
+      setAlertConfig({
+        open: true,
+        title: "오류 발생",
+        description: "번역 중 오류가 발생했습니다.",
+      });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [expId]: false }));
     }
@@ -1461,7 +1480,11 @@ export function ResumeEditPage({
       setTimeout(() => setHighlightedPersonal({}), 2000);
     } catch (error) {
       console.error(error);
-      alert("기본 정보 번역 중 오류가 발생했습니다.");
+      setAlertConfig({
+        open: true,
+        title: "오류 발생",
+        description: "기본 정보 번역 중 오류가 발생했습니다.",
+      });
     } finally {
       setIsTranslating((prev) => ({ ...prev, personal: false }));
     }
@@ -1617,7 +1640,11 @@ export function ResumeEditPage({
       );
     } catch (error) {
       console.error(error);
-      alert("학력 번역 중 오류가 발생했습니다.");
+      setAlertConfig({
+        open: true,
+        title: "오류 발생",
+        description: "학력 번역 중 오류가 발생했습니다.",
+      });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: false }));
     }
@@ -2245,6 +2272,28 @@ export function ResumeEditPage({
           )}
         </Button>
       </div>
+      <AlertDialog
+        open={alertConfig.open}
+        onOpenChange={(open) => setAlertConfig((prev) => ({ ...prev, open }))}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{alertConfig.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {alertConfig.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() =>
+                setAlertConfig((prev) => ({ ...prev, open: false }))
+              }
+            >
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

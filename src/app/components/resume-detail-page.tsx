@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   Download,
   Trash2,
@@ -14,6 +14,16 @@ import { ModernTemplate } from "./resume-templates/modern-template";
 import { ClassicTemplate } from "./resume-templates/classic-template";
 import { MinimalTemplate } from "./resume-templates/minimal-template";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface TranslatedExperience {
   id: string;
@@ -75,6 +85,8 @@ export function ResumeDetailPage({
   onChangeTemplate,
   updatedAt,
 }: ResumeDetailPageProps) {
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
   // Use props data
   const resume = {
     id: resumeId || "",
@@ -87,6 +99,7 @@ export function ResumeDetailPage({
     educations,
     skills,
     additionalItems,
+    isWorkflowComplete,
   };
 
   const config = statusConfig[resume.status];
@@ -176,13 +189,7 @@ export function ResumeDetailPage({
   };
 
   const handleDeleteConfirm = () => {
-    if (confirm("정말 이 이력서를 삭제하시겠습니까?")) {
-      if (resumeId && onDelete) {
-        onDelete(resumeId);
-        toast.success("이력서가 삭제되었습니다");
-      }
-      onBack();
-    }
+    setIsDeleteAlertOpen(true);
   };
 
   return (
@@ -249,6 +256,42 @@ export function ResumeDetailPage({
             )}
 
             {onEdit && (
+              <Button variant="outline" onClick={onEdit}>
+                <Edit className="size-4 mr-1.5" />
+                편집
+              </Button>
+            )}
+            
+            <AlertDialog
+              open={isDeleteAlertOpen}
+              onOpenChange={setIsDeleteAlertOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
+                    없습니다.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>취소</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive hover:bg-destructive/90"
+                    onClick={() => {
+                      if (resumeId && onDelete) {
+                        onDelete(resumeId);
+                        toast.success("이력서가 삭제되었습니다");
+                      }
+                      onBack();
+                      setIsDeleteAlertOpen(false);
+                    }}
+                  >
+                    삭제
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
               <Button variant="outline" onClick={onEdit}>
                 <Edit className="size-4 mr-1.5" />
                 편집
