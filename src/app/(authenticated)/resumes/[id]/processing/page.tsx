@@ -24,7 +24,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [setWorkflowState]);
 
   const handleComplete = () => {
-    router.push(`/resumes/${id}/edit`);
+    router.replace(`/resumes/${id}/edit`);
   };
 
   return (

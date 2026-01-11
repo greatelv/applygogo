@@ -316,6 +316,7 @@ export function ResumeWizard({
     if (step === "edit") {
       return (
         <ResumeEditPage
+          resumeId={resumeId}
           resumeTitle={resumeTitle}
           initialPersonalInfo={personalInfo}
           initialExperiences={experiences}
@@ -326,6 +327,9 @@ export function ResumeWizard({
           quota={quota}
           isLoading={isSavingEdits}
           onNext={handleEditNext}
+          onDeductCredit={(amount) => {
+            setQuota((prev) => Math.max(0, prev - amount));
+          }}
           onBack={() => {
             if (initialMode === "edit") {
               router.back();

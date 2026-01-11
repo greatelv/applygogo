@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { geminiModel, generateContentWithRetry } from "@/lib/gemini";
+import { translationModel, generateContentWithRetry } from "@/lib/gemini";
 import { getTranslationPrompt } from "@/lib/prompts";
+import { checkCredits, deductCredits } from "@/lib/billing";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -10,15 +11,25 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { texts, type = "bullets" } = await req.json();
+    const { texts, type = "bullets", resumeId } = await req.json();
 
     if (!texts || !Array.isArray(texts) || texts.length === 0) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 
+    // Check credits (1.0 for re-translation)
+    const cost = 1.0;
+    const hasCredits = await checkCredits(session.user.id, cost);
+    if (!hasCredits) {
+      return NextResponse.json(
+        { error: "크레딧이 부족합니다." },
+        { status: 403 }
+      );
+    }
+
     const prompt = getTranslationPrompt(texts, type);
 
-    const result = await generateContentWithRetry(geminiModel, prompt);
+    const result = await generateContentWithRetry(translationModel, prompt);
     const responseText = result.response.text();
 
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -31,6 +42,13 @@ export async function POST(req: NextRequest) {
       console.error("JSON parse failed", responseText);
       throw new Error("Failed to parse AI response");
     }
+
+    // Deduct credits
+    await deductCredits(
+      session.user.id,
+      cost,
+      `이력서 부분 재번역 ${resumeId ? `(Resume ID: ${resumeId})` : ""}`
+    );
 
     return NextResponse.json({ translatedTexts });
   } catch (error: any) {

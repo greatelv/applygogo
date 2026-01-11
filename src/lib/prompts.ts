@@ -17,6 +17,10 @@ export const RESUME_EXTRACTION_PROMPT = `
 
 **⚠️ 절대 원칙 (CRITICAL):**
 
+0. **이력서 검증 (Verification - CRITICAL)**:
+   - 만약 입력된 텍스트가 **이력서나 CV가 아니라고 판단되면** (예: 영수증, 계약서, 논문, 과제, 단순히 이름만 적힌 종이 등), 즉시 아래와 같이 반환하고 분석을 종료하세요.
+   { "is_resume": false }
+
 1. **"무조건 추출" (Greedy Capture)**:
    - "이게 회사명이 맞나?" 고민하지 말고, **날짜와 직무가 보이면 무조건 추출**하세요.
    - 법인명((주) 등)이 없어도 괜찮습니다. "숨고", "월급쟁이부자들" 처럼 브랜드명만 있어도 **그대로 추출**하세요.
@@ -56,9 +60,18 @@ export const RESUME_EXTRACTION_PROMPT = `
   - 가능한 모든 불릿을 다 가져오세요.
 
 **응답 형식:**
+- **링크(Links) 추출 시**: URL만 넣지 말고, URL을 분석해서 적절한 **Label(LinkedIn, GitHub, Blog, Portfolio 등)**을 반드시 넣어주세요.
+
 \`\`\`json
 {
-  "personal_info": { ... },
+  "personal_info": {
+    "name_kr": "...",
+    "email": "...",
+    "phone": "...",
+    "links": [
+      { "label": "LinkedIn/GitHub/Blog/Portfolio... (URL보고 추론)", "url": "..." }
+    ]
+  },
   "professional_summary_kr": "...",
   "work_experiences": [ ... ],
   "educations": [
@@ -201,12 +214,12 @@ ${JSON.stringify(refinedData, null, 2)}
 
 \`\`\`json
 {
-  "personal_info": {
-    "name_kr": "...",
-    "name_en": "...",
-    "email": "...",
-    "phone": "...",
-    "links": [...]
+    "links": [
+      { 
+        "label": "LinkedIn", 
+        "url": "..." 
+      }
+    ]
   },
   "professional_summary_kr": "...",
   "professional_summary": "... (영문 번역)",
@@ -301,12 +314,24 @@ export const getTranslationPrompt = (
     `;
   } else {
     instruction = `
-    Translate the following Korean text into English suitable for a resume (e.g., School Name, Major, Degree, Company Name).
-    Rules:
-    - Maintain proper nouns (e.g., University names, Company names)
-    - Use standard academic/professional terms (e.g., Bachelor of Science, Senior Engineer)
-    - Keep formatting consistent and concise
-    - For company names, use official English names if available, otherwise romanize appropriately
+    Translate the following Korean text into English suitable for a resume. The text could be a Person's Name, Company Name, Job Title, School Name, Major, etc.
+
+    RULES:
+    1. **Korean Personal Names (CRITICAL):**
+       - If the text is a person's name (e.g. 2-4 syllable Korean name), DO NOT just transliterate it as a single lowercase word (e.g., avoid "imunja", "gimcheolsu").
+       - Use standard English name conventions with Title Case.
+       - Format: [First Name] [Last Name] OR [Last Name] [First Name].
+       - Examples:
+         - "이문자" -> "Moon Ja Lee"
+         - "홍길동" -> "Gil Dong Hong" or "Gildong Hong"
+         - "박지성" -> "Jisung Park"
+
+    2. **Company Names & Proper Nouns:**
+       - Use the official English name if available.
+       - If not, romanize with Title Case (e.g., "Soomgo", not "sumgo").
+
+    3. **General Terms:**
+       - Use standard professional/academic terms (e.g., "Bachelor of Science", "Senior Engineer").
     `;
   }
 

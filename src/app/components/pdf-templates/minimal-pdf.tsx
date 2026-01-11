@@ -180,15 +180,17 @@ export const MinimalPdf = ({
           <View style={styles.contactRow}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
             {personalInfo?.phone && <Text>{personalInfo.phone}</Text>}
-            {personalInfo?.links?.map((link: any, i: number) => (
-              // @ts-ignore
-              <View key={i} style={styles.contactItem}>
-                <Link src={link.url} style={styles.linkText}>
-                  <Text style={{ fontWeight: "medium" }}>{link.label}: </Text>
-                  {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                </Link>
-              </View>
-            ))}
+            {personalInfo?.links
+              ?.filter((link: any) => link.label && link.url)
+              .map((link: any, i: number) => (
+                // @ts-ignore
+                <View key={i} style={styles.contactItem}>
+                  <Link src={link.url} style={styles.linkText}>
+                    <Text style={{ fontWeight: "medium" }}>{link.label}: </Text>
+                    {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </Link>
+                </View>
+              ))}
           </View>
         </View>
 

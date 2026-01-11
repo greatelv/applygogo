@@ -110,18 +110,22 @@ export function MinimalTemplate({
         <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
           {personalInfo?.email && <span>{personalInfo.email}</span>}
           {personalInfo?.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo?.links?.map((link, i) => (
-            <a
-              key={i}
-              href={link.url}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline text-gray-600"
-            >
-              <span className="font-medium">{link.label}:</span>{" "}
-              {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-            </a>
-          ))}
+          {personalInfo?.links
+            ?.filter((link) => link.label && link.url)
+            .map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:underline text-gray-600"
+              >
+                <span className="font-medium">{link.label}:</span>{" "}
+                {link.url
+                  ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                  : ""}
+              </a>
+            ))}
         </div>
       </div>
 

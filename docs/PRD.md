@@ -71,12 +71,12 @@
 
 | Plan                | Price (VAT 포함) | Credits    | Storage | Template Access    | 비고          |
 | :------------------ | :--------------- | :--------- | :------ | :----------------- | :------------ |
-| **Free** (체험)     | 무료             | 월 **3**   | 1개     | Modern, Classic    | 서비스 체험용 |
+| **Free** (체험)     | 무료             | 월 **10**  | 1개     | Modern, Classic    | 서비스 체험용 |
 | **Pro** (합격 패스) | 월 **9,900원**   | 월 **100** | 무제한  | **All** (+Minimal) | 파워 유저용   |
 
 - **Credit 차감 정책:**
-  - **AI Processing (생성):** 1 크레딧 차감.
-  - **Re-translation (재번역):** 0.5 크레딧 차감.
+  - **AI Processing (생성):** 5 크레딧 차감.
+  - **Re-translation (재번역):** 1 크레딧 차감.
   - **Download:** 차감 없음.
 
 ### 4.2 Template Access Control

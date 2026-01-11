@@ -237,21 +237,27 @@ export const ModernPdf = ({
                 <Text>{personalInfo.phone}</Text>
               </>
             )}
-            {personalInfo?.links?.map((link: any, i: number) => (
-              <React.Fragment key={i}>
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
-                >
-                  <Text>•</Text>
-                  <Link src={link.url} style={styles.linkText}>
-                    <Text style={{ color: "#374151", fontWeight: "bold" }}>
-                      {link.label}:{" "}
-                    </Text>
-                    {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                  </Link>
-                </View>
-              </React.Fragment>
-            ))}
+            {personalInfo?.links
+              ?.filter((link: any) => link.label && link.url)
+              .map((link: any, i: number) => (
+                <React.Fragment key={i}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <Text>•</Text>
+                    <Link src={link.url} style={styles.linkText}>
+                      <Text style={{ color: "#374151", fontWeight: "bold" }}>
+                        {link.label}:{" "}
+                      </Text>
+                      {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                    </Link>
+                  </View>
+                </React.Fragment>
+              ))}
           </View>
         </View>
 

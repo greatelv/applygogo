@@ -82,6 +82,13 @@ export async function POST(
     const extractionText = extractionResult.response.text();
     const extractedData = JSON.parse(cleanJsonText(extractionText));
 
+    // 6. Validate if it's a resume
+    if (extractedData.is_resume === false) {
+      throw new Error(
+        "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요."
+      );
+    }
+
     console.log(
       `[Extract API] Complete. Found ${
         extractedData.work_experiences?.length || 0

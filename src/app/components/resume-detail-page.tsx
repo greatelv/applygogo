@@ -215,7 +215,6 @@ export function ResumeDetailPage({
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-2xl">{resume.title}</h1>
-              <Badge variant={config.variant}>{config.label}</Badge>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span
@@ -261,7 +260,7 @@ export function ResumeDetailPage({
                 편집
               </Button>
             )}
-            
+
             <AlertDialog
               open={isDeleteAlertOpen}
               onOpenChange={setIsDeleteAlertOpen}
@@ -292,11 +291,6 @@ export function ResumeDetailPage({
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-              <Button variant="outline" onClick={onEdit}>
-                <Edit className="size-4 mr-1.5" />
-                편집
-              </Button>
-            )}
 
             {onChangeTemplate && (
               <Button variant="outline" onClick={onChangeTemplate}>

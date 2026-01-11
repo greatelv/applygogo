@@ -114,22 +114,26 @@ export function ModernTemplate({
               <span>{personalInfo.phone}</span>
             </>
           )}
-          {personalInfo?.links?.map((link, i) => (
-            <span key={i} className="flex gap-2">
-              <span>•</span>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                <span className="font-semibold text-gray-700">
-                  {link.label}:
-                </span>{" "}
-                {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-              </a>
-            </span>
-          ))}
+          {personalInfo?.links
+            ?.filter((link) => link.label && link.url)
+            .map((link, i) => (
+              <span key={i} className="flex gap-2">
+                <span>•</span>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  <span className="font-semibold text-gray-700">
+                    {link.label}:
+                  </span>{" "}
+                  {link.url
+                    ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                    : ""}
+                </a>
+              </span>
+            ))}
         </div>
       </div>
 

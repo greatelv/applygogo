@@ -63,9 +63,11 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </h2>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              AI가 자동으로 경력을 요약하고 번역하여, 채용 담당자가 주목하는
+              AI가 자동으로 <strong>국문 이력서 영문 변환</strong>을 수행하여,
+              채용 담당자가 주목하는
               <br />
-              프로페셔널한 영문 이력서를 몇 분 안에 만들어드립니다.
+              프로페셔널한 <strong>영문 이력서(CV)</strong>를 몇 분 안에
+              완성해드립니다.
             </p>
 
             <div className="flex items-center justify-center gap-4">
@@ -193,11 +195,12 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      해외/외국계 기업 지원자
+                      외국계 기업 이력서 & CV 작성
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      영문 이력서 형식(CV/Resume)에 익숙하지 않아 막막하신
-                      분들께 글로벌 스탠다드 포맷을 제공합니다.
+                      <strong>외국계 이력서 양식</strong>과{" "}
+                      <strong>CV 번역</strong>에 익숙하지 않아 막막하신 분들께
+                      글로벌 스탠다드 포맷을 제공합니다.
                     </p>
                   </div>
                 </div>
@@ -206,10 +209,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     <Sparkles className="size-5 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold mb-1">바쁜 직장인</h4>
+                    <h4 className="text-lg font-semibold mb-1">
+                      빠른 국문 이력서 영문 변환
+                    </h4>
                     <p className="text-muted-foreground text-sm">
-                      이직 기회는 왔는데 영문 이력서 준비할 시간이 부족하신가요?
-                      기존 한글 이력서만 올리면 5분 안에 완성됩니다.
+                      이직 기회는 왔는데 <strong>영어 이력서 변환</strong>할
+                      시간이 부족하신가요? 기존 <strong>한국 이력서</strong>만
+                      올리면 5분 안에 완성됩니다.
                     </p>
                   </div>
                 </div>
@@ -219,11 +225,12 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      번역기 사용이 불안한 분
+                      전문적인 AI 영문 이력서 첨삭
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      단순 직역이 아닌, '채용 문법'에 맞는 세련된 영어 표현으로
-                      당신의 경력을 빛내드립니다.
+                      단순 <strong>이력서 번역</strong>이 아닌, '채용 문법'에
+                      맞는 세련된 영어 표현으로 당신의{" "}
+                      <strong>영문 경력기술서</strong>를 완성해드립니다.
                     </p>
                   </div>
                 </div>
@@ -277,8 +284,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="text-3xl font-bold mb-4">무료</div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600 shrink-0" />월 3회
-                  변환 크레딧
+                  <Check className="size-4 text-green-600 shrink-0" />월 10
+                  크레딧
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
@@ -335,7 +342,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-8">
-            * 크레딧은 AI 생성 시 1, 재번역 시 0.5가 차감됩니다. 다운로드는
+            * 크레딧은 AI 생성 시 5, 재번역 시 1이 차감됩니다. 다운로드는
             무제한입니다.
           </p>
         </div>
@@ -375,9 +382,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 Q. 무료 플랜으로도 충분한가요?
               </h4>
               <p className="text-sm text-muted-foreground">
-                체험을 위해 월 3회 무료 변환 크레딧을 제공합니다. 이력서를
-                완성하고 다운로드하기에 충분하지만, 다양한 템플릿과 무제한
-                수정을 원하시면 Pro 플랜을 추천드립니다.
+                체험을 위해 월 10 크레딧을 제공합니다. 이력서를 완성하고
+                다운로드하기에 충분하지만, 다양한 템플릿과 무제한 수정을
+                원하시면 Pro 플랜을 추천드립니다.
               </p>
             </div>
           </div>

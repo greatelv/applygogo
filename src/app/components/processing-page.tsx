@@ -7,6 +7,7 @@ import {
   Upload,
   Filter,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 
 interface ProcessingPageProps {
@@ -30,6 +31,7 @@ export function ProcessingPage({
   onComplete,
   isCompleting = false,
 }: ProcessingPageProps) {
+  const router = useRouter();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
   const [error, setError] = useState<string | null>(null);
@@ -263,7 +265,15 @@ export function ProcessingPage({
           <div className="mt-8 pt-6 border-t border-border">
             <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
               <p className="text-sm text-destructive font-medium">오류 발생</p>
-              <p className="text-sm text-muted-foreground mt-1">{error}</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-3">{error}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.replace("/resumes/new")}
+                className="bg-background hover:bg-accent hover:text-accent-foreground"
+              >
+                다시 업로드하기
+              </Button>
             </div>
           </div>
         )}

@@ -41,15 +41,23 @@ export default async function AuthenticatedLayout({
       : "FREE";
 
   // Calculate quota
-  const currentMonthStart = new Date();
-  currentMonthStart.setDate(1);
-  currentMonthStart.setHours(0, 0, 0, 0);
+  // Calculate usage
+  const isPro =
+    user?.subscription?.plan?.code === "PRO" &&
+    user?.subscription?.status === "ACTIVE";
+
+  let periodStart: Date | null = null; // Default: All time (FREE)
+
+  if (isPro && user?.subscription?.current_period_start) {
+    periodStart = new Date(user.subscription.current_period_start);
+  }
 
   const usageCount =
-    user?.usage_logs.filter((log) => log.created_at >= currentMonthStart)
-      .length || 0;
+    user?.usage_logs
+      .filter((log) => (periodStart ? log.created_at >= periodStart : true))
+      .reduce((sum, log) => sum + log.amount, 0) || 0;
 
-  const planQuota = user?.subscription?.plan?.monthly_quota || 3; // Default FREE quota is 3
+  const planQuota = user?.subscription?.plan?.monthly_quota || 10; // Default FREE quota is 10
   const remainingQuota = Math.max(0, planQuota - usageCount);
 
   return (

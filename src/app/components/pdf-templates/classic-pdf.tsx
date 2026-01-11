@@ -204,19 +204,21 @@ export const ClassicPdf = ({
                 <Text>{personalInfo.phone}</Text>
               </View>
             )}
-            {personalInfo?.links?.map((link: any, i: number) => (
-              // @ts-ignore
-              <View key={i} style={styles.contactItem}>
-                <Text style={styles.separator}>|</Text>
-                <Link
-                  src={link.url}
-                  style={{ color: "#4b5563", textDecoration: "none" }}
-                >
-                  <Text style={{ fontWeight: "bold" }}>{link.label}: </Text>
-                  {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                </Link>
-              </View>
-            ))}
+            {personalInfo?.links
+              ?.filter((link: any) => link.label && link.url)
+              .map((link: any, i: number) => (
+                // @ts-ignore
+                <View key={i} style={styles.contactItem}>
+                  <Text style={styles.separator}>|</Text>
+                  <Link
+                    src={link.url}
+                    style={{ color: "#4b5563", textDecoration: "none" }}
+                  >
+                    <Text style={{ fontWeight: "bold" }}>{link.label}: </Text>
+                    {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </Link>
+                </View>
+              ))}
           </View>
         </View>
 

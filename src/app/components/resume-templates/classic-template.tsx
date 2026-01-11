@@ -115,20 +115,24 @@ export function ClassicTemplate({
               <span>{personalInfo.phone}</span>
             </>
           )}
-          {personalInfo?.links?.map((link, i) => (
-            <span key={i} className="flex gap-2">
-              <span>|</span>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:underline"
-              >
-                <span className="font-semibold">{link.label}:</span>{" "}
-                {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-              </a>
-            </span>
-          ))}
+          {personalInfo?.links
+            ?.filter((link) => link.label && link.url)
+            .map((link, i) => (
+              <span key={i} className="flex gap-2">
+                <span>|</span>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  <span className="font-semibold">{link.label}:</span>{" "}
+                  {link.url
+                    ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                    : ""}
+                </a>
+              </span>
+            ))}
         </div>
       </div>
 

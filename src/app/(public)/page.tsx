@@ -34,7 +34,7 @@ export default function Page() {
               priceCurrency: "USD",
             },
             description:
-              "AI 기반 이력서 빌더로 글로벌 취업 기회를 잡으세요. 몇 분 만에 전문적인 이력서를 작성할 수 있습니다.",
+              "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 첨삭받으세요.",
           }),
         }}
       />

@@ -12,6 +12,16 @@ import { getResumeTranslationPrompt } from "@/lib/prompts";
 // - 최종 결과를 DB에 저장
 // ============================================================================
 
+import { checkCredits, deductCredits } from "@/lib/billing";
+
+// ============================================================================
+// 3단계: 번역 API (TRANSLATION)
+// - 정제된 한글 데이터를 영문으로 번역
+// - 고유명사는 로마자 표기만
+// - Action Verb 사용하여 성과 중심으로
+// - 최종 결과를 DB에 저장
+// ============================================================================
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -31,6 +41,29 @@ export async function POST(
 
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
+    }
+
+    // Determine cost based on resume status
+    // If status is COMPLETED, it's a re-translation (1.0 credit)
+    // Otherwise (IDLE, PROCESSING, FAILED), it's a new generation (5.0 credit)
+    // Note: 'FAILED' might be a retry of a failed attempt, which arguably shouldn't cost full price or should?
+    // Usually retrying a failed system error shouldn't cost, but if user retries...
+    // Let's assume FAILED -> 1.0 because it didn't complete successfully.
+    // Ideally if it failed due to system error, we verify if credit was deducted.
+    // Since we deduct AT THE END, a FAILED attempt didn't cost anything. So retrying it costs 1.0. Correct.
+    const cost = resume.status === "COMPLETED" ? 1.0 : 5.0;
+    const isRetranslation = resume.status === "COMPLETED";
+
+    // Check credits
+    const hasCredits = await checkCredits(session.user.id, cost);
+    if (!hasCredits) {
+      return NextResponse.json(
+        {
+          error:
+            "크레딧이 부족합니다. 플랜을 업그레이드하거나 크레딧을 충전해주세요.",
+        },
+        { status: 403 }
+      );
     }
 
     // 2. Get refined data from request body
@@ -277,7 +310,18 @@ export async function POST(
       },
     });
 
-    console.log("[Translate API] All data saved successfully.");
+    // Deduct credits
+    await deductCredits(
+      session.user.id,
+      cost,
+      isRetranslation
+        ? `이력서 재번역 (Resume ID: ${resumeId})`
+        : `이력서 생성 (Resume ID: ${resumeId})`
+    );
+
+    console.log(
+      `[Translate API] All data saved successfully. Deducted ${cost} credits.`
+    );
 
     return NextResponse.json({
       success: true,

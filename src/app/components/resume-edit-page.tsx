@@ -90,6 +90,7 @@ export interface AdditionalItem {
 }
 
 interface ResumeEditPageProps {
+  resumeId?: string | null;
   resumeTitle: string;
   initialPersonalInfo?: PersonalInfo;
   initialExperiences?: TranslatedExperience[];
@@ -108,6 +109,7 @@ interface ResumeEditPageProps {
   }) => void;
   onBack: () => void;
   onRetranslate?: () => void;
+  onDeductCredit?: (amount: number) => void;
 }
 
 const ItemTypes = {
@@ -229,7 +231,7 @@ const DraggableAdditionalItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
               </span>
             </Button>
             <button
@@ -472,7 +474,7 @@ const DraggableEducationItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="ml-2 hidden lg:inline text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
               </span>
             </Button>
             <button
@@ -817,7 +819,7 @@ const DraggableExperienceItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 번역"}
+                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
               </span>
             </Button>
             <button
@@ -1025,6 +1027,7 @@ const DraggableExperienceItem = ({
 };
 
 export function ResumeEditPage({
+  resumeId,
   resumeTitle,
   initialPersonalInfo,
   initialExperiences,
@@ -1037,6 +1040,7 @@ export function ResumeEditPage({
   onNext,
   onBack,
   onRetranslate,
+  onDeductCredit,
 }: ResumeEditPageProps) {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     initialPersonalInfo || {
@@ -1059,6 +1063,23 @@ export function ResumeEditPage({
   const [additionalItems, setAdditionalItems] = useState<AdditionalItem[]>(
     initialAdditionalItems || []
   );
+
+  // Baseline states for change detection (reset after successful translation)
+  const [baselinePersonalInfo, setBaselinePersonalInfo] =
+    useState<PersonalInfo>(
+      initialPersonalInfo || {
+        name_kr: "",
+        name_en: "",
+        email: "",
+        phone: "",
+        links: [],
+        summary: "",
+        summary_kr: "",
+      }
+    );
+  const [baselineExperiences, setBaselineExperiences] = useState<
+    TranslatedExperience[]
+  >(initialExperiences || []);
 
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
     {}
@@ -1267,7 +1288,13 @@ export function ResumeEditPage({
       return;
     }
 
-    // Update state with trimmed values and filtered bullets before proceeding
+    // Update state with trimmed values
+    const newBullets = trimmedBullets.length > 0 ? trimmedBullets : [""];
+    const newBulletsEn =
+      trimmedBullets.length > 0
+        ? trimmedBullets.map((_, i) => currentExp.bulletsEn[i] || "")
+        : [""];
+
     setExperiences((prev) =>
       prev.map((exp) =>
         exp.id === expId
@@ -1276,29 +1303,24 @@ export function ResumeEditPage({
               company: trimmedCompany,
               position: trimmedPosition,
               period: trimmedPeriod,
-              bullets: trimmedBullets.length > 0 ? trimmedBullets : [""],
-              // Re-initialize bulletsEn if bullets were changed/removed
-              bulletsEn:
-                trimmedBullets.length > 0
-                  ? trimmedBullets.map((_, i) => exp.bulletsEn[i] || "")
-                  : [""],
+              bullets: newBullets,
+              bulletsEn: newBulletsEn,
             }
           : exp
       )
     );
 
-    const initialExp = initialExperiences?.find((e) => e.id === expId);
+    const baselineExp = baselineExperiences.find((e) => e.id === expId);
 
     // Check for changes
-    const isCompanyChanged = currentExp.company !== initialExp?.company;
-    const isPositionChanged = currentExp.position !== initialExp?.position;
-    const isPeriodChanged = currentExp.period !== initialExp?.period;
+    const isCompanyChanged = trimmedCompany !== baselineExp?.company;
+    const isPositionChanged = trimmedPosition !== baselineExp?.position;
+    const isPeriodChanged = trimmedPeriod !== baselineExp?.period;
 
-    // Find changed or added bullets (Korean only)
+    // Find changed or added bullets
     const changedBullets: { index: number; text: string }[] = [];
-    currentExp.bullets.forEach((bullet, index) => {
-      const initialBullet = initialExp?.bullets[index];
-      // If content is different from original (and not empty)
+    newBullets.forEach((bullet, index) => {
+      const initialBullet = baselineExp?.bullets[index];
       if (bullet !== initialBullet && bullet.trim()) {
         changedBullets.push({ index, text: bullet });
       }
@@ -1310,9 +1332,12 @@ export function ResumeEditPage({
       !isPeriodChanged &&
       changedBullets.length === 0
     ) {
-      // alert(
-      //   "변경된 한글 내용이 없습니다. 한글 경력사항을 수정한 후 재번역을 클릭해주세요."
-      // );
+      setAlertConfig({
+        open: true,
+        title: "변경 사항 없음",
+        description:
+          "변경된 내용이 감지되지 않았습니다. 한글 내용을 수정한 후 다시 시도해 주세요.",
+      });
       return;
     }
 
@@ -1321,12 +1346,12 @@ export function ResumeEditPage({
     try {
       const promises = [];
 
-      // 1. Metadata translation (Company, Position, Period)
+      // 1. Metadata translation
       if (isCompanyChanged || isPositionChanged || isPeriodChanged) {
         const textsToTranslate = [];
-        if (isCompanyChanged) textsToTranslate.push(currentExp.company);
-        if (isPositionChanged) textsToTranslate.push(currentExp.position);
-        if (isPeriodChanged) textsToTranslate.push(currentExp.period);
+        if (isCompanyChanged) textsToTranslate.push(trimmedCompany);
+        if (isPositionChanged) textsToTranslate.push(trimmedPosition);
+        if (isPeriodChanged) textsToTranslate.push(trimmedPeriod);
 
         promises.push(
           fetch("/api/translate", {
@@ -1335,6 +1360,7 @@ export function ResumeEditPage({
             body: JSON.stringify({
               texts: textsToTranslate,
               type: "general",
+              resumeId,
             }),
           }).then((res) => res.json())
         );
@@ -1351,6 +1377,7 @@ export function ResumeEditPage({
             body: JSON.stringify({
               texts: changedBullets.map((item) => item.text),
               type: "bullets",
+              resumeId,
             }),
           }).then((res) => res.json())
         );
@@ -1361,33 +1388,45 @@ export function ResumeEditPage({
       // @ts-ignore
       const [metaResult, bulletsResult] = await Promise.all(promises);
 
-      setExperiences((prev) =>
-        prev.map((exp) => {
-          if (exp.id !== expId) return exp;
-          let newItem = { ...exp };
+      // Construct new item state locally
+      let newItem = {
+        ...currentExp,
+        company: trimmedCompany,
+        position: trimmedPosition,
+        period: trimmedPeriod,
+        bullets: newBullets,
+        bulletsEn: newBulletsEn,
+      };
 
-          // Handle metadata update
-          if (metaResult) {
-            const { translatedTexts } = metaResult;
-            let tIndex = 0;
-            if (isCompanyChanged) newItem.companyEn = translatedTexts[tIndex++];
-            if (isPositionChanged)
-              newItem.positionEn = translatedTexts[tIndex++];
-            if (isPeriodChanged) newItem.period = translatedTexts[tIndex++];
-          }
+      if (metaResult) {
+        const { translatedTexts } = metaResult;
+        let tIndex = 0;
+        if (isCompanyChanged) newItem.companyEn = translatedTexts[tIndex++];
+        if (isPositionChanged) newItem.positionEn = translatedTexts[tIndex++];
+        if (isPeriodChanged) newItem.period = translatedTexts[tIndex++];
+      }
 
-          // Handle bullets update
-          if (bulletsResult) {
-            const { translatedTexts } = bulletsResult;
-            const newBulletsEn = [...newItem.bulletsEn];
-            changedBullets.forEach((item, i) => {
-              newBulletsEn[item.index] = translatedTexts[i];
-            });
-            newItem.bulletsEn = newBulletsEn;
-          }
-          return newItem;
-        })
-      );
+      if (bulletsResult) {
+        const { translatedTexts } = bulletsResult;
+        const updatedBulletsEn = [...newItem.bulletsEn];
+        changedBullets.forEach((item, i) => {
+          updatedBulletsEn[item.index] = translatedTexts[i];
+        });
+        newItem.bulletsEn = updatedBulletsEn;
+      }
+
+      setExperiences((prev) => prev.map((e) => (e.id === expId ? newItem : e)));
+
+      // Update baseline
+      setBaselineExperiences((prev) => {
+        const index = prev.findIndex((e) => e.id === expId);
+        if (index >= 0) {
+          const newBaseline = [...prev];
+          newBaseline[index] = newItem;
+          return newBaseline;
+        }
+        return [...prev, newItem];
+      });
 
       // Highlight logic...
       setHighlightedBullets((prev) => {
@@ -1397,6 +1436,9 @@ export function ResumeEditPage({
         }
         return newState;
       });
+
+      // Deduct credit
+      onDeductCredit?.(1.0);
 
       setTimeout(() => {
         setHighlightedBullets((prev) => {
@@ -1422,12 +1464,38 @@ export function ResumeEditPage({
   };
 
   const handleTranslatePersonalInfo = async () => {
+    // Check for changes against baseline
+    const isNameChanged = personalInfo.name_kr !== baselinePersonalInfo.name_kr;
+    const isSummaryChanged =
+      personalInfo.summary_kr !== baselinePersonalInfo.summary_kr;
+
+    // Check link changes
+    let isLinksChanged =
+      personalInfo.links.length !== baselinePersonalInfo.links.length;
+    if (!isLinksChanged) {
+      isLinksChanged = personalInfo.links.some((link, i) => {
+        const baseLink = baselinePersonalInfo.links[i];
+        return link.label !== baseLink.label;
+      });
+    }
+
+    if (!isNameChanged && !isSummaryChanged && !isLinksChanged) {
+      setAlertConfig({
+        open: true,
+        title: "변경 사항 없음",
+        description:
+          "변경된 내용이 감지되지 않았습니다. 한글 내용을 수정한 후 다시 시도해 주세요.",
+      });
+      return;
+    }
+
     setIsTranslating((prev) => ({ ...prev, personal: true }));
     try {
       // Collect name, summary, and all link labels that need translation
-      const textsToTranslate = [personalInfo.name_kr];
-      const hasSummary = !!personalInfo.summary_kr;
+      const textsToTranslate = [];
+      textsToTranslate.push(personalInfo.name_kr);
 
+      const hasSummary = !!personalInfo.summary_kr;
       if (hasSummary && personalInfo.summary_kr) {
         textsToTranslate.push(personalInfo.summary_kr);
       }
@@ -1449,34 +1517,43 @@ export function ResumeEditPage({
 
       const { translatedTexts } = await response.json();
 
-      setPersonalInfo((prev) => {
-        const newLinks = [...prev.links];
+      let summaryEn = personalInfo.summary;
+      let linkStartIndex = 1;
 
-        let summaryEn = prev.summary;
-        let linkStartIndex = 1;
+      if (hasSummary) {
+        summaryEn = translatedTexts[1];
+        linkStartIndex = 2;
+      }
 
-        if (hasSummary) {
-          summaryEn = translatedTexts[1];
-          linkStartIndex = 2;
-        }
+      const newLinks = [...personalInfo.links];
+      translatedTexts
+        .slice(linkStartIndex)
+        .forEach((translatedLabel: string, i: number) => {
+          newLinks[i] = { ...newLinks[i], label: translatedLabel };
+        });
 
-        // translatedTexts[0] is name, [1 or 2+] are link labels
-        translatedTexts
-          .slice(linkStartIndex)
-          .forEach((translatedLabel: string, i: number) => {
-            newLinks[i] = { ...newLinks[i], label: translatedLabel };
-          });
+      const newPersonalInfo = {
+        ...personalInfo,
+        name_en: translatedTexts[0],
+        summary: summaryEn,
+        links: newLinks,
+      };
 
-        return {
-          ...prev,
-          name_en: translatedTexts[0],
-          summary: summaryEn,
-          links: newLinks,
-        };
+      setPersonalInfo(newPersonalInfo);
+
+      // Update baseline to current state
+      setBaselinePersonalInfo(newPersonalInfo);
+
+      // Highlight changed fields
+      setHighlightedPersonal({
+        name: isNameChanged,
+        links: isLinksChanged,
+        summary: isSummaryChanged,
       });
 
-      // Highlight fields
-      setHighlightedPersonal({ name: true, links: true });
+      // Deduct credit
+      onDeductCredit?.(1.0);
+
       setTimeout(() => setHighlightedPersonal({}), 2000);
     } catch (error) {
       console.error(error);
@@ -1543,6 +1620,7 @@ export function ResumeEditPage({
         body: JSON.stringify({
           texts: textsToTranslate,
           type: "general",
+          resumeId,
         }),
       });
 
@@ -1564,6 +1642,8 @@ export function ResumeEditPage({
       console.error("Translation error:", error);
     } finally {
       setIsTranslating((prev) => ({ ...prev, [id]: false }));
+      // Deduct credit
+      onDeductCredit?.(1.0);
     }
   };
 
@@ -1647,6 +1727,8 @@ export function ResumeEditPage({
       });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: false }));
+      // Deduct credit
+      onDeductCredit?.(1.0);
     }
   };
 
@@ -1683,9 +1765,9 @@ export function ResumeEditPage({
             내용을 클릭하여 직접 수정할 수 있습니다
           </h3>
           <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
-            한글 내용을 수정하고 <strong>[동기화 후 번역]</strong> 버튼을 누르면
-            AI가 변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은 휴지통
-            아이콘을 눌러 삭제하세요.
+            한글 내용을 수정하고 <strong>[동기화 후 재번역]</strong> 버튼을
+            누르면 AI가 변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은
+            휴지통 아이콘을 눌러 삭제하세요.
           </p>
         </div>
       </div>
@@ -1726,7 +1808,7 @@ export function ResumeEditPage({
                   <RefreshCw className="size-4" />
                 )}
                 <span className="hidden lg:inline ml-2">
-                  {isTranslating.personal ? "처리 중..." : "동기화 후 번역"}
+                  {isTranslating.personal ? "처리 중..." : "동기화 후 재번역"}
                 </span>
               </Button>
             </div>
@@ -2045,7 +2127,11 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder="Professional Summary (English) - Write a professional summary."
-                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    className={`w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
+                      highlightedPersonal.summary
+                        ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
+                        : ""
+                    }`}
                   >
                     {personalInfo.summary}
                   </div>
@@ -2246,15 +2332,45 @@ export function ResumeEditPage({
         </Button>
 
         <Button
-          onClick={() =>
+          onClick={() => {
+            // Filter empty data before proceeding (Compact)
+            const compactedPersonalInfo = {
+              ...personalInfo,
+              links: personalInfo.links.filter(
+                (link) => link.url && link.url.trim() !== ""
+              ),
+            };
+
+            const compactedExperiences = experiences.filter(
+              (exp) =>
+                (exp.company && exp.company.trim() !== "") ||
+                (exp.companyEn && exp.companyEn.trim() !== "")
+            );
+
+            const compactedEducations = educations.filter(
+              (edu) =>
+                (edu.school_name && edu.school_name.trim() !== "") ||
+                (edu.school_name_en && edu.school_name_en.trim() !== "")
+            );
+
+            const compactedSkills = skills.filter(
+              (skill) => skill.name && skill.name.trim() !== ""
+            );
+
+            const compactedAdditionalItems = additionalItems.filter(
+              (item) =>
+                (item.name_kr && item.name_kr.trim() !== "") ||
+                (item.name_en && item.name_en.trim() !== "")
+            );
+
             onNext({
-              personalInfo,
-              experiences,
-              educations,
-              skills,
-              additionalItems,
-            })
-          }
+              personalInfo: compactedPersonalInfo,
+              experiences: compactedExperiences,
+              educations: compactedEducations,
+              skills: compactedSkills,
+              additionalItems: compactedAdditionalItems,
+            });
+          }}
           size="lg"
           className="flex-1"
           disabled={isLoading}

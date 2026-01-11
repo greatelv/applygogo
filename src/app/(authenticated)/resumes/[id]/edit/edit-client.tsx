@@ -39,7 +39,7 @@ export function EditClient({
   initialPersonalInfo,
 }: EditClientProps) {
   const router = useRouter();
-  const { setWorkflowState } = useApp();
+  const { setWorkflowState, quota, setQuota } = useApp();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -52,8 +52,21 @@ export function EditClient({
       body: JSON.stringify({ current_step: "EDIT" }),
     }).catch(console.error);
 
+    // Fetch latest quota (handles initial deduction update)
+    import("@/app/lib/actions").then((mod) => {
+      mod.getUserSettings().then((settings) => {
+        if (settings && typeof settings.remainingQuota === "number") {
+          setQuota(settings.remainingQuota);
+        }
+      });
+    });
+
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState, resumeId]);
+  }, [setWorkflowState, resumeId, setQuota]);
+
+  const handleDeductCredit = (amount: number) => {
+    setQuota(Math.max(0, quota - amount));
+  };
 
   const handleNext = async (data: {
     personalInfo: any;
@@ -65,7 +78,7 @@ export function EditClient({
     try {
       setIsSaving(true);
 
-      // Filter out empty items before saving
+      // Filter out empty items before save
       const filteredExperiences = data.experiences.filter(
         (exp) => exp.company?.trim() || exp.position?.trim()
       );
@@ -122,6 +135,7 @@ export function EditClient({
 
   return (
     <ResumeEditPage
+      resumeId={resumeId}
       resumeTitle={resumeTitle}
       initialPersonalInfo={initialPersonalInfo}
       initialExperiences={initialExperiences}
@@ -130,11 +144,12 @@ export function EditClient({
       initialAdditionalItems={initialAdditionalItems}
       onNext={handleNext}
       onBack={() => {
-        setIsSaving(true); // Reuse saving state for loading spinner
+        setIsSaving(true);
         router.push("/resumes/new");
       }}
       isEditingExisting={true}
-      isLoading={isSaving} // Pass loading state to component
+      isLoading={isSaving}
+      onDeductCredit={handleDeductCredit}
     />
   );
 }
