@@ -10,13 +10,13 @@ const genAI = new GoogleGenerativeAI(apiKey);
 // 1단계: 추출 (Extraction) - gemini-2.5-flash
 // PDF 멀티모달 처리, 정확한 OCR, 로고 vs 본문 구분 필요
 export const extractionModel = genAI.getGenerativeModel({
-  model: "gemini-3-pro-preview",
+  model: "gemini-3-flash-preview",
 });
 
 // 2단계: 정제 (Refinement) - gemini-2.5-flash
 // 단순 텍스트 처리, 불릿 선별/압축
 export const refinementModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite",
+  model: "gemini-3-flash-preview",
 });
 
 // 3단계: 번역 (Translation) - gemini-2.5-flash-lite
