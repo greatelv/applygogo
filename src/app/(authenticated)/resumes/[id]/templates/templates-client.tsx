@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { ResumePreviewPage } from "@/app/components/resume-preview-page";
+import { UpgradeModal } from "@/app/components/upgrade-modal";
 import { useApp } from "@/app/context/app-context";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const steps = [
   { id: "upload", label: "업로드" },
@@ -23,6 +25,10 @@ interface TemplatesClientProps {
   additionalItems?: any[];
   currentPlan?: "FREE" | "STANDARD" | "PRO";
   initialTemplate?: string;
+  portoneConfig: {
+    storeId: string;
+    channelKey: string;
+  };
 }
 
 export function TemplatesClient({
@@ -35,9 +41,11 @@ export function TemplatesClient({
   additionalItems = [],
   currentPlan,
   initialTemplate = "modern",
+  portoneConfig,
 }: TemplatesClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
+  const { data: session } = useSession();
 
   useEffect(() => {
     setWorkflowState(steps, "preview");
@@ -53,6 +61,7 @@ export function TemplatesClient({
   }, [setWorkflowState, resumeId]);
 
   const [isCompleting, setIsCompleting] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const handleNext = async (templateId: string) => {
     if (isCompleting) return;
@@ -84,19 +93,30 @@ export function TemplatesClient({
   };
 
   return (
-    <ResumePreviewPage
-      resumeTitle={resumeTitle}
-      personalInfo={personalInfo}
-      experiences={experiences}
-      educations={educations}
-      skills={skills}
-      additionalItems={additionalItems}
-      currentPlan={currentPlan}
-      initialTemplate={initialTemplate}
-      onNext={handleNext}
-      isCompleting={isCompleting}
-      onBack={() => router.push(`/resumes/${resumeId}/edit`)}
-      onUpgrade={() => router.push("/pricing")}
-    />
+    <>
+      <ResumePreviewPage
+        resumeTitle={resumeTitle}
+        personalInfo={personalInfo}
+        experiences={experiences}
+        educations={educations}
+        skills={skills}
+        additionalItems={additionalItems}
+        currentPlan={currentPlan}
+        initialTemplate={initialTemplate}
+        onNext={handleNext}
+        isCompleting={isCompleting}
+        onBack={() => router.push(`/resumes/${resumeId}/edit`)}
+        onUpgrade={() => setShowUpgradeModal(true)}
+      />
+
+      <UpgradeModal
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        userId={session?.user?.id || ""}
+        userName={session?.user?.name}
+        userEmail={session?.user?.email}
+        portoneConfig={portoneConfig}
+      />
+    </>
   );
 }

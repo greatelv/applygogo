@@ -25,47 +25,46 @@ export default async function AuthenticatedLayout({
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: {
-      subscription: {
-        include: {
-          plan: true,
-        },
-      },
-      usage_logs: true,
+    select: {
+      planType: true,
+      planExpiresAt: true,
+      credits: true,
     },
   });
 
-  const plan =
-    user?.subscription?.status === "ACTIVE"
-      ? (user.subscription.planCode as "FREE" | "STANDARD" | "PRO")
-      : "FREE";
+  // Check if plan is expired
+  const now = new Date();
+  let currentPlanType = user?.planType || "FREE";
+  let currentCredits = user?.credits || 10;
 
-  // Calculate quota
-  // Calculate usage
-  const isPro =
-    user?.subscription?.plan?.code === "PRO" &&
-    user?.subscription?.status === "ACTIVE";
-
-  let periodStart: Date | null = null; // Default: All time (FREE)
-
-  if (isPro && user?.subscription?.current_period_start) {
-    periodStart = new Date(user.subscription.current_period_start);
+  if (
+    user?.planExpiresAt &&
+    user.planExpiresAt <= now &&
+    user.planType !== "FREE"
+  ) {
+    // Plan expired, update to FREE
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: {
+        planType: "FREE",
+        planExpiresAt: null,
+      },
+    });
+    currentPlanType = "FREE";
   }
 
-  const usageCount =
-    user?.usage_logs
-      .filter((log) => (periodStart ? log.created_at >= periodStart : true))
-      .reduce((sum, log) => sum + log.amount, 0) || 0;
-
-  const planQuota = user?.subscription?.plan?.monthly_quota || 10; // Default FREE quota is 10
-  const remainingQuota = Math.max(0, planQuota - usageCount);
+  // Map planType to legacy plan format for compatibility
+  const plan =
+    currentPlanType === "PASS_7DAY" || currentPlanType === "PASS_30DAY"
+      ? "PRO"
+      : "FREE";
 
   return (
     <ClientDashboardWrapper
       user={session.user}
       logOutAction={logOut}
-      initialPlan={plan}
-      initialQuota={remainingQuota}
+      initialPlan={plan as "FREE" | "STANDARD" | "PRO"}
+      initialQuota={currentCredits}
     >
       {children}
     </ClientDashboardWrapper>

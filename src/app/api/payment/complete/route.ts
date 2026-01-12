@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Assuming prisma instance helper exists, if not I'll revert to standard import
-import { auth } from "@/auth"; // Assuming auth helper exists
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
+import { grantPass, refillCredits } from "@/lib/billing";
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,8 +43,6 @@ export async function POST(req: NextRequest) {
     const paymentData = await verifyRes.json();
 
     // Check if payment is actually paid
-    // V2 API response structure: { id, status, amount: { total, ... }, ... }
-    // Status should be "PAID"
     if (paymentData.status !== "PAID") {
       return NextResponse.json(
         { message: "Payment status is not PAID" },
@@ -51,19 +50,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify amount (12900)
-    if (paymentData.amount.total !== 12900) {
-      // In a real app, you might refund here automatically
-      return NextResponse.json(
-        { message: "Payment amount mismatch" },
-        { status: 400 }
-      );
-    }
-
-    // 2. Update Database
-    // Ensure "PRO" plan exists (idempotent check ideally, or assumes seeded)
-    // We update/create the subscription.
-
+    // 2. Get user
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
@@ -72,43 +59,61 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Upsert Subscription
-    // Calculate period end (1 month later)
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+    const amount = paymentData.amount.total;
 
+    // 3. Process based on payment amount
     await prisma.$transaction(async (tx) => {
-      // Ensure Plan exists
-      const plan = await tx.plan.findUnique({ where: { code: "PRO" } });
-      if (!plan) {
-        await tx.plan.create({
+      if (amount === 9900) {
+        // 7일 이용권
+        await grantPass(user.id, "PASS_7DAY");
+        await tx.paymentHistory.create({
           data: {
-            code: "PRO",
-            monthly_quota: 100,
-            max_resumes: -1, // unlimited
+            userId: user.id,
+            paymentId: paymentData.id,
+            orderName: "ApplyGoGo 7일 이용권",
+            amount: 9900,
+            currency: "KRW",
+            status: "PAID",
+            method: paymentData.method?.type || null,
+            receiptUrl: paymentData.receiptUrl || null,
+            details: paymentData,
           },
         });
+      } else if (amount === 12900) {
+        // 30일 이용권
+        await grantPass(user.id, "PASS_30DAY");
+        await tx.paymentHistory.create({
+          data: {
+            userId: user.id,
+            paymentId: paymentData.id,
+            orderName: "ApplyGoGo 30일 이용권",
+            amount: 12900,
+            currency: "KRW",
+            status: "PAID",
+            method: paymentData.method?.type || null,
+            receiptUrl: paymentData.receiptUrl || null,
+            details: paymentData,
+          },
+        });
+      } else if (amount === 3900) {
+        // 크레딧 충전 50
+        await refillCredits(user.id, 50);
+        await tx.paymentHistory.create({
+          data: {
+            userId: user.id,
+            paymentId: paymentData.id,
+            orderName: "크레딧 충전 50",
+            amount: 3900,
+            currency: "KRW",
+            status: "PAID",
+            method: paymentData.method?.type || null,
+            receiptUrl: paymentData.receiptUrl || null,
+            details: paymentData,
+          },
+        });
+      } else {
+        throw new Error(`Invalid payment amount: ${amount}`);
       }
-
-      await tx.subscription.upsert({
-        where: { userId: user.id },
-        update: {
-          planCode: "PRO",
-          status: "ACTIVE",
-          current_period_start: now,
-          current_period_end: periodEnd,
-          billing_key: paymentData.billingKey || null, // If using billing key
-        },
-        create: {
-          userId: user.id,
-          planCode: "PRO",
-          status: "ACTIVE",
-          current_period_start: now,
-          current_period_end: periodEnd,
-          billing_key: paymentData.billingKey || null,
-        },
-      });
     });
 
     return NextResponse.json({ success: true });

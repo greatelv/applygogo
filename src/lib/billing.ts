@@ -1,65 +1,196 @@
 import { prisma } from "@/lib/prisma";
 
 /**
- * Check if the user has enough credits for the requested operation.
+ * 액션 타입과 플랜 타입에 따라 소모될 크레딧 비용을 계산합니다.
+ */
+export function calculateCost(
+  action: "GENERATE" | "RETRANSLATE" | "DOWNLOAD",
+  planType: string
+): number {
+  if (action === "GENERATE") {
+    return 5; // 모든 사용자 동일
+  }
+
+  if (action === "RETRANSLATE") {
+    // FREE 사용자는 1 크레딧, 유료 사용자는 무제한(0 크레딧)
+    return planType === "FREE" ? 1 : 0;
+  }
+
+  if (action === "DOWNLOAD") {
+    return 0; // 다운로드는 무료
+  }
+
+  return 0;
+}
+
+/**
+ * 사용자가 충분한 크레딧을 가지고 있는지 확인합니다.
  */
 export async function checkCredits(
   userId: string,
   cost: number
 ): Promise<boolean> {
-  // 1. Get user with subscription and usage logs
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
-      subscription: {
-        include: {
-          plan: true,
-        },
-      },
-      usage_logs: true,
+    select: {
+      credits: true,
+      planType: true,
+      planExpiresAt: true,
     },
   });
 
   if (!user) return false;
 
-  // 2. Calculate current usage
-  // - PRO: Based on billing cycle (current_period_start) -> Resets every month
-  // - FREE: All time usage (No reset) -> One-time 10 credits
-  const isPro =
-    user.subscription?.plan?.code === "PRO" &&
-    user.subscription?.status === "ACTIVE";
-
-  let periodStart: Date | null = null; // Default: All time (FREE)
-
-  if (isPro && user.subscription?.current_period_start) {
-    periodStart = new Date(user.subscription.current_period_start);
-  }
-
-  const usageCount = user.usage_logs
-    .filter((log) => (periodStart ? log.created_at >= periodStart : true))
-    .reduce((sum, log) => sum + log.amount, 0);
-
-  // 3. Get quota
-  // Default to 10 (Free tier) if not found
-  const planQuota = user.subscription?.plan?.monthly_quota ?? 10;
-
-  // 4. Check if enough remaining
-  return usageCount + cost <= planQuota;
+  // 크레딧 잔액 확인
+  return user.credits >= cost;
 }
 
 /**
- * Deduct credits from the user's account.
+ * 사용자의 크레딧을 차감합니다.
  */
 export async function deductCredits(
   userId: string,
   amount: number,
   description: string
 ): Promise<void> {
-  await prisma.usageLog.create({
+  await prisma.$transaction(async (tx) => {
+    // 크레딧 차감
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        credits: {
+          decrement: amount,
+        },
+      },
+    });
+
+    // 사용 로그 기록
+    await tx.usageLog.create({
+      data: {
+        userId,
+        amount,
+        description,
+      },
+    });
+  });
+}
+
+/**
+ * 사용자에게 이용권을 부여합니다 (7일 또는 30일).
+ */
+export async function grantPass(
+  userId: string,
+  passType: "PASS_7DAY" | "PASS_30DAY"
+): Promise<void> {
+  const now = new Date();
+  const expiresAt = new Date(now);
+  let creditsToAdd = 0;
+
+  if (passType === "PASS_7DAY") {
+    expiresAt.setDate(expiresAt.getDate() + 7);
+    creditsToAdd = 50;
+  } else if (passType === "PASS_30DAY") {
+    expiresAt.setDate(expiresAt.getDate() + 30);
+    creditsToAdd = 300;
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
     data: {
-      userId,
-      amount,
-      description,
+      planType: passType,
+      planExpiresAt: expiresAt,
+      credits: {
+        increment: creditsToAdd,
+      },
     },
   });
+}
+
+/**
+ * 사용자의 크레딧만 충전합니다 (만료일/플랜 타입 변경 없음).
+ */
+export async function refillCredits(
+  userId: string,
+  amount: number
+): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      credits: {
+        increment: amount,
+      },
+    },
+  });
+}
+
+/**
+ * 유료 플랜 사용 중이지만 크레딧이 부족한지 확인합니다.
+ */
+export async function checkLowCredit(userId: string): Promise<boolean> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      credits: true,
+      planExpiresAt: true,
+    },
+  });
+
+  if (!user) return false;
+
+  const now = new Date();
+  const isPaidActive = user.planExpiresAt && user.planExpiresAt > now;
+
+  return isPaidActive && user.credits < 5;
+}
+
+/**
+ * 사용자의 현재 플랜 상태를 확인합니다.
+ * 만료일이 지났다면 자동으로 FREE로 전환합니다.
+ */
+export async function checkAndUpdatePlanStatus(userId: string): Promise<{
+  planType: string;
+  credits: number;
+  planExpiresAt: Date | null;
+}> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      planType: true,
+      credits: true,
+      planExpiresAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const now = new Date();
+
+  // 만료일이 지났다면 FREE로 전환
+  if (
+    user.planExpiresAt &&
+    user.planExpiresAt <= now &&
+    user.planType !== "FREE"
+  ) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        planType: "FREE",
+        planExpiresAt: null,
+      },
+    });
+
+    return {
+      planType: "FREE",
+      credits: user.credits,
+      planExpiresAt: null,
+    };
+  }
+
+  return {
+    planType: user.planType,
+    credits: user.credits,
+    planExpiresAt: user.planExpiresAt,
+  };
 }

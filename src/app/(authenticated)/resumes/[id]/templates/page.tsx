@@ -21,8 +21,9 @@ export default async function Page({
       skills: { orderBy: { order: "asc" } },
       additionalItems: { orderBy: { order: "asc" } },
       user: {
-        include: {
-          subscription: true,
+        select: {
+          planType: true,
+          planExpiresAt: true,
         },
       },
     },
@@ -30,12 +31,11 @@ export default async function Page({
 
   if (!resume) notFound();
 
-  // Determine user plan (Simplified logic)
-  const currentPlan =
-    resume.user.subscription?.status === "ACTIVE" &&
-    resume.user.subscription?.planCode === "PRO"
-      ? "PRO"
-      : "FREE";
+  // Determine user plan
+  const now = new Date();
+  const isPaidActive =
+    resume.user.planExpiresAt && resume.user.planExpiresAt > now;
+  const currentPlan = isPaidActive ? "PRO" : "FREE";
 
   // Data Mapping
   const mappedExperiences = resume.work_experiences.map((exp) => ({
@@ -99,6 +99,16 @@ export default async function Page({
       additionalItems={mappedAdditionalItems}
       currentPlan={currentPlan}
       initialTemplate={resume.selected_template?.toLowerCase() || "modern"}
+      portoneConfig={{
+        storeId:
+          process.env.NEXT_PUBLIC_PORTONE_STORE_ID ||
+          process.env.PORTONE_STORE_ID ||
+          "",
+        channelKey:
+          process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY ||
+          process.env.PORTONE_CHANNEL_KEY ||
+          "",
+      }}
     />
   );
 }

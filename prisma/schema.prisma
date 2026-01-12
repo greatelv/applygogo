@@ -43,14 +43,7 @@ model Education {
   @@map("educations")
 }
 
-model Plan {
-  code          PlanCode       @id
-  monthly_quota Float
-  max_resumes   Int
-  subscriptions Subscription[]
 
-  @@map("plans")
-}
 
 model Resume {
   id                String             @id @default(cuid())
@@ -102,24 +95,7 @@ model Skill {
   @@map("skills")
 }
 
-model Subscription {
-  id                   String             @id @default(cuid())
-  userId               String             @unique @map("user_id")
-  planCode             PlanCode           @map("plan_code")
-  status               SubscriptionStatus @default(ACTIVE)
-  current_period_start DateTime           @default(now())
-  current_period_end   DateTime
-  cancel_at_period_end Boolean            @default(false)
-  billing_key          String?
-  card_name            String?
-  card_number          String?
-  created_at           DateTime           @default(now())
-  updated_at           DateTime           @updatedAt
-  plan                 Plan               @relation(fields: [planCode], references: [code])
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("subscriptions")
-}
 
 model UsageLog {
   id          String   @id @default(cuid())
@@ -151,24 +127,28 @@ model PaymentHistory {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  name          String?
-  email         String        @unique
-  emailVerified DateTime?
-  image         String?
-  phone_number  String?
-  linkedin_url  String?
-  portfolio_url String?
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @updatedAt
-  accounts      Account[]
-  resumes       Resume[]
-  sessions      Session[]
-  subscription  Subscription?
-  usage_logs    UsageLog[]
+  id               String             @id @default(cuid())
+  name             String?
+  email            String             @unique
+  emailVerified    DateTime?
+  image            String?
+  phone_number     String?
+  linkedin_url     String?
+  portfolio_url    String?
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  
+  // 기간제 이용권 필드
+  planType         String             @default("FREE") @map("plan_type") // 'FREE', 'PASS_7DAY', 'PASS_30DAY'
+  planExpiresAt    DateTime?          @map("plan_expires_at") // Null이면 만료됨/Free
+  credits          Int                @default(10) // 크레딧 지갑
+  
+  accounts         Account[]
+  resumes          Resume[]
+  sessions         Session[]
+  usage_logs       UsageLog[]
   paymentHistories PaymentHistory[]
-  feedbacks     Feedback[]
-
+  feedbacks        Feedback[]
 
   @@map("users")
 }
@@ -214,11 +194,6 @@ model AdditionalItem {
   @@map("additional_items")
 }
 
-enum PlanCode {
-  FREE
-  PRO
-}
-
 enum ResumeStatus {
   IDLE
   PROCESSING
@@ -240,12 +215,6 @@ enum ResumeTemplate {
   MINIMAL
   PROFESSIONAL
   EXECUTIVE
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  PAST_DUE
-  CANCELED
 }
 
 

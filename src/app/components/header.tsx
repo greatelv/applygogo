@@ -153,7 +153,7 @@ export function Header({
             >
               <Link href="/settings#payment-section">
                 <Sparkles className="w-3.5 h-3.5 mr-2" />
-                PRO 업그레이드
+                이용권 구매
               </Link>
             </Button>
           )}
@@ -202,7 +202,7 @@ export function Header({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="sm:hidden">
-                <span className="text-xs text-muted-foreground">플랜:</span>
+                <span className="text-xs text-muted-foreground">이용권:</span>
                 <span className="ml-2 font-semibold">{config.label}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="sm:hidden">

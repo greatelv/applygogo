@@ -5,6 +5,13 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { extractionModel, generateContentWithRetry } from "@/lib/gemini";
 import { RESUME_EXTRACTION_PROMPT } from "@/lib/prompts";
 
+import {
+  calculateCost,
+  checkCredits,
+  deductCredits,
+  checkAndUpdatePlanStatus,
+} from "@/lib/billing";
+
 // ============================================================================
 // 1단계: 추출 API (EXTRACTION)
 // - PDF에서 한글 원문만 정확히 추출
@@ -23,7 +30,29 @@ export async function POST(
 
     const { id: resumeId } = await params;
 
-    // 1. Get resume from DB
+    // 1. Check and update plan status (auto-expire check)
+    const planStatus = await checkAndUpdatePlanStatus(session.user.id);
+
+    // 2. Calculate cost for GENERATE action
+    const cost = calculateCost("GENERATE", planStatus.planType);
+
+    // 3. Check if user has enough credits
+    const hasEnoughCredits = await checkCredits(session.user.id, cost);
+    if (!hasEnoughCredits) {
+      return NextResponse.json(
+        {
+          error: "크레딧이 부족합니다",
+          requiredCredits: cost,
+          currentCredits: planStatus.credits,
+        },
+        { status: 402 }
+      );
+    }
+
+    // 4. Deduct credits
+    await deductCredits(session.user.id, cost, "이력서 생성");
+
+    // 5. Get resume from DB
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId, userId: session.user.id },
     });

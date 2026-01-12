@@ -385,30 +385,39 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
       {/* Pricing Preview */}
       <section className="py-20 bg-muted/30">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl tracking-tight mb-4">심플한 요금제</h3>
+            <h3 className="text-3xl tracking-tight mb-4">심플한 이용권</h3>
             <p className="text-muted-foreground">
-              복잡한 플랜 비교 없이, 합리적인 가격으로 시작하세요
+              필요할 때만 구매하는 합리적인 이용권 시스템
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            <div className="bg-card border border-border rounded-lg p-8 text-center">
-              <h4 className="text-lg font-semibold mb-2">Free</h4>
-              <div className="text-3xl font-bold mb-4">무료</div>
-              <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* 무료 체험 */}
+            <div className="bg-card border border-border rounded-lg p-6 text-center">
+              <h4 className="text-lg font-semibold mb-2">무료 체험</h4>
+              <div className="text-4xl font-bold mb-4">₩0</div>
+              <p className="text-sm text-muted-foreground mb-6">
+                서비스를 체험해보세요
+              </p>
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  최초 10 크레딧
+                  <span className="font-semibold text-foreground">10</span>{" "}
+                  크레딧 제공
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  이력서 1개 보관
+                  기본 템플릿 사용
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  기본 템플릿
+                  재번역 1 크레딧
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  무제한 기간
                 </li>
               </ul>
               <Button
@@ -420,58 +429,82 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </Button>
             </div>
 
-            <div className="bg-card border border-primary rounded-lg p-8 text-center shadow-lg relative ring-1 ring-primary/20">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
-                BEST CAPABILITY
-              </div>
-              <h4 className="text-lg font-semibold mb-2">Pro</h4>
-              <div className="flex flex-col items-center mb-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge
-                    variant="secondary"
-                    className="bg-blue-100 text-blue-700 hover:bg-blue-100"
-                  >
-                    런칭 기념 50% OFF
-                  </Badge>
-                  <span className="text-sm text-muted-foreground line-through decoration-slate-400">
-                    ₩25,800
-                  </span>
-                </div>
-                <div className="text-3xl font-bold text-blue-600">
-                  ₩12,900{" "}
-                  <span className="text-base font-normal text-muted-foreground">
-                    /월
-                  </span>
-                </div>
-              </div>
-              <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
+            {/* 7일 이용권 */}
+            <div className="bg-card border border-border rounded-lg p-6 text-center">
+              <h4 className="text-lg font-semibold mb-2">7일 이용권</h4>
+              <div className="text-4xl font-bold mb-4">₩9,900</div>
+              <p className="text-sm text-muted-foreground mb-6">
+                일주일 동안 모든 기능 사용
+              </p>
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    월 100회
-                  </span>{" "}
-                  변환 크레딧
+                  <span className="font-semibold text-foreground">50</span>{" "}
+                  크레딧 포함
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    무제한
-                  </span>{" "}
-                  이력서 보관
+                  모든 템플릿 사용
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  모든 템플릿 사용 가능
+                  재번역 무제한
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  7일간 이용
                 </li>
               </ul>
-              <Button className="w-full" onClick={onGetStarted} size="lg">
-                Pro로 시작하기
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={onGetStarted}
+              >
+                시작하기
+              </Button>
+            </div>
+
+            {/* 30일 이용권 (추천) */}
+            <div className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
+                추천
+              </div>
+              <h4 className="text-lg font-semibold mb-2">30일 이용권</h4>
+              <div className="text-4xl font-bold text-primary mb-4">
+                ₩12,900
+              </div>
+              <p className="text-sm text-muted-foreground mb-6">
+                한 달 동안 모든 기능 사용
+              </p>
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  <span className="font-semibold text-foreground">
+                    300
+                  </span>{" "}
+                  크레딧 포함
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  모든 템플릿 사용
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  재번역 무제한
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  30일간 이용
+                </li>
+              </ul>
+              <Button className="w-full" onClick={onGetStarted}>
+                시작하기
               </Button>
             </div>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-8">
-            * 크레딧은 AI 생성 시 5, 재번역 시 1이 차감됩니다. 다운로드는
-            무제한입니다.
+            * 이력서 생성 시 5 크레딧, 재번역 시 무료(이용권 보유자) 또는 1
+            크레딧(무료 사용자)이 차감됩니다.
           </p>
         </div>
       </section>

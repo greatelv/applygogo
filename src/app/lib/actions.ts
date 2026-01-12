@@ -23,43 +23,49 @@ export async function getUserSettings() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
-      subscription: {
-        include: {
-          plan: true,
-        },
-      },
-      usage_logs: true,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      phone_number: true,
+      linkedin_url: true,
+      portfolio_url: true,
+      created_at: true,
+      planType: true,
+      planExpiresAt: true,
+      credits: true,
     },
   });
 
   if (!user) return null;
 
-  // Calculate quota
-  // For now, assume simplified monthly usage calc
-  // Calculate usage based on plan type
-  // Calculate usage based on plan type
-  const isPro =
-    user.subscription?.plan?.code === "PRO" &&
-    user.subscription?.status === "ACTIVE";
+  // Check if plan is expired and update if needed
+  const now = new Date();
+  let currentPlanType = user.planType;
+  let currentPlanExpiresAt = user.planExpiresAt;
 
-  let periodStart: Date | null = null; // Default: All time (FREE)
-
-  if (isPro && user.subscription?.current_period_start) {
-    periodStart = new Date(user.subscription.current_period_start);
+  if (
+    user.planExpiresAt &&
+    user.planExpiresAt <= now &&
+    user.planType !== "FREE"
+  ) {
+    // Plan expired, update to FREE
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        planType: "FREE",
+        planExpiresAt: null,
+      },
+    });
+    currentPlanType = "FREE";
+    currentPlanExpiresAt = null;
   }
-
-  const usageCount = user.usage_logs
-    .filter((log) => (periodStart ? log.created_at >= periodStart : true))
-    .reduce((sum, log) => sum + log.amount, 0);
-
-  const planQuota = user.subscription?.plan?.monthly_quota || 10; // Default to free tier quota (10)
-  const remainingQuota = Math.max(0, planQuota - usageCount);
 
   return {
     ...user,
-    subscription: user.subscription,
-    remainingQuota,
+    planType: currentPlanType,
+    planExpiresAt: currentPlanExpiresAt,
   };
 }
 
