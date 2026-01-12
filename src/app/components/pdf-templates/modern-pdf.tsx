@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     width: 24, // w-8 (32px) -> 24pt
     height: 1.5, // h-0.5 (2px) -> 1.5pt
     backgroundColor: "#2563eb", // bg-blue-600
+    marginTop: 3, // Visually center with text
   },
   sectionTitle: {
     fontSize: 13.5, // text-lg (18px) -> 13.5pt

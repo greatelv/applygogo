@@ -78,6 +78,11 @@ export async function uploadResumeAction(formData: FormData) {
     throw new Error("PDF 파일만 업로드 가능합니다.");
   }
 
+  // Enforce 5MB limit
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("파일 용량이 5MB를 초과합니다.");
+  }
+
   const userId = session.user.id;
 
   // Sanitize filename: remove special characters and keep only alphanumeric, dots, hyphens, underscores

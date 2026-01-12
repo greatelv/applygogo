@@ -100,7 +100,7 @@ export function ClassicTemplate({
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
-    <div className="bg-white text-black p-8 min-h-[800px] font-serif">
+    <div className="bg-white text-black p-8 min-h-full font-serif">
       {/* Header */}
       <div className="text-center mb-8 pb-6 border-b-2 border-gray-800">
         <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide uppercase">

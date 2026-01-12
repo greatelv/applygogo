@@ -29,6 +29,9 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "PDF 파일만 업로드 가능합니다. 다시 시도해주세요."
+  );
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -47,9 +50,17 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
 
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage(
+          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
+        );
+        setShowErrorDialog(true);
+        return;
+      }
       onUpload(file);
       setSelectedFile(file);
     } else {
+      setErrorMessage("PDF 파일만 업로드 가능합니다. 다시 시도해주세요.");
       setShowErrorDialog(true);
     }
   };
@@ -57,6 +68,14 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage(
+          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
+        );
+        setShowErrorDialog(true);
+        e.target.value = ""; // Reset input
+        return;
+      }
       onUpload(file);
       setSelectedFile(file);
     }
@@ -124,9 +143,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>올바르지 않은 파일 형식</AlertDialogTitle>
-            <AlertDialogDescription>
-              PDF 파일만 업로드 가능합니다. 다시 시도해주세요.
-            </AlertDialogDescription>
+            <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setShowErrorDialog(false)}>
@@ -142,7 +159,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
         </h4>
         <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
           <li>• 경력사항이 명확하게 구분된 이력서가 가장 좋은 결과를 냅니다</li>
-          <li>• 10MB 이하의 PDF 파일을 권장합니다</li>
+          <li>• 5MB 이하의 PDF 파일을 권장합니다</li>
           <li>
             • 업로드 후 요약, 번역 단계를 거쳐 최종 PDF를 받을 수 있습니다
           </li>

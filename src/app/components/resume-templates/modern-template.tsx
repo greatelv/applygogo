@@ -100,7 +100,7 @@ export function ModernTemplate({
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
-    <div className="bg-white text-black p-8 min-h-[800px] font-sans">
+    <div className="bg-white text-black p-8 min-h-full font-sans">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-gray-900">

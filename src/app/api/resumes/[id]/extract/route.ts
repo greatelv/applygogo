@@ -84,8 +84,34 @@ export async function POST(
 
     // 6. Validate if it's a resume
     if (extractedData.is_resume === false) {
-      throw new Error(
-        "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요."
+      console.log("[Extract API] Not a resume. Deleting data...");
+
+      // Clean up data since it's not a resume
+      try {
+        // Delete file from storage
+        if (resume.original_file_url) {
+          await supabaseAdmin.storage
+            .from("resumes")
+            .remove([resume.original_file_url]);
+        }
+
+        // Delete record from DB
+        await prisma.resume.delete({
+          where: { id: resumeId },
+        });
+
+        console.log("[Extract API] Successfully deleted invalid resume data");
+      } catch (cleanupError) {
+        console.error("Failed to clean up invalid resume data:", cleanupError);
+        // Continue to return error even if cleanup fails
+      }
+
+      return NextResponse.json(
+        {
+          error:
+            "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요.",
+        },
+        { status: 400 }
       );
     }
 

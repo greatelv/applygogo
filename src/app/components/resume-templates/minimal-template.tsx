@@ -100,7 +100,7 @@ export function MinimalTemplate({
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
-    <div className="bg-white text-black p-8 min-h-[800px] font-sans">
+    <div className="bg-white text-black p-8 min-h-full font-sans">
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
