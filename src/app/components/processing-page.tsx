@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import {
   Loader2,
@@ -9,11 +11,20 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import { useApp } from "../context/app-context";
+
+const steps = [
+  { id: "upload", label: "업로드" },
+  { id: "processing", label: "AI 처리" },
+  { id: "edit", label: "편집" },
+  { id: "preview", label: "템플릿 선택" },
+  { id: "complete", label: "완료" },
+];
 
 interface ProcessingPageProps {
   resumeTitle: string;
   resumeId: string | null;
-  onComplete: () => void;
+  onComplete?: () => void;
   isCompleting?: boolean;
 }
 
@@ -32,9 +43,15 @@ export function ProcessingPage({
   isCompleting = false,
 }: ProcessingPageProps) {
   const router = useRouter();
+  const { setWorkflowState } = useApp();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setWorkflowState(steps, "processing");
+    return () => setWorkflowState(undefined, undefined);
+  }, [setWorkflowState]);
 
   useEffect(() => {
     if (!resumeId) {
@@ -119,7 +136,13 @@ export function ProcessingPage({
 
         // Auto-proceed after showing completion
         setTimeout(() => {
-          if (!isCancelled) onComplete();
+          if (!isCancelled) {
+            if (onComplete) {
+              onComplete();
+            } else if (resumeId) {
+              router.replace(`/resumes/${resumeId}/edit`);
+            }
+          }
         }, 1500);
       } catch (err: any) {
         if (!isCancelled) {
@@ -133,7 +156,7 @@ export function ProcessingPage({
     return () => {
       isCancelled = true;
     };
-  }, [resumeId, onComplete]);
+  }, [resumeId, onComplete, router]);
 
   // 3단계 AI 프로세싱 UI (추출 → 정제 → 번역)
   const processingSteps = [
@@ -283,7 +306,16 @@ export function ProcessingPage({
             <p className="text-sm text-muted-foreground mb-4">
               분석이 완료되었습니다! 다음 단계로 이동합니다...
             </p>
-            <Button onClick={onComplete} disabled={isCompleting}>
+            <Button
+              onClick={() => {
+                if (onComplete) {
+                  onComplete();
+                } else if (resumeId) {
+                  router.replace(`/resumes/${resumeId}/edit`);
+                }
+              }}
+              disabled={isCompleting}
+            >
               {isCompleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
