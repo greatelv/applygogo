@@ -342,7 +342,7 @@ export const ExecutivePdf = ({
                   </Text>
                   {certifications.map((item: any, i: number) => (
                     <Text
-                      key={i}
+                      {...({ key: i } as any)}
                       style={{
                         fontSize: 10,
                         color: "#334155",
@@ -369,7 +369,7 @@ export const ExecutivePdf = ({
                   </Text>
                   {awards.map((item: any, i: number) => (
                     <Text
-                      key={i}
+                      {...({ key: i } as any)}
                       style={{
                         fontSize: 10,
                         color: "#334155",
@@ -395,7 +395,10 @@ export const ExecutivePdf = ({
                   </Text>
                   <View style={{ flexDirection: "row", gap: 12 }}>
                     {languages.map((item: any, i: number) => (
-                      <Text key={i} style={{ fontSize: 10, color: "#334155" }}>
+                      <Text
+                        {...({ key: i } as any)}
+                        style={{ fontSize: 10, color: "#334155" }}
+                      >
                         • {item.name_en || item.name}
                         {(item.description_en || item.description) &&
                           ` (${item.description_en || item.description})`}

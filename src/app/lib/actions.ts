@@ -66,6 +66,7 @@ export async function getUserSettings() {
     ...user,
     planType: currentPlanType,
     planExpiresAt: currentPlanExpiresAt,
+    remainingQuota: user.credits,
   };
 }
 
