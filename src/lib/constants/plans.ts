@@ -1,0 +1,29 @@
+export const PLAN_PRODUCTS = {
+  PASS_7DAY: {
+    id: "PASS_7DAY",
+    name: "ApplyGoGo 7일 이용권", // DB orderName matching
+    price: 9900,
+    credits: 50,
+    days: 7,
+  },
+  PASS_30DAY: {
+    id: "PASS_30DAY",
+    name: "ApplyGoGo 30일 이용권", // DB orderName matching
+    price: 12900,
+    credits: 300,
+    days: 30,
+  },
+  CREDIT_50: {
+    id: "CREDIT_50", // Not a planType, but a product ID
+    name: "크레딧 충전 50", // DB orderName matching
+    price: 3900,
+    credits: 50,
+    days: 0,
+  },
+} as const;
+
+export type PlanProductId = keyof typeof PLAN_PRODUCTS;
+
+export function getProductByPrice(amount: number) {
+  return Object.values(PLAN_PRODUCTS).find((p) => p.price === amount);
+}

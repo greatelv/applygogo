@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { toast } from "sonner";
+import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface SettingsClientPageProps {
   user: {
@@ -74,9 +75,18 @@ export function SettingsClientPage({
     try {
       // 상품 정보 매핑
       const productConfig: Record<string, { amount: number; name: string }> = {
-        PASS_7DAY: { amount: 9900, name: "ApplyGoGo 7일 이용권" },
-        PASS_30DAY: { amount: 12900, name: "ApplyGoGo 30일 이용권" },
-        REFILL_50: { amount: 3900, name: "크레딧 충전 50" },
+        PASS_7DAY: {
+          amount: PLAN_PRODUCTS.PASS_7DAY.price,
+          name: PLAN_PRODUCTS.PASS_7DAY.name,
+        },
+        PASS_30DAY: {
+          amount: PLAN_PRODUCTS.PASS_30DAY.price,
+          name: PLAN_PRODUCTS.PASS_30DAY.name,
+        },
+        REFILL_50: {
+          amount: PLAN_PRODUCTS.CREDIT_50.price,
+          name: PLAN_PRODUCTS.CREDIT_50.name,
+        },
       };
 
       const product = productConfig[passType];
@@ -137,7 +147,16 @@ export function SettingsClientPage({
     if (isRefunding) return;
     setIsRefunding(true);
 
+    // 낙관적 업데이트: UI를 먼저 업데이트하여 반응성 향상
+    const previousHistory = [...paymentHistory];
+    const optimisticHistory = paymentHistory.map((item: any) =>
+      item.id === paymentId ? { ...item, status: "REFUNDED" } : item
+    );
+    // @ts-ignore
+    setPaymentHistory(optimisticHistory);
+
     try {
+      // 1. 서버 요청
       const res = await fetch("/api/payment/refund", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -152,7 +171,7 @@ export function SettingsClientPage({
 
       toast.success("환불이 완료되었습니다. 이용권 권한이 회수되었습니다.");
 
-      // 결제 내역 즉시 새로고침
+      // 2. 실제 데이터 재검증 (백그라운드)
       await fetchHistory();
 
       router.refresh();
@@ -160,6 +179,10 @@ export function SettingsClientPage({
     } catch (error: any) {
       console.error(error);
       toast.error(`환불 오류: ${error.message}`);
+
+      // 실패 시 롤백
+      // @ts-ignore
+      setPaymentHistory(previousHistory);
     } finally {
       setIsRefunding(false);
     }

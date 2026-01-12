@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { PLAN_PRODUCTS, getProductByPrice } from "@/lib/constants/plans";
 
 /**
  * 액션 타입과 플랜 타입에 따라 소모될 크레딧 비용을 계산합니다.
@@ -134,31 +135,42 @@ export async function deductCredits(
 
 /**
  * 사용자에게 이용권을 부여합니다 (7일 또는 30일).
+ * 기존 이용권이 유효하다면 기간을 연장합니다.
  */
 export async function grantPass(
   userId: string,
   passType: "PASS_7DAY" | "PASS_30DAY",
   client: any = prisma
 ): Promise<void> {
-  const now = new Date();
-  const expiresAt = new Date(now);
-  let creditsToAdd = 0;
-
-  if (passType === "PASS_7DAY") {
-    expiresAt.setDate(expiresAt.getDate() + 7);
-    creditsToAdd = 50;
-  } else if (passType === "PASS_30DAY") {
-    expiresAt.setDate(expiresAt.getDate() + 30);
-    creditsToAdd = 300;
+  const planConfig = PLAN_PRODUCTS[passType];
+  if (!planConfig) {
+    throw new Error(`Invalid pass type: ${passType}`);
   }
+
+  // 현재 사용자 상태 조회
+  const user = await client.user.findUnique({
+    where: { id: userId },
+    select: { planExpiresAt: true, planType: true },
+  });
+
+  const now = new Date();
+  let baseDate = now;
+
+  // 이미 유효한 이용권이 있다면 그 시점부터 연장
+  if (user?.planExpiresAt && user.planExpiresAt > now) {
+    baseDate = new Date(user.planExpiresAt);
+  }
+
+  const newExpiresAt = new Date(baseDate);
+  newExpiresAt.setDate(newExpiresAt.getDate() + planConfig.days);
 
   await client.user.update({
     where: { id: userId },
     data: {
-      planType: passType,
-      planExpiresAt: expiresAt,
+      planType: passType, // 항상 최신 구매한 플랜 타입으로 갱신
+      planExpiresAt: newExpiresAt,
       credits: {
-        increment: creditsToAdd,
+        increment: planConfig.credits,
       },
     },
   });
@@ -272,4 +284,76 @@ export async function checkAndUpdatePlanStatus(userId: string): Promise<{
     credits: user.credits,
     planExpiresAt: user.planExpiresAt,
   };
+}
+
+/**
+ * 결제 성공 처리를 수행하는 공통 로직입니다.
+ * Webhook과 클라이언트 콜백 양쪽에서 사용됩니다.
+ */
+export async function processPaymentSuccess(
+  paymentData: any,
+  userEmail: string
+) {
+  const user = await prisma.user.findUnique({
+    where: { email: userEmail },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // 이미 처리된 결제인지 확인 (Idempotency)
+  const existingHistory = await prisma.$queryRawUnsafe<any[]>(
+    `SELECT id FROM payment_histories WHERE payment_id = $1 LIMIT 1`,
+    paymentData.id
+  );
+
+  if (existingHistory.length > 0) {
+    return { success: true, message: "Already processed" };
+  }
+
+  const amount = paymentData.amount.total;
+  const product = getProductByPrice(amount);
+
+  if (!product) {
+    throw new Error(`Invalid payment amount: ${amount}`);
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // 1. Grant Plan or Refill Credits
+    if (product.id === "PASS_7DAY" || product.id === "PASS_30DAY") {
+      await grantPass(user.id, product.id, tx);
+    } else if (product.id === "CREDIT_50") {
+      await refillCredits(user.id, product.credits, tx);
+    }
+
+    // 2. Create History Record
+    const newId = `ph_${Math.random().toString(36).substr(2, 9)}`;
+
+    await tx.$executeRawUnsafe(
+      `
+        INSERT INTO payment_histories (
+          id, user_id, payment_id, order_name, amount, currency, status, method, 
+          paid_at, receipt_url, initial_credits, remaining_credits, details
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, 
+          NOW(), $9, $10, $11, $12
+        )
+      `,
+      newId,
+      user.id,
+      paymentData.id,
+      product.name,
+      amount,
+      "KRW",
+      "PAID",
+      paymentData.method?.type || null,
+      paymentData.receiptUrl || null,
+      product.credits,
+      product.credits,
+      JSON.stringify(paymentData)
+    );
+  });
+
+  return { success: true };
 }

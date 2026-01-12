@@ -13,6 +13,7 @@ import {
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface SettingsPageProps {
   // Profile Props
@@ -267,7 +268,9 @@ export function SettingsPage({
             )}
             <h3 className="text-lg font-bold mb-2 mt-2">30일 이용권</h3>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold text-primary">₩12,900</span>
+              <span className="text-3xl font-bold text-primary">
+                ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+              </span>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6">
               <li className="flex items-center gap-2">
@@ -285,7 +288,7 @@ export function SettingsPage({
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                300 크레딧 포함
+                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧 포함
               </li>
               <li className="flex items-center gap-2">
                 <div className="rounded-full bg-primary/10 p-1">
@@ -378,7 +381,9 @@ export function SettingsPage({
             )}
             <h3 className="text-lg font-bold mb-2">7일 이용권</h3>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold">₩9,900</span>
+              <span className="text-3xl font-bold">
+                ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+              </span>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6">
               <li className="flex items-center gap-2">
@@ -396,7 +401,7 @@ export function SettingsPage({
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                50 크레딧 포함
+                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧 포함
               </li>
               <li className="flex items-center gap-2">
                 <div className="rounded-full bg-primary/10 p-1">
@@ -482,7 +487,9 @@ export function SettingsPage({
           >
             <h3 className="text-lg font-bold mb-2">크레딧 충전</h3>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold">₩3,900</span>
+              <span className="text-3xl font-bold">
+                ₩{PLAN_PRODUCTS.CREDIT_50.price.toLocaleString()}
+              </span>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6">
               <li className="flex items-center gap-2">
@@ -500,7 +507,7 @@ export function SettingsPage({
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                50 크레딧 즉시 충전
+                {PLAN_PRODUCTS.CREDIT_50.credits} 크레딧 즉시 충전
               </li>
               <li className="flex items-center gap-2">
                 <div className="rounded-full bg-primary/10 p-1">

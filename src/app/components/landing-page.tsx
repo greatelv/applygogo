@@ -11,6 +11,7 @@ import { Badge } from "./ui/badge";
 import { ThemeToggle } from "./theme-toggle";
 import { SiteFooter } from "./site-footer";
 import { TemplatePreviewDialog } from "./template-preview-dialog";
+import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -151,7 +152,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                         지원고고
                       </div>
                       <div className="font-bold text-lg text-primary">
-                        12,900원
+                        {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
                       </div>
                     </div>
                   </div>
@@ -183,7 +184,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     <div className="space-y-2">
                       <div className="flex justify-between text-base">
                         <span className="font-bold text-primary">지원고고</span>
-                        <span className="font-bold text-primary">12,900원</span>
+                        <span className="font-bold text-primary">
+                          {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
+                        </span>
                       </div>
                       <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
                         <div className="h-full bg-primary w-[10%] rounded-full relative">
@@ -432,14 +435,18 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             {/* 7일 이용권 */}
             <div className="bg-card border border-border rounded-lg p-6 text-center">
               <h4 className="text-lg font-semibold mb-2">7일 이용권</h4>
-              <div className="text-4xl font-bold mb-4">₩9,900</div>
+              <div className="text-4xl font-bold mb-4">
+                ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+              </div>
               <p className="text-sm text-muted-foreground mb-6">
                 일주일 동안 모든 기능 사용
               </p>
               <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">50</span>{" "}
+                  <span className="font-semibold text-foreground">
+                    {PLAN_PRODUCTS.PASS_7DAY.credits}
+                  </span>{" "}
                   크레딧 포함
                 </li>
                 <li className="flex items-center gap-2">
@@ -471,7 +478,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
               <h4 className="text-lg font-semibold mb-2">30일 이용권</h4>
               <div className="text-4xl font-bold text-primary mb-4">
-                ₩12,900
+                ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
               </div>
               <p className="text-sm text-muted-foreground mb-6">
                 한 달 동안 모든 기능 사용
@@ -480,7 +487,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
                   <span className="font-semibold text-foreground">
-                    300
+                    {PLAN_PRODUCTS.PASS_30DAY.credits}
                   </span>{" "}
                   크레딧 포함
                 </li>

@@ -238,7 +238,8 @@ export const ProfessionalPdf = ({
             )}
             {personalInfo?.links?.map((link: any, i: number) =>
               link.url ? (
-                <View {...({ key: i } as any)} style={styles.contactItem}>
+                // @ts-ignore
+                <View key={i} style={styles.contactItem}>
                   <Link src={link.url} style={styles.link}>
                     {link.label || "Link"}
                   </Link>

@@ -13,6 +13,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Loader2, Zap, Calendar, CreditCard } from "lucide-react";
+import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface UpgradeModalProps {
   open: boolean;
@@ -44,12 +45,7 @@ export function UpgradeModal({
     setPurchasingProduct(productType);
 
     try {
-      const productConfig = {
-        PASS_7DAY: { amount: 9900, name: "ApplyGoGo 7일 이용권" },
-        PASS_30DAY: { amount: 12900, name: "ApplyGoGo 30일 이용권" },
-      };
-
-      const config = productConfig[productType];
+      const config = PLAN_PRODUCTS[productType];
 
       const response = await PortOne.requestPayment({
         storeId: portoneConfig.storeId,
@@ -116,12 +112,13 @@ export function UpgradeModal({
               7일 이용권
             </h3>
             <p className="text-3xl font-bold text-blue-600 mb-4">
-              9,900<span className="text-lg text-slate-600">원</span>
+              {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+              <span className="text-lg text-slate-600">원</span>
             </p>
             <ul className="space-y-2 mb-6 text-sm text-slate-600">
               <li className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-blue-600" />
-                50 크레딧 포함
+                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧 포함
               </li>
               <li className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4 text-blue-600" />
@@ -133,7 +130,7 @@ export function UpgradeModal({
               </li>
               <li className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-blue-600" />
-                7일간 이용
+                {PLAN_PRODUCTS.PASS_7DAY.days}일간 이용
               </li>
             </ul>
             <Button
@@ -159,12 +156,13 @@ export function UpgradeModal({
               30일 이용권
             </h3>
             <p className="text-3xl font-bold text-purple-600 mb-4">
-              12,900<span className="text-lg text-slate-600">원</span>
+              {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+              <span className="text-lg text-slate-600">원</span>
             </p>
             <ul className="space-y-2 mb-6 text-sm text-slate-600">
               <li className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-purple-600" />
-                300 크레딧 포함
+                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧 포함
               </li>
               <li className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4 text-purple-600" />
@@ -176,7 +174,7 @@ export function UpgradeModal({
               </li>
               <li className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-purple-600" />
-                30일간 이용
+                {PLAN_PRODUCTS.PASS_30DAY.days}일간 이용
               </li>
             </ul>
             <Button

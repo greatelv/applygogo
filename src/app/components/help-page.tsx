@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CircleHelp, ChevronDown, Mail } from "lucide-react";
 import { cn } from "../lib/utils";
+import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface FAQItem {
   id: string;
@@ -28,8 +29,11 @@ const faqs: FAQItem[] = [
     id: "3",
     category: "기능",
     question: "Free 플랜과 Pro 플랜의 차이는 무엇인가요?",
-    answer:
-      "Free 플랜은 가입 시 10 크레딧과 기본 템플릿을 제공하며, 이력서를 1개까지 저장할 수 있습니다. Pro 플랜(정상가 25,800원 → 런칭특가 12,900원)은 월 100 크레딧, 모든 템플릿(Minimal 포함), 그리고 이력서 무제한 저장을 지원합니다.",
+    answer: `Free 플랜은 가입 시 10 크레딧과 기본 템플릿을 제공하며, 이력서를 1개까지 저장할 수 있습니다. Pro 플랜(정상가 ${(
+      PLAN_PRODUCTS.PASS_30DAY.price * 2
+    ).toLocaleString()}원 → 런칭특가 ${PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원)은 월 ${
+      PLAN_PRODUCTS.PASS_30DAY.credits
+    } 크레딧, 모든 템플릿(Minimal 포함), 그리고 이력서 무제한 저장을 지원합니다.`,
   },
   {
     id: "4",
