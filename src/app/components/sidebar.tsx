@@ -23,8 +23,8 @@ interface SidebarProps {
 const navItems = [
   { id: "resumes", label: "이력서 관리", icon: FileText },
   { id: "settings", label: "설정", icon: Settings },
-  { id: "home", label: "서비스 소개", icon: Info, href: "/", target: "_blank" },
   { id: "help", label: "도움말", icon: CircleHelp },
+  { id: "home", label: "서비스 소개", icon: Info, href: "/" },
 ];
 
 export function Sidebar({

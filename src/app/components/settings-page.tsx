@@ -285,9 +285,24 @@ export function SettingsPage({
                   <Badge variant="default">이용중</Badge>
                 )}
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold">₩9,900</span>
-                <span className="text-sm text-muted-foreground">/월</span>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-700 hover:bg-blue-100"
+                  >
+                    런칭 기념 50% OFF
+                  </Badge>
+                  <span className="text-sm text-muted-foreground line-through decoration-slate-400">
+                    ₩19,900
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold text-blue-600">
+                    ₩9,900
+                  </span>
+                  <span className="text-sm text-muted-foreground">/월</span>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
                 전문적인 이력서 관리를 위한 최고의 선택

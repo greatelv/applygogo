@@ -7,8 +7,10 @@ import {
   Download,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 import { ThemeToggle } from "./theme-toggle";
 import { SiteFooter } from "./site-footer";
+import { TemplatePreviewDialog } from "./template-preview-dialog";
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -44,6 +46,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </header>
 
       {/* Hero Section */}
+      {/* Hero Section */}
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -75,14 +78,126 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 무료로 시작하기
                 <ArrowRight className="size-4" />
               </Button>
-              <Button variant="outline" size="lg">
-                샘플 보기
-              </Button>
+              <TemplatePreviewDialog
+                onSelectTemplate={() => onGetStarted()}
+                trigger={
+                  <Button variant="outline" size="lg">
+                    샘플 보기
+                  </Button>
+                }
+              />
             </div>
 
             <p className="text-sm text-muted-foreground mt-4">
-              신용카드 없이 무료로 시작 • 월 2회 무료 변환
+              신용카드 없이 무료로 시작 • 최초 2회 무료 변환
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Cost Hook Section */}
+      <section className="py-20 border-b border-border bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-primary/5 via-primary/5 to-background rounded-3xl p-8 lg:p-12 overflow-hidden relative border border-primary/10">
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-50" />
+            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+              <div className="space-y-6 text-center lg:text-left">
+                <Badge
+                  variant="outline"
+                  className="bg-background text-primary border-primary/30 px-3 py-1"
+                >
+                  압도적인 가성비
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
+                  외주보다 빠르고,
+                  <br />
+                  비용은 <span className="text-primary">1/10</span> 수준으로
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  "외주 마켓에서 영문 이력서 한 장에 <strong>5~10만원</strong>
+                  ..."
+                  <br className="hidden lg:block" />
+                  이제 비싼 비용과 긴 대기시간 없이, 합리적인 가격으로
+                  <br className="hidden lg:block" />
+                  <strong>전문가 수준의 결과물</strong>을 즉시 받아보세요.
+                </p>
+
+                <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <div className="flex items-center gap-3 bg-background/50 rounded-lg p-3 shadow-sm border border-border">
+                    <div className="size-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                      <span className="text-red-600 dark:text-red-400 font-bold text-sm">
+                        기존
+                      </span>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground">
+                        평균 비용
+                      </div>
+                      <div className="font-semibold text-sm line-through text-muted-foreground decoration-red-500/50">
+                        100,000원
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className="hidden sm:block size-5 text-muted-foreground self-center" />
+                  <div className="flex items-center gap-3 bg-background rounded-lg p-3 shadow-sm border border-primary/20 ring-1 ring-primary/10">
+                    <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <span className="text-primary font-bold text-sm">
+                        Now
+                      </span>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground">
+                        지원고고
+                      </div>
+                      <div className="font-bold text-lg text-primary">
+                        9,900원
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side Visual */}
+              <div className="relative mx-auto lg:ml-auto w-full max-w-sm">
+                <div className="bg-background rounded-2xl shadow-xl border border-border overflow-hidden transform hover:scale-105 transition-transform duration-500">
+                  <div className="p-6 border-b border-border bg-muted/30">
+                    <div className="text-sm font-medium text-center text-muted-foreground">
+                      제작 비용 비교
+                    </div>
+                  </div>
+                  <div className="p-8 space-y-8">
+                    {/* Bar 1 */}
+                    <div className="space-y-2 opacity-60">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          기타 외주 서비스
+                        </span>
+                        <span className="font-medium">100,000원+</span>
+                      </div>
+                      <div className="h-3 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-gray-400 w-full" />
+                      </div>
+                    </div>
+                    {/* Bar 2 */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-base">
+                        <span className="font-bold text-primary">지원고고</span>
+                        <span className="font-bold text-primary">9,900원</span>
+                      </div>
+                      <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
+                        <div className="h-full bg-primary w-[10%] rounded-full relative">
+                          <div className="absolute -right-1 top-0 bottom-0 w-2 bg-white/50 blur-[2px] animate-pulse" />
+                        </div>
+                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] text-primary font-bold pr-3">
+                          90% SAVE
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -284,8 +399,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="text-3xl font-bold mb-4">무료</div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
                 <li className="flex items-center gap-2">
-                  <Check className="size-4 text-green-600 shrink-0" />월 10
-                  크레딧
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  최초 10 크레딧
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
@@ -293,7 +408,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  기본 템플릿 (Modern, Classic)
+                  기본 템플릿
                 </li>
               </ul>
               <Button
@@ -310,11 +425,24 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 BEST CAPABILITY
               </div>
               <h4 className="text-lg font-semibold mb-2">Pro</h4>
-              <div className="text-3xl font-bold mb-4">
-                ₩9,900{" "}
-                <span className="text-base font-normal text-muted-foreground">
-                  /월
-                </span>
+              <div className="flex flex-col items-center mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-700 hover:bg-blue-100"
+                  >
+                    런칭 기념 50% OFF
+                  </Badge>
+                  <span className="text-sm text-muted-foreground line-through decoration-slate-400">
+                    ₩19,900
+                  </span>
+                </div>
+                <div className="text-3xl font-bold text-blue-600">
+                  ₩9,900{" "}
+                  <span className="text-base font-normal text-muted-foreground">
+                    /월
+                  </span>
+                </div>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground text-left max-w-[200px] mx-auto">
                 <li className="flex items-center gap-2">

@@ -90,7 +90,7 @@ export function ResumePreviewPage({
       id: "classic",
       name: "Classic",
       description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
-      isPro: false,
+      isPro: true,
     },
     {
       id: "minimal",

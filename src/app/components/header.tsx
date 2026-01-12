@@ -218,12 +218,7 @@ export function Header({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link
-                  href="/"
-                  className="cursor-pointer"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="/" className="cursor-pointer">
                   <Info className="size-4 mr-2" />
                   서비스 소개
                 </Link>
