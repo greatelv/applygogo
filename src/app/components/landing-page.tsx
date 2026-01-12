@@ -391,13 +391,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-4">
             <h3 className="text-3xl tracking-tight font-bold">심플한 이용권</h3>
-            <div className="inline-block relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-              <div className="relative flex items-center justify-center gap-2 text-white font-bold bg-gradient-to-r from-red-500 to-orange-500 px-6 py-2 rounded-full text-base shadow-lg transform hover:scale-105 transition-transform">
-                <span className="animate-bounce">🎉</span>
-                <span>오픈 기념 한정 특가 진행 중</span>
-                <span className="animate-bounce">🎉</span>
-              </div>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground text-sm font-medium">
+              <span>🎉</span>
+              <span>오픈 기념 한정 특가 진행 중</span>
             </div>
             <p className="text-muted-foreground">
               지금 아니면 만날 수 없는 가격, 합리적인 이용권으로 시작하세요
@@ -452,8 +448,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                   </span>
                   <Badge
-                    variant="destructive"
-                    className="text-sm px-2 py-0.5 shadow-md"
+                    variant="outline"
+                    className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
                   >
                     50% OFF
                   </Badge>
@@ -507,8 +503,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
                   <Badge
-                    variant="destructive"
-                    className="text-sm px-2 py-0.5 shadow-md"
+                    variant="outline"
+                    className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
                   >
                     57% OFF
                   </Badge>

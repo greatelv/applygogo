@@ -247,15 +247,12 @@ export function SettingsPage({
           >
             이용권 구매
           </h2>
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full blur opacity-30 animate-pulse"></div>
-            <Badge
-              variant="destructive"
-              className="relative text-xs px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 border-0 shadow-md"
-            >
-              🎉 오픈 기념 초특가
-            </Badge>
-          </div>
+          <Badge
+            variant="outline"
+            className="text-xs px-2.5 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
+          >
+            🎉 오픈 기념 초특가
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -286,7 +283,10 @@ export function SettingsPage({
                 <span className="text-3xl font-bold text-primary">
                   ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                 </span>
-                <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
+                >
                   57% OFF
                 </Badge>
               </div>
@@ -407,7 +407,10 @@ export function SettingsPage({
                 <span className="text-3xl font-bold text-foreground">
                   ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                 </span>
-                <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
+                >
                   50% OFF
                 </Badge>
               </div>
