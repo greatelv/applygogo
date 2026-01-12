@@ -63,6 +63,7 @@ export function DetailClient({
         router.push("/resumes");
       }}
       onEdit={() => router.push(`/resumes/${resumeId}/edit`)}
+      onChangeTemplate={() => router.push(`/resumes/${resumeId}/templates`)}
       onDelete={async (id) => {
         try {
           const res = await fetch(`/api/resumes/${id}`, {

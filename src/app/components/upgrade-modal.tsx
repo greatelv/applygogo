@@ -60,7 +60,7 @@ export function UpgradeModal({
         orderName: config.name,
         totalAmount: config.amount,
         currency: "KRW",
-        payMethod: "CARD",
+        payMethod: "EASY_PAY",
         customer: {
           customerId: userId,
           fullName: userName || undefined,

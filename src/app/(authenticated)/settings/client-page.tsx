@@ -102,7 +102,7 @@ export function SettingsClientPage({
         orderName: product.name,
         totalAmount: product.amount,
         currency: "KRW",
-        payMethod: "CARD",
+        payMethod: "EASY_PAY",
         customer: {
           customerId: user.id,
           fullName: user.name || undefined,

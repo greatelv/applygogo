@@ -34,9 +34,10 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
     const allItems = data.items || [];
 
-    // 2. [필수] 서버 사이드 보안 필터링: 내 결제 내역만 골라내기
+    // 2. [필수] 서버 사이드 보안 필터링: 내 결제 내역 중 완료된 건만 골라내기
     const myItems = allItems.filter(
-      (item: any) => item.customer && item.customer.id === userId
+      (item: any) =>
+        item.customer && item.customer.id === userId && item.status === "PAID"
     );
 
     const history = myItems.map((item: any) => {

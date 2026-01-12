@@ -28,6 +28,12 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { LoadingOverlay } from "./ui/loading-overlay";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface TranslatedExperience {
   id: string;
@@ -282,28 +288,63 @@ export function ResumeDetailPage({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={onBack}>
-              <ArrowLeft className="size-4 mr-1.5" />
-              목록
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="icon" onClick={onBack}>
+                    <ArrowLeft className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>목록</TooltipContent>
+              </Tooltip>
+
+              {onDelete && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleDeleteConfirm}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>삭제</TooltipContent>
+                </Tooltip>
+              )}
+
+              {onEdit && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" onClick={onEdit}>
+                      <Edit className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>편집</TooltipContent>
+                </Tooltip>
+              )}
+
+              {onChangeTemplate && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={onChangeTemplate}
+                    >
+                      <Layout className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>템플릿 선택</TooltipContent>
+                </Tooltip>
+              )}
+            </TooltipProvider>
+
+            <Button onClick={handleDownload} className="shadow-sm">
+              <Download className="size-4 mr-1.5" />
+              PDF 다운로드
             </Button>
-
-            {onDelete && (
-              <Button
-                variant="outline"
-                onClick={handleDeleteConfirm}
-                className="text-muted-foreground hover:text-destructive"
-              >
-                <Trash2 className="size-4 mr-1.5" />
-                삭제
-              </Button>
-            )}
-
-            {onEdit && (
-              <Button variant="outline" onClick={onEdit}>
-                <Edit className="size-4 mr-1.5" />
-                편집
-              </Button>
-            )}
 
             <AlertDialog
               open={isDeleteAlertOpen}
@@ -331,13 +372,10 @@ export function ResumeDetailPage({
                           setIsDeleting(true);
                           await onDelete(resumeId);
                           toast.success("이력서가 삭제되었습니다");
-                          // Note: Usually onDelete triggers navigation, so we might unmount.
-                          // But if not, we should cleanup.
                           onBack();
                           setIsDeleteAlertOpen(false);
                         } catch (error) {
                           console.error(error);
-                          // Keep alert open on error so user can retry or cancel
                         } finally {
                           setIsDeleting(false);
                         }
@@ -349,18 +387,6 @@ export function ResumeDetailPage({
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-
-            {onChangeTemplate && (
-              <Button variant="outline" onClick={onChangeTemplate}>
-                <Layout className="size-4 mr-1.5" />
-                템플릿 선택
-              </Button>
-            )}
-
-            <Button onClick={handleDownload} className="shadow-sm">
-              <Download className="size-4 mr-1.5" />
-              PDF 다운로드
-            </Button>
           </div>
         </div>
       </div>
