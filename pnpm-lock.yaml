@@ -35,6 +35,9 @@ importers:
       '@portone/browser-sdk':
         specifier: ^0.1.2
         version: 0.1.2
+      '@portone/server-sdk':
+        specifier: ^0.18.0
+        version: 0.18.0
       '@prisma/adapter-pg':
         specifier: ^7.2.0
         version: 7.2.0
@@ -749,6 +752,9 @@ packages:
 
   '@portone/browser-sdk@0.1.2':
     resolution: {integrity: sha512-XwB8AEHsCKlz+A7KX9wKD4Um2mEOaagR47usrWOuKou7b6OqtDL6HCPN6TocEnS+o1vvQYSQ2b75EBCT3pUh0g==}
+
+  '@portone/server-sdk@0.18.0':
+    resolution: {integrity: sha512-Px8HjqCfgkgZH1aEAInv1niUSoM76+b2OiBu7MACkrxhN0wSdNdFH6hc6XfbKcoj9D9RO0wbLHUj2K2nBpKR+Q==}
 
   '@prisma/adapter-pg@7.2.0':
     resolution: {integrity: sha512-euIdQ13cRB2wZ3jPsnDnFhINquo1PYFPCg6yVL8b2rp3EdinQHsX9EDdCtRr489D5uhphcRk463OdQAFlsCr0w==}
@@ -3457,6 +3463,8 @@ snapshots:
   '@popperjs/core@2.11.8': {}
 
   '@portone/browser-sdk@0.1.2': {}
+
+  '@portone/server-sdk@0.18.0': {}
 
   '@prisma/adapter-pg@7.2.0':
     dependencies:

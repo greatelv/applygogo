@@ -19,6 +19,7 @@
     "@mui/material": "7.3.5",
     "@popperjs/core": "2.11.8",
     "@portone/browser-sdk": "^0.1.2",
+    "@portone/server-sdk": "^0.18.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@radix-ui/react-accordion": "1.2.3",

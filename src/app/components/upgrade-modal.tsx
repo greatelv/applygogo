@@ -54,7 +54,7 @@ export function UpgradeModal({
           .toString(36)
           .substr(2, 9)}`,
         orderName: config.name,
-        totalAmount: config.amount,
+        totalAmount: config.price,
         currency: "KRW",
         payMethod: "EASY_PAY",
         customer: {

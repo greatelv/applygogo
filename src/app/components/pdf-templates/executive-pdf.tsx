@@ -10,6 +10,8 @@ import {
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
 
+const TextAny = Text as any;
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "NotoSansKR",
@@ -342,7 +344,8 @@ export const ExecutivePdf = ({
                   </Text>
                   {certifications.map((item: any, i: number) => (
                     // @ts-ignore
-                    <Text
+                    // @ts-ignore
+                    <TextAny
                       key={i}
                       style={{
                         fontSize: 10,
@@ -352,7 +355,7 @@ export const ExecutivePdf = ({
                     >
                       • {item.name_en || item.name}{" "}
                       {item.date ? `(${formatDate(item.date)})` : ""}
-                    </Text>
+                    </TextAny>
                   ))}
                 </View>
               )}
@@ -370,7 +373,8 @@ export const ExecutivePdf = ({
                   </Text>
                   {awards.map((item: any, i: number) => (
                     // @ts-ignore
-                    <Text
+                    // @ts-ignore
+                    <TextAny
                       key={i}
                       style={{
                         fontSize: 10,
@@ -379,7 +383,7 @@ export const ExecutivePdf = ({
                       }}
                     >
                       • {item.name_en || item.name}
-                    </Text>
+                    </TextAny>
                   ))}
                 </View>
               )}
