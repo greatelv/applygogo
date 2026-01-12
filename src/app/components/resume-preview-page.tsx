@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Eye, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -70,6 +70,28 @@ export function ResumePreviewPage({
   const [selectedTemplate, setSelectedTemplate] = useState(
     initialTemplate.toLowerCase()
   );
+  const [scale, setScale] = useState(1);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (!previewContainerRef.current) return;
+
+      const containerWidth = previewContainerRef.current.offsetWidth;
+      // 210mm in pixels (assuming 96dpi, but React-PDF uses points)
+      // Browsers generally use 96px per inch. 210mm = 8.27 inches.
+      // 8.27 * 96 = 794px approximately.
+      const a4WidthPx = 794;
+
+      // We want some padding, so let's use 95% of container width
+      const newScale = (containerWidth * 0.95) / a4WidthPx;
+      setScale(newScale);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   // ... (type Template and templates array remain same)
   type Template = {
@@ -162,6 +184,22 @@ export function ResumePreviewPage({
     }
   };
 
+  const renderA4Preview = () => {
+    return (
+      <div
+        className="bg-white shadow-2xl origin-top mx-auto"
+        style={{
+          width: "210mm",
+          minHeight: "297mm",
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+        }}
+      >
+        {renderTemplate()}
+      </div>
+    );
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
@@ -248,14 +286,21 @@ export function ResumePreviewPage({
         </div>
 
         <div className="lg:col-span-2">
-          <div className="bg-muted/30 border border-border rounded-lg overflow-hidden">
-            <div className="aspect-[210/297] overflow-auto shadow-lg">
-              {renderTemplate()}
+          <div
+            ref={previewContainerRef}
+            className="bg-muted/30 border border-border rounded-lg overflow-hidden flex justify-center py-8"
+          >
+            <div
+              className="overflow-visible"
+              style={{
+                width: "210mm",
+                height: `${297 * scale}mm`, // Adjust parent height to match scaled content
+                minHeight: "400px",
+              }}
+            >
+              {renderA4Preview()}
             </div>
           </div>
-          <p className="text-xs text-muted-foreground text-center mt-4">
-            실시간 미리보기 • 스크롤하여 전체 내용을 확인하세요
-          </p>
         </div>
       </div>
     </div>

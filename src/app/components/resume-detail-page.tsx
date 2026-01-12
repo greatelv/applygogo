@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Download,
   Trash2,
@@ -91,6 +91,24 @@ export function ResumeDetailPage({
 }: ResumeDetailPageProps) {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [scale, setScale] = useState(0.8); // Initial scale for safety
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (!previewContainerRef.current) return;
+
+      const containerWidth = previewContainerRef.current.offsetWidth;
+      const a4WidthPx = 794; // approx 210mm at 96dpi
+
+      const newScale = (containerWidth * 0.95) / a4WidthPx;
+      setScale(newScale);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   // Use props data
   const resume = {
@@ -349,12 +367,28 @@ export function ResumeDetailPage({
 
       {/* Preview */}
       <div className="bg-card border border-border rounded-lg overflow-hidden mb-6">
-        <div className="bg-muted/30 p-4">
+        <div
+          ref={previewContainerRef}
+          className="bg-muted/30 p-8 flex justify-center"
+        >
           <div
-            ref={componentRef}
-            className="aspect-[210/297] bg-white text-black shadow-lg mx-auto"
+            style={{
+              width: "210mm",
+              height: `${297 * scale}mm`,
+              overflow: "visible",
+            }}
           >
-            {renderTemplate()}
+            <div
+              className="bg-white text-black shadow-2xl origin-top mx-auto"
+              style={{
+                width: "210mm",
+                minHeight: "297mm",
+                transform: `scale(${scale})`,
+                transformOrigin: "top center",
+              }}
+            >
+              {renderTemplate()}
+            </div>
           </div>
         </div>
       </div>
