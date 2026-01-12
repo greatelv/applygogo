@@ -12,8 +12,10 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Loader2, Zap, Calendar, CreditCard } from "lucide-react";
+import { Badge } from "./ui/badge"; // Badge 추가
+import { Loader2, Zap, Calendar, CreditCard, Sparkles } from "lucide-react";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
+import { cn } from "@/lib/utils";
 
 interface UpgradeModalProps {
   open: boolean;
@@ -94,120 +96,169 @@ export function UpgradeModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">
-            이용권 구매하고 템플릿 잠금 해제
-          </DialogTitle>
-          <DialogDescription>
-            프리미엄 템플릿을 사용하려면 이용권이 필요합니다. 재번역도
-            무제한으로 이용하세요!
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          {/* 7일 이용권 */}
-          <div className="border-2 border-slate-200 rounded-xl p-6 hover:border-blue-500 transition-colors">
-            <h3 className="text-lg font-bold text-slate-900 mb-2">
-              7일 이용권
-            </h3>
-            <p className="text-3xl font-bold text-blue-600 mb-4">
-              {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
-              <span className="text-lg text-slate-600">원</span>
-              <span className="ml-2 text-sm text-slate-400/80 line-through font-normal">
-                {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden gap-0">
+        <div className="px-6 py-6 border-b">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <Sparkles className="size-5 text-primary" />
+              이용권 구매하고 템플릿 잠금 해제
+            </DialogTitle>
+            <DialogDescription className="text-base mt-2">
+              프리미엄 템플릿을 사용하려면 이용권이 필요합니다. <br />
+              <span className="text-foreground font-medium">
+                Split View 편집
               </span>
-              <span className="ml-2 text-xs text-red-500 font-medium bg-red-50 px-1.5 py-0.5 rounded">
-                -50%
-              </span>
-            </p>
-            <ul className="space-y-2 mb-6 text-sm text-slate-600">
-              <li className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-blue-600" />
-                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧 포함
-              </li>
-              <li className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4 text-blue-600" />
-                모든 템플릿 사용
-              </li>
-              <li className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-blue-600" />
-                재번역 무제한
-              </li>
-              <li className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-blue-600" />
-                {PLAN_PRODUCTS.PASS_7DAY.days}일간 이용
-              </li>
-            </ul>
-            <Button
-              onClick={() => handlePurchase("PASS_7DAY")}
-              disabled={purchasingProduct === "PASS_7DAY"}
-              className="w-full"
-              variant="outline"
-            >
-              {purchasingProduct === "PASS_7DAY" ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                "구매하기"
-              )}
-            </Button>
-          </div>
-
-          {/* 30일 이용권 (추천) */}
-          <div className="border-2 border-purple-500 rounded-xl p-6 relative bg-gradient-to-br from-purple-50 to-blue-50">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-              추천
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">
-              30일 이용권
-            </h3>
-            <p className="text-3xl font-bold text-purple-600 mb-4">
-              {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
-              <span className="text-lg text-slate-600">원</span>
-              <span className="ml-2 text-sm text-slate-400/80 line-through font-normal">
-                {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
-              </span>
-              <span className="ml-2 text-xs text-red-500 font-medium bg-red-50 px-1.5 py-0.5 rounded">
-                -57%
-              </span>
-            </p>
-            <ul className="space-y-2 mb-6 text-sm text-slate-600">
-              <li className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-purple-600" />
-                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧 포함
-              </li>
-              <li className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4 text-purple-600" />
-                모든 템플릿 사용
-              </li>
-              <li className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-purple-600" />
-                재번역 무제한
-              </li>
-              <li className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-purple-600" />
-                {PLAN_PRODUCTS.PASS_30DAY.days}일간 이용
-              </li>
-            </ul>
-            <Button
-              onClick={() => handlePurchase("PASS_30DAY")}
-              disabled={purchasingProduct === "PASS_30DAY"}
-              className="w-full bg-purple-600 hover:bg-purple-700"
-            >
-              {purchasingProduct === "PASS_30DAY" ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                "구매하기"
-              )}
-            </Button>
-          </div>
+              과{" "}
+              <span className="text-foreground font-medium">재번역 무제한</span>{" "}
+              혜택도 함께 누리세요!
+            </DialogDescription>
+          </DialogHeader>
         </div>
 
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-          <p className="text-sm text-blue-800">
-            💡 <strong>안내:</strong> 이용권은 자동 갱신되지 않습니다. 기간이
-            만료되면 자동으로 무료 플랜으로 전환됩니다.
-          </p>
+        <div className="p-6 bg-muted/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 7일 이용권 (Basic) */}
+            <div className="relative rounded-xl border bg-card p-6 shadow-sm transition-all hover:border-primary/50 flex flex-col">
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg text-foreground">
+                  7일 이용권
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  단기 집중 준비에 적합
+                </p>
+              </div>
+
+              <div className="mb-6">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold">
+                    {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                  </span>
+                  <span className="text-lg font-medium">원</span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground line-through">
+                    {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}원
+                  </span>
+                  <Badge variant="secondary" className="text-xs font-medium">
+                    50% OFF
+                  </Badge>
+                </div>
+              </div>
+
+              <ul className="space-y-3 mb-8 flex-1 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-foreground">
+                    {PLAN_PRODUCTS.PASS_7DAY.credits}
+                  </span>{" "}
+                  크레딧
+                </li>
+                <li className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-primary shrink-0" />
+                  모든 고급 템플릿 사용
+                </li>
+                <li className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary shrink-0" />
+                  재번역 무제한
+                </li>
+                <li className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary shrink-0" />
+                  {PLAN_PRODUCTS.PASS_7DAY.days}일간 이용
+                </li>
+              </ul>
+
+              <Button
+                onClick={() => handlePurchase("PASS_7DAY")}
+                disabled={purchasingProduct === "PASS_7DAY"}
+                className="w-full"
+                variant="outline"
+                size="lg"
+              >
+                {purchasingProduct === "PASS_7DAY" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "구매하기"
+                )}
+              </Button>
+            </div>
+
+            {/* 30일 이용권 (Premium) */}
+            <div className="relative rounded-xl border border-primary bg-primary/5 p-6 shadow-md transition-all flex flex-col">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-primary text-primary-foreground hover:bg-primary px-4 py-1">
+                  추천
+                </Badge>
+              </div>
+
+              <div className="mb-4 mt-2">
+                <h3 className="font-semibold text-lg text-primary">
+                  30일 이용권
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  여유로운 이직 준비
+                </p>
+              </div>
+
+              <div className="mb-6">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold text-primary">
+                    {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                  </span>
+                  <span className="text-lg font-medium text-primary">원</span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground line-through">
+                    {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}원
+                  </span>
+                  <Badge variant="destructive" className="text-xs font-medium">
+                    57% OFF
+                  </Badge>
+                </div>
+              </div>
+
+              <ul className="space-y-3 mb-8 flex-1 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-foreground font-medium">
+                    {PLAN_PRODUCTS.PASS_30DAY.credits}
+                  </span>{" "}
+                  크레딧
+                </li>
+                <li className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-primary shrink-0" />
+                  모든 고급 템플릿 사용
+                </li>
+                <li className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary shrink-0" />
+                  재번역 무제한
+                </li>
+                <li className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary shrink-0" />
+                  {PLAN_PRODUCTS.PASS_30DAY.days}일간 이용
+                </li>
+              </ul>
+
+              <Button
+                onClick={() => handlePurchase("PASS_30DAY")}
+                disabled={purchasingProduct === "PASS_30DAY"}
+                className="w-full"
+                size="lg"
+              >
+                {purchasingProduct === "PASS_30DAY" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "구매하기"
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-muted/50 border border-border rounded-lg">
+            <p className="text-xs text-muted-foreground text-center break-keep">
+              💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 무료
+              플랜으로 전환되니 안심하고 구매하세요.
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
