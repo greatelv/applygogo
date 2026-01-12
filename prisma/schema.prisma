@@ -109,19 +109,21 @@ model UsageLog {
 }
 
 model PaymentHistory {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
-  paymentId   String   @unique @map("payment_id") // 포트원 결제 ID
-  orderName   String   @map("order_name")
-  amount      Float
-  currency    String   @default("KRW")
-  status      String   // PAID, CANCELLED, FAILED
-  method      String?  // 카드, 간편결제 등
-  paidAt      DateTime @default(now()) @map("paid_at")
-  receiptUrl  String?  @map("receipt_url")
-  details     Json?    // 기타 결제 상세 정보 (선택)
+  id               String   @id @default(cuid())
+  userId           String   @map("user_id")
+  paymentId        String   @unique @map("payment_id")
+  orderName        String   @map("order_name")
+  amount           Float
+  currency         String   @default("KRW")
+  status           String
+  method           String?
+  paidAt           DateTime @default(now()) @map("paid_at")
+  receiptUrl       String?  @map("receipt_url")
+  initialCredits   Int      @default(0) @map("initial_credits")
+  remainingCredits Int      @default(0) @map("remaining_credits")
+  details          Json?
   
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payment_histories")
 }

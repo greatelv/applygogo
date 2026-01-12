@@ -41,7 +41,7 @@ const planConfig: Record<
   { label: string; variant: "outline" | "secondary" | "default"; color: string }
 > = {
   FREE: {
-    label: "Free",
+    label: "무료",
     variant: "outline" as const,
     color: "text-neutral-600",
   },

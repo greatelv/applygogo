@@ -24,8 +24,10 @@ interface SettingsPageProps {
 
   // Billing Props
   hasActivePass: boolean; // 이용권 활성화 여부
+  passType?: string; // 이용권 종류 (PASS_7DAY, PASS_30DAY 등)
   quota: number;
   onUpgrade: (plan: string) => void;
+  onRefund?: (paymentId: string) => void;
   onCancel: () => void;
   onResume?: () => void;
   onUpdateCard?: () => void;
@@ -46,12 +48,20 @@ interface SettingsPageProps {
   }>;
   // Loading States
   isUpgrading?: boolean;
+  isRefunding?: boolean;
   isUpdatingCard?: boolean;
+  canRefund?: boolean;
 }
 
 const passConfig = {
   active: { label: "이용권", variant: "default" as const },
   inactive: { label: "무료", variant: "outline" as const },
+};
+
+const passLabels: Record<string, string> = {
+  PASS_7DAY: "7일 이용권",
+  PASS_30DAY: "30일 이용권",
+  FREE: "무료",
 };
 
 export function SettingsPage({
@@ -61,8 +71,10 @@ export function SettingsPage({
   createdAt = "2024-01-01",
   onDeleteAccount,
   hasActivePass,
+  passType,
   quota,
   onUpgrade,
+  onRefund,
   onCancel,
   onResume,
   onUpdateCard,
@@ -71,7 +83,9 @@ export function SettingsPage({
   paymentInfo,
   paymentHistory = [],
   isUpgrading = false,
+  isRefunding = false,
   isUpdatingCard = false,
+  canRefund = false,
 }: SettingsPageProps) {
   const initials = userName
     .split(" ")
@@ -146,7 +160,11 @@ export function SettingsPage({
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
                 <span className="text-sm font-medium">이용권 상태</span>
                 <div className="flex gap-2">
-                  <Badge variant={config.variant}>{config.label}</Badge>
+                  <Badge variant={config.variant}>
+                    {hasActivePass && passType && passLabels[passType]
+                      ? passLabels[passType]
+                      : config.label}
+                  </Badge>
                   {cancelAtPeriodEnd && (
                     <Badge variant="outline" className="text-muted-foreground">
                       만료 예정
@@ -230,10 +248,23 @@ export function SettingsPage({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 30일 이용권 (추천) */}
-          <div className="border-2 border-primary/30 rounded-lg p-6 bg-primary/5 relative">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-              추천
-            </div>
+          <div
+            className={`border-2 border-primary/30 rounded-lg p-6 bg-primary/5 relative ${
+              hasActivePass && passType !== "PASS_30DAY"
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }`}
+          >
+            {hasActivePass && passType === "PASS_30DAY" && (
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                현재 이용 중
+              </div>
+            )}
+            {!hasActivePass && (
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                추천
+              </div>
+            )}
             <h3 className="text-lg font-bold mb-2 mt-2">30일 이용권</h3>
             <div className="flex items-baseline gap-1 mb-4">
               <span className="text-3xl font-bold text-primary">₩12,900</span>
@@ -309,13 +340,23 @@ export function SettingsPage({
               </li>
             </ul>
             <Button
-              variant="default"
+              variant={
+                hasActivePass && passType === "PASS_30DAY"
+                  ? "secondary"
+                  : "default"
+              }
               className="w-full"
-              disabled={isUpgrading}
+              disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_30DAY")}
             >
               {isUpgrading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
+              ) : hasActivePass ? (
+                passType === "PASS_30DAY" ? (
+                  "현재 이용 중"
+                ) : (
+                  "전환 불가"
+                )
               ) : (
                 "구매하기"
               )}
@@ -323,7 +364,18 @@ export function SettingsPage({
           </div>
 
           {/* 7일 이용권 */}
-          <div className="border rounded-lg p-6">
+          <div
+            className={`border rounded-lg p-6 relative ${
+              hasActivePass && passType !== "PASS_7DAY"
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }`}
+          >
+            {hasActivePass && passType === "PASS_7DAY" && (
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                현재 이용 중
+              </div>
+            )}
             <h3 className="text-lg font-bold mb-2">7일 이용권</h3>
             <div className="flex items-baseline gap-1 mb-4">
               <span className="text-3xl font-bold">₩9,900</span>
@@ -399,13 +451,23 @@ export function SettingsPage({
               </li>
             </ul>
             <Button
-              variant="outline"
+              variant={
+                hasActivePass && passType === "PASS_7DAY"
+                  ? "secondary"
+                  : "outline"
+              }
               className="w-full"
-              disabled={isUpgrading}
+              disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_7DAY")}
             >
               {isUpgrading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
+              ) : hasActivePass ? (
+                passType === "PASS_7DAY" ? (
+                  "현재 이용 중"
+                ) : (
+                  "전환 불가"
+                )
               ) : (
                 "구매하기"
               )}
@@ -507,6 +569,42 @@ export function SettingsPage({
           </div>
         </div>
 
+        {/* Subtle Refund Policy Note for Free Users */}
+        {!hasActivePass && (
+          <p className="text-[11px] text-muted-foreground/60 text-center mt-4">
+            구매 전 지원고고의{" "}
+            <a
+              href="/terms"
+              className="underline hover:text-primary transition-colors"
+            >
+              취소 및 환불 규정
+            </a>
+            을 확인해 주세요.
+          </p>
+        )}
+
+        {/* Refund Policy Summary & Request (Only for Paid Users) */}
+        {hasActivePass && (
+          <div className="bg-muted/30 border border-border rounded-lg p-6 mt-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold">취소 및 환불 규정</h3>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• 결제 후 7일 이내, 서비스 미이용 시 전액 환불 가능</li>
+                  <li>• 크레딧 사용 또는 AI 처리 이력이 있는 경우 환불 불가</li>
+                  <li>• 본 서비스는 부분 환불 정책을 운영하지 않습니다</li>
+                </ul>
+                <a
+                  href="/terms"
+                  className="text-xs text-primary underline-offset-4 hover:underline block pt-1"
+                >
+                  상세 약관 보기
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Payment History */}
         <div className="space-y-4">
           <h3 className="font-semibold">결제 내역</h3>
@@ -520,6 +618,9 @@ export function SettingsPage({
                         결제일
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
+                        주문 번호
+                      </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground">
                         상품명
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
@@ -531,6 +632,9 @@ export function SettingsPage({
                       <th className="py-3 px-4 font-medium text-muted-foreground text-center">
                         상태
                       </th>
+                      <th className="py-3 px-4 font-medium text-muted-foreground text-right">
+                        관리
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -539,8 +643,13 @@ export function SettingsPage({
                         key={item.id}
                         className="border-b border-border last:border-0 hover:bg-muted/20"
                       >
-                        <td className="py-3 px-4">
+                        <td className="py-3 px-4 whitespace-nowrap">
                           {new Date(item.paidAt).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td className="py-3 px-4">
+                          <code className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
+                            {item.id}
+                          </code>
                         </td>
                         <td className="py-3 px-4 font-medium">{item.name}</td>
                         <td className="py-3 px-4 text-muted-foreground">
@@ -557,11 +666,52 @@ export function SettingsPage({
                             className={
                               item.status === "PAID"
                                 ? "text-green-600 border-green-200 bg-green-50"
+                                : item.status === "REFUNDED"
+                                ? "text-muted-foreground border-muted-foreground/20 bg-muted/20"
                                 : ""
                             }
                           >
-                            {item.status === "PAID" ? "결제 완료" : item.status}
+                            {item.status === "PAID"
+                              ? "결제 완료"
+                              : item.status === "REFUNDED"
+                              ? "환불 완료"
+                              : item.status}
                           </Badge>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          {(() => {
+                            const paidAt = new Date(item.paidAt);
+                            const sevenDaysAgo = new Date();
+                            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                            const isWithin7Days = paidAt > sevenDaysAgo;
+                            const isRefundable =
+                              item.status === "PAID" && isWithin7Days;
+
+                            return (
+                              isRefundable && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 text-[11px] text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                  disabled={isRefunding}
+                                  onClick={() => {
+                                    if (
+                                      confirm(
+                                        `[${item.name}] 환불을 진행하시겠습니까? 환불 시 즉시 권한과 크레딧이 회수됩니다.`
+                                      )
+                                    ) {
+                                      onRefund?.(item.id);
+                                    }
+                                  }}
+                                >
+                                  {isRefunding ? (
+                                    <Loader2 className="size-3 animate-spin mr-1" />
+                                  ) : null}
+                                  환불하기
+                                </Button>
+                              )
+                            );
+                          })()}
                         </td>
                       </tr>
                     ))}

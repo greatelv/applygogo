@@ -186,21 +186,14 @@ model Resume {
   workExperiences WorkExperience[]
 }
 
-// Resume Data (Split View Support)
-model WorkExperience {
-  id              String    @id @default(uuid())
-  resumeId        String
-  resume          Resume    @relation(fields: [resumeId], references: [id])
+### 4.3 Cancellation & Refund Policy (취소 및 환불 규정)
 
-  companyNameKr   String
-  companyNameEn   String
-  roleKr          String
-  roleEn          String
-
-  bulletsKr       Json      // String[]
-  bulletsEn       Json      // String[]
-}
-```
+- **환불 원칙:**
+  - **전액 환불:** 구매 후 7일 이내이며 하위 이용 내역이 전혀 없는 경우 (크레딧 미사용, AI 처리 미수행).
+  - **환불 불가:** 7일이 경과했거나, 1회 이상의 크레딧 사용 또는 AI 처리가 발생한 경우 (디지털 콘텐츠 특성상 부분 환불 없음).
+- **프로세스:**
+  - 사용자가 설정 페이지에서 직접 '환불 요청' 버튼을 통해 접수.
+  - 조건 충족 시 API를 통해 자동 환불 및 이용권 권한 즉시 회수.
 
 ---
 
@@ -225,13 +218,17 @@ model WorkExperience {
 ## 8. Directory Structure (참고)
 
 ```
+
 src/
 ├── app/
-│   ├── components/        # Presentational Components (Keep UI as is!)
-│   │   ├── ui/            # Shadcn UI Primitives
-│   │   ├── ...pages...    # Page Templates
-│   └── ...
+│ ├── components/ # Presentational Components (Keep UI as is!)
+│ │ ├── ui/ # Shadcn UI Primitives
+│ │ ├── ...pages... # Page Templates
+│ └── ...
 ├── styles/
-│   ├── theme.css          # Design Tokens (CSS Variables)
-│   └── tailwind.css
+│ ├── theme.css # Design Tokens (CSS Variables)
+│ └── tailwind.css
+
+```
+
 ```

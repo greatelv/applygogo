@@ -46,7 +46,7 @@ export async function checkCredits(
 }
 
 /**
- * 사용자의 크레딧을 차감합니다.
+ * 사용자의 크레딧을 차감합니다 (버킷 방식).
  */
 export async function deductCredits(
   userId: string,
@@ -54,7 +54,65 @@ export async function deductCredits(
   description: string
 ): Promise<void> {
   await prisma.$transaction(async (tx) => {
-    // 크레딧 차감
+    // 1. 유저 정보 및 유료 크레딧 버킷 조회
+    const user = await tx.user.findUnique({
+      where: { id: userId },
+      select: { credits: true },
+    });
+
+    if (!user || user.credits < amount) {
+      throw new Error("소진할 크레딧이 부족합니다.");
+    }
+
+    const paidBuckets = await tx.paymentHistory.findMany({
+      where: {
+        userId: userId,
+        status: "PAID",
+        remainingCredits: { gt: 0 },
+      },
+      orderBy: { paidAt: "asc" }, // FIFO: 먼저 결제한 것부터
+    });
+
+    // 2. 소진 로직
+    let remainingToDeduct = amount;
+
+    // 전체 결제 버킷 잔액 합계 계산
+    const totalPaidCredits = paidBuckets.reduce(
+      (sum, b) => sum + b.remainingCredits,
+      0
+    );
+    const freeCredits = user.credits - totalPaidCredits;
+
+    // 2-1. 무료 크레딧 우선 소진
+    if (freeCredits > 0) {
+      const freeToDeduct = Math.min(freeCredits, remainingToDeduct);
+      remainingToDeduct -= freeToDeduct;
+    }
+
+    // 2-2. 부족분은 유료 버킷에서 순차적으로 소진
+    if (remainingToDeduct > 0) {
+      for (const bucket of paidBuckets) {
+        if (remainingToDeduct <= 0) break;
+
+        const deductFromThisBucket = Math.min(
+          bucket.remainingCredits,
+          remainingToDeduct
+        );
+
+        await tx.paymentHistory.update({
+          where: { id: bucket.id },
+          data: {
+            remainingCredits: {
+              decrement: deductFromThisBucket,
+            },
+          },
+        });
+
+        remainingToDeduct -= deductFromThisBucket;
+      }
+    }
+
+    // 3. 유저 총 잔액 업데이트 및 로그 기록
     await tx.user.update({
       where: { id: userId },
       data: {
@@ -64,7 +122,6 @@ export async function deductCredits(
       },
     });
 
-    // 사용 로그 기록
     await tx.usageLog.create({
       data: {
         userId,
@@ -80,7 +137,8 @@ export async function deductCredits(
  */
 export async function grantPass(
   userId: string,
-  passType: "PASS_7DAY" | "PASS_30DAY"
+  passType: "PASS_7DAY" | "PASS_30DAY",
+  client: any = prisma
 ): Promise<void> {
   const now = new Date();
   const expiresAt = new Date(now);
@@ -94,7 +152,7 @@ export async function grantPass(
     creditsToAdd = 300;
   }
 
-  await prisma.user.update({
+  await client.user.update({
     where: { id: userId },
     data: {
       planType: passType,
@@ -111,9 +169,10 @@ export async function grantPass(
  */
 export async function refillCredits(
   userId: string,
-  amount: number
+  amount: number,
+  client: any = prisma
 ): Promise<void> {
-  await prisma.user.update({
+  await client.user.update({
     where: { id: userId },
     data: {
       credits: {
@@ -141,6 +200,26 @@ export async function checkLowCredit(userId: string): Promise<boolean> {
   const isPaidActive = user.planExpiresAt && user.planExpiresAt > now;
 
   return isPaidActive && user.credits < 5;
+}
+
+/**
+ * 사용자 이용권을 회수합니다 (환불 시 호출).
+ */
+export async function revokePass(
+  userId: string,
+  creditsToDeduct: number,
+  client: any = prisma
+): Promise<void> {
+  await client.user.update({
+    where: { id: userId },
+    data: {
+      planType: "FREE",
+      planExpiresAt: null,
+      credits: {
+        decrement: creditsToDeduct,
+      },
+    },
+  });
 }
 
 /**

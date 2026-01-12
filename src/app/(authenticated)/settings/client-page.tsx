@@ -30,6 +30,7 @@ export function SettingsClientPage({
   const { setPlan } = useApp();
 
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [isRefunding, setIsRefunding] = useState(false);
 
   const planType = settings?.planType || "FREE";
   const credits = settings?.credits || 0;
@@ -46,25 +47,22 @@ export function SettingsClientPage({
 
   const [paymentHistory, setPaymentHistory] = useState([]);
 
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch("/api/billing/history");
+      if (res.ok) {
+        const data = await res.json();
+        setPaymentHistory(data.items || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch payment history:", error);
+    }
+  };
+
   // 결제 내역 조회
   useEffect(() => {
-    async function fetchHistory() {
-      try {
-        const res = await fetch("/api/billing/history");
-        if (res.ok) {
-          const data = await res.json();
-          setPaymentHistory(data.items || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch payment history:", error);
-      }
-    }
     fetchHistory();
   }, []);
-
-  // 이용권 활성화 여부 확인
-  const now = new Date();
-  const hasActivePass = planExpiresAt ? planExpiresAt > now : false;
 
   // 업그레이드 (이용권 구매) 로직
   const handleUpgrade = async (
@@ -116,6 +114,10 @@ export function SettingsClientPage({
       if (!res.ok) throw new Error("결제 검증에 실패했습니다.");
 
       toast.success(`${product.name} 구매가 완료되었습니다! 감사합니다.`);
+
+      // 결제 내역 즉시 새로고침
+      await fetchHistory();
+
       router.refresh();
 
       // 즉시 플랜 상태 업데이트
@@ -130,6 +132,70 @@ export function SettingsClientPage({
     }
   };
 
+  // 환불 요청 로직
+  const handleRefund = async (paymentId: string) => {
+    if (isRefunding) return;
+    setIsRefunding(true);
+
+    try {
+      const res = await fetch("/api/payment/refund", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "환불 요청에 실패했습니다.");
+      }
+
+      toast.success("환불이 완료되었습니다. 이용권 권한이 회수되었습니다.");
+
+      // 결제 내역 즉시 새로고침
+      await fetchHistory();
+
+      router.refresh();
+      setPlan("FREE");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`환불 오류: ${error.message}`);
+    } finally {
+      setIsRefunding(false);
+    }
+  };
+
+  // 이용권 활성화 여부 확인
+  const now = new Date();
+  const latestPayment: any = paymentHistory.find(
+    (h: any) => h.status === "PAID" && h.name.includes("이용권")
+  );
+
+  let hasActivePass = planExpiresAt ? planExpiresAt > now : false;
+
+  // 방금 결제한 경우 props(planExpiresAt)가 아직 반영 안 되었을 수 있으므로
+  // 최근 결제 내역을 통해 활성 여부 보강 체크
+  if (!hasActivePass && latestPayment) {
+    const paidAt = new Date(latestPayment.paidAt);
+    const durationDays = latestPayment.name.includes("30일") ? 30 : 7;
+    const expiry = new Date(paidAt);
+    expiry.setDate(expiry.getDate() + durationDays);
+    if (expiry > now) {
+      hasActivePass = true;
+    }
+  }
+
+  let canRefund = false;
+  if (latestPayment && hasActivePass) {
+    const paidAt = new Date(latestPayment.paidAt);
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // 7일 이내 결제 건이고, 크레딧이 초기 상태와 유사한지 체크 (백엔드에서 최종 검증)
+    const isWithin7Days = paidAt > sevenDaysAgo;
+    canRefund = isWithin7Days;
+  }
+
   const handleDeleteAccount = () => {
     toast.info("계정 삭제가 요청되었습니다.");
   };
@@ -142,12 +208,16 @@ export function SettingsClientPage({
       createdAt={createdAt}
       onDeleteAccount={handleDeleteAccount}
       hasActivePass={hasActivePass}
+      passType={planType}
       quota={credits}
       onUpgrade={handleUpgrade}
+      onRefund={handleRefund}
       onCancel={() => {}} // 기간제 이용권은 해지 기능 없음
       currentPeriodEnd={planExpiresAt || undefined}
       paymentHistory={paymentHistory}
       isUpgrading={isUpgrading}
+      isRefunding={isRefunding}
+      canRefund={canRefund}
     />
   );
 }

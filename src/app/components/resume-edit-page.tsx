@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   Sparkles,
@@ -1092,10 +1093,16 @@ export function ResumeEditPage({
   >({});
   const [newSkill, setNewSkill] = useState("");
 
-  const [alertConfig, setAlertConfig] = useState({
+  const [alertConfig, setAlertConfig] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+    showCheckout?: boolean;
+  }>({
     open: false,
     title: "",
     description: "",
+    showCheckout: false,
   });
 
   // Handlers for New Sections
@@ -1362,7 +1369,18 @@ export function ResumeEditPage({
               type: "general",
               resumeId,
             }),
-          }).then((res) => res.json())
+          }).then(async (res) => {
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({}));
+              console.error("Experience Meta Translation Error:", {
+                status: res.status,
+                serverError: errorData.error,
+                texts: textsToTranslate,
+              });
+              throw new Error(errorData.error || "Metadata translation failed");
+            }
+            return res.json();
+          })
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -1370,16 +1388,28 @@ export function ResumeEditPage({
 
       // 2. Bullets translation
       if (changedBullets.length > 0) {
+        const bulletTexts = changedBullets.map((item) => item.text);
         promises.push(
           fetch("/api/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              texts: changedBullets.map((item) => item.text),
+              texts: bulletTexts,
               type: "bullets",
               resumeId,
             }),
-          }).then((res) => res.json())
+          }).then(async (res) => {
+            if (!res.ok) {
+              const errorData = await res.json().catch(() => ({}));
+              console.error("Experience Bullets Translation Error:", {
+                status: res.status,
+                serverError: errorData.error,
+                texts: bulletTexts,
+              });
+              throw new Error(errorData.error || "Bullets translation failed");
+            }
+            return res.json();
+          })
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -1447,12 +1477,14 @@ export function ResumeEditPage({
           return newState;
         });
       }, 2000);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("handleRetranslateExperience Error:", error);
+      const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: "오류 발생",
-        description: "번역 중 오류가 발생했습니다.",
+        title: isCreditError ? "크레딧 부족" : "오류 발생",
+        description: error.message || "번역 중 오류가 발생했습니다.",
+        showCheckout: isCreditError,
       });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [expId]: false }));
@@ -1513,7 +1545,16 @@ export function ResumeEditPage({
         }),
       });
 
-      if (!response.ok) throw new Error("Translation failed");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("PersonalInfo Translation API error details:", {
+          status: response.status,
+          statusText: response.statusText,
+          serverError: errorData.error,
+          inputTexts: textsToTranslate,
+        });
+        throw new Error(errorData.error || "Translation failed");
+      }
 
       const { translatedTexts } = await response.json();
 
@@ -1555,12 +1596,14 @@ export function ResumeEditPage({
       onDeductCredit?.(1.0);
 
       setTimeout(() => setHighlightedPersonal({}), 2000);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("HandleTranslatePersonalInfo Error:", error);
+      const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: "오류 발생",
-        description: "기본 정보 번역 중 오류가 발생했습니다.",
+        title: isCreditError ? "크레딧 부족" : "오류 발생",
+        description: error.message || "기본 정보 번역 중 오류가 발생했습니다.",
+        showCheckout: isCreditError,
       });
     } finally {
       setIsTranslating((prev) => ({ ...prev, personal: false }));
@@ -1624,7 +1667,15 @@ export function ResumeEditPage({
         }),
       });
 
-      if (!response.ok) throw new Error("Translation failed");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("AdditionalItem Translation API error details:", {
+          status: response.status,
+          serverError: errorData.error,
+          inputTexts: textsToTranslate,
+        });
+        throw new Error(errorData.error || "Translation failed");
+      }
 
       const { translatedTexts } = await response.json();
 
@@ -1638,8 +1689,15 @@ export function ResumeEditPage({
           };
         })
       );
-    } catch (error) {
-      console.error("Translation error:", error);
+    } catch (error: any) {
+      console.error("handleRetranslateAdditionalItem Error:", error);
+      const isCreditError = error.message?.includes("크레딧");
+      setAlertConfig({
+        open: true,
+        title: isCreditError ? "크레딧 부족" : "오류 발생",
+        description: error.message || "번역 중 오류가 발생했습니다.",
+        showCheckout: isCreditError,
+      });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [id]: false }));
       // Deduct credit
@@ -1703,7 +1761,15 @@ export function ResumeEditPage({
         }),
       });
 
-      if (!response.ok) throw new Error("Translation failed");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Education Translation API error details:", {
+          status: response.status,
+          serverError: errorData.error,
+          inputTexts: textsToTranslate,
+        });
+        throw new Error(errorData.error || "Translation failed");
+      }
 
       const { translatedTexts } = await response.json();
 
@@ -1718,12 +1784,14 @@ export function ResumeEditPage({
           };
         })
       );
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("handleTranslateEducation Error:", error);
+      const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: "오류 발생",
-        description: "학력 번역 중 오류가 발생했습니다.",
+        title: isCreditError ? "크레딧 부족" : "오류 발생",
+        description: error.message || "학력 번역 중 오류가 발생했습니다.",
+        showCheckout: isCreditError,
       });
     } finally {
       setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: false }));
@@ -2400,9 +2468,22 @@ export function ResumeEditPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
+            {alertConfig.showCheckout && (
+              <Button
+                asChild
+                variant="default"
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Link href="/settings">이용권 구매하기</Link>
+              </Button>
+            )}
             <AlertDialogAction
               onClick={() =>
-                setAlertConfig((prev) => ({ ...prev, open: false }))
+                setAlertConfig((prev) => ({
+                  ...prev,
+                  open: false,
+                  showCheckout: false,
+                }))
               }
             >
               확인
