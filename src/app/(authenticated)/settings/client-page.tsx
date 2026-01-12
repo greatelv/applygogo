@@ -66,18 +66,9 @@ export function SettingsClientPage({
   const now = new Date();
   const hasActivePass = planExpiresAt ? planExpiresAt > now : false;
 
-  // 초기 플랜 동기화 (레거시 호환성)
-  useEffect(() => {
-    if (hasActivePass) {
-      setPlan("PRO");
-    } else {
-      setPlan("FREE");
-    }
-  }, [hasActivePass, setPlan]);
-
   // 업그레이드 (이용권 구매) 로직
   const handleUpgrade = async (
-    passType: "PASS_7DAY" | "PASS_30DAY" | "REFILL_50" | "PRO"
+    passType: "PASS_7DAY" | "PASS_30DAY" | "REFILL_50"
   ) => {
     if (isUpgrading) return;
     setIsUpgrading(true);
@@ -88,7 +79,6 @@ export function SettingsClientPage({
         PASS_7DAY: { amount: 9900, name: "ApplyGoGo 7일 이용권" },
         PASS_30DAY: { amount: 12900, name: "ApplyGoGo 30일 이용권" },
         REFILL_50: { amount: 3900, name: "크레딧 충전 50" },
-        PRO: { amount: 12900, name: "ApplyGoGo 30일 이용권" }, // 기본값
       };
 
       const product = productConfig[passType];
@@ -130,7 +120,7 @@ export function SettingsClientPage({
 
       // 즉시 플랜 상태 업데이트
       if (passType !== "REFILL_50") {
-        setPlan("PRO");
+        setPlan(passType);
       }
     } catch (error: any) {
       console.error(error);

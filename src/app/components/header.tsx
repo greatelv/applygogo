@@ -23,7 +23,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
 
 interface HeaderProps {
-  plan: "FREE" | "STANDARD" | "PRO";
+  plan: string;
   quota: number;
   userName: string;
   userEmail: string;
@@ -36,18 +36,25 @@ interface HeaderProps {
   currentStep?: string;
 }
 
-const planConfig = {
+const planConfig: Record<
+  string,
+  { label: string; variant: "outline" | "secondary" | "default"; color: string }
+> = {
   FREE: {
     label: "Free",
     variant: "outline" as const,
     color: "text-neutral-600",
   },
-  STANDARD: {
-    label: "Standard",
+  PASS_7DAY: {
+    label: "7일 이용권",
     variant: "secondary" as const,
     color: "text-blue-600",
   },
-  PRO: { label: "Pro", variant: "default" as const, color: "text-purple-600" },
+  PASS_30DAY: {
+    label: "30일 이용권",
+    variant: "default" as const,
+    color: "text-purple-600",
+  },
 };
 
 export function Header({
@@ -63,7 +70,7 @@ export function Header({
   workflowSteps,
   currentStep,
 }: HeaderProps) {
-  const config = planConfig[plan];
+  const config = planConfig[plan] || planConfig.FREE;
   const initials = userName
     .split(" ")
     .map((n) => n[0])

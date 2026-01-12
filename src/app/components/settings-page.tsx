@@ -25,7 +25,7 @@ interface SettingsPageProps {
   // Billing Props
   hasActivePass: boolean; // 이용권 활성화 여부
   quota: number;
-  onUpgrade: (plan: "PRO") => void;
+  onUpgrade: (plan: string) => void;
   onCancel: () => void;
   onResume?: () => void;
   onUpdateCard?: () => void;
@@ -312,7 +312,7 @@ export function SettingsPage({
               variant="default"
               className="w-full"
               disabled={isUpgrading}
-              onClick={() => onUpgrade("PASS_30DAY" as any)}
+              onClick={() => onUpgrade("PASS_30DAY")}
             >
               {isUpgrading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -402,7 +402,7 @@ export function SettingsPage({
               variant="outline"
               className="w-full"
               disabled={isUpgrading}
-              onClick={() => onUpgrade("PASS_7DAY" as any)}
+              onClick={() => onUpgrade("PASS_7DAY")}
             >
               {isUpgrading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -496,7 +496,7 @@ export function SettingsPage({
               variant="outline"
               className="w-full"
               disabled={!hasActivePass || isUpgrading}
-              onClick={() => onUpgrade("REFILL_50" as any)}
+              onClick={() => onUpgrade("REFILL_50")}
             >
               {isUpgrading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

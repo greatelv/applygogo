@@ -24,8 +24,8 @@ interface AppContextType {
   ) => void;
   quota: number;
   setQuota: (quota: number) => void;
-  plan: "FREE" | "STANDARD" | "PRO";
-  setPlan: (plan: "FREE" | "STANDARD" | "PRO") => void;
+  plan: string;
+  setPlan: (plan: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -36,7 +36,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   >();
   const [currentStep, setCurrentStep] = useState<string | undefined>();
   const [quota, setQuota] = useState(2);
-  const [plan, setPlan] = useState<"FREE" | "STANDARD" | "PRO">("FREE");
+  const [plan, setPlan] = useState<string>("FREE");
 
   const setWorkflowState = useCallback(
     (steps: WorkflowStep[] | undefined, current: string | undefined) => {

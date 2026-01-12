@@ -53,17 +53,11 @@ export default async function AuthenticatedLayout({
     currentPlanType = "FREE";
   }
 
-  // Map planType to legacy plan format for compatibility
-  const plan =
-    currentPlanType === "PASS_7DAY" || currentPlanType === "PASS_30DAY"
-      ? "PRO"
-      : "FREE";
-
   return (
     <ClientDashboardWrapper
       user={session.user}
       logOutAction={logOut}
-      initialPlan={plan as "FREE" | "STANDARD" | "PRO"}
+      initialPlan={currentPlanType}
       initialQuota={currentCredits}
     >
       {children}

@@ -35,7 +35,7 @@ export default async function Page({
   const now = new Date();
   const isPaidActive =
     resume.user.planExpiresAt && resume.user.planExpiresAt > now;
-  const currentPlan = isPaidActive ? "PRO" : "FREE";
+  const currentPlan = isPaidActive ? resume.user.planType : "FREE";
 
   // Data Mapping
   const mappedExperiences = resume.work_experiences.map((exp) => ({

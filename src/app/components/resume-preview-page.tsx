@@ -43,7 +43,7 @@ interface ResumePreviewPageProps {
   educations: Education[];
   skills: Skill[];
   additionalItems?: any[];
-  currentPlan?: "FREE" | "STANDARD" | "PRO";
+  currentPlan?: string;
   onNext?: (templateId: string) => void;
   onComplete?: () => void;
   onBack: () => void;
@@ -136,10 +136,10 @@ export function ResumePreviewPage({
 
   const selectedTemplateData = templates.find((t) => t.id === selectedTemplate);
   const isProTemplateSelected =
-    selectedTemplateData?.isPro && currentPlan !== "PRO";
+    selectedTemplateData?.isPro && currentPlan === "FREE";
 
   const handleNext = () => {
-    // PRO 템플릿이 선택되었지만 사용자가 PRO가 아닌 경우
+    // Premium 템플릿이 선택되었지만 사용자가 FREE 플랜인 경우
     if (isProTemplateSelected) {
       if (onUpgrade) {
         onUpgrade();

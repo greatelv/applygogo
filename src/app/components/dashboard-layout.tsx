@@ -5,7 +5,7 @@ import { SiteFooter } from "./site-footer";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  plan: "FREE" | "STANDARD" | "PRO";
+  plan: string;
   quota: number;
   userName: string;
   userEmail: string;

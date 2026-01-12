@@ -23,7 +23,7 @@ interface TemplatesClientProps {
   educations: any[];
   skills: any[];
   additionalItems?: any[];
-  currentPlan?: "FREE" | "STANDARD" | "PRO";
+  currentPlan?: string;
   initialTemplate?: string;
   portoneConfig: {
     storeId: string;

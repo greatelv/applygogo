@@ -19,7 +19,7 @@ interface ClientDashboardWrapperProps {
     image?: string | null;
   };
   logOutAction: () => Promise<void>;
-  initialPlan: "FREE" | "STANDARD" | "PRO";
+  initialPlan: string;
   initialQuota: number;
 }
 
