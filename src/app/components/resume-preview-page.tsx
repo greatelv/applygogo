@@ -228,7 +228,7 @@ export function ResumePreviewPage({
                   <div className="flex items-center gap-2">
                     {template.isPro && (
                       <Badge variant="default" className="text-xs">
-                        PRO
+                        이용권 전용
                       </Badge>
                     )}
                     {selectedTemplate === template.id && (
@@ -247,7 +247,7 @@ export function ResumePreviewPage({
           {isProTemplateSelected && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-400">
-                ⭐ 이 템플릿은 PRO 플랜 전용입니다. 아래 버튼을 눌러
+                ⭐ 이 템플릿은 이용권 전용입니다. 아래 버튼을 눌러
                 업그레이드하세요.
               </p>
             </div>
@@ -269,7 +269,7 @@ export function ResumePreviewPage({
                   처리 중...
                 </>
               ) : isProTemplateSelected ? (
-                "PRO로 업그레이드"
+                "이용권 구매하기"
               ) : (
                 "완료"
               )}

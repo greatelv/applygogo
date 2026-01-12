@@ -242,7 +242,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Download className="size-6 text-primary" />
               </div>
-              <h4 className="text-lg font-semibold mb-2">프로 템플릿</h4>
+              <h4 className="text-lg font-semibold mb-2">고급 템플릿</h4>
               <p className="text-muted-foreground text-sm">
                 Modern, Professional, Executive 등 다양한 템플릿 중 선택하여
                 즉시 PDF로 다운로드. 지원 기업에 바로 제출하세요.
@@ -582,7 +582,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-sm text-muted-foreground">
                 체험을 위해 월 10 크레딧을 제공합니다. 이력서를 완성하고
                 다운로드하기에 충분하지만, 다양한 템플릿과 무제한 수정을
-                원하시면 Pro 플랜을 추천드립니다.
+                원하시면 이용권을 추천드립니다.
               </p>
             </div>
           </div>

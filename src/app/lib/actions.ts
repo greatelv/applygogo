@@ -92,6 +92,15 @@ export async function uploadResumeAction(formData: FormData) {
 
   const userId = session.user.id;
 
+  // Verify user exists in DB to prevent FK error
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("사용자 정보를 찾을 수 없습니다. 다시 로그인해주세요.");
+  }
+
   // Sanitize filename: remove special characters and keep only alphanumeric, dots, hyphens, underscores
   const sanitizedFileName = file.name
     .replace(/[^\w\s.-]/g, "") // Remove special chars except word chars, spaces, dots, hyphens
