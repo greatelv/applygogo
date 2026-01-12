@@ -238,6 +238,8 @@ enum ResumeTemplate {
   MODERN
   CLASSIC
   MINIMAL
+  PROFESSIONAL
+  EXECUTIVE
 }
 
 enum SubscriptionStatus {

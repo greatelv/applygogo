@@ -12,7 +12,10 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ModernTemplate } from "./resume-templates/modern-template";
 import { ClassicTemplate } from "./resume-templates/classic-template";
+
 import { MinimalTemplate } from "./resume-templates/minimal-template";
+import { ProfessionalTemplate } from "./resume-templates/professional-template";
+import { ExecutiveTemplate } from "./resume-templates/executive-template";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -146,6 +149,23 @@ export function ResumeDetailPage({
           // @ts-ignore
           doc = <MinimalPdf {...commonProps} />;
           break;
+
+        case "professional":
+          // Dynamic import for Professional PDF
+          const { ProfessionalPdf } = await import(
+            "./pdf-templates/professional-pdf"
+          );
+          // @ts-ignore
+          doc = <ProfessionalPdf {...commonProps} />;
+          break;
+        case "executive":
+          // Dynamic import for Executive PDF
+          const { ExecutivePdf } = await import(
+            "./pdf-templates/executive-pdf"
+          );
+          // @ts-ignore
+          doc = <ExecutivePdf {...commonProps} />;
+          break;
         case "modern":
         default:
           // @ts-ignore
@@ -184,6 +204,10 @@ export function ResumeDetailPage({
         return <ClassicTemplate {...commonProps} />;
       case "minimal":
         return <MinimalTemplate {...commonProps} />;
+      case "professional":
+        return <ProfessionalTemplate {...commonProps} />;
+      case "executive":
+        return <ExecutiveTemplate {...commonProps} />;
       case "modern":
       default:
         return <ModernTemplate {...commonProps} />;

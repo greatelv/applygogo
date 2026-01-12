@@ -130,7 +130,8 @@ export async function uploadResumeAction(formData: FormData) {
 
 export async function updateResumeTemplateAction(
   resumeId: string,
-  template: "modern" | "classic" | "minimal"
+
+  template: "modern" | "classic" | "minimal" | "professional" | "executive"
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -144,6 +145,8 @@ export async function updateResumeTemplateAction(
     modern: "MODERN",
     classic: "CLASSIC",
     minimal: "MINIMAL",
+    professional: "PROFESSIONAL",
+    executive: "EXECUTIVE",
   };
 
   try {

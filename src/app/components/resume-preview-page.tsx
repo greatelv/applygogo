@@ -87,6 +87,18 @@ export function ResumePreviewPage({
       isPro: false,
     },
     {
+      id: "professional",
+      name: "Professional",
+      description: "2단 레이아웃으로 전문적인 느낌. 경력직 추천",
+      isPro: true,
+    },
+    {
+      id: "executive",
+      name: "Executive",
+      description: "강렬한 헤더와 고급스러운 디자인. 리더/임원급 추천",
+      isPro: true,
+    },
+    {
       id: "classic",
       name: "Classic",
       description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
@@ -132,6 +144,18 @@ export function ResumePreviewPage({
         return <ClassicTemplate {...commonProps} />;
       case "minimal":
         return <MinimalTemplate {...commonProps} />;
+      case "professional":
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const {
+          ProfessionalTemplate,
+        } = require("./resume-templates/professional-template");
+        return <ProfessionalTemplate {...commonProps} />;
+      case "executive":
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const {
+          ExecutiveTemplate,
+        } = require("./resume-templates/executive-template");
+        return <ExecutiveTemplate {...commonProps} />;
       case "modern":
       default:
         return <ModernTemplate {...commonProps} />;

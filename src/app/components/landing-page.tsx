@@ -241,8 +241,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
               <h4 className="text-lg font-semibold mb-2">프로 템플릿</h4>
               <p className="text-muted-foreground text-sm">
-                Modern, Classic, Minimal 3가지 템플릿 중 선택하여 즉시 PDF로
-                다운로드. 지원 기업에 바로 제출하세요.
+                Modern, Professional, Executive 등 다양한 템플릿 중 선택하여
+                즉시 PDF로 다운로드. 지원 기업에 바로 제출하세요.
               </p>
             </div>
           </div>
