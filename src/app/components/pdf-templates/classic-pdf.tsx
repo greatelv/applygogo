@@ -330,12 +330,13 @@ export const ClassicPdf = ({
                     const desc = cert.description_en || cert.description;
                     const date = formatDate(cert.date);
                     return (
-                      // @ts-ignore
-                      <Text key={i} style={styles.skillText}>
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={styles.skillText}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>
@@ -356,12 +357,13 @@ export const ClassicPdf = ({
                     const desc = award.description_en || award.description;
                     const date = formatDate(award.date);
                     return (
-                      // @ts-ignore
-                      <Text key={i} style={styles.skillText}>
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={styles.skillText}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>
@@ -381,11 +383,12 @@ export const ClassicPdf = ({
                     const name = lang.name_en || lang.name;
                     const desc = lang.description_en || lang.description;
                     return (
-                      // @ts-ignore
-                      <Text key={i} style={styles.skillText}>
-                        • {name}
-                        {desc && desc !== "-" ? ` (${desc})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={styles.skillText}>
+                          • {name}
+                          {desc && desc !== "-" ? ` (${desc})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>

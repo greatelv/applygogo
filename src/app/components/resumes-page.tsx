@@ -57,7 +57,7 @@ export function ResumesPage({
 }: ResumesPageProps) {
   const hasNoCredits = quota === 0;
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   if (resumes.length === 0) {
     return (
@@ -124,7 +124,7 @@ export function ResumesPage({
           const config =
             stepConfig[resume.currentStep] || statusConfig[resume.status];
 
-          const isItemDeleting = isDeleting && deleteId === resume.id;
+          const isItemDeleting = deletingId === resume.id;
 
           return (
             <div
@@ -180,7 +180,7 @@ export function ResumesPage({
 
       <AlertDialog
         open={!!deleteId}
-        onOpenChange={(open) => !open && !isDeleting && setDeleteId(null)}
+        onOpenChange={(open) => !open && setDeleteId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -191,26 +191,28 @@ export function ResumesPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+            <AlertDialogCancel>취소</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
-              disabled={isDeleting}
               onClick={async (e) => {
                 e.preventDefault();
                 if (deleteId && onDelete) {
+                  // Close modal immediately and show loading on item
+                  const idToDelete = deleteId;
+                  setDeleteId(null);
+                  setDeletingId(idToDelete);
+
                   try {
-                    setIsDeleting(true);
-                    await onDelete(deleteId);
-                    setDeleteId(null);
+                    await onDelete(idToDelete);
                   } catch (error) {
                     console.error(error);
                   } finally {
-                    setIsDeleting(false);
+                    setDeletingId(null);
                   }
                 }
               }}
             >
-              {isDeleting ? "삭제 중..." : "삭제"}
+              삭제
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

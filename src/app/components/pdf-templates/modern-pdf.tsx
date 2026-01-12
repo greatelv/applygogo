@@ -227,24 +227,6 @@ export const ModernPdf = ({
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
 
-  const renderAdditionalItem = (item: any, i: number) => {
-    const name = item.name_en || item.name || "";
-    const description = item.description_en || item.description || "";
-    const date = formatDate(item.date);
-
-    const parts = [];
-    if (name) parts.push(name);
-    if (description && description !== "-") parts.push(`| ${description}`);
-
-    return (
-      // @ts-ignore
-      <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
-        • {name} {description && description !== "-" ? `| ${description}` : ""}{" "}
-        {date ? `(${date})` : ""}
-      </Text>
-    );
-  };
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -345,10 +327,9 @@ export const ModernPdf = ({
             </View>
             <View style={styles.skillRow}>
               {skills.map((skill) => (
-                // @ts-ignore
-                <Text key={skill.id} style={styles.skillBadge}>
-                  {skill.name}
-                </Text>
+                <React.Fragment key={skill.id}>
+                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -423,15 +404,13 @@ export const ModernPdf = ({
                     const desc = cert.description_en || cert.description;
                     const date = formatDate(cert.date);
                     return (
-                      // @ts-ignore
-                      <Text
-                        key={i}
-                        style={{ fontSize: 10.5, color: "#374151" }}
-                      >
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>
@@ -452,15 +431,13 @@ export const ModernPdf = ({
                     const desc = award.description_en || award.description;
                     const date = formatDate(award.date);
                     return (
-                      // @ts-ignore
-                      <Text
-                        key={i}
-                        style={{ fontSize: 10.5, color: "#374151" }}
-                      >
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>

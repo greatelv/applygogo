@@ -225,10 +225,9 @@ export const MinimalPdf = ({
                   </View>
                   <View style={styles.bulletList}>
                     {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <Text key={idx} style={styles.bulletText}>
-                        {bullet}
-                      </Text>
+                      <React.Fragment key={idx}>
+                        <Text style={styles.bulletText}>{bullet}</Text>
+                      </React.Fragment>
                     ))}
                   </View>
                 </View>
@@ -243,10 +242,9 @@ export const MinimalPdf = ({
             <Text style={styles.sectionTitle}>Skills</Text>
             <View style={styles.skillRow}>
               {skills.map((skill) => (
-                // @ts-ignore
-                <Text key={skill.id} style={styles.skillBadge}>
-                  {skill.name}
-                </Text>
+                <React.Fragment key={skill.id}>
+                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -300,12 +298,13 @@ export const MinimalPdf = ({
                     const desc = cert.description_en || cert.description;
                     const date = formatDate(cert.date);
                     return (
-                      // @ts-ignore
-                      <Text key={i} style={styles.bulletText}>
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={styles.bulletText}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>
@@ -326,12 +325,13 @@ export const MinimalPdf = ({
                     const desc = award.description_en || award.description;
                     const date = formatDate(award.date);
                     return (
-                      // @ts-ignore
-                      <Text key={i} style={styles.bulletText}>
-                        • {name}
-                        {desc && desc !== "-" ? ` | ${desc}` : ""}
-                        {date ? ` (${date})` : ""}
-                      </Text>
+                      <React.Fragment key={i}>
+                        <Text style={styles.bulletText}>
+                          • {name}
+                          {desc && desc !== "-" ? ` | ${desc}` : ""}
+                          {date ? ` (${date})` : ""}
+                        </Text>
+                      </React.Fragment>
                     );
                   })}
                 </View>
@@ -354,11 +354,12 @@ export const MinimalPdf = ({
                       const name = lang.name_en || lang.name;
                       const desc = lang.description_en || lang.description;
                       return (
-                        // @ts-ignore
-                        <Text key={i} style={styles.bulletText}>
-                          • {name}
-                          {desc && desc !== "-" ? ` (${desc})` : ""}
-                        </Text>
+                        <React.Fragment key={i}>
+                          <Text style={styles.bulletText}>
+                            • {name}
+                            {desc && desc !== "-" ? ` (${desc})` : ""}
+                          </Text>
+                        </React.Fragment>
                       );
                     })}
                   </View>
