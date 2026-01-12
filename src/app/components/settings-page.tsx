@@ -294,12 +294,12 @@ export function SettingsPage({
                     런칭 기념 50% OFF
                   </Badge>
                   <span className="text-sm text-muted-foreground line-through decoration-slate-400">
-                    ₩19,900
+                    ₩25,800
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold text-blue-600">
-                    ₩9,900
+                    ₩12,900
                   </span>
                   <span className="text-sm text-muted-foreground">/월</span>
                 </div>

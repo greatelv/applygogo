@@ -291,8 +291,8 @@ const DraggableAdditionalItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="YYYY.MM"
-                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    data-placeholder="날짜 (YYYY.MM)"
+                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
                   >
                     {item.date}
                   </div>
@@ -346,8 +346,8 @@ const DraggableAdditionalItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="YYYY.MM"
-                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    data-placeholder="Date (YYYY.MM)"
+                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
                   >
                     {item.date}
                   </div>

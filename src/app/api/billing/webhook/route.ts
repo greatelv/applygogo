@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
             billingKey,
             orderName: "지원고고 PRO 정기 구독",
             customer: { id: customerId },
-            amount: { total: 9900 },
+            amount: { total: 12900 },
             currency: "KRW",
           },
           timeToPay: newEnd.toISOString(),

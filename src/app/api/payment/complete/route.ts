@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify amount (9900)
-    if (paymentData.amount.total !== 9900) {
+    // Verify amount (12900)
+    if (paymentData.amount.total !== 12900) {
       // In a real app, you might refund here automatically
       return NextResponse.json(
         { message: "Payment amount mismatch" },

@@ -102,7 +102,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <NextTopLoader
           color="#2563eb"
           initialPosition={0.08}

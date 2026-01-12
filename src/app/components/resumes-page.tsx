@@ -1,4 +1,4 @@
-import { FileText, Plus, Trash2 } from "lucide-react";
+import { FileText, Plus, Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -57,6 +57,7 @@ export function ResumesPage({
 }: ResumesPageProps) {
   const hasNoCredits = quota === 0;
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (resumes.length === 0) {
     return (
@@ -123,12 +124,23 @@ export function ResumesPage({
           const config =
             stepConfig[resume.currentStep] || statusConfig[resume.status];
 
+          const isItemDeleting = isDeleting && deleteId === resume.id;
+
           return (
             <div
               key={resume.id}
-              onClick={() => onSelectResume(resume.id)}
-              className="w-full bg-card border border-border rounded-lg p-4 hover:border-foreground/20 hover:shadow-sm transition-all text-left cursor-pointer group"
+              onClick={() => !isItemDeleting && onSelectResume(resume.id)}
+              className={`relative w-full bg-card border border-border rounded-lg p-4 transition-all text-left ${
+                isItemDeleting
+                  ? "opacity-80"
+                  : "hover:border-foreground/20 hover:shadow-sm cursor-pointer group"
+              }`}
             >
+              {isItemDeleting && (
+                <div className="absolute inset-0 bg-background/50 rounded-lg flex items-center justify-center z-10 transition-opacity">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              )}
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <div className="mt-1 shrink-0">
@@ -146,7 +158,7 @@ export function ResumesPage({
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <Badge variant={config.variant}>{config.label}</Badge>
-                  {onDelete && (
+                  {onDelete && !isItemDeleting && (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -168,7 +180,7 @@ export function ResumesPage({
 
       <AlertDialog
         open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
+        onOpenChange={(open) => !open && !isDeleting && setDeleteId(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -179,17 +191,26 @@ export function ResumesPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
-              onClick={() => {
+              disabled={isDeleting}
+              onClick={async (e) => {
+                e.preventDefault();
                 if (deleteId && onDelete) {
-                  onDelete(deleteId);
+                  try {
+                    setIsDeleting(true);
+                    await onDelete(deleteId);
+                    setDeleteId(null);
+                  } catch (error) {
+                    console.error(error);
+                  } finally {
+                    setIsDeleting(false);
+                  }
                 }
-                setDeleteId(null);
               }}
             >
-              삭제
+              {isDeleting ? "삭제 중..." : "삭제"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

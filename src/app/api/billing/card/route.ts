@@ -138,7 +138,7 @@ export async function PUT(req: NextRequest) {
               fullName: user.name || undefined,
               email: user.email || undefined,
             },
-            amount: { total: 9900 },
+            amount: { total: 12900 },
             currency: "KRW",
           },
           timeToPay: currentEnd.toISOString(),

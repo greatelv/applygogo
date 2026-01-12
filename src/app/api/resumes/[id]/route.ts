@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
@@ -236,21 +237,41 @@ export async function DELETE(
 
     const { id: resumeId } = await params;
 
-    // Verify ownership and delete
-    // Prisma cascade delete should handle child records if configured in schema
-    const deletedResume = await prisma.resume.deleteMany({
+    // 1. Get resume to check for file
+    const resume = await prisma.resume.findUnique({
       where: {
         id: resumeId,
         userId: session.user.id,
       },
     });
 
-    if (deletedResume.count === 0) {
-      return NextResponse.json(
-        { error: "Resume not found or unauthorized" },
-        { status: 404 }
-      );
+    if (!resume) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
+
+    // 2. Delete file from Storage if exists
+    if (resume.original_file_url) {
+      try {
+        const { error: storageError } = await supabaseAdmin.storage
+          .from("resumes")
+          .remove([resume.original_file_url]);
+
+        if (storageError) {
+          console.error("Supabase storage delete error:", storageError);
+        } else {
+          console.log("Deleted file from storage:", resume.original_file_url);
+        }
+      } catch (err) {
+        console.error("Unexpected error deleting from storage:", err);
+      }
+    }
+
+    // 3. Delete resume record from DB
+    await prisma.resume.delete({
+      where: {
+        id: resumeId,
+      },
+    });
 
     return NextResponse.json({
       success: true,

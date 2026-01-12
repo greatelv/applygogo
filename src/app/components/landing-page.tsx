@@ -151,7 +151,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                         지원고고
                       </div>
                       <div className="font-bold text-lg text-primary">
-                        9,900원
+                        12,900원
                       </div>
                     </div>
                   </div>
@@ -183,14 +183,14 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     <div className="space-y-2">
                       <div className="flex justify-between text-base">
                         <span className="font-bold text-primary">지원고고</span>
-                        <span className="font-bold text-primary">9,900원</span>
+                        <span className="font-bold text-primary">12,900원</span>
                       </div>
                       <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
                         <div className="h-full bg-primary w-[10%] rounded-full relative">
                           <div className="absolute -right-1 top-0 bottom-0 w-2 bg-white/50 blur-[2px] animate-pulse" />
                         </div>
                         <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] text-primary font-bold pr-3">
-                          90% SAVE
+                          87% SAVE
                         </span>
                       </div>
                     </div>
@@ -434,11 +434,11 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                     런칭 기념 50% OFF
                   </Badge>
                   <span className="text-sm text-muted-foreground line-through decoration-slate-400">
-                    ₩19,900
+                    ₩25,800
                   </span>
                 </div>
                 <div className="text-3xl font-bold text-blue-600">
-                  ₩9,900{" "}
+                  ₩12,900{" "}
                   <span className="text-base font-normal text-muted-foreground">
                     /월
                   </span>

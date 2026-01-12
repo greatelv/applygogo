@@ -175,19 +175,23 @@ const styles = StyleSheet.create({
 // Helper to format date YYYY-MM -> MMM YYYY
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
-  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
-    return "Present";
+  const cleanDate = dateStr.trim();
+  if (["-", "present", "현재"].includes(cleanDate.toLowerCase())) {
+    if (["present", "현재"].includes(cleanDate.toLowerCase())) return "Present";
+    return "";
+  }
 
   try {
-    const [year, month] = dateStr.split(/[-.]/);
-    if (!year || !month) return dateStr;
+    const [year, month] = cleanDate.split(/[-.]/);
+    if (!year || !month) return cleanDate;
     const date = new Date(parseInt(year), parseInt(month) - 1);
+    if (isNaN(date.getTime())) return cleanDate;
     return date.toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
     });
   } catch (e) {
-    return dateStr;
+    return cleanDate;
   }
 };
 
@@ -222,6 +226,25 @@ export const ModernPdf = ({
   const others = validItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
+
+  const renderAdditionalItem = (item: any, i: number) => {
+    const name = item.name_en || item.name || "";
+    const description = item.description_en || item.description || "";
+    const date = formatDate(item.date);
+
+    const parts = [];
+    if (name) parts.push(name);
+    if (description && description !== "-") parts.push(`| ${description}`);
+
+    return (
+      // @ts-ignore
+      <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
+        • {name} {description && description !== "-" ? `| ${description}` : ""}{" "}
+        {date ? `(${date})` : ""}
+      </Text>
+    );
+  };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -395,16 +418,22 @@ export const ModernPdf = ({
                   >
                     Certifications
                   </Text>
-                  {certifications.map((cert: any, i: number) => (
-                    // @ts-ignore
-                    <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
-                      • {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
-                        : ""}{" "}
-                      {cert.date ? `(${formatDate(cert.date)})` : ""}
-                    </Text>
-                  ))}
+                  {certifications.map((cert: any, i: number) => {
+                    const name = cert.name_en || cert.name;
+                    const desc = cert.description_en || cert.description;
+                    const date = formatDate(cert.date);
+                    return (
+                      // @ts-ignore
+                      <Text
+                        key={i}
+                        style={{ fontSize: 10.5, color: "#374151" }}
+                      >
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    );
+                  })}
                 </View>
               )}
               {awards.length > 0 && (
@@ -418,16 +447,22 @@ export const ModernPdf = ({
                   >
                     Awards
                   </Text>
-                  {awards.map((award: any, i: number) => (
-                    // @ts-ignore
-                    <Text key={i} style={{ fontSize: 10.5, color: "#374151" }}>
-                      • {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
-                        : ""}{" "}
-                      {award.date ? `(${formatDate(award.date)})` : ""}
-                    </Text>
-                  ))}
+                  {awards.map((award: any, i: number) => {
+                    const name = award.name_en || award.name;
+                    const desc = award.description_en || award.description;
+                    const date = formatDate(award.date);
+                    return (
+                      // @ts-ignore
+                      <Text
+                        key={i}
+                        style={{ fontSize: 10.5, color: "#374151" }}
+                      >
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    );
+                  })}
                 </View>
               )}
               {languages.length > 0 && (
@@ -444,16 +479,18 @@ export const ModernPdf = ({
                   <View
                     style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
                   >
-                    {languages.map((lang: any, i: number) => (
-                      <React.Fragment key={i}>
-                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
-                          • {lang.name_en || lang.name}{" "}
-                          {lang.description_en || lang.description
-                            ? `(${lang.description_en || lang.description})`
-                            : ""}
-                        </Text>
-                      </React.Fragment>
-                    ))}
+                    {languages.map((lang: any, i: number) => {
+                      const name = lang.name_en || lang.name;
+                      const desc = lang.description_en || lang.description;
+                      return (
+                        <React.Fragment key={i}>
+                          <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                            • {name}
+                            {desc && desc !== "-" ? ` (${desc})` : ""}
+                          </Text>
+                        </React.Fragment>
+                      );
+                    })}
                   </View>
                 </View>
               )}

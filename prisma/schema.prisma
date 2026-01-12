@@ -167,6 +167,7 @@ model User {
   subscription  Subscription?
   usage_logs    UsageLog[]
   paymentHistories PaymentHistory[]
+  feedbacks     Feedback[]
 
 
   @@map("users")
@@ -245,10 +246,24 @@ enum SubscriptionStatus {
   CANCELED
 }
 
+
 enum ItemType {
   CERTIFICATION
   AWARD
   LANGUAGE
   ACTIVITY
   OTHER
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  content   String
+  rating    Int
+  pageUrl   String?  @map("page_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("feedbacks")
 }

@@ -141,19 +141,23 @@ const styles = StyleSheet.create({
 // Helper to format date YYYY-MM -> MMM YYYY
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
-  if (dateStr.toLowerCase() === "present" || dateStr.toLowerCase() === "현재")
-    return "Present";
+  const cleanDate = dateStr.trim();
+  if (["-", "present", "현재"].includes(cleanDate.toLowerCase())) {
+    if (["present", "현재"].includes(cleanDate.toLowerCase())) return "Present";
+    return "";
+  }
 
   try {
-    const [year, month] = dateStr.split(/[-.]/);
-    if (!year || !month) return dateStr;
+    const [year, month] = cleanDate.split(/[-.]/);
+    if (!year || !month) return cleanDate;
     const date = new Date(parseInt(year), parseInt(month) - 1);
+    if (isNaN(date.getTime())) return cleanDate;
     return date.toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
     });
   } catch (e) {
-    return dateStr;
+    return cleanDate;
   }
 };
 
@@ -321,16 +325,19 @@ export const ClassicPdf = ({
                   >
                     Certifications
                   </Text>
-                  {certifications.map((cert: any, i: number) => (
-                    // @ts-ignore
-                    <Text key={i} style={styles.skillText}>
-                      • {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
-                        : ""}{" "}
-                      {cert.date ? `(${formatDate(cert.date)})` : ""}
-                    </Text>
-                  ))}
+                  {certifications.map((cert: any, i: number) => {
+                    const name = cert.name_en || cert.name;
+                    const desc = cert.description_en || cert.description;
+                    const date = formatDate(cert.date);
+                    return (
+                      // @ts-ignore
+                      <Text key={i} style={styles.skillText}>
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    );
+                  })}
                 </View>
               )}
               {awards.length > 0 && (
@@ -344,16 +351,19 @@ export const ClassicPdf = ({
                   >
                     Awards
                   </Text>
-                  {awards.map((award: any, i: number) => (
-                    // @ts-ignore
-                    <Text key={i} style={styles.skillText}>
-                      • {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
-                        : ""}{" "}
-                      {award.date ? `(${formatDate(award.date)})` : ""}
-                    </Text>
-                  ))}
+                  {awards.map((award: any, i: number) => {
+                    const name = award.name_en || award.name;
+                    const desc = award.description_en || award.description;
+                    const date = formatDate(award.date);
+                    return (
+                      // @ts-ignore
+                      <Text key={i} style={styles.skillText}>
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    );
+                  })}
                 </View>
               )}
               {languages.length > 0 && (
@@ -367,15 +377,17 @@ export const ClassicPdf = ({
                   >
                     Languages
                   </Text>
-                  {languages.map((lang: any, i: number) => (
-                    // @ts-ignore
-                    <Text key={i} style={styles.skillText}>
-                      • {lang.name_en || lang.name}{" "}
-                      {lang.description_en || lang.description
-                        ? `(${lang.description_en || lang.description})`
-                        : ""}
-                    </Text>
-                  ))}
+                  {languages.map((lang: any, i: number) => {
+                    const name = lang.name_en || lang.name;
+                    const desc = lang.description_en || lang.description;
+                    return (
+                      // @ts-ignore
+                      <Text key={i} style={styles.skillText}>
+                        • {name}
+                        {desc && desc !== "-" ? ` (${desc})` : ""}
+                      </Text>
+                    );
+                  })}
                 </View>
               )}
             </View>

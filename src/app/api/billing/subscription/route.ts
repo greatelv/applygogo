@@ -120,7 +120,7 @@ export async function PATCH(req: NextRequest) {
               // 필요하다면 이름, 이메일 추가
             },
             amount: {
-              total: 9900,
+              total: 12900,
             },
             currency: "KRW",
           },

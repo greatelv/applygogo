@@ -24,6 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
+import { LoadingOverlay } from "./ui/loading-overlay";
 
 interface TranslatedExperience {
   id: string;
@@ -86,6 +87,7 @@ export function ResumeDetailPage({
   updatedAt,
 }: ResumeDetailPageProps) {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Use props data
   const resume = {
@@ -263,7 +265,7 @@ export function ResumeDetailPage({
 
             <AlertDialog
               open={isDeleteAlertOpen}
-              onOpenChange={setIsDeleteAlertOpen}
+              onOpenChange={(open) => !isDeleting && setIsDeleteAlertOpen(open)}
             >
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -274,19 +276,33 @@ export function ResumeDetailPage({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>취소</AlertDialogCancel>
+                  <AlertDialogCancel disabled={isDeleting}>
+                    취소
+                  </AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive hover:bg-destructive/90"
-                    onClick={() => {
+                    disabled={isDeleting}
+                    onClick={async (e) => {
+                      e.preventDefault();
                       if (resumeId && onDelete) {
-                        onDelete(resumeId);
-                        toast.success("이력서가 삭제되었습니다");
+                        try {
+                          setIsDeleting(true);
+                          await onDelete(resumeId);
+                          toast.success("이력서가 삭제되었습니다");
+                          // Note: Usually onDelete triggers navigation, so we might unmount.
+                          // But if not, we should cleanup.
+                          onBack();
+                          setIsDeleteAlertOpen(false);
+                        } catch (error) {
+                          console.error(error);
+                          // Keep alert open on error so user can retry or cancel
+                        } finally {
+                          setIsDeleting(false);
+                        }
                       }
-                      onBack();
-                      setIsDeleteAlertOpen(false);
                     }}
                   >
-                    삭제
+                    {isDeleting ? "삭제 중..." : "삭제"}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -523,6 +539,8 @@ export function ResumeDetailPage({
           )}
         </div>
       </details>
+
+      {isDeleting && <LoadingOverlay message="이력서를 삭제하고 있습니다..." />}
     </div>
   );
 }

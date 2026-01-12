@@ -7,7 +7,10 @@ import {
   Plus,
   Settings,
   Info,
+  MessageSquarePlus,
 } from "lucide-react";
+import { useState } from "react";
+import { FeedbackModal } from "./feedback-modal";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 
@@ -35,6 +38,8 @@ export function Sidebar({
   onCloseMobile,
   onCreateNew,
 }: SidebarProps) {
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
   return (
     <>
       {/* Mobile overlay */}
@@ -126,7 +131,18 @@ export function Sidebar({
               })}
             </ul>
           </nav>
+
+          <div className="p-4 border-t border-border">
+            <button
+              onClick={() => setIsFeedbackOpen(true)}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-accent/50"
+            >
+              <MessageSquarePlus className="size-4 shrink-0" />
+              기능 요청 및 의견
+            </button>
+          </div>
         </div>
+        <FeedbackModal open={isFeedbackOpen} onOpenChange={setIsFeedbackOpen} />
       </aside>
     </>
   );

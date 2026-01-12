@@ -174,7 +174,10 @@ export const getResumeTranslationPrompt = (refinedData: any) => `
    - **입력에 5개 회사가 있으면 출력에도 5개 회사가 있어야 합니다.**
 
 2. **고유명사는 번역하지 않습니다**:
-   - 회사명: 한글을 **로마자 음역(transliteration)**만 하세요
+   - **이름(Name)**: 한글 이름은 **로마자 표기(Romanization)**만 하세요. (성+이름 순서 무관, Title Case)
+     * 예: "이문자" -> "Moon Ja Lee"
+     * 예: "홍길동" -> "Gil Dong Hong"
+   - **회사명(Company)**: 한글을 **로마자 음역(transliteration)**만 하세요
      * 예: "숨고" → "Soomgo"
      * 예: "송우아이엔티" → "Songwoo I&T" 또는 "Songwoo INT"
      * 예: "월급쟁이부자들" → "Wolgeupjaengiibujadeul"
@@ -211,9 +214,15 @@ ${JSON.stringify(refinedData, null, 2)}
 - 입력 데이터의 모든 회사가 출력에 포함되어 있는가?
 - 정렬 순서가 입력과 동일한가?
 - 경력이 누락되거나 추가되지 않았는가?
+- **personal_info.name_en**이 올바르게 생성되었는가?
 
 \`\`\`json
 {
+  "personal_info": {
+    "name_kr": "...",
+    "name_en": "Moon Ja Lee (Romanized English Name)",
+    "email": "...",
+    "phone": "...",
     "links": [
       { 
         "label": "LinkedIn", 
