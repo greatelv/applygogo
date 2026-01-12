@@ -114,6 +114,12 @@ export function UpgradeModal({
             <p className="text-3xl font-bold text-blue-600 mb-4">
               {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
               <span className="text-lg text-slate-600">원</span>
+              <span className="ml-2 text-sm text-slate-400/80 line-through font-normal">
+                {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+              </span>
+              <span className="ml-2 text-xs text-red-500 font-medium bg-red-50 px-1.5 py-0.5 rounded">
+                -50%
+              </span>
             </p>
             <ul className="space-y-2 mb-6 text-sm text-slate-600">
               <li className="flex items-center gap-2">
@@ -158,6 +164,12 @@ export function UpgradeModal({
             <p className="text-3xl font-bold text-purple-600 mb-4">
               {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
               <span className="text-lg text-slate-600">원</span>
+              <span className="ml-2 text-sm text-slate-400/80 line-through font-normal">
+                {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+              </span>
+              <span className="ml-2 text-xs text-red-500 font-medium bg-red-50 px-1.5 py-0.5 rounded">
+                -57%
+              </span>
             </p>
             <ul className="space-y-2 mb-6 text-sm text-slate-600">
               <li className="flex items-center gap-2">

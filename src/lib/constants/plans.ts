@@ -3,6 +3,7 @@ export const PLAN_PRODUCTS = {
     id: "PASS_7DAY",
     name: "ApplyGoGo 7일 이용권", // DB orderName matching
     price: 9900,
+    originalPrice: 19900, // Anchoring: ~50% (Half Price Strategy)
     credits: 50,
     days: 7,
   },
@@ -10,6 +11,7 @@ export const PLAN_PRODUCTS = {
     id: "PASS_30DAY",
     name: "ApplyGoGo 30일 이용권", // DB orderName matching
     price: 12900,
+    originalPrice: 29900, // Anchoring: ~57% (Global SaaS Value)
     credits: 300,
     days: 30,
   },

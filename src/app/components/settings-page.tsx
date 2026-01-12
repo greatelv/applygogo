@@ -240,12 +240,23 @@ export function SettingsPage({
 
       {/* --- Section 2: Pass Purchase --- */}
       <section className="space-y-6">
-        <h2
-          id="payment-section"
-          className="text-xl font-semibold border-b pb-2 scroll-mt-20"
-        >
-          이용권 구매
-        </h2>
+        <div className="flex items-center gap-3 border-b pb-2">
+          <h2
+            id="payment-section"
+            className="text-xl font-semibold scroll-mt-20"
+          >
+            이용권 구매
+          </h2>
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full blur opacity-30 animate-pulse"></div>
+            <Badge
+              variant="destructive"
+              className="relative text-xs px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 border-0 shadow-md"
+            >
+              🎉 오픈 기념 초특가
+            </Badge>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 30일 이용권 (추천) */}
@@ -267,10 +278,18 @@ export function SettingsPage({
               </div>
             )}
             <h3 className="text-lg font-bold mb-2 mt-2">30일 이용권</h3>
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold text-primary">
-                ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+            <div className="flex flex-col items-start">
+              <span className="text-sm text-muted-foreground/60 line-through">
+                ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
               </span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-primary">
+                  ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                </span>
+                <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
+                  57% OFF
+                </Badge>
+              </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6">
               <li className="flex items-center gap-2">
@@ -380,10 +399,18 @@ export function SettingsPage({
               </div>
             )}
             <h3 className="text-lg font-bold mb-2">7일 이용권</h3>
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold">
-                ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+            <div className="flex flex-col items-start mb-4">
+              <span className="text-sm text-muted-foreground/60 line-through">
+                ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
               </span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-foreground">
+                  ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                </span>
+                <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
+                  50% OFF
+                </Badge>
+              </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6">
               <li className="flex items-center gap-2">

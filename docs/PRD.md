@@ -1,7 +1,7 @@
 # 📂 Project Context: ApplyGogo (가칭) (Master PRD)
 
-> **Last Updated:** 2026-01-07
-> **Status:** Active Development (Phase 2 Preparation)
+> **Last Updated:** 2026-01-12
+> **Status:** Active Development (Beta Phase)
 
 ## 1. Product Overview (제품 개요)
 
@@ -41,49 +41,65 @@
 
 ## 3. Current Status (현재 구현 상태)
 
-현재 **프론트엔드 프로토타입 (v1.0)** 구현이 완료된 상태입니다.
+현재 **핵심 기능 구현 및 백엔드 연동**이 진행 중인 Beta 단계입니다.
 
 ### ✅ 구현 완료 사항
 
-- **워크플로우 전체:** PDF 업로드 → AI 처리(Mock) → 요약 편집 → 번역 편집(Split View) → 템플릿 선택 → 다운로드.
+- **워크플로우:** PDF 업로드 → AI 처리(Gemini API) → 요약 편집 → 번역 편집 → 템플릿 선택 → 다운로드.
 - **페이지:**
-  - 랜딩페이지, 로그인, 대시보드 (이력서 목록).
+  - 랜딩페이지, 로그인(Google Auth), 대시보드.
   - 워크플로우 페이지 (Upload, Processing, Edit, Preview).
-  - 계정 관리 (프로필, 설정, 결제 관리, 도움말).
+  - 계정 관리 (프로필, 설정, 이용권 결제 및 관리, 환불 요청).
+- **Backend & Infra:**
+  - **Auth:** Next-Auth (Auth.js 5) + Google Provider + Prisma Adapter.
+  - **Database:** PostgreSQL (Supabase) + Prisma ORM.
+  - **AI:** Google Gemini Pro API 연동 완료 (번역/요약).
+  - **Payment:** PortOne 결제 연동 완료 (이용권 구매).
 - **기능:**
   - **다크모드:** 시스템 연동 및 수동 토글 완벽 지원.
-  - **반응형:** 데스크톱(사이드바) / 모바일(햄버거 메뉴) 대응.
-  - **편집기:** `contenteditable` 기반의 실시간 텍스트 수정.
+  - **이용권 시스템:** Pass(기간제) + Credit(충전) 모델 구현.
+  - **피드백:** 유저 피드백 및 평점 수집 기능.
 
 ### 🚧 향후 개발 필요 (Backlog)
 
-- [ ] **Backend:** Next.js API Routes, Supabase 연동.
-- [ ] **AI:** Google Gemini API 연동 (요약/번역 실제 처리).
-- [ ] **PDF:** 실제 PDF 파일 파싱 및 생성 로직.
-- [ ] **Auth:** 실제 Google OAuth 연동.
-- [ ] **Payment:** PortOne 결제 연동.
+- [ ] **Refinement:** AI 번역 퀄리티 튜닝 및 프롬프트 개선.
+- [ ] **Mobile Optimization:** 모바일 웹 뷰 디테일 개선.
+- [ ] **Performance:** 대용량 PDF 처리 최적화.
 
 ---
 
 ## 4. Business Rules & Logic (비즈니스 로직)
 
-### 4.1 Subscription Model (2-Tier Strategy)
+### 4.1 Payment Model (Pass + Credit System)
 
-| Plan                | Price (VAT 포함) | Credits    | Storage | Template Access    | 비고          |
-| :------------------ | :--------------- | :--------- | :------ | :----------------- | :------------ |
-| **Free** (체험)     | 무료             | 월 **10**  | 1개     | Modern, Classic    | 서비스 체험용 |
-| **Pro** (합격 패스) | 월 **9,900원**   | 월 **100** | 무제한  | **All** (+Minimal) | 파워 유저용   |
+기존 구독 모델에서 **기간제 이용권(Pass)** 모델로 변경되었습니다.
+
+| 상품명 (Product)     | 가격 (VAT 포함) | 제공 혜택                  | 유효 기간 | 비고          |
+| :------------------- | :-------------- | :------------------------- | :-------- | :------------ |
+| **Free Plan** (기본) | 무료            | 가입 시 **10 크레딧** 제공 | 무제한    | 체험용        |
+| **7일 이용권**       | **9,900원**     | **50 크레딧** + 무제한 DB  | **7일**   | 단기 집중용   |
+| **30일 이용권**      | **12,900원**    | **300 크레딧** + 무제한 DB | **30일**  | 여유로운 준비 |
+| **크레딧 충전 (50)** | **3,900원**     | **50 크레딧** 추가         | 영구      | 부족 시 충전  |
 
 - **Credit 차감 정책:**
-  - **AI Processing (생성):** 5 크레딧 차감.
-  - **Re-translation (재번역):** 1 크레딧 차감.
-  - **Download:** 차감 없음.
+  - **AI Processing (이력서 생성):** 5 크레딧 차감.
+  - **Re-translation (AI 재번역):** 1 크레딧 차감.
+  - **Download:** 차감 없음(무제한).
 
 ### 4.2 Template Access Control
 
-- **Free 유저:** Modern, Classic 템플릿만 선택 가능.
-- **Pro 유저:** 모든 템플릿(Minimal 포함) 선택 가능.
-- **Upsell:** Free 유저가 Pro 템플릿 선택 시 업그레이드 유도 UI 표시.
+- **Free 유저:** **Modern** 템플릿만 선택 가능. (Classic, Minimal 잠금)
+- **Pass 유저 (7일/30일):** **All Access** (Modern, Classic, Minimal, Professional 등 모든 템플릿 사용 가능).
+- **Upsell:** Free 유저가 잠긴 템플릿 선택 시 이용권 구매 팝업 노출.
+
+### 4.3 Cancellation & Refund Policy (취소 및 환불 규정)
+
+- **환불 원칙:**
+  - **전액 환불:** 구매 후 **7일 이내**이며, **사용 내역(크레딧 차감, AI 생성 등)이 전혀 없는 경우**.
+  - **환불 불가:** 7일이 경과했거나, 1회라도 크레딧을 사용한 경우 (부분 환불 없음).
+- **프로세스:**
+  - 사용자가 '설정 > 결제 내역'에서 조건 충족 시 '환불 요청' 버튼 활성화.
+  - 즉시 환불 처리(Optimistic UI) 및 이용권 권한 회수.
 
 ---
 
@@ -92,143 +108,79 @@
 ### 5.1 Resume Creation Workflow (5 Steps)
 
 1.  **Step 1: Upload (업로드)**
-    - PDF 파일 드래그 앤 드롭 또는 선택.
-    - 유효성 검사 (10MB 제한).
+    - PDF 파일 드래그 앤 드롭 (5MB 제한).
 2.  **Step 2: AI Processing (처리)**
-    - 진행율 표시 (Parsing → Summary → Review → Translating).
-    - 6~7초 후 자동 전환 (Mock).
+    - Gemini AI를 통한 텍스트 추출, 요약, 번역 수행.
 3.  **Step 3: Edit Summary (요약 편집)**
-    - AI가 추출한 핵심 경력 요약 확인.
-    - 불릿 포인트 추가/삭제/수정.
+    - AI가 추출한 핵심 경력 요약 확인 및 수정 (Bullet points).
 4.  **Step 4: Edit Translation (번역 편집)**
     - **Split View:** 좌측(한글 원본) vs 우측(영문 번역).
-    - 영문 텍스트 직접 수정 가능.
+    - AI 번역 결과 수정 및 재번역 요청.
 5.  **Step 5: Preview & Download (완료)**
-    - 템플릿 변경에 따른 실시간 미리보기.
-    - 최종 PDF 다운로드.
+    - 템플릿 선택 (플랜에 따라 제한).
+    - 실시간 미리보기 및 PDF 다운로드.
 
-### 5.2 Key User Stories
+### 5.2 Key Features Update
 
-#### Epic 1: Auth & Onboarding
-
-- **Story 1.2:** 사용자는 Google 계정으로 원클릭 가입/로그인을 할 수 있어야 한다. (Auth.js)
-
-#### Epic 2: Resume Management
-
-- **Story 2.6:** 사용자는 대시보드에서 내 이력서 목록을 상태별(완료, 진행중)로 확인하고 관리할 수 있어야 한다.
-
-#### Epic 3: Payment
-
-- **Story 3.1:** 사용자는 '결제 관리' 페이지에서 자신의 플랜과 잔여 크레딧을 확인하고, Pro 플랜으로 업그레이드할 수 있어야 한다.
-- **Story 3.2 (Future):** 구독 해지 시 즉시 종료되지 않고, 결제 주기 말일(`cancel_at_period_end`)까지 권한이 유지되어야 한다.
+- **피드백 시스템:** 사이드바 메뉴를 통해 서비스 개선 요청 및 버그 리포트 제출 가능.
+- **결제 관리:** 이용권 구매 내역 확인, 영수증 출력(PortOne), 환불 요청 기능.
 
 ---
 
 ## 6. Technical Architecture (기술 아키텍처)
 
-### 6.1 Tech Stack (Migration Target: v2.0)
+### 6.1 Tech Stack (Current: v1.0)
 
-- **Frontend/Backend:** Next.js 16 (App Router), TypeScript.
-- **Rendering Strategy:**
-  - **Public Pages (Landing, Login)**: Server-Side Rendering (SSR) for SEO.
-  - **Authenticated Pages (/resumes/**)**: **Client-Side Rendering (SSR Disabled)\*\* via `next/dynamic` (`ssr: false`) to prevent hydration mismatches and handle complex client-side state.
-- **Styling:** Tailwind CSS v4, Shadcn UI.
-- **Database:** PostgreSQL (Supabase), Prisma ORM.
-- **AI:** Google Gemini Pro API (Model: `gemini-2.5-flash` - **DO NOT CHANGE**).
-- **Storage:** Supabase Storage (AWS S3 Compatible).
+- **Framework:** Next.js 16.1 (App Router).
+- **Language:** TypeScript 5.9.
+- **Authentication:** Auth.js (Next-Auth) v5 Beta.
+- **Styling:** Tailwind CSS v4, Shadcn UI, Motion (Framer Motion).
+- **Database:** PostgreSQL (Supabase), Prisma ORM v7.2.
+- **AI:** Google Gemini Pro API (`gemini-1.5-pro` or latest).
+- **PDF Generation:** `@react-pdf/renderer`.
+- **Payment:** PortOne V2 SDK.
 
-### 6.2 Database Schema (Prisma Draft)
+### 6.2 Database Schema (Current Status)
+
+`prisma/schema.prisma`의 주요 모델 구조입니다.
 
 ```prisma
-// User & Auth
 model User {
-  id            String    @id @default(uuid())
+  id            String    @id @default(cuid())
   email         String    @unique
-  name          String?
-  provider      String    // 'google'
-  providerId    String
-  createdAt     DateTime  @default(now())
+  // ...Auth fields...
 
-  subscription  Subscription?
+  // Pass & Credits
+  planType      String    @default("FREE") // 'FREE', 'PASS_7DAY', 'PASS_30DAY'
+  planExpiresAt DateTime? // 이용권 만료일
+  credits       Int       @default(10)
+
   resumes       Resume[]
+  paymentHistories PaymentHistory[]
 }
 
-// Subscription (2-Tier)
-model Plan {
-  code          String    @id // 'FREE', 'PRO'
-  monthlyQuota  Float
-  maxResumes    Int       // -1 for unlimited
-  subscriptions Subscription[]
-}
-
-model Subscription {
-  id                String    @id @default(uuid())
-  userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id])
-  planCode          String
-  plan              Plan      @relation(fields: [planCode], references: [code])
-
-  status            String    // 'ACTIVE', 'CANCELED', 'PAST_DUE'
-  currentPeriodEnd  DateTime
-  cancelAtPeriodEnd Boolean   @default(false)
-}
-
-// Resume Core
-model Resume {
-  id              String    @id @default(uuid())
+model PaymentHistory {
+  id              String   @id @default(cuid())
   userId          String
-  user            User      @relation(fields: [userId], references: [id])
-
-  status          String    // 'IDLE', 'PROCESSING', 'COMPLETED', 'FAILED'
-  currentStep     String    // 'UPLOAD', 'PROCESSING', 'EDIT', 'TEMPLATE', 'COMPLETED'
-  selectedTemplate String   // 'MODERN', 'CLASSIC', 'MINIMAL'
-
-  workExperiences WorkExperience[]
+  status          String   // 'PAID', 'REFUNDED', etc.
+  amount          Float
+  initialCredits  Int      @default(0) // 구매 당시 지급된 크레딧 (환불 검증용)
+  remainingCredits Int     @default(0) // 해당 결제로 지급된 크레딧 중 잔여량
+  // ...
 }
 
-### 4.3 Cancellation & Refund Policy (취소 및 환불 규정)
+model Resume {
+  id              String         @id @default(cuid())
+  status          ResumeStatus   @default(IDLE)
+  current_step    ResumeStep     @default(UPLOAD)
+  selected_template ResumeTemplate?
+  // ...Content fields (Summary, WorkExperience, etc.)
+}
 
-- **환불 원칙:**
-  - **전액 환불:** 구매 후 7일 이내이며 하위 이용 내역이 전혀 없는 경우 (크레딧 미사용, AI 처리 미수행).
-  - **환불 불가:** 7일이 경과했거나, 1회 이상의 크레딧 사용 또는 AI 처리가 발생한 경우 (디지털 콘텐츠 특성상 부분 환불 없음).
-- **프로세스:**
-  - 사용자가 설정 페이지에서 직접 '환불 요청' 버튼을 통해 접수.
-  - 조건 충족 시 API를 통해 자동 환불 및 이용권 권한 즉시 회수.
-
----
-
-## 7. Design System (디자인 시스템)
-
-`/src/styles/theme.css`에서 CSS 변수로 색상을 관리합니다. 디자인 일관성을 위해 Tailwind 유틸리티 대신 정의된 변수(`bg-background`, `text-foreground` 등)를 사용하세요.
-
-### 7.1 Key Colors
-
-- **Background:** `bg-background` (White / Black)
-- **Foreground:** `text-foreground` (Black / White)
-- **Primary:** `bg-primary` (Brand Color)
-- **Muted:** `bg-muted` (Subtle grays for secondary UI)
-- **Border:** `border-border`
-
-### 7.2 Dark Mode
-
-시스템 설정을 따르거나 유저가 명시적으로 토글할 수 있습니다 (`next-themes`). 모든 컴포넌트는 다크모드에서의 가독성을 고려하여 구현되어야 합니다.
-
----
-
-## 8. Directory Structure (참고)
-
-```
-
-src/
-├── app/
-│ ├── components/ # Presentational Components (Keep UI as is!)
-│ │ ├── ui/ # Shadcn UI Primitives
-│ │ ├── ...pages... # Page Templates
-│ └── ...
-├── styles/
-│ ├── theme.css # Design Tokens (CSS Variables)
-│ └── tailwind.css
-
-```
-
+model Feedback {
+  id        String   @id @default(cuid())
+  content   String
+  rating    Int
+  // ...
+}
 ```
