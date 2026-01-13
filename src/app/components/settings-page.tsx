@@ -359,7 +359,7 @@ export function SettingsPage({
                   : "default"
               }
               className="w-full mt-auto"
-              disabled={isUpgrading || hasActivePass}
+              disabled={true}
               onClick={() => onUpgrade("PASS_30DAY")}
               isLoading={isUpgrading}
             >
@@ -367,7 +367,7 @@ export function SettingsPage({
                 ? passType === "PASS_30DAY"
                   ? "현재 이용 중"
                   : "전환 불가"
-                : "구매하기"}
+                : "베타 기간 준비 중"}
             </Button>
           </div>
 
@@ -422,7 +422,7 @@ export function SettingsPage({
                   : "outline"
               }
               className="w-full mt-auto"
-              disabled={isUpgrading || hasActivePass}
+              disabled={true}
               onClick={() => onUpgrade("PASS_7DAY")}
               isLoading={isUpgrading}
             >
@@ -430,7 +430,7 @@ export function SettingsPage({
                 ? passType === "PASS_7DAY"
                   ? "현재 이용 중"
                   : "전환 불가"
-                : "구매하기"}
+                : "베타 기간 준비 중"}
             </Button>
           </div>
 
@@ -469,13 +469,23 @@ export function SettingsPage({
             <Button
               variant="outline"
               className="w-full mt-auto"
-              disabled={!hasActivePass || isUpgrading}
+              disabled={true}
               onClick={() => onUpgrade("REFILL_50")}
               isLoading={isUpgrading}
             >
-              충전하기
+              베타 기간 준비 중
             </Button>
           </div>
+        </div>
+
+        {/* Beta Period Notice */}
+        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
+          <p className="text-sm text-blue-900 dark:text-blue-100 text-center">
+            🎉 <strong>베타 런칭 기간</strong>에는 가입 후 제공되는{" "}
+            <strong>3일 무제한 이용권</strong>만 사용 가능합니다.
+            <br />
+            정식 출시 후 다양한 이용권을 만나보실 수 있습니다!
+          </p>
         </div>
 
         {/* Subtle Refund Policy Note for Free Users */}
