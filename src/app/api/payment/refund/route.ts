@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -19,26 +19,15 @@ export async function POST(req: NextRequest) {
 
     const secret = process.env.PORTONE_API_SECRET;
 
-    // 1. Get user and the specific payment using Raw SQL for robustness
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+    // 1. Get the payment securely
+    // We check both 'id' (PK) and 'paymentId' (PortOne ID) to be safe,
+    // ensuring it belongs to the authenticated user.
+    const targetPayment = await prisma.paymentHistory.findFirst({
+      where: {
+        userId: session.user.id,
+        OR: [{ id: paymentId }, { paymentId: paymentId }],
+      },
     });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const payments = await prisma.$queryRawUnsafe<any[]>(
-      `
-      SELECT * FROM payment_histories 
-      WHERE user_id = $1 AND payment_id = $2
-      LIMIT 1
-    `,
-      user.id,
-      paymentId
-    );
-
-    const targetPayment = payments[0];
 
     if (!targetPayment || targetPayment.status !== "PAID") {
       return NextResponse.json(
@@ -47,20 +36,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Map DB column names (snake_case) to expected property names (camelCase) if needed
-    // The Raw SQL query returns snake_case columns if they are defined so in DB
-    const initialCredits =
-      targetPayment.initial_credits ?? targetPayment.initialCredits;
-    const remainingCredits =
-      targetPayment.remaining_credits ?? targetPayment.remainingCredits;
-    const paymentIdPortOne =
-      targetPayment.payment_id ?? targetPayment.paymentId;
-    const paidAtRaw = targetPayment.paid_at ?? targetPayment.paidAt;
-    const orderName = targetPayment.order_name ?? targetPayment.orderName;
+    // Ensure we are working with Numbers
+    const initialCredits = Number(targetPayment.initialCredits);
+    const remainingCredits = Number(targetPayment.remainingCredits);
+    const paidAt = new Date(targetPayment.paidAt);
+    const orderName = targetPayment.orderName;
+    const paymentIdPortOne = targetPayment.paymentId;
 
     // 2. Eligibility Check
     // Rule 1: Within 7 days
-    const paidAt = new Date(paidAtRaw);
     const now = new Date();
     const diffDays = (now.getTime() - paidAt.getTime()) / (1000 * 60 * 60 * 24);
 
@@ -72,6 +56,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Rule 2: Credits must be unused (remaining == initial)
+    // Using explicit number comparison to avoid string logic errors
     if (remainingCredits < initialCredits) {
       return NextResponse.json(
         {
@@ -101,8 +86,6 @@ export async function POST(req: NextRequest) {
       const errorData = await refundRes.json().catch(() => ({}));
       console.error("PortOne refund failed:", errorData);
 
-      // 만약 이미 취소된 건이라면 (PortOne V2: ALREADY_CANCELLED 등)
-      // 우리 DB만 업데이트하면 되므로 성공으로 간주하고 진행
       const isAlreadyCancelled =
         refundRes.status === 409 ||
         JSON.stringify(errorData).includes("ALREADY_CANCELLED") ||
@@ -122,33 +105,35 @@ export async function POST(req: NextRequest) {
 
     // 4. Update Database
     await prisma.$transaction(async (tx) => {
-      // [Security] Double check remaining credits inside transaction using Raw SQL
-      const bucketsInsideTx = await tx.$queryRawUnsafe<any[]>(
-        `
-        SELECT remaining_credits, initial_credits
-        FROM payment_histories
-        WHERE id = $1
-      `,
-        targetPayment.id
-      );
+      // [Security] Double check remaining credits inside transaction
+      // Fetch latest state
+      const currentPayment = await tx.paymentHistory.findUnique({
+        where: { id: targetPayment.id },
+      });
 
-      const bucketInsideTx = bucketsInsideTx[0];
-      const currentRemaining =
-        bucketInsideTx?.remaining_credits ?? bucketInsideTx?.remainingCredits;
-      const currentInitial =
-        bucketInsideTx?.initial_credits ?? bucketInsideTx?.initialCredits;
+      if (!currentPayment) {
+        throw new Error("Payment record missing during transaction.");
+      }
 
-      if (!bucketInsideTx || currentRemaining < currentInitial) {
+      const currentRemaining = Number(currentPayment.remainingCredits);
+      const currentInitial = Number(currentPayment.initialCredits);
+
+      if (currentRemaining < currentInitial) {
         throw new Error("환불 처리 중 크레딧 사용이 감지되었습니다.");
       }
 
+      // Check if already refunded (double safety)
+      if (currentPayment.status === "REFUNDED") {
+        return; // Already processed
+      }
+
       const isPass = orderName.includes("이용권");
-      const creditsToRevoke = initialCredits;
+      const creditsToRevoke = currentInitial;
 
       // Update User State
       if (isPass) {
         await tx.user.update({
-          where: { id: user.id },
+          where: { id: session.user.id },
           data: {
             planType: "FREE",
             planExpiresAt: null,
@@ -159,7 +144,7 @@ export async function POST(req: NextRequest) {
         });
       } else {
         await tx.user.update({
-          where: { id: user.id },
+          where: { id: session.user.id },
           data: {
             credits: {
               decrement: creditsToRevoke,
@@ -168,22 +153,21 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Update Payment Status using Raw SQL
-      await tx.$executeRawUnsafe(
-        `
-        UPDATE payment_histories
-        SET status = 'REFUNDED', remaining_credits = 0
-        WHERE id = $1
-      `,
-        targetPayment.id
-      );
+      // Update Payment Status
+      await tx.paymentHistory.update({
+        where: { id: targetPayment.id },
+        data: {
+          status: "REFUNDED",
+          remainingCredits: 0,
+        },
+      });
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Refund error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: error.message || "Internal server error" },
       { status: 500 }
     );
   }
