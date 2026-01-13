@@ -62,28 +62,65 @@ export function ResumesPage({
   if (resumes.length === 0) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="text-center py-16">
-          <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-4">
-            <FileText className="size-8 text-muted-foreground" />
+        <div className="text-center py-20 px-4">
+          <div className="relative mb-8 mx-auto w-48 h-64 bg-background border rounded-lg shadow-xl overflow-hidden group hover:-translate-y-2 transition-transform duration-500">
+            {/* Resume Decoration */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary/50" />
+            <div className="p-4 space-y-3 opacity-50 blur-[0.5px] group-hover:blur-0 group-hover:opacity-100 transition-all duration-500">
+              <div className="flex gap-3">
+                <div className="size-8 rounded-full bg-muted" />
+                <div className="space-y-1.5 flex-1">
+                  <div className="h-2 w-1/2 bg-muted rounded" />
+                  <div className="h-1.5 w-1/3 bg-muted rounded" />
+                </div>
+              </div>
+              <div className="h-px bg-border my-2" />
+              <div className="space-y-1.5">
+                <div className="h-1.5 w-full bg-muted rounded" />
+                <div className="h-1.5 w-5/6 bg-muted rounded" />
+                <div className="h-1.5 w-4/6 bg-muted rounded" />
+              </div>
+              <div className="space-y-1.5 pt-2">
+                <div className="h-1.5 w-1/4 bg-primary/20 rounded mb-2" />
+                <div className="h-1.5 w-full bg-muted rounded" />
+                <div className="h-1.5 w-full bg-muted rounded" />
+              </div>
+            </div>
+            {/* Floating Plus Icon */}
+            <div className="absolute inset-0 flex items-center justify-center bg-background/10 backdrop-blur-[1px] group-hover:backdrop-blur-none bg-gradient-to-t from-background via-transparent to-transparent">
+              <div className="size-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg animate-pulse">
+                <Plus className="size-6" />
+              </div>
+            </div>
           </div>
-          <h2 className="text-xl mb-2">이력서가 없습니다</h2>
-          <p className="text-muted-foreground mb-6 text-sm">
-            첫 번째 이력서를 업로드하여 AI 기반 영문 변환을 시작하세요
+
+          <h2 className="text-2xl font-bold mb-3">
+            첫 번째 영문 이력서를 완성해보세요
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed">
+            한글 이력서만 올리면 AI가 분석부터 영문 번역, <br />
+            그리고 포맷팅까지 5분 안에 끝내드립니다.
           </p>
+
           {hasNoCredits ? (
             <div className="space-y-3">
-              <p className="text-sm text-destructive">
-                크레딧이 부족합니다. 플랜을 업그레이드하세요.
+              <p className="text-sm text-amber-600 font-medium">
+                크레딧이 부족하여 새 이력서를 만들 수 없습니다
               </p>
               {onUpgrade && (
-                <Button onClick={onUpgrade} size="lg">
-                  플랜 업그레이드
+                <Button onClick={onUpgrade} size="lg" className="rounded-full">
+                  플랜 업그레이드하기
                 </Button>
               )}
             </div>
           ) : (
-            <Button onClick={onCreateNew} size="lg">
-              <Plus className="size-5" />새 이력서 만들기
+            <Button
+              onClick={onCreateNew}
+              size="lg"
+              className="rounded-full px-8 h-12 text-base shadow-lg hover:shadow-primary/25 transition-all"
+            >
+              <Plus className="size-5 mr-2" />
+              무료로 시작하기
             </Button>
           )}
         </div>

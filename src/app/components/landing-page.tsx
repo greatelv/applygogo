@@ -6,6 +6,7 @@ import {
   Globe,
   Download,
 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ThemeToggle } from "./theme-toggle";
@@ -25,16 +26,22 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <img
-                src="/logo-for-light.svg"
-                alt="지원고고"
-                className="h-6 w-auto dark:hidden"
-              />
-              <img
-                src="/logo-for-dark.svg"
-                alt="지원고고"
-                className="h-6 w-auto hidden dark:block"
-              />
+              <div className="relative h-6 w-24">
+                <Image
+                  src="/logo-for-light.svg"
+                  alt="지원고고"
+                  fill
+                  className="object-contain dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logo-for-dark.svg"
+                  alt="지원고고"
+                  fill
+                  className="object-contain hidden dark:block"
+                  priority
+                />
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
@@ -58,13 +65,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </span>
             </div>
 
-            <h2 className="text-4xl lg:text-6xl tracking-tight mb-6">
+            <h1 className="text-4xl lg:text-6xl font-bold tracking-tight mb-6">
               한국어 이력서를
               <br />
               <span className="text-muted-foreground">
                 글로벌 스탠다드 영문으로
               </span>
-            </h2>
+            </h1>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               AI가 자동으로 <strong>국문 이력서 영문 변환</strong>을 수행하여,
@@ -215,8 +222,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-card border border-border rounded-lg p-6">
+          <ul className="grid md:grid-cols-3 gap-8">
+            <li className="bg-card border border-border rounded-lg p-6">
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Sparkles className="size-6 text-primary" />
               </div>
@@ -225,9 +232,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 Gemini Pro가 경력사항을 분석하여 핵심 성과 중심의 3~4줄 불릿
                 포인트로 재구성합니다. 채용 담당자가 원하는 형식 그대로.
               </p>
-            </div>
+            </li>
 
-            <div className="bg-card border border-border rounded-lg p-6">
+            <li className="bg-card border border-border rounded-lg p-6">
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Globe className="size-6 text-primary" />
               </div>
@@ -236,9 +243,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 Split View로 한글/영문을 동시에 비교하며 수정 가능. 직접
                 편집으로 완벽한 커스터마이징까지.
               </p>
-            </div>
+            </li>
 
-            <div className="bg-card border border-border rounded-lg p-6">
+            <li className="bg-card border border-border rounded-lg p-6">
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Download className="size-6 text-primary" />
               </div>
@@ -247,8 +254,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 Modern, Professional, Executive 등 다양한 템플릿 중 선택하여
                 즉시 PDF로 다운로드. 지원 기업에 바로 제출하세요.
               </p>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -262,8 +269,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
+          <ol className="grid md:grid-cols-3 gap-8">
+            <li className="text-center">
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 1
               </div>
@@ -271,9 +278,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-muted-foreground text-sm">
                 한국어 이력서 PDF를 드래그 앤 드롭으로 업로드
               </p>
-            </div>
+            </li>
 
-            <div className="text-center">
+            <li className="text-center">
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 2
               </div>
@@ -281,9 +288,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-muted-foreground text-sm">
                 요약과 번역을 AI가 자동으로 처리. 직접 수정도 가능
               </p>
-            </div>
+            </li>
 
-            <div className="text-center">
+            <li className="text-center">
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 3
               </div>
@@ -291,8 +298,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-muted-foreground text-sm">
                 마음에 드는 템플릿으로 PDF 내보내기 완료
               </p>
-            </div>
-          </div>
+            </li>
+          </ol>
         </div>
       </section>
 
@@ -400,11 +407,17 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <ul className="grid md:grid-cols-3 gap-6">
             {/* 무료 체험 */}
-            <div className="bg-card border border-border rounded-lg p-6 text-center flex flex-col">
+            <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-2">무료 체험</h4>
-              <div className="text-4xl font-bold mb-4">₩0</div>
+              <div className="flex flex-col items-center justify-center mb-4">
+                {/* Empty placeholder to match height of original price in other cards */}
+                <span className="text-lg font-medium text-transparent mb-1 min-h-[28px]">
+                  Placeholder
+                </span>
+                <div className="text-4xl font-bold">₩0</div>
+              </div>
               <p className="text-sm text-muted-foreground mb-6">
                 서비스를 체험해보세요
               </p>
@@ -434,13 +447,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               >
                 무료로 시작하기
               </Button>
-            </div>
+            </li>
 
             {/* 7일 이용권 */}
-            <div className="bg-card border border-border rounded-lg p-6 text-center flex flex-col">
+            <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-2">7일 이용권</h4>
               <div className="flex flex-col items-center justify-center mb-4">
-                <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1">
+                <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
                   ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
                 </span>
                 <div className="flex items-center gap-3">
@@ -486,16 +499,16 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               >
                 시작하기
               </Button>
-            </div>
+            </li>
 
             {/* 30일 이용권 (추천) */}
-            <div className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20 flex flex-col">
+            <li className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20 flex flex-col h-full">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
                 추천
               </div>
               <h4 className="text-lg font-semibold mb-2">30일 이용권</h4>
               <div className="flex flex-col items-center justify-center mb-4">
-                <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1">
+                <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
                   ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
                 </span>
                 <div className="flex items-center gap-3">
@@ -537,8 +550,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <Button className="w-full mt-auto" onClick={onGetStarted}>
                 시작하기
               </Button>
-            </div>
-          </div>
+            </li>
+          </ul>
           <p className="text-center text-sm text-muted-foreground mt-8">
             * 이력서 생성 시 5 크레딧, 재번역 시 무료(이용권 보유자) 또는 1
             크레딧(무료 사용자)이 차감됩니다.

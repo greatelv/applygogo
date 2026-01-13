@@ -9,7 +9,19 @@ import {
   Crown,
   CreditCard as PaymentIcon,
   Loader2,
+  Check,
 } from "lucide-react";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -95,15 +107,26 @@ export function SettingsPage({
     .toUpperCase()
     .slice(0, 2);
 
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [refundIdToConfirm, setRefundIdToConfirm] = useState<string | null>(
+    null
+  );
+
   const config = passConfig[hasActivePass ? "active" : "inactive"];
 
   const handleDeleteAccount = () => {
-    if (
-      confirm(
-        "정말 계정을 삭제하시겠습니까? 모든 데이터가 영구적으로 삭제됩니다."
-      )
-    ) {
-      onDeleteAccount?.();
+    setIsDeleteAlertOpen(true);
+  };
+
+  const confirmDeleteAccount = () => {
+    onDeleteAccount?.();
+    setIsDeleteAlertOpen(false);
+  };
+
+  const confirmRefund = () => {
+    if (refundIdToConfirm) {
+      onRefund?.(refundIdToConfirm);
+      setRefundIdToConfirm(null);
     }
   };
 
@@ -258,7 +281,7 @@ export function SettingsPage({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 30일 이용권 (추천) */}
           <div
-            className={`border-2 border-primary/30 rounded-lg p-6 bg-primary/5 relative ${
+            className={`border-2 border-primary/30 rounded-lg p-6 bg-primary/5 relative flex flex-col h-full ${
               hasActivePass && passType !== "PASS_30DAY"
                 ? "opacity-50 pointer-events-none"
                 : ""
@@ -275,8 +298,8 @@ export function SettingsPage({
               </div>
             )}
             <h3 className="text-lg font-bold mb-2 mt-2">30일 이용권</h3>
-            <div className="flex flex-col items-start">
-              <span className="text-sm text-muted-foreground/60 line-through">
+            <div className="flex flex-col items-start mb-6">
+              <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
               </span>
               <div className="flex items-center gap-2">
@@ -291,74 +314,18 @@ export function SettingsPage({
                 </Badge>
               </div>
             </div>
-            <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+            <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧 포함
+                <Check className="size-4 text-primary shrink-0" />
+                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧
               </li>
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                모든 템플릿 사용
+                <Check className="size-4 text-primary shrink-0" />
+                모든 템플릿 & 재번역 무제한
               </li>
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                재번역 무제한
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                30일간 이용
+                <Check className="size-4 text-primary shrink-0" />
+                30일간 자유 이용
               </li>
             </ul>
             <Button
@@ -367,7 +334,7 @@ export function SettingsPage({
                   ? "secondary"
                   : "default"
               }
-              className="w-full"
+              className="w-full mt-auto"
               disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_30DAY")}
             >
@@ -387,7 +354,7 @@ export function SettingsPage({
 
           {/* 7일 이용권 */}
           <div
-            className={`border rounded-lg p-6 relative ${
+            className={`border rounded-lg p-6 relative flex flex-col h-full ${
               hasActivePass && passType !== "PASS_7DAY"
                 ? "opacity-50 pointer-events-none"
                 : ""
@@ -398,9 +365,9 @@ export function SettingsPage({
                 현재 이용 중
               </div>
             )}
-            <h3 className="text-lg font-bold mb-2">7일 이용권</h3>
-            <div className="flex flex-col items-start mb-4">
-              <span className="text-sm text-muted-foreground/60 line-through">
+            <h3 className="text-lg font-bold mb-2 mt-2">7일 이용권</h3>
+            <div className="flex flex-col items-start mb-6">
+              <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
               </span>
               <div className="flex items-center gap-2">
@@ -415,74 +382,18 @@ export function SettingsPage({
                 </Badge>
               </div>
             </div>
-            <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+            <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧 포함
+                <Check className="size-4 text-primary shrink-0" />
+                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧
               </li>
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                모든 템플릿 사용
+                <Check className="size-4 text-primary shrink-0" />
+                모든 템플릿 & 재번역 무제한
               </li>
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                재번역 무제한
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                7일간 이용
+                <Check className="size-4 text-primary shrink-0" />
+                7일간 맛보기 이용
               </li>
             </ul>
             <Button
@@ -491,7 +402,7 @@ export function SettingsPage({
                   ? "secondary"
                   : "outline"
               }
-              className="w-full"
+              className="w-full mt-auto"
               disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_7DAY")}
             >
@@ -511,89 +422,39 @@ export function SettingsPage({
 
           {/* 크레딧 충전 */}
           <div
-            className={`border rounded-lg p-6 ${
+            className={`border rounded-lg p-6 flex flex-col h-full ${
               !hasActivePass ? "opacity-50" : ""
             }`}
           >
-            <h3 className="text-lg font-bold mb-2">크레딧 충전</h3>
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold">
-                ₩{PLAN_PRODUCTS.CREDIT_50.price.toLocaleString()}
+            <h3 className="text-lg font-bold mb-2 mt-2">크레딧 충전</h3>
+            <div className="flex flex-col items-start mb-6">
+              {/* Empty placeholder to match height of original price in other cards */}
+              <span className="text-sm text-transparent min-h-[20px]">
+                Placeholder
               </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-bold">
+                  ₩{PLAN_PRODUCTS.CREDIT_50.price.toLocaleString()}
+                </span>
+              </div>
             </div>
-            <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+            <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                {PLAN_PRODUCTS.CREDIT_50.credits} 크레딧 즉시 충전
+                <Check className="size-4 text-primary shrink-0" />
+                {PLAN_PRODUCTS.CREDIT_50.credits} 크레딧 충전
               </li>
               <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                기간 연장 없음
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-primary"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                크레딧만 추가
+                <Check className="size-4 text-primary shrink-0" />
+                기간 제한 없음
               </li>
               <li className="flex items-center gap-2 text-amber-600">
-                <div className="rounded-full bg-amber-100 p-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-2 text-amber-600"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
+                <Check className="size-4 text-amber-600 shrink-0" />
                 이용권 필요
               </li>
             </ul>
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full mt-auto"
               disabled={!hasActivePass || isUpgrading}
               onClick={() => onUpgrade("REFILL_50")}
             >
@@ -732,13 +593,7 @@ export function SettingsPage({
                                   className="h-7 text-[11px] text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                                   disabled={isRefunding}
                                   onClick={() => {
-                                    if (
-                                      confirm(
-                                        `[${item.name}] 환불을 진행하시겠습니까? 환불 시 즉시 권한과 크레딧이 회수됩니다.`
-                                      )
-                                    ) {
-                                      onRefund?.(item.id);
-                                    }
+                                    setRefundIdToConfirm(item.id);
                                   }}
                                 >
                                   {isRefunding ? (
@@ -796,6 +651,53 @@ export function SettingsPage({
           </div>
         </div>
       </section>
+
+      {/* Account Deletion Alert */}
+      <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>정말 계정을 삭제하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              계정을 삭제하면 모든 이력서 데이터와 이용권/크레딧 정보가
+              영구적으로 삭제되며 복구할 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              onClick={confirmDeleteAccount}
+            >
+              삭제
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Refund Alert */}
+      <AlertDialog
+        open={!!refundIdToConfirm}
+        onOpenChange={(open) => !open && setRefundIdToConfirm(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>환불을 진행하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              환불 시 해당 이용권의 모든 혜택(크레딧 및 기능)이 즉시 회수됩니다.
+              이 작업은 되돌릴 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              onClick={confirmRefund}
+            >
+              환불하기
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
