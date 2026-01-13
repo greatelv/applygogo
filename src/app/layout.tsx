@@ -82,7 +82,8 @@ export const metadata: Metadata = {
   verification: {
     google: "google-site-verification-id", // TODO: Google Search Console ID 입력
     other: {
-      "naver-site-verification": "naver-site-verification-id", // TODO: Naver Search Advisor ID 입력
+      "naver-site-verification": "61cfbc317ca630d31a228bf870264b602c553a67",
+      "msvalidate.01": "E2E86ADA9E417FFA0BA39FE15B56ABB7",
     },
   },
   icons: {

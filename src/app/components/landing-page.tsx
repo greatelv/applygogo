@@ -402,13 +402,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* 무료 체험 */}
-            <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="bg-card border border-border rounded-lg p-6 text-center flex flex-col">
               <h4 className="text-lg font-semibold mb-2">무료 체험</h4>
               <div className="text-4xl font-bold mb-4">₩0</div>
               <p className="text-sm text-muted-foreground mb-6">
                 서비스를 체험해보세요
               </p>
-              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
                   <span className="font-semibold text-foreground">10</span>{" "}
@@ -429,7 +429,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </ul>
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full mt-auto"
                 onClick={onGetStarted}
               >
                 무료로 시작하기
@@ -437,7 +437,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
 
             {/* 7일 이용권 */}
-            <div className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="bg-card border border-border rounded-lg p-6 text-center flex flex-col">
               <h4 className="text-lg font-semibold mb-2">7일 이용권</h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1">
@@ -458,7 +458,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-sm text-muted-foreground mb-6">
                 일주일 동안 모든 기능 사용
               </p>
-              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
                   <span className="font-semibold text-foreground">
@@ -481,7 +481,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </ul>
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full mt-auto"
                 onClick={onGetStarted}
               >
                 시작하기
@@ -489,7 +489,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
 
             {/* 30일 이용권 (추천) */}
-            <div className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20">
+            <div className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20 flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
                 추천
               </div>
@@ -513,7 +513,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               <p className="text-sm text-muted-foreground mb-6">
                 한 달 동안 모든 기능 사용
               </p>
-              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left">
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
                   <span className="font-semibold text-foreground">
@@ -534,7 +534,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   30일간 이용
                 </li>
               </ul>
-              <Button className="w-full" onClick={onGetStarted}>
+              <Button className="w-full mt-auto" onClick={onGetStarted}>
                 시작하기
               </Button>
             </div>
