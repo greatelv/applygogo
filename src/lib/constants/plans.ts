@@ -15,6 +15,13 @@ export const PLAN_PRODUCTS = {
     credits: 300,
     days: 30,
   },
+  PASS_BETA_3DAY: {
+    id: "PASS_BETA_3DAY",
+    name: "베타 런칭 기념 3일 무제한",
+    price: 0,
+    credits: 50,
+    days: 3,
+  },
   CREDIT_50: {
     id: "CREDIT_50", // Not a planType, but a product ID
     name: "크레딧 충전 50", // DB orderName matching

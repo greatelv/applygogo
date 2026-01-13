@@ -337,3 +337,26 @@ export async function updateResumeAction(
     throw new Error("이력서 수정 사항을 저장하는 중 오류가 발생했습니다.");
   }
 }
+
+export async function deleteAccount() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  try {
+    // Cascade delete is handled by Prisma schema
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
+    throw new Error("계정 삭제 중 오류가 발생했습니다.");
+  }
+
+  // Signout should be outside the try-catch block if it redirects
+  await signOut({ redirectTo: "/" });
+  return { success: true };
+}

@@ -74,6 +74,7 @@ const passConfig = {
 const passLabels: Record<string, string> = {
   PASS_7DAY: "7일 이용권",
   PASS_30DAY: "30일 이용권",
+  PASS_BETA_3DAY: "베타 런칭 기념 3일 무제한",
   FREE: "무료",
 };
 
@@ -108,6 +109,8 @@ export function SettingsPage({
     .slice(0, 2);
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  const [isPassWarningOpen, setIsPassWarningOpen] = useState(false);
   const [refundIdToConfirm, setRefundIdToConfirm] = useState<string | null>(
     null
   );
@@ -115,7 +118,17 @@ export function SettingsPage({
   const config = passConfig[hasActivePass ? "active" : "inactive"];
 
   const handleDeleteAccount = () => {
-    setIsDeleteAlertOpen(true);
+    if (hasActivePass) {
+      setIsPassWarningOpen(true);
+    } else {
+      setIsDeleteAlertOpen(true);
+    }
+  };
+
+  const handlePassWarningConfirm = () => {
+    setIsPassWarningOpen(false);
+    // 잠시 대기 후 삭제 확인 모달 오픈 (UX 자연스러움을 위해)
+    setTimeout(() => setIsDeleteAlertOpen(true), 200);
   };
 
   const confirmDeleteAccount = () => {
@@ -648,14 +661,50 @@ export function SettingsPage({
         </div>
       </section>
 
+      {/* Pass Warning Alert (1st Confirmation for Paid Users) */}
+      <AlertDialog open={isPassWarningOpen} onOpenChange={setIsPassWarningOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>사용 중인 이용권이 있습니다!</AlertDialogTitle>
+            <AlertDialogDescription>
+              아직 만료되지 않은 유료 이용권이 남아있습니다.
+              <br />
+              지금 탈퇴하시면 <strong>잔여 이용권과 혜택이 모두 소멸</strong>
+              되며, 환불받으실 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소하고 더 이용하기</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              onClick={handlePassWarningConfirm}
+            >
+              포기하고 삭제 진행
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Account Deletion Alert */}
       <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>정말 계정을 삭제하시겠습니까?</AlertDialogTitle>
-            <AlertDialogDescription>
-              계정을 삭제하면 모든 이력서 데이터와 이용권/크레딧 정보가
-              영구적으로 삭제되며 복구할 수 없습니다.
+            <AlertDialogTitle className="text-destructive">
+              정말 계정을 삭제하시겠습니까? (복구 불가)
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                계정 삭제 시 다음 데이터가 <strong>모두 영구 삭제</strong>되며,
+                절대 복구할 수 없습니다.
+              </p>
+              <ul className="list-disc list-inside text-xs text-muted-foreground bg-muted/50 p-2 rounded">
+                <li>생성한 모든 이력서 및 자기소개서 데이터</li>
+                <li>결제 내역 및 영수증 정보</li>
+                <li>보유 중인 모든 이용권 및 크레딧</li>
+              </ul>
+              <p className="font-medium text-destructive pt-2">
+                그래도 삭제하시겠습니까?
+              </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

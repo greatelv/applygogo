@@ -12,6 +12,14 @@ export default async function Page() {
     orderBy: { updated_at: "desc" },
   });
 
+  // Fetch full user details to check plan
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { planType: true },
+  });
+
+  const showBetaBanner = user?.planType === "PASS_BETA_3DAY";
+
   const mappedResumes = resumes.map((r) => ({
     id: r.id,
     title: r.title,
@@ -33,5 +41,11 @@ export default async function Page() {
   // Placeholder for quota
   const quota = 10;
 
-  return <ResumesClient resumes={mappedResumes} quota={quota} />;
+  return (
+    <ResumesClient
+      resumes={mappedResumes}
+      quota={quota}
+      showBetaBanner={showBetaBanner}
+    />
+  );
 }

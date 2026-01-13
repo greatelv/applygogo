@@ -1,0 +1,619 @@
+{
+  "gamsgo": {
+    "id": "gamsgo",
+    "name": "Gamsgo (겜스고)",
+    "category": "Subscription",
+    "description": "넷플릭스, 유튜브 프리미엄, 스포티파이 등 다양한 글로벌 구독 서비스를 저렴한 가격에 이용할 수 있는 계정 공유 플랫폼입니다.",
+    "logo": "/service-icons/gamsgo.png",
+    "cta": {
+      "text": "Gamsgo 최저가 보러가기",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "프로모션 코드를 적용하여 추가 할인을 받으세요.",
+      "color": "#FF4D4F"
+    },
+    "isFromGamsgo": true
+  },
+  "youtube": {
+    "id": "youtube",
+    "name": "YouTube Premium (유튜브 프리미엄)",
+    "category": "Streaming",
+    "description": "광고 없는 YouTube 시청, YouTube Music, 백그라운드 재생 등을 제공하는 프리미엄 구독 서비스입니다.",
+    "logo": "/service-icons/youtube.png",
+    "cta": {
+      "text": "유튜브 프리미엄 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/youtube/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF0000"
+    },
+    "isFromGamsgo": true
+  },
+  "netflix": {
+    "id": "netflix",
+    "name": "Netflix (넷플릭스)",
+    "category": "Streaming",
+    "description": "전 세계 최대 규모의 OTT 스트리밍 서비스로 영화, 드라마, 다큐멘터리 등 다양한 콘텐츠를 제공합니다.",
+    "logo": "/service-icons/netflix.png",
+    "cta": {
+      "text": "넷플릭스 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/netflix-web/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#E50914"
+    },
+    "isFromGamsgo": true
+  },
+  "netflix-web": {
+    "id": "netflix-web",
+    "name": "Netflix Web (넷플릭스 웹)",
+    "category": "Streaming",
+    "description": "웹 브라우저 전용 넷플릭스 계정으로 더욱 저렴한 가격에 이용할 수 있습니다.",
+    "logo": "/service-icons/netflix-web.png",
+    "cta": {
+      "text": "넷플릭스 웹 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#E50914"
+    },
+    "isFromGamsgo": true
+  },
+  "disneyplus": {
+    "id": "disneyplus",
+    "name": "Disney+ (디즈니 플러스)",
+    "category": "Streaming",
+    "description": "디즈니, 픽사, 마블, 스타워즈, 내셔널 지오그래픽 등의 콘텐츠를 제공하는 스트리밍 서비스입니다.",
+    "logo": "/service-icons/disneyplus.png",
+    "cta": {
+      "text": "디즈니+ 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/disneyplus/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#113CCF"
+    },
+    "isFromGamsgo": true
+  },
+  "tving": {
+    "id": "tving",
+    "name": "TVING (티빙)",
+    "category": "Streaming",
+    "description": "CJ ENM의 국내 OTT 서비스로 드라마, 예능, 영화 등 다양한 한국 콘텐츠를 제공합니다.",
+    "logo": "/service-icons/tving.png",
+    "cta": {
+      "text": "티빙 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/tving/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF153C"
+    },
+    "isFromGamsgo": true
+  },
+  "wavve": {
+    "id": "wavve",
+    "name": "Wavve (웨이브)",
+    "category": "Streaming",
+    "description": "지상파 3사(KBS, MBC, SBS)의 콘텐츠를 제공하는 국내 OTT 스트리밍 서비스입니다.",
+    "logo": "/service-icons/wavve.png",
+    "cta": {
+      "text": "웨이브 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/wavve/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#1E90FF"
+    },
+    "isFromGamsgo": true
+  },
+  "watcha": {
+    "id": "watcha",
+    "name": "Watcha (왓챠)",
+    "category": "Streaming",
+    "description": "영화와 드라마 추천에 특화된 국내 OTT 서비스로 독점 오리지널 콘텐츠를 제공합니다.",
+    "logo": "/service-icons/watcha.png",
+    "cta": {
+      "text": "왓챠 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/watcha/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF0558"
+    },
+    "isFromGamsgo": true
+  },
+  "f1tv": {
+    "id": "f1tv",
+    "name": "F1 TV Pro",
+    "category": "Streaming",
+    "description": "F1 레이싱의 모든 순간을 라이브로 시청할 수 있는 공식 스트리밍 서비스입니다.",
+    "logo": "/service-icons/f1tv.png",
+    "cta": {
+      "text": "F1 TV Pro 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#E10600"
+    },
+    "isFromGamsgo": true
+  },
+  "crunchyroll": {
+    "id": "crunchyroll",
+    "name": "Crunchyroll (크런치롤)",
+    "category": "Streaming",
+    "description": "전 세계 최대의 애니메이션 스트리밍 서비스로 최신 일본 애니메이션을 제공합니다.",
+    "logo": "/service-icons/crunchyroll.png",
+    "cta": {
+      "text": "크런치롤 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#F47521"
+    },
+    "isFromGamsgo": true
+  },
+  "spotify": {
+    "id": "spotify",
+    "name": "Spotify (스포티파이)",
+    "category": "Music",
+    "description": "전 세계 최대 음악 스트리밍 서비스로 수천만 곡의 음악과 팟캐스트를 제공합니다.",
+    "logo": "/service-icons/spotify.png",
+    "cta": {
+      "text": "스포티파이 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/spotify/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#1DB954"
+    },
+    "isFromGamsgo": true
+  },
+  "soundcloud": {
+    "id": "soundcloud",
+    "name": "SoundCloud (사운드클라우드)",
+    "category": "Music",
+    "description": "인디 아티스트와 신예 뮤지션의 음악을 발견할 수 있는 음악 플랫폼입니다.",
+    "logo": "/service-icons/soundcloud.png",
+    "cta": {
+      "text": "사운드클라우드 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF5500"
+    },
+    "isFromGamsgo": true
+  },
+  "chatgpt": {
+    "id": "chatgpt",
+    "name": "ChatGPT Plus",
+    "category": "AI",
+    "description": "OpenAI의 고급 AI 챗봇 서비스로 GPT-4를 사용할 수 있는 프리미엄 플랜입니다.",
+    "logo": "/service-icons/chatgpt.png",
+    "cta": {
+      "text": "ChatGPT Plus 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/chatgpt/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#10A37F"
+    },
+    "isFromGamsgo": true
+  },
+  "gemini": {
+    "id": "gemini",
+    "name": "Gemini Pro (제미나이 프로)",
+    "category": "AI",
+    "description": "Google의 차세대 AI 모델 Gemini를 사용할 수 있는 프리미엄 서비스입니다.",
+    "logo": "/service-icons/gemini.png",
+    "cta": {
+      "text": "Gemini Pro 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/gemini-recharge/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#4285F4"
+    },
+    "isFromGamsgo": true
+  },
+  "claude": {
+    "id": "claude",
+    "name": "Claude Pro (클로드 프로)",
+    "category": "AI",
+    "description": "Anthropic의 고급 AI 어시스턴트로 안전하고 유용한 대화를 제공합니다.",
+    "logo": "/service-icons/claude.png",
+    "cta": {
+      "text": "Claude Pro 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#D97757"
+    },
+    "isFromGamsgo": true
+  },
+  "midjourney": {
+    "id": "midjourney",
+    "name": "Midjourney (미드저니)",
+    "category": "AI",
+    "description": "텍스트로 고품질 이미지를 생성할 수 있는 AI 이미지 생성 서비스입니다.",
+    "logo": "/service-icons/midjourney.png",
+    "cta": {
+      "text": "미드저니 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/midjourney_official/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "suno": {
+    "id": "suno",
+    "name": "Suno (수노)",
+    "category": "AI",
+    "description": "AI 기반 음악 생성 서비스로 텍스트 프롬프트로 음악을 만들 수 있습니다.",
+    "logo": "/service-icons/suno.png",
+    "cta": {
+      "text": "Suno 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/suno/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF6B6B"
+    },
+    "isFromGamsgo": true
+  },
+  "grok": {
+    "id": "grok",
+    "name": "Grok (그록)",
+    "category": "AI",
+    "description": "xAI의 AI 챗봇으로 실시간 정보 접근과 유머러스한 대화를 제공합니다.",
+    "logo": "/service-icons/grok.png",
+    "cta": {
+      "text": "Grok 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/grok/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "gamma": {
+    "id": "gamma",
+    "name": "Gamma AI (감마 AI)",
+    "category": "AI",
+    "description": "AI 기반 프레젠테이션 생성 도구로 빠르게 전문적인 슬라이드를 만들 수 있습니다.",
+    "logo": "/service-icons/gamma.png",
+    "cta": {
+      "text": "Gamma AI 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/gamma_ai/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#7C3AED"
+    },
+    "isFromGamsgo": true
+  },
+  "perplexity": {
+    "id": "perplexity",
+    "name": "Perplexity AI (퍼플렉시티 AI)",
+    "category": "AI",
+    "description": "실시간 정보 검색과 답변 출처를 제공하는 AI 답변 엔진으로, 더욱 정확하고 깊이 있는 검색 경험을 제공합니다.",
+    "logo": "/service-icons/perplexity.png",
+    "cta": {
+      "text": "Perplexity AI 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/perplexity_ai/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#20B2AA"
+    },
+    "isFromGamsgo": true
+  },
+  "manus": {
+    "id": "manus",
+    "name": "Manus (마누스)",
+    "category": "AI",
+    "description": "복잡한 작업을 스스로 계획하고 실행하는 범용 AI 에이전트로, 생산성을 비약적으로 높여주는 차세대 AI 서비스입니다.",
+    "logo": "/service-icons/manus.png",
+    "cta": {
+      "text": "Manus 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/manus/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "capcut": {
+    "id": "capcut",
+    "name": "CapCut Pro (캡컷 프로)",
+    "category": "Software",
+    "description": "강력한 비디오 편집 기능을 제공하는 모바일 및 데스크톱 영상 편집 앱입니다.",
+    "logo": "/service-icons/capcut.png",
+    "cta": {
+      "text": "캡컷 프로 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/capcut/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "duolingo": {
+    "id": "duolingo",
+    "name": "Duolingo (듀오링고)",
+    "category": "Education",
+    "description": "게임처럼 재미있게 언어를 배울 수 있는 세계 최대의 언어 학습 플랫폼입니다.",
+    "logo": "/service-icons/duolingo.png",
+    "cta": {
+      "text": "듀오링고 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/duolingo/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#58CC02"
+    },
+    "isFromGamsgo": true
+  },
+  "adobe": {
+    "id": "adobe",
+    "name": "Adobe Creative Cloud",
+    "category": "Software",
+    "description": "Photoshop, Illustrator, Premiere Pro 등 전문 크리에이티브 도구를 제공하는 구독 서비스입니다.",
+    "logo": "/service-icons/adobe.png",
+    "cta": {
+      "text": "Adobe CC 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/adobe1/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#FF0000"
+    },
+    "isFromGamsgo": true
+  },
+  "office365": {
+    "id": "office365",
+    "name": "Office 365 (오피스 365)",
+    "category": "Software",
+    "description": "Word, Excel, PowerPoint 등 Microsoft의 생산성 도구를 클라우드에서 사용할 수 있는 서비스입니다.",
+    "logo": "/service-icons/office365.png",
+    "cta": {
+      "text": "오피스 365 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/office365/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#D83B01"
+    },
+    "isFromGamsgo": true
+  },
+  "canva": {
+    "id": "canva",
+    "name": "Canva (캔바)",
+    "category": "Software",
+    "description": "누구나 쉽게 전문적인 디자인을 만들 수 있는 온라인 그래픽 디자인 플랫폼입니다.",
+    "logo": "/service-icons/canva.png",
+    "cta": {
+      "text": "Canva 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/cannva/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#00C4CC"
+    },
+    "isFromGamsgo": true
+  },
+  "notion": {
+    "id": "notion",
+    "name": "Notion (노션)",
+    "category": "Software",
+    "description": "노트, 데이터베이스, 프로젝트 관리를 하나로 통합한 올인원 워크스페이스입니다.",
+    "logo": "/service-icons/notion.png",
+    "cta": {
+      "text": "Notion 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/notion/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "figma": {
+    "id": "figma",
+    "name": "Figma (피그마)",
+    "category": "Software",
+    "description": "협업 기반의 UI/UX 디자인 도구로 실시간으로 팀원과 함께 작업할 수 있습니다.",
+    "logo": "/service-icons/figma.png",
+    "cta": {
+      "text": "Figma 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#F24E1E"
+    },
+    "isFromGamsgo": true
+  },
+  "nordvpn": {
+    "id": "nordvpn",
+    "name": "NordVPN (노드VPN)",
+    "category": "VPN",
+    "description": "강력한 보안과 빠른 속도를 자랑하는 글로벌 1위 VPN 서비스입니다.",
+    "logo": "/service-icons/nordvpn.png",
+    "cta": {
+      "text": "NordVPN 할인 혜택 받기",
+      "url": "https://go.nordvpn.net/aff_c?offer_id=15&aff_id=135682&url_id=23180",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#0057FF"
+    }
+  },
+  "nordpass": {
+    "id": "nordpass",
+    "name": "NordPass (노드패스)",
+    "category": "Security",
+    "description": "비밀번호를 안전하게 저장하고 관리해주는 강력한 패스워드 매니저입니다.",
+    "logo": "/service-icons/nordpass.png",
+    "cta": {
+      "text": "NordPass 시작하기",
+      "url": "https://nordpass.com/password-manager/special/?utm_source=koopon&utm_medium=affiliate",
+      "description": "복잡한 비밀번호를 기억할 필요 없이 안전하게 로그인하세요.",
+      "color": "#38A88E"
+    }
+  },
+  "myrealtrip": {
+    "id": "myrealtrip",
+    "name": "MyRealTrip (마이리얼트립)",
+    "category": "Travel",
+    "description": "항공권, 숙소, 투어, 티켓, 패스 등 여행에 필요한 모든 것을 예약할 수 있는 국내 최대 여행 플랫폼입니다.",
+    "logo": "/service-icons/myrealtrip.png",
+    "cta": {
+      "text": "마이리얼트립 특가 확인",
+      "url": "https://myrealt.rip/PcPt17",
+      "description": "전 세계 여행 상품을 최저가로 예약하세요.",
+      "color": "#2B96ED"
+    }
+  },
+  "klook": {
+    "id": "klook",
+    "name": "Klook (클룩)",
+    "category": "Travel",
+    "description": "전 세계 액티비티, 어트랙션, 교통편 등을 손쉽게 예약할 수 있는 글로벌 여행 플랫폼입니다.",
+    "logo": "/service-icons/klook.png",
+    "cta": {
+      "text": "Klook 인기 상품 보기",
+      "url": "https://affiliate.klook.com/redirect?aid=104798&aff_adid=1171583&k_site=https%3A%2F%2Fwww.klook.com%2Fko%2Fcoupons%2F%3Fspm%3DHome.TopNavigation.PromoCode%26clickId%3Df2efb50fb7",
+      "description": "첫 구매 할인 혜택과 다양한 액티비티를 확인하세요.",
+      "color": "#FF5B00"
+    }
+  },
+  "kkday": {
+    "id": "kkday",
+    "name": "KKDay (케이케이데이)",
+    "category": "Travel",
+    "description": "대만, 일본, 동남아시아를 중심으로 한 전 세계 투어 및 액티비티 예약 서비스입니다.",
+    "logo": "/service-icons/kkday.png",
+    "cta": {
+      "text": "KKDay 혜택 받기",
+      "url": "https://www.kkday.com/ko?cid=23306",
+      "description": "현지 투어와 이색 체험을 합리적인 가격에 즐기세요.",
+      "color": "#26C2CF"
+    }
+  },
+  "tripcom": {
+    "id": "tripcom",
+    "name": "Trip.com (트립닷컴)",
+    "category": "Travel",
+    "description": "전 세계 항공권, 호텔, 기차표를 한곳에서 예약할 수 있는 글로벌 원스톱 여행 서비스입니다.",
+    "logo": "/service-icons/trip.png",
+    "cta": {
+      "text": "Trip.com 최저가 검색",
+      "url": "https://www.trip.com/t/nyyrAHDDWS2",
+      "description": "항공권과 호텔을 묶어서 추가 할인을 받으세요.",
+      "color": "#0F294D"
+    }
+  },
+  "saily": {
+    "id": "saily",
+    "name": "Saily (세일리)",
+    "category": "Travel",
+    "description": "Nord Security에서 만든 글로벌 eSIM 서비스로, 전 세계 어디서나 간편하게 데이터를 이용할 수 있습니다.",
+    "logo": "/service-icons/saily.png",
+    "cta": {
+      "text": "Saily eSIM 구매하기",
+      "url": "https://go.saily.site/aff_c?offer_id=101&aff_id=11389",
+      "description": "앱 설치 한번으로 전 세계 데이터 로밍을 해결하세요.",
+      "color": "#324053"
+    }
+  },
+  "usimsa": {
+    "id": "usimsa",
+    "name": "Usimsa (유심사)",
+    "category": "Travel",
+    "description": "합리적인 가격의 해외 데이터 로밍을 제공하는 eSIM 전문 서비스입니다.",
+    "logo": "/service-icons/usimsa.png",
+    "cta": {
+      "text": "유심사 eSIM 보러가기",
+      "url": "https://3ha.in/r/279597",
+      "description": "실물 유심 교체 없이 간편하게 해외 데이터를 이용하세요.",
+      "color": "#111111"
+    }
+  },
+  "speak": {
+    "id": "speak",
+    "name": "Speak (스픽)",
+    "category": "Education",
+    "description": "AI 기술을 활용한 영어 스피킹 교육 앱으로, 실전 대화 연습에 최적화되어 있습니다.",
+    "logo": "/service-icons/speak.png",
+    "cta": {
+      "text": "스픽 최대 64% 할인받기",
+      "url": "https://app.usespeak.com/kr-ko/sale/kr-affiliate/?ref=kei",
+      "description": "AI 튜터와 함께 두려움 없이 영어를 말해보세요.",
+      "color": "#5C34F6"
+    }
+  },
+  "inflearn": {
+    "id": "inflearn",
+    "name": "Inflearn (인프런)",
+    "category": "Education",
+    "description": "프로그래밍, 디자인, 마케팅 등 실무 위주의 다양한 IT 강의를 제공하는 온라인 학습 플랫폼입니다.",
+    "logo": "/service-icons/inflean.png",
+    "cta": {
+      "text": "인프런 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "성장을 위한 최고의 실무 강의를 만나보세요.",
+      "color": "#00C471"
+    },
+    "isFromGamsgo": true
+  },
+  "aliexpress": {
+    "id": "aliexpress",
+    "name": "AliExpress (알리익스프레스)",
+    "category": "Shopping",
+    "description": "다양한 카테고리의 상품을 초저가에 구매할 수 있는 글로벌 직구 플랫폼입니다.",
+    "logo": "/service-icons/aliexpress.png",
+    "cta": {
+      "text": "알리익스프레스 핫딜 보기",
+      "url": "https://s.click.aliexpress.com/e/_c3xxskff",
+      "description": "천원마트, 꽁돈대첩 등 초특가 기회를 놓치지 마세요.",
+      "color": "#FF4700"
+    }
+  },
+  "donquijote": {
+    "id": "donquijote",
+    "name": "Don Quijote (돈키호테)",
+    "category": "Shopping",
+    "description": "일본 여행 필수 쇼핑 스팟인 돈키호테의 할인 쿠폰 및 쇼핑 정보를 제공합니다.",
+    "logo": "/service-icons/donki.png",
+    "cta": {
+      "text": "돈키호테 할인쿠폰 받기",
+      "url": "https://japanportal.donki-global.com/coupon/cp001_ko.html",
+      "description": "면세 10% + 추가 5% 할인을 받으세요.",
+      "color": "#FFD700"
+    }
+  },
+  "biccamera": {
+    "id": "biccamera",
+    "name": "BIC CAMERA (빅카메라)",
+    "category": "Shopping",
+    "description": "일본의 대표적인 가전 양판점으로 카메라, 전자기기, 시계, 의약품 등을 판매합니다.",
+    "logo": "/service-icons/biccamera.png",
+    "cta": {
+      "text": "빅카메라 할인쿠폰 받기",
+      "url": "https://www.taxfreeshops.jp/img/tieup2/coupon_ko.jpg?202508",
+      "description": "면세 10% + 최대 7% 추가 할인 혜택을 확인하세요.",
+      "color": "#EE1C23"
+    }
+  },
+  "goingbus": {
+    "id": "goingbus",
+    "name": "GoingBus (고잉버스)",
+    "category": "Subscription",
+    "description": "Gamsgo와 유사한 구독 공유 서비스로, OTT 및 AI 서비스(ChatGPT 등)를 합리적인 가격에 제공합니다.",
+    "logo": "/service-icons/goingbus.png",
+    "cta": {
+      "text": "GoingBus 할인 구독하기",
+      "url": "https://goingbus.com?s=iVY1incZ",
+      "description": "OTT와 AI 툴을 반값 이하로 이용해보세요.",
+      "color": "#4B69FE"
+    }
+  },
+  "medium": {
+    "id": "medium",
+    "name": "Medium (미디엄)",
+    "category": "Education",
+    "description": "고품질 글과 아이디어를 공유하는 온라인 퍼블리싱 플랫폼입니다.",
+    "logo": "/service-icons/medium.png",
+    "cta": {
+      "text": "Medium 최저가 이용",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#000000"
+    },
+    "isFromGamsgo": true
+  },
+  "steam": {
+    "id": "steam",
+    "name": "Steam (스팀)",
+    "category": "Software",
+    "description": "PC 게임 디지털 배급 플랫폼으로 수천 개의 게임을 구매하고 플레이할 수 있습니다.",
+    "logo": "/service-icons/steam.png",
+    "cta": {
+      "text": "Steam 최저가 충전",
+      "url": "https://www.gamsgo.com/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#171A21"
+    },
+    "isFromGamsgo": true
+  },
+  "autodesk": {
+    "id": "autodesk",
+    "name": "Autodesk (오토데스크)",
+    "category": "Software",
+    "description": "AutoCAD, Revit, 3ds Max 등 전문 건축, 엔지니어링, 설계 소프트웨어를 제공하는 글로벌 리더입니다.",
+    "logo": "/service-icons/autodesk.png",
+    "cta": {
+      "text": "Autodesk 최저가 이용",
+      "url": "https://www.gamsgo.com/ko/details/autdesk/partner/5FVYS",
+      "description": "Gamsgo에서 최저가로 이용하세요.",
+      "color": "#0696D7"
+    },
+    "isFromGamsgo": true
+  }
+}

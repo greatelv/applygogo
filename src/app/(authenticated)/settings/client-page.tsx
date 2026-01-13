@@ -2,6 +2,7 @@
 
 import { useApp } from "../../context/app-context";
 import { SettingsPage } from "../../components/settings-page";
+import { deleteAccount } from "../../lib/actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
@@ -219,8 +220,21 @@ export function SettingsClientPage({
     canRefund = isWithin7Days;
   }
 
-  const handleDeleteAccount = () => {
-    toast.info("계정 삭제가 요청되었습니다.");
+  const handleDeleteAccount = async () => {
+    const promise = deleteAccount();
+
+    toast.promise(promise, {
+      loading: "계정을 삭제하고 있습니다...",
+      success: "계정이 안전하게 삭제되었습니다. 안녕히 가세요.",
+      error: "계정 삭제 중 오류가 발생했습니다.",
+    });
+
+    try {
+      await promise;
+      // Server action handles signOut redirect
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

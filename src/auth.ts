@@ -26,5 +26,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
   },
+  events: {
+    async createUser({ user }) {
+      if (user.id) {
+        // 베타 런칭 프로모션 혜택 지급
+        const { grantBetaWelcomeBenefit } = await import("@/lib/billing");
+        await grantBetaWelcomeBenefit(user.id);
+      }
+    },
+  },
   debug: process.env.NODE_ENV === "development",
 });

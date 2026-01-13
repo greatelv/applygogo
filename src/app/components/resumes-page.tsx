@@ -28,6 +28,7 @@ interface ResumesPageProps {
   onDelete?: (id: string) => void;
   quota?: number;
   onUpgrade?: () => void;
+  showBetaBanner?: boolean;
 }
 
 const stepConfig = {
@@ -46,7 +47,6 @@ const statusConfig = {
   COMPLETED: { label: "완료", variant: "success" as const },
   FAILED: { label: "실패", variant: "warning" as const },
 };
-
 export function ResumesPage({
   resumes,
   onCreateNew,
@@ -54,6 +54,7 @@ export function ResumesPage({
   onDelete,
   quota = 0,
   onUpgrade,
+  showBetaBanner,
 }: ResumesPageProps) {
   const hasNoCredits = quota === 0;
   const [deleteId, setDeleteId] = useState<string | null>(null);

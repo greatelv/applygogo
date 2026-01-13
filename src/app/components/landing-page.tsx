@@ -7,12 +7,14 @@ import {
   Download,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ThemeToggle } from "./theme-toggle";
 import { SiteFooter } from "./site-footer";
 import { TemplatePreviewDialog } from "./template-preview-dialog";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
+import { BetaBanner } from "./beta-banner";
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -25,11 +27,12 @@ export function LandingPage({
 }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-background">
+      <BetaBanner />
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
+            <Link href="/" className="flex items-center">
               <div className="relative h-6 w-24">
                 <Image
                   src="/logo-for-light.svg"
@@ -46,8 +49,16 @@ export function LandingPage({
                   priority
                 />
               </div>
-            </div>
+            </Link>
             <div className="flex items-center gap-4">
+              {/* Blog link hidden for now
+              <Link
+                href="/blog"
+                className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                블로그
+              </Link>
+              */}
               <ThemeToggle />
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
                 시작하기

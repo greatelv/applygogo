@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { SiteFooter } from "./site-footer";
+import { BetaBanner } from "./beta-banner";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -63,6 +64,8 @@ export function DashboardLayout({
           />
 
           <div className="flex flex-col flex-1 min-w-0 overflow-y-auto">
+            {/* Beta Banner */}
+            <BetaBanner isConsole={true} />
             <main className="flex-1 p-4 lg:p-8">{children}</main>
             <SiteFooter simple={true} />
           </div>

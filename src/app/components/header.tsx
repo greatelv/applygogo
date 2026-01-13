@@ -5,6 +5,7 @@ import {
   Info,
   Sparkles,
   PanelLeft,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
@@ -54,6 +55,11 @@ const planConfig: Record<
     label: "30일 이용권",
     variant: "default" as const,
     color: "text-purple-600",
+  },
+  PASS_BETA_3DAY: {
+    label: "베타 무제한",
+    variant: "default" as const,
+    color: "text-indigo-600",
   },
 };
 
@@ -230,7 +236,15 @@ export function Header({
                   서비스 소개
                 </Link>
               </DropdownMenuItem>
+              {/* Blog link hidden for now
+              <DropdownMenuItem asChild>
+                <Link href="/blog" className="cursor-pointer">
+                  <FileText className="size-4 mr-2" />
+                  블로그
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
+              */}
               <DropdownMenuItem onClick={onLogout}>
                 <LogOut className="size-4 mr-2" />
                 로그아웃

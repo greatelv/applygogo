@@ -14,6 +14,7 @@ export function calculateCost(
 
   if (action === "RETRANSLATE") {
     // FREE 사용자는 1 크레딧, 유료 사용자는 무제한(0 크레딧)
+    // 베타 3일권도 유료 플랜으로 간주됨 (NOT FREE)
     return planType === "FREE" ? 1 : 0;
   }
 
@@ -22,6 +23,27 @@ export function calculateCost(
   }
 
   return 0;
+}
+
+/**
+ * [BETA PROMOTION]
+ * 신규 가입 유저에게 베타 기간( ~ 2026.01.17 23:59:59) 한정으로
+ * 3일 무제한 이용권(50 크레딧 포함)을 지급합니다.
+ */
+export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
+  const BENEFIT_END_DATE = new Date("2026-01-17T23:59:59+09:00"); // KST
+  const now = new Date();
+
+  // 프로모션 기간이 지났으면 지급하지 않음
+  if (now > BENEFIT_END_DATE) {
+    console.log("[Beta Promo] Promotion ended. Skipping benefit grant.");
+    return;
+  }
+
+  console.log(`[Beta Promo] Granting benefit to user ${userId}`);
+
+  // 3일 이용권 부여 (내부적으로 크레딧 50 지급 포함)
+  await grantPass(userId, "PASS_BETA_3DAY", prisma);
 }
 
 /**
@@ -139,7 +161,7 @@ export async function deductCredits(
  */
 export async function grantPass(
   userId: string,
-  passType: "PASS_7DAY" | "PASS_30DAY",
+  passType: "PASS_7DAY" | "PASS_30DAY" | "PASS_BETA_3DAY",
   client: any = prisma
 ): Promise<void> {
   const planConfig = PLAN_PRODUCTS[passType];
