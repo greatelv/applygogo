@@ -1,7 +1,7 @@
 "use client";
 
 import { useInAppBrowser } from "@/hooks/use-in-app-browser";
-import { Copy, ExternalLink, Menu, X } from "lucide-react";
+import { Copy, ExternalLink, Menu, Monitor, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -74,6 +74,10 @@ export function InAppBrowserGuide() {
             <br />
             접속해주세요.
           </p>
+          <div className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-blue-500/10 py-2 px-3 text-sm text-blue-200">
+            <Monitor className="h-4 w-4" />
+            <span>가급적 PC(데스크톱) 이용을 권장합니다.</span>
+          </div>
         </div>
 
         <div className="w-full space-y-3 rounded-2xl bg-white/10 p-6 backdrop-blur-md">
