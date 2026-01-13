@@ -25,7 +25,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                   개인정보처리방침
                 </Link>
                 <a
-                  href="mailto:support@applygogo.com"
+                  href="mailto:patakeique@gmail.com"
                   className="hover:text-foreground transition-colors"
                 >
                   고객문의
@@ -46,7 +46,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               <br className="sm:hidden" />
               <span>주소: 서울시 성북구 동소문로 60 동방빌딩 4층</span>
               <span className="mx-1.5">|</span>
-              <span>이메일: support@applygogo.com</span>
+              <span>이메일: patakeique@gmail.com</span>
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
@@ -78,7 +78,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 개인정보처리방침
               </Link>
               <a
-                href="mailto:support@applygogo.com"
+                href="mailto:patakeique@gmail.com"
                 className="hover:text-foreground transition-colors"
               >
                 고객문의
@@ -105,7 +105,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               <p>
                 주소: 서울시 성북구 동소문로 60 동방빌딩 4층
                 <span className="mx-2">|</span>
-                이메일: support@applygogo.com
+                이메일: patakeique@gmail.com
               </p>
             </div>
           </div>
