@@ -16,9 +16,13 @@ import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface LandingPageProps {
   onGetStarted: () => void;
+  isLoading?: boolean;
 }
 
-export function LandingPage({ onGetStarted }: LandingPageProps) {
+export function LandingPage({
+  onGetStarted,
+  isLoading = false,
+}: LandingPageProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -45,7 +49,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <Button onClick={onGetStarted} size="sm">
+              <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
                 시작하기
               </Button>
             </div>
@@ -82,7 +86,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </p>
 
             <div className="flex items-center justify-center gap-4">
-              <Button onClick={onGetStarted} size="lg">
+              <Button onClick={onGetStarted} size="lg" isLoading={isLoading}>
                 무료로 시작하기
                 <ArrowRight className="size-4" />
               </Button>
@@ -444,6 +448,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 variant="outline"
                 className="w-full mt-auto"
                 onClick={onGetStarted}
+                isLoading={isLoading}
               >
                 무료로 시작하기
               </Button>
@@ -496,6 +501,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 variant="outline"
                 className="w-full mt-auto"
                 onClick={onGetStarted}
+                isLoading={isLoading}
               >
                 시작하기
               </Button>
@@ -547,7 +553,11 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   30일간 이용
                 </li>
               </ul>
-              <Button className="w-full mt-auto" onClick={onGetStarted}>
+              <Button
+                className="w-full mt-auto"
+                onClick={onGetStarted}
+                isLoading={isLoading}
+              >
                 시작하기
               </Button>
             </li>
@@ -611,7 +621,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           <p className="text-muted-foreground mb-8">
             지원고고와 함께라면 영문 이력서 걱정은 이제 그만
           </p>
-          <Button onClick={onGetStarted} size="lg">
+          <Button onClick={onGetStarted} size="lg" isLoading={isLoading}>
             무료로 시작하기
             <ArrowRight className="size-4" />
           </Button>

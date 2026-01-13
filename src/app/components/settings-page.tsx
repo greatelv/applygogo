@@ -337,18 +337,13 @@ export function SettingsPage({
               className="w-full mt-auto"
               disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_30DAY")}
+              isLoading={isUpgrading}
             >
-              {isUpgrading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : hasActivePass ? (
-                passType === "PASS_30DAY" ? (
-                  "현재 이용 중"
-                ) : (
-                  "전환 불가"
-                )
-              ) : (
-                "구매하기"
-              )}
+              {hasActivePass
+                ? passType === "PASS_30DAY"
+                  ? "현재 이용 중"
+                  : "전환 불가"
+                : "구매하기"}
             </Button>
           </div>
 
@@ -405,18 +400,13 @@ export function SettingsPage({
               className="w-full mt-auto"
               disabled={isUpgrading || hasActivePass}
               onClick={() => onUpgrade("PASS_7DAY")}
+              isLoading={isUpgrading}
             >
-              {isUpgrading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : hasActivePass ? (
-                passType === "PASS_7DAY" ? (
-                  "현재 이용 중"
-                ) : (
-                  "전환 불가"
-                )
-              ) : (
-                "구매하기"
-              )}
+              {hasActivePass
+                ? passType === "PASS_7DAY"
+                  ? "현재 이용 중"
+                  : "전환 불가"
+                : "구매하기"}
             </Button>
           </div>
 
@@ -457,12 +447,9 @@ export function SettingsPage({
               className="w-full mt-auto"
               disabled={!hasActivePass || isUpgrading}
               onClick={() => onUpgrade("REFILL_50")}
+              isLoading={isUpgrading}
             >
-              {isUpgrading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "충전하기"
-              )}
+              충전하기
             </Button>
           </div>
         </div>
@@ -595,10 +582,8 @@ export function SettingsPage({
                                   onClick={() => {
                                     setRefundIdToConfirm(item.id);
                                   }}
+                                  isLoading={isRefunding}
                                 >
-                                  {isRefunding ? (
-                                    <Loader2 className="size-3 animate-spin mr-1" />
-                                  ) : null}
                                   환불하기
                                 </Button>
                               )

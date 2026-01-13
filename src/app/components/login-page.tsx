@@ -1,4 +1,7 @@
+"use client";
+
 import { Chrome } from "lucide-react";
+import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 
 interface LoginPageProps {
@@ -6,6 +9,8 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
+  const { pending } = useFormStatus();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-8">
@@ -23,6 +28,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             size="lg"
             className="w-full"
             onClick={onLogin}
+            isLoading={pending}
+            disabled={pending}
           >
             <Chrome className="size-5" />
             Google로 시작하기

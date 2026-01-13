@@ -2441,13 +2441,10 @@ export function ResumeEditPage({
           }}
           size="lg"
           className="flex-1"
-          disabled={isLoading}
+          isLoading={isLoading}
         >
           {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              처리 중...
-            </>
+            "처리 중..."
           ) : (
             <>
               다음

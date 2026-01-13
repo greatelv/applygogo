@@ -129,11 +129,12 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
               id="file-upload"
               disabled={isUploading}
             />
-            <Button asChild disabled={isUploading}>
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <FileText className="size-4" />
-                파일 선택
-              </label>
+            <Button
+              isLoading={isUploading}
+              onClick={() => document.getElementById("file-upload")?.click()}
+            >
+              <FileText className="size-4" />
+              파일 선택
             </Button>
           </>
         )}

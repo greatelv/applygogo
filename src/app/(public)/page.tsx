@@ -1,15 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LandingPage } from "../components/landing-page";
 
 import { useSession } from "next-auth/react";
 
 export default function Page() {
+  const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
   const { status } = useSession();
 
   const handleGetStarted = () => {
+    setIsNavigating(true);
     if (status === "authenticated") {
       router.push("/resumes");
     } else {
@@ -38,7 +41,7 @@ export default function Page() {
           }),
         }}
       />
-      <LandingPage onGetStarted={handleGetStarted} />
+      <LandingPage onGetStarted={handleGetStarted} isLoading={isNavigating} />
     </>
   );
 }

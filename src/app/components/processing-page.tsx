@@ -216,9 +216,22 @@ export function ProcessingPage({
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl mb-2">AI 처리</h1>
-        <p className="text-sm text-muted-foreground">
-          이력서를 3단계로 분석하고 있습니다: 추출 → 정제 → 번역
-        </p>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            AI가 회원님의 이력서를 정밀 분석하여 글로벌 스탠다드에 맞는 영문
+            이력서로 재구성하고 있습니다.
+            <br />
+            텍스트 추출부터 핵심 성과 선별, 전문 번역까지 정교한 작업이 진행되니
+            잠시만 기다려 주세요.
+          </p>
+          <div className="flex items-center gap-2 text-sm text-amber-600/90 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md border border-amber-200/50 dark:border-amber-900/50">
+            <span className="text-lg">⚠️</span>
+            <p>
+              안정적인 분석 처리를 위해 <strong>화면을 유지해 주세요.</strong>{" "}
+              (페이지 이탈 시 작업이 중단될 수 있습니다)
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="bg-card border border-border rounded-lg p-8">
