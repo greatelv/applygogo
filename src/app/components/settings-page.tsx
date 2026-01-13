@@ -11,7 +11,7 @@ import {
   Loader2,
   Check,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -129,6 +129,17 @@ export function SettingsPage({
       setRefundIdToConfirm(null);
     }
   };
+
+  const paymentSectionRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (
+      window.location.hash === "#payment-section" &&
+      paymentSectionRef.current
+    ) {
+      paymentSectionRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="max-w-5xl mx-auto space-y-12 pb-12">
@@ -260,13 +271,13 @@ export function SettingsPage({
           </div>
         </div>
       </section>
-
-      {/* --- Section 2: Pass Purchase --- */}
       <section className="space-y-6">
         <div className="flex items-center gap-3 border-b pb-2">
           <h2
             id="payment-section"
-            className="text-xl font-semibold scroll-mt-20"
+            ref={paymentSectionRef}
+            tabIndex={-1}
+            className="text-xl font-semibold scroll-mt-20 outline-none"
           >
             이용권 구매
           </h2>

@@ -8,6 +8,7 @@ import {
   CheckCircle,
   Upload,
   Filter,
+  Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
@@ -43,7 +44,7 @@ export function ProcessingPage({
   isCompleting = false,
 }: ProcessingPageProps) {
   const router = useRouter();
-  const { setWorkflowState } = useApp();
+  const { setWorkflowState, plan } = useApp();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
   const [error, setError] = useState<string | null>(null);
@@ -299,18 +300,82 @@ export function ProcessingPage({
 
         {error && (
           <div className="mt-8 pt-6 border-t border-border">
-            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <p className="text-sm text-destructive font-medium">오류 발생</p>
-              <p className="text-sm text-muted-foreground mt-1 mb-3">{error}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => router.replace("/resumes/new")}
-                className="bg-background hover:bg-accent hover:text-accent-foreground"
-              >
-                다시 업로드하기
-              </Button>
-            </div>
+            {error.includes("크레딧") ||
+            error.toLowerCase().includes("credit") ? (
+              <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+                <div className="p-6">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full shrink-0">
+                      <Sparkles className="size-6 text-amber-600 dark:text-amber-500" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">
+                        크레딧이 부족합니다
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        AI 이력서 분석을 진행하기 위해 필요한 크레딧이
+                        부족합니다.
+                        <br />
+                        결제를 통해 크레딧을 충전하고 분석을 완료해보세요.
+                      </p>
+                    </div>
+                  </div>
+
+                  {plan === "FREE" ? (
+                    <div className="space-y-3">
+                      <Button
+                        onClick={() => router.push("/settings#payment-section")}
+                        className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md border-0"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Sparkles className="size-4" />
+                          이용권 구매하고 무제한 이용하기
+                        </span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <Button
+                        onClick={() => router.push("/settings#payment-section")}
+                        className="w-full h-11"
+                      >
+                        크레딧 충전하기
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-muted/50 p-4 flex justify-between items-center border-t border-border">
+                  <p className="text-xs text-muted-foreground">
+                    결제 후 작업을 다시 시도할 수 있습니다.
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.replace("/resumes")}
+                    className="text-muted-foreground hover:text-foreground h-8"
+                  >
+                    목록으로 돌아가기
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive font-medium">
+                  오류 발생
+                </p>
+                <p className="text-sm text-muted-foreground mt-1 mb-3">
+                  {error}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.replace("/resumes/new")}
+                  className="bg-background hover:bg-accent hover:text-accent-foreground"
+                >
+                  다시 업로드하기
+                </Button>
+              </div>
+            )}
           </div>
         )}
 

@@ -35,7 +35,7 @@ export default async function AuthenticatedLayout({
   // Check if plan is expired
   const now = new Date();
   let currentPlanType = user?.planType || "FREE";
-  let currentCredits = user?.credits || 10;
+  let currentCredits = user?.credits ?? 0;
 
   if (
     user?.planExpiresAt &&

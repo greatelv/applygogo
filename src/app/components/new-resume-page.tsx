@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Upload, FileText, ArrowRight, Loader2 } from "lucide-react";
+import { Upload, FileText, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
+import { useRouter } from "next/navigation";
+import { useApp } from "../context/app-context";
 
 import {
   AlertDialog,
@@ -33,9 +35,13 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     "PDF 파일만 업로드 가능합니다. 다시 시도해주세요."
   );
 
+  const router = useRouter();
+  const { quota, plan } = useApp();
+  const hasSufficientCredits = quota >= 1;
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (isUploading) return;
+    if (isUploading || !hasSufficientCredits) return;
     setIsDragging(true);
   };
 
@@ -46,7 +52,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (isUploading) return;
+    if (isUploading || !hasSufficientCredits) return;
 
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
@@ -66,6 +72,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!hasSufficientCredits) return;
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -90,55 +97,98 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
         </p>
       </div>
 
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={cn(
-          "border-2 border-dashed rounded-lg p-12 text-center transition-colors relative cursor-pointer",
-          isDragging
-            ? "border-foreground/40 bg-accent"
-            : "border-border hover:border-foreground/30",
-          isUploading && "opacity-50 pointer-events-none"
-        )}
-      >
-        {isUploading ? (
-          <div className="flex flex-col items-center">
-            <Loader2 className="size-12 animate-spin text-primary mb-4" />
-            <h3 className="text-lg font-medium">업로드 중...</h3>
-            <p className="text-sm text-muted-foreground">
-              파일을 안전하게 저장하고 있습니다.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-4">
-              <Upload className="size-8 text-muted-foreground" />
+      {!hasSufficientCredits ? (
+        <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+          <div className="p-12">
+            <div className="flex flex-col items-center text-center gap-6 mb-8">
+              <div className="p-4 bg-amber-100 dark:bg-amber-900/30 rounded-full shrink-0">
+                <Sparkles className="size-8 text-amber-600 dark:text-amber-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">
+                  크레딧이 부족합니다
+                </h3>
+                <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                  AI 이력서 분석을 진행하기 위해 필요한 크레딧이 부족합니다.
+                  <br />
+                  결제를 통해 크레딧을 충전하고 분석을 시작해보세요.
+                </p>
+              </div>
             </div>
 
-            <h3 className="text-lg mb-2">PDF 파일을 드래그하여 업로드</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              또는 아래 버튼을 클릭하여 파일 선택
-            </p>
+            <div className="max-w-xs mx-auto">
+              {plan === "FREE" ? (
+                <Button
+                  onClick={() => router.push("/settings#payment-section")}
+                  className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md border-0"
+                >
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="size-4" />
+                    이용권 구매하고 무제한 이용하기
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => router.push("/settings#payment-section")}
+                  className="w-full h-11"
+                >
+                  크레딧 충전하기
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={cn(
+            "border-2 border-dashed rounded-lg p-12 text-center transition-colors relative cursor-pointer",
+            isDragging
+              ? "border-foreground/40 bg-accent"
+              : "border-border hover:border-foreground/30",
+            isUploading && "opacity-50 pointer-events-none"
+          )}
+        >
+          {isUploading ? (
+            <div className="flex flex-col items-center">
+              <Loader2 className="size-12 animate-spin text-primary mb-4" />
+              <h3 className="text-lg font-medium">업로드 중...</h3>
+              <p className="text-sm text-muted-foreground">
+                파일을 안전하게 저장하고 있습니다.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-4">
+                <Upload className="size-8 text-muted-foreground" />
+              </div>
 
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileSelect}
-              className="hidden"
-              id="file-upload"
-              disabled={isUploading}
-            />
-            <Button
-              isLoading={isUploading}
-              onClick={() => document.getElementById("file-upload")?.click()}
-            >
-              <FileText className="size-4" />
-              파일 선택
-            </Button>
-          </>
-        )}
-      </div>
+              <h3 className="text-lg mb-2">PDF 파일을 드래그하여 업로드</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                또는 아래 버튼을 클릭하여 파일 선택
+              </p>
+
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="file-upload"
+                disabled={isUploading}
+              />
+              <Button
+                isLoading={isUploading}
+                onClick={() => document.getElementById("file-upload")?.click()}
+              >
+                <FileText className="size-4" />
+                파일 선택
+              </Button>
+            </>
+          )}
+        </div>
+      )}
 
       <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
         <AlertDialogContent>
