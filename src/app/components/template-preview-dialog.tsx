@@ -148,7 +148,7 @@ export function TemplatePreviewDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+      <DialogContent className="w-[95vw] sm:w-[90vw] max-w-5xl h-[90vh] flex flex-col p-0 gap-0 overflow-hidden rounded-xl">
         <div className="flex flex-col h-full">
           <DialogHeader className="px-6 py-4 border-b shrink-0 bg-background/95 backdrop-blur z-10">
             <div className="flex items-center justify-between">
@@ -170,50 +170,88 @@ export function TemplatePreviewDialog({
             onValueChange={setSelectedTab}
             className="flex-1 flex flex-col min-h-0"
           >
-            <div className="px-6 py-2 border-b bg-muted/30 shrink-0">
-              <TabsList className="grid w-full max-w-2xl grid-cols-5">
-                <TabsTrigger value="modern">Modern</TabsTrigger>
-                <TabsTrigger value="professional">Professional</TabsTrigger>
-                <TabsTrigger value="executive">Executive</TabsTrigger>
-                <TabsTrigger value="classic">Classic</TabsTrigger>
-                <TabsTrigger value="minimal">Minimal</TabsTrigger>
+            <div className="px-3 sm:px-6 py-2 border-b bg-muted/30 shrink-0 overflow-hidden">
+              <TabsList className="flex w-full sm:max-w-2xl sm:grid sm:grid-cols-5 p-1 h-auto gap-1">
+                <TabsTrigger
+                  value="modern"
+                  className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
+                >
+                  Modern
+                </TabsTrigger>
+                <TabsTrigger
+                  value="professional"
+                  className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
+                >
+                  Pro
+                </TabsTrigger>
+                <TabsTrigger
+                  value="executive"
+                  className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
+                >
+                  Exec
+                </TabsTrigger>
+                <TabsTrigger
+                  value="classic"
+                  className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
+                >
+                  Classic
+                </TabsTrigger>
+                <TabsTrigger
+                  value="minimal"
+                  className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
+                >
+                  Minimal
+                </TabsTrigger>
               </TabsList>
             </div>
 
             <div className="flex-1 bg-muted/10 relative overflow-hidden">
               {isClient && (
-                <div className="absolute inset-0 w-full h-full flex justify-center py-8">
+                <div className="absolute inset-0 w-full h-full flex justify-center py-4 sm:py-8 px-2 sm:px-0 overflow-y-auto">
                   {/* Remove Toolbar and optimize viewing experience */}
                   <style jsx global>{`
                     iframe {
                       border: none !important;
-                      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-                        0 8px 10px -6px rgb(0 0 0 / 0.1);
+                      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+                        0 2px 4px -2px rgb(0 0 0 / 0.1);
                       border-radius: 8px;
+                      background: white;
+                    }
+                    @media (min-width: 640px) {
+                      iframe {
+                        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+                          0 8px 10px -6px rgb(0 0 0 / 0.1);
+                      }
                     }
                   `}</style>
-                  <PDFViewer
-                    width="100%"
-                    height="100%"
-                    showToolbar={false}
-                    className="max-w-[800px] h-full shadow-2xl rounded-lg"
-                    style={{ border: "none" }} // Ensure no inline border
-                  >
-                    {getTemplateComponent()}
-                  </PDFViewer>
+                  <div className="w-full max-w-[800px] h-full relative">
+                    <PDFViewer
+                      width="100%"
+                      height="100%"
+                      showToolbar={false}
+                      className="w-full h-full rounded-lg"
+                      style={{ border: "none" }} // Ensure no inline border
+                    >
+                      {getTemplateComponent()}
+                    </PDFViewer>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t bg-background shrink-0 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="p-4 border-t bg-background shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground w-full sm:w-auto justify-center sm:justify-start">
                 <Check className="size-4 text-primary" />
                 <span>선택된 템플릿: </span>
                 <span className="font-semibold text-foreground capitalize">
                   {selectedTab}
                 </span>
               </div>
-              <Button onClick={handleStart} className="gap-2" size="lg">
+              <Button
+                onClick={handleStart}
+                className="gap-2 w-full sm:w-auto"
+                size="lg"
+              >
                 이 템플릿으로 시작하기
                 <ArrowRight className="size-4" />
               </Button>

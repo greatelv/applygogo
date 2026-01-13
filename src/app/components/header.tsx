@@ -154,8 +154,10 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Theme toggle */}
-          <ThemeToggle />
+          {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
 
           {/* Upgrade CTA - Only for FREE plan */}
           {plan === "FREE" && (
@@ -256,7 +258,7 @@ export function Header({
 
       {/* Workflow Stepper - Mobile bottom */}
       {workflowSteps && currentStep && (
-        <div className="lg:hidden px-4 pb-3 border-t border-border/50">
+        <div className="lg:hidden px-4 py-3 border-t border-border/50 flex justify-center">
           <WorkflowStepper steps={workflowSteps} currentStep={currentStep} />
         </div>
       )}

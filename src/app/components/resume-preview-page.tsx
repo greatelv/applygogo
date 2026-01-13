@@ -70,6 +70,7 @@ export function ResumePreviewPage({
   const [selectedTemplate, setSelectedTemplate] = useState(
     initialTemplate.toLowerCase()
   );
+  // Calculate initial scale based on window width
   const [scale, setScale] = useState(1);
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
@@ -78,13 +79,18 @@ export function ResumePreviewPage({
       if (!previewContainerRef.current) return;
 
       const containerWidth = previewContainerRef.current.offsetWidth;
-      // 210mm in pixels (assuming 96dpi, but React-PDF uses points)
-      // Browsers generally use 96px per inch. 210mm = 8.27 inches.
-      // 8.27 * 96 = 794px approximately.
+      // 210mm in pixels (assuming 96dpi) -> 794px
       const a4WidthPx = 794;
 
-      // We want some padding, so let's use 95% of container width
-      const newScale = (containerWidth * 0.95) / a4WidthPx;
+      // Calculate scale to fit container width with 5% padding
+      let newScale = (containerWidth * 0.95) / a4WidthPx;
+
+      // Enforce minimum scale for mobile readability (approx 0.5)
+      // This allows horizontal scrolling instead of shrinking too much
+      if (window.innerWidth < 1024 && newScale < 0.55) {
+        newScale = 0.55;
+      }
+
       setScale(newScale);
     };
 
@@ -201,7 +207,7 @@ export function ResumePreviewPage({
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
         <h1 className="text-2xl mb-2">템플릿 선택</h1>
         <p className="text-sm text-muted-foreground">
@@ -209,26 +215,65 @@ export function ResumePreviewPage({
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6 mb-8">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-1 space-y-4">
-          <div className="space-y-3">
+          {/* Mobile: Tab-style Selection Grid */}
+          <div className="lg:hidden grid grid-cols-5 gap-1 p-1 bg-muted/40 rounded-lg">
             {templates.map((template) => (
               <button
                 key={template.id}
                 onClick={() => setSelectedTemplate(template.id)}
                 className={cn(
-                  "w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer",
+                  "flex flex-col items-center justify-center py-2 px-0.5 rounded-md text-[10px] sm:text-xs font-medium transition-all relative overflow-hidden",
+                  selectedTemplate === template.id
+                    ? "bg-background text-primary shadow-sm"
+                    : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
+                )}
+              >
+                {/* Shortened Names for Mobile */}
+                <span className="z-10 relative">
+                  {template.id === "professional"
+                    ? "Pro"
+                    : template.id === "executive"
+                    ? "Exec"
+                    : template.name}
+                </span>
+                {selectedTemplate === template.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary/50" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Selected Template Description for Mobile Context */}
+          <div className="lg:hidden text-center py-2 px-4 mb-2">
+            <h4 className="font-semibold text-sm mb-0.5">
+              {templates.find((t) => t.id === selectedTemplate)?.name}
+            </h4>
+            <p className="text-xs text-muted-foreground">
+              {templates.find((t) => t.id === selectedTemplate)?.description}
+            </p>
+          </div>
+
+          {/* Desktop: Original List Card Style */}
+          <div className="hidden lg:block space-y-3">
+            {templates.map((template) => (
+              <button
+                key={template.id}
+                onClick={() => setSelectedTemplate(template.id)}
+                className={cn(
+                  "w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer relative",
                   selectedTemplate === template.id
                     ? "border-primary bg-primary/5"
                     : "border-border hover:border-foreground/30 bg-card"
                 )}
               >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-2 gap-2">
                   <h4 className="font-semibold">{template.name}</h4>
                   <div className="flex items-center gap-2">
                     {template.isPro && (
                       <Badge variant="default" className="text-xs">
-                        이용권 전용
+                        PRO
                       </Badge>
                     )}
                     {selectedTemplate === template.id && (
@@ -247,13 +292,12 @@ export function ResumePreviewPage({
           {isProTemplateSelected && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-400">
-                ⭐ 이 템플릿은 이용권 전용입니다. 아래 버튼을 눌러
-                업그레이드하세요.
+                ⭐ 이 템플릿은 이용권 전용입니다.
               </p>
             </div>
           )}
 
-          <div className="pt-4 space-y-2">
+          <div className="pt-4 space-y-2 hidden lg:block">
             <Button variant="outline" onClick={onBack} className="w-full">
               이전
             </Button>
@@ -276,7 +320,7 @@ export function ResumePreviewPage({
             </Button>
           </div>
 
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
+          <div className="hidden lg:block mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-400">
               💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에
               최적화되어 있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을
@@ -288,7 +332,7 @@ export function ResumePreviewPage({
         <div className="lg:col-span-2">
           <div
             ref={previewContainerRef}
-            className="bg-muted/30 border border-border rounded-lg overflow-hidden flex justify-center py-8"
+            className="bg-muted/30 border border-border rounded-lg overflow-x-auto py-8"
           >
             <div
               className="overflow-visible"
@@ -302,6 +346,34 @@ export function ResumePreviewPage({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sticky Footer for Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50 lg:hidden flex gap-3">
+        <Button
+          variant="outline"
+          onClick={onBack}
+          className="flex-1 h-12 text-base"
+        >
+          이전
+        </Button>
+        <Button
+          onClick={handleNext}
+          className="flex-1 h-12 text-base"
+          size="lg"
+          disabled={isCompleting}
+        >
+          {isCompleting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              처리 중
+            </>
+          ) : isProTemplateSelected ? (
+            "구매하기"
+          ) : (
+            "완료"
+          )}
+        </Button>
       </div>
     </div>
   );

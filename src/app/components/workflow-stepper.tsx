@@ -30,12 +30,10 @@ export function WorkflowStepper({ steps, currentStep }: WorkflowStepperProps) {
               <div
                 className={cn(
                   "flex items-center justify-center size-6 rounded-full text-xs font-medium transition-all",
-                  isCompleted &&
-                    "bg-primary text-primary-foreground",
+                  isCompleted && "bg-primary text-primary-foreground",
                   isCurrent &&
                     "bg-primary text-primary-foreground ring-4 ring-primary/20",
-                  isUpcoming &&
-                    "bg-muted text-muted-foreground"
+                  isUpcoming && "bg-muted text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
@@ -48,7 +46,7 @@ export function WorkflowStepper({ steps, currentStep }: WorkflowStepperProps) {
               {/* Label */}
               <span
                 className={cn(
-                  "text-xs font-medium whitespace-nowrap transition-colors",
+                  "hidden lg:block text-xs font-medium whitespace-nowrap transition-colors",
                   isCompleted && "text-foreground",
                   isCurrent && "text-foreground",
                   isUpcoming && "text-muted-foreground"
@@ -56,11 +54,21 @@ export function WorkflowStepper({ steps, currentStep }: WorkflowStepperProps) {
               >
                 {step.label}
               </span>
+              <span
+                className={cn(
+                  "lg:hidden text-[10px] font-medium whitespace-nowrap transition-colors",
+                  isCompleted && "text-foreground",
+                  isCurrent && "text-foreground font-bold",
+                  isUpcoming && "hidden"
+                )}
+              >
+                {isCurrent ? step.label : ""}
+              </span>
             </div>
 
             {/* Connector Line */}
             {index < steps.length - 1 && (
-              <div className="w-8 h-px mx-2 bg-border relative overflow-hidden">
+              <div className="w-4 lg:w-8 h-px mx-1 lg:mx-2 bg-border relative overflow-hidden">
                 <div
                   className={cn(
                     "absolute inset-y-0 left-0 bg-primary transition-all duration-500",

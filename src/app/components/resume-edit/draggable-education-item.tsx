@@ -81,7 +81,7 @@ export const DraggableEducationItem = ({
     >
       <div
         ref={drag as any}
-        className="w-6 flex items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
+        className="hidden lg:flex w-6 items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
         title="드래그하여 순서 변경"
       >
         <GripVertical className="size-5" />
@@ -93,7 +93,7 @@ export const DraggableEducationItem = ({
         }`}
       >
         <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
                 한글 (원본)
@@ -136,6 +136,9 @@ export const DraggableEducationItem = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Korean Education */}
             <div className="space-y-1">
+              <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
+                한글 (원본)
+              </p>
               <div
                 contentEditable
                 suppressContentEditableWarning
@@ -217,6 +220,9 @@ export const DraggableEducationItem = ({
 
             {/* English Education */}
             <div className="space-y-1">
+              <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
+                English (번역)
+              </p>
               <div
                 contentEditable
                 suppressContentEditableWarning

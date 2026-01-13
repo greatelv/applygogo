@@ -59,7 +59,9 @@ export function LandingPage({
                 블로그
               </Link>
               */}
-              <ThemeToggle />
+              <div className="hidden sm:block">
+                <ThemeToggle />
+              </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
                 시작하기
               </Button>
@@ -96,15 +98,24 @@ export function LandingPage({
               완성해드립니다.
             </p>
 
-            <div className="flex items-center justify-center gap-4">
-              <Button onClick={onGetStarted} size="lg" isLoading={isLoading}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button
+                onClick={onGetStarted}
+                size="lg"
+                isLoading={isLoading}
+                className="w-full sm:w-auto"
+              >
                 무료로 시작하기
                 <ArrowRight className="size-4" />
               </Button>
               <TemplatePreviewDialog
                 onSelectTemplate={() => onGetStarted()}
                 trigger={
-                  <Button variant="outline" size="lg">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
                     샘플 보기
                   </Button>
                 }

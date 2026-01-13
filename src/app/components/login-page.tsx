@@ -49,7 +49,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border">
-          <div className="grid grid-cols-3 gap-8 text-center text-sm">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 text-center text-sm">
             <div>
               <div className="text-2xl mb-1">✨</div>
               <div className="text-muted-foreground text-xs">AI 기반 요약</div>

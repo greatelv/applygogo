@@ -137,7 +137,7 @@ export function ResumeEditPage({
   });
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
         <h1 className="text-2xl mb-2">편집</h1>
         <p className="text-sm text-muted-foreground">
@@ -171,7 +171,7 @@ export function ResumeEditPage({
         </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
                   한글 (원본)
@@ -202,10 +202,13 @@ export function ResumeEditPage({
               </Button>
             </div>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Korean Info */}
               <div className="space-y-4">
+                <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
+                  한글 (원본)
+                </p>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                     이름
@@ -220,7 +223,7 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder="이름 (한국어)"
-                    className="text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.name_kr}
                   </div>
@@ -239,7 +242,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
+                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
                     >
                       {personalInfo.email}
                     </div>
@@ -258,7 +261,7 @@ export function ResumeEditPage({
                         )
                       }
                       data-placeholder="전화번호"
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.phone}
                     </div>
@@ -289,7 +292,7 @@ export function ResumeEditPage({
                               handlePersonalInfoChange("links", newLinks);
                             }}
                             data-placeholder="링크 라벨"
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
                           </div>
@@ -305,7 +308,7 @@ export function ResumeEditPage({
                               handlePersonalInfoChange("links", newLinks);
                             }}
                             data-placeholder="링크 URL"
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
                           </div>
@@ -329,6 +332,9 @@ export function ResumeEditPage({
 
               {/* English Info */}
               <div className="space-y-4">
+                <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
+                  English (번역)
+                </p>
                 {/* Name EN */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
@@ -370,7 +376,7 @@ export function ResumeEditPage({
                         )
                       }
                       data-placeholder="이메일 주소"
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.email}
                     </div>
@@ -388,7 +394,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      className="text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text"
+                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text"
                     >
                       {personalInfo.phone}
                     </div>
@@ -423,7 +429,7 @@ export function ResumeEditPage({
                               handlePersonalInfoChange("links", newLinks);
                             }}
                             data-placeholder="Link Label"
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
                           </div>
@@ -439,7 +445,7 @@ export function ResumeEditPage({
                               handlePersonalInfoChange("links", newLinks);
                             }}
                             data-placeholder="Link URL"
-                            className="text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
                           </div>
@@ -488,6 +494,9 @@ export function ResumeEditPage({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Korean Summary */}
                 <div>
+                  <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
+                    한글 (원본)
+                  </p>
                   <div
                     contentEditable
                     suppressContentEditableWarning
@@ -498,7 +507,7 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder="Professional Summary (Korean) - 전문적인 요약을 입력하세요."
-                    className="w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.summary_kr}
                   </div>
@@ -506,6 +515,9 @@ export function ResumeEditPage({
 
                 {/* English Summary */}
                 <div>
+                  <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
+                    English (번역)
+                  </p>
                   <div
                     contentEditable
                     suppressContentEditableWarning
@@ -516,7 +528,7 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder="Professional Summary (English) - Write a professional summary."
-                    className={`w-full text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
+                    className={`w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.summary
                         ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
                         : ""
@@ -618,7 +630,7 @@ export function ResumeEditPage({
               </p>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-6">
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
                   <Badge
@@ -647,13 +659,13 @@ export function ResumeEditPage({
                         handleAddSkill();
                       }
                     }}
-                    className="h-8 text-sm w-32"
+                    className="h-9 sm:h-8 text-base sm:text-sm w-full sm:w-32"
                   />
                   <Button
                     onClick={handleAddSkill}
                     variant="secondary"
                     size="sm"
-                    className="h-8 px-2"
+                    className="h-9 sm:h-8 px-3 sm:px-2"
                   >
                     <Plus className="size-4" />
                   </Button>
@@ -709,12 +721,12 @@ export function ResumeEditPage({
         </DndProvider>
       </div>
 
-      <div className="mt-12 flex gap-3">
+      <div className="mt-12 flex gap-3 fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50 sm:static sm:bg-transparent sm:border-0 sm:p-0">
         <Button
           variant="outline"
           onClick={onBack}
           size="lg"
-          className="flex-1"
+          className="flex-1 h-12 sm:h-auto text-base"
           disabled={isLoading}
         >
           {isEditingExisting ? "새로 만들기" : "이전"}
@@ -761,7 +773,7 @@ export function ResumeEditPage({
             });
           }}
           size="lg"
-          className="flex-1"
+          className="flex-1 h-12 sm:h-auto text-base"
           isLoading={isLoading}
         >
           {isLoading ? (

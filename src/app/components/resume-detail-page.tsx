@@ -107,7 +107,11 @@ export function ResumeDetailPage({
       const containerWidth = previewContainerRef.current.offsetWidth;
       const a4WidthPx = 794; // approx 210mm at 96dpi
 
-      const newScale = (containerWidth * 0.95) / a4WidthPx;
+      let newScale = (containerWidth * 0.95) / a4WidthPx;
+      // Enforce minimum scale for mobile readability (similar to ResumePreviewPage)
+      if (window.innerWidth < 1024 && newScale < 0.55) {
+        newScale = 0.55;
+      }
       setScale(newScale);
     };
 
@@ -246,158 +250,165 @@ export function ResumeDetailPage({
     <div className="max-w-4xl mx-auto">
       {/* Success Banner */}
       {isWorkflowComplete && (
-        <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 rounded-lg flex items-center gap-3">
-          <CheckCircle2 className="size-5 text-green-600 dark:text-green-400 flex-shrink-0" />
+        <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 rounded-lg flex items-start gap-3">
+          <div className="p-1 bg-green-100 dark:bg-green-900/40 rounded-full shrink-0 mt-0.5">
+            <CheckCircle2 className="size-4 text-green-600 dark:text-green-400" />
+          </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-green-900 dark:text-green-300">
+            <h3 className="text-sm font-semibold text-green-900 dark:text-green-300">
               이력서가 성공적으로 생성되었습니다!
-            </p>
-            <p className="text-xs text-green-700 dark:text-green-400 mt-0.5">
+            </h3>
+            <p className="text-xs text-green-700 dark:text-green-400 mt-1 leading-relaxed">
               아래에서 최종 결과물을 확인하고 PDF로 다운로드하세요.
             </p>
           </div>
         </div>
       )}
 
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl">{resume.title}</h1>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span
-                className="flex items-center gap-1"
-                suppressHydrationWarning
-              >
-                <Clock className="size-4" />
-                {`최종 수정: ${new Date(resume.updatedAt).toLocaleString(
-                  "ko-KR"
-                )}`}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <span>템플릿:</span>
-                <Badge variant="secondary" className="text-xs font-normal">
-                  {resume.template.charAt(0).toUpperCase() +
-                    resume.template.slice(1)}
-                </Badge>
+      {/* Header & Actions */}
+      <div className="mb-6 space-y-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2 flex-1 min-w-0">
+              <h1 className="text-2xl font-bold break-keep leading-tight">
+                {resume.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5 shrink-0">
+                  <Clock className="size-3.5" />
+                  {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
+                </span>
+                <span className="flex items-center gap-1.5 shrink-0">
+                  <Layout className="size-3.5" />
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] px-1.5 h-5 font-normal"
+                  >
+                    {resume.template.charAt(0).toUpperCase() +
+                      resume.template.slice(1)}
+                  </Badge>
+                </span>
               </div>
+            </div>
+
+            {/* Desktop Actions (Hidden on Mobile) */}
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" onClick={onBack}>
+                      <ArrowLeft className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>뒤로가기</TooltipContent>
+                </Tooltip>
+
+                {onDelete && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDeleteConfirm}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>삭제</TooltipContent>
+                  </Tooltip>
+                )}
+
+                {onEdit && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" onClick={onEdit}>
+                        <Edit className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>편집</TooltipContent>
+                  </Tooltip>
+                )}
+
+                {onChangeTemplate && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={onChangeTemplate}
+                      >
+                        <Layout className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>템플릿 변경</TooltipContent>
+                  </Tooltip>
+                )}
+              </TooltipProvider>
+
+              <Button onClick={handleDownload} className="shadow-sm ml-2">
+                <Download className="size-4 mr-1.5" />
+                PDF 다운로드
+              </Button>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={onBack}>
-                    <ArrowLeft className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>목록</TooltipContent>
-              </Tooltip>
-
-              {onDelete && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleDeleteConfirm}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>삭제</TooltipContent>
-                </Tooltip>
-              )}
-
-              {onEdit && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={onEdit}>
-                      <Edit className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>편집</TooltipContent>
-                </Tooltip>
-              )}
-
-              {onChangeTemplate && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={onChangeTemplate}
-                    >
-                      <Layout className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>템플릿 선택</TooltipContent>
-                </Tooltip>
-              )}
-            </TooltipProvider>
-
-            <Button onClick={handleDownload} className="shadow-sm">
-              <Download className="size-4 mr-1.5" />
-              PDF 다운로드
-            </Button>
-
-            <AlertDialog
-              open={isDeleteAlertOpen}
-              onOpenChange={(open) => !isDeleting && setIsDeleteAlertOpen(open)}
+          {/* Mobile Toolbar (Visible only on Mobile) */}
+          <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onBack}
+              className="shrink-0 h-9"
             >
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
-                    없습니다.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel disabled={isDeleting}>
-                    취소
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive hover:bg-destructive/90"
-                    disabled={isDeleting}
-                    onClick={async (e) => {
-                      e.preventDefault();
-                      if (resumeId && onDelete) {
-                        try {
-                          setIsDeleting(true);
-                          await onDelete(resumeId);
-                          toast.success("이력서가 삭제되었습니다");
-                          onBack();
-                          setIsDeleteAlertOpen(false);
-                        } catch (error) {
-                          console.error(error);
-                        } finally {
-                          setIsDeleting(false);
-                        }
-                      }
-                    }}
-                  >
-                    {isDeleting ? "삭제 중..." : "삭제"}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+              <ArrowLeft className="size-4 mr-1.5" />
+              목록
+            </Button>
+            <div className="w-px h-4 bg-border shrink-0 mx-1" />
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onEdit}
+                className="shrink-0 h-9"
+              >
+                <Edit className="size-4 mr-1.5" />
+                편집
+              </Button>
+            )}
+            {onChangeTemplate && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onChangeTemplate}
+                className="shrink-0 h-9"
+              >
+                <Layout className="size-4 mr-1.5" />
+                템플릿
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeleteConfirm}
+                className="shrink-0 h-9 text-muted-foreground hover:text-destructive ml-auto"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Preview */}
-      <div className="bg-card border border-border rounded-lg overflow-hidden mb-6">
+      <div className="bg-card border border-border rounded-lg overflow-hidden mb-6 lg:mb-0">
         <div
           ref={previewContainerRef}
-          className="bg-muted/30 p-8 flex justify-center"
+          className="bg-muted/30 p-0 sm:p-8 flex justify-center overflow-x-auto min-h-[400px]"
         >
           <div
+            className="origin-top"
             style={{
               width: "210mm",
               height: `${297 * scale}mm`,
@@ -625,6 +636,60 @@ export function ResumeDetailPage({
       </details>
 
       {isDeleting && <LoadingOverlay message="이력서를 삭제하고 있습니다..." />}
+
+      {/* Mobile Sticky Footer */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50">
+        <Button
+          onClick={handleDownload}
+          className="w-full h-12 text-base shadow-lg"
+        >
+          <Download className="size-5 mr-2" />
+          PDF 다운로드
+        </Button>
+      </div>
+
+      {/* Spacer for sticky footer */}
+      <div className="h-24 lg:hidden" />
+
+      <AlertDialog
+        open={isDeleteAlertOpen}
+        onOpenChange={(open) => !isDeleting && setIsDeleteAlertOpen(open)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+            <AlertDialogDescription>
+              정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
+              없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              disabled={isDeleting}
+              onClick={async (e) => {
+                e.preventDefault();
+                if (resumeId && onDelete) {
+                  try {
+                    setIsDeleting(true);
+                    await onDelete(resumeId);
+                    toast.success("이력서가 삭제되었습니다");
+                    onBack();
+                    setIsDeleteAlertOpen(false);
+                  } catch (error) {
+                    console.error(error);
+                  } finally {
+                    setIsDeleting(false);
+                  }
+                }
+              }}
+            >
+              {isDeleting ? "삭제 중..." : "삭제"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
