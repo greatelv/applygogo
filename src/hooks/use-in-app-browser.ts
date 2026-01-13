@@ -20,6 +20,7 @@ export const useInAppBrowser = () => {
       "Line",
       "NAVER",
       "Daum",
+      "Barcelona",
     ];
 
     const isMatch = rules.some((rule) => userAgent.includes(rule));
