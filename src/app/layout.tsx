@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../styles/index.css";
 import { Providers } from "./providers";
 import NextTopLoader from "nextjs-toploader";
+import { GoogleAnalytics, MicrosoftClarity } from "./components/analytics";
 
 const title = "AI로 완성하는 고품질의 영문 이력서 - 지원고고";
 const description =
@@ -108,6 +109,8 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <GoogleAnalytics />
+        <MicrosoftClarity />
         <NextTopLoader
           color="#2563eb"
           initialPosition={0.08}
