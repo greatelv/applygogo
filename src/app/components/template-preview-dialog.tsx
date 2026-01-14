@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "./ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
@@ -161,6 +162,12 @@ export function TemplatePreviewDialog({
                   선택하세요.
                 </DialogDescription>
               </div>
+              <DialogClose asChild>
+                <Button variant="ghost" size="icon" className="shrink-0">
+                  <X className="size-4" />
+                  <span className="sr-only">닫기</span>
+                </Button>
+              </DialogClose>
             </div>
           </DialogHeader>
 

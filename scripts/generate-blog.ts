@@ -131,14 +131,6 @@ async function generateBlog() {
   const scraper = new UnsplashScraper();
 
   try {
-    // 0. Load Services Data
-    const servicesPath = path.join(process.cwd(), "src/lib/data/services.json");
-    const servicesData = JSON.parse(await fs.readFile(servicesPath, "utf-8"));
-    const serviceNames = Object.values(servicesData)
-      .map((s: any) => s.name)
-      .join(", ");
-    const serviceIds = Object.keys(servicesData).join(", ");
-
     // 0.1. Generate Current Date Context (KST: UTC+9)
     const now = new Date();
     const kstOffset = 9 * 60 * 60 * 1000;
@@ -157,10 +149,6 @@ async function generateBlog() {
 
     // Generate Unix Timestamp (milliseconds)
     const currentIsoDate = now.getTime();
-
-    console.log(
-      `Loaded ${Object.keys(servicesData).length} services from services.json`
-    );
 
     // 1. Generate Topic
     console.log("Generating topic...");
@@ -184,9 +172,6 @@ async function generateBlog() {
       console.log(`\n!!! MANUAL TOPIC DETECTED: "${manualTopic}" !!!\n`);
       topicPrompt = await loadPrompt("topic-refinement", {
         manualTopic, // Pass the manual input
-        serviceNum: Object.keys(servicesData).length,
-        serviceNames,
-        serviceIds,
         // Existing titles are less relevant for manual override, but kept for context if needed
         existingTitles: existingTitles.join(", "),
         currentDateKorean,
@@ -196,9 +181,6 @@ async function generateBlog() {
     } else {
       // Standard Automatic Generation
       topicPrompt = await loadPrompt("topic-generation", {
-        serviceNum: Object.keys(servicesData).length,
-        serviceNames,
-        serviceIds,
         existingTitles: existingTitles.join(", "),
         currentDateKorean,
         currentDateStr,
