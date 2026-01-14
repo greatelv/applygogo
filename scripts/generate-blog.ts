@@ -165,28 +165,21 @@ async function generateBlog() {
     }
 
     // Handle Manual Topic Override
-    const manualTopic = process.env.MANUAL_TOPIC;
-    let topicPrompt = "";
+    // Handle Manual Topic Override
+    const manualTopic = process.env.MANUAL_TOPIC || "";
 
     if (manualTopic) {
       console.log(`\n!!! MANUAL TOPIC DETECTED: "${manualTopic}" !!!\n`);
-      topicPrompt = await loadPrompt("topic-refinement", {
-        manualTopic, // Pass the manual input
-        // Existing titles are less relevant for manual override, but kept for context if needed
-        existingTitles: existingTitles.join(", "),
-        currentDateKorean,
-        currentDateStr,
-        currentYear,
-      });
-    } else {
-      // Standard Automatic Generation
-      topicPrompt = await loadPrompt("topic-generation", {
-        existingTitles: existingTitles.join(", "),
-        currentDateKorean,
-        currentDateStr,
-        currentYear,
-      });
     }
+
+    // Standard Automatic Generation (Unified)
+    const topicPrompt = await loadPrompt("topic-generation", {
+      manualTopic, // Pass manualTopic (empty string if not set)
+      existingTitles: existingTitles.join(", "),
+      currentDateKorean,
+      currentDateStr,
+      currentYear,
+    });
 
     const result = await generateWithRetry(topicPrompt);
     const text = (result.candidates?.[0]?.content?.parts?.[0]?.text || "")
