@@ -175,7 +175,7 @@ export default async function PostPage({ params }: PostPageProps) {
         {/* Added extra padding bottom for mobile fixed CTA */}
         <div className="container mx-auto px-6 pb-32 lg:pb-16">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 lg:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12">
               {/* Main Content */}
               <div className="max-w-3xl">
                 <ArticleContent content={contentHtml} />
@@ -193,8 +193,6 @@ export default async function PostPage({ params }: PostPageProps) {
                 {/* Bottom CTA - Desktop: inline, Mobile: fixed bottom */}
                 <div className="mt-16 hidden lg:block">
                   <BottomCTA
-                    targetLink={post.frontmatter.targetLink || ""}
-                    buttonText={post.frontmatter.buttonText || ""}
                     isSponsored={post.frontmatter.isSponsored}
                     relatedServices={post.frontmatter.relatedServices}
                   />
@@ -203,8 +201,6 @@ export default async function PostPage({ params }: PostPageProps) {
 
               {/* Sidebar CTA (Desktop) */}
               <AsideCTA
-                targetLink={post.frontmatter.targetLink || ""}
-                buttonText={post.frontmatter.buttonText || ""}
                 isSponsored={post.frontmatter.isSponsored}
                 relatedServices={post.frontmatter.relatedServices}
               />
@@ -216,8 +212,6 @@ export default async function PostPage({ params }: PostPageProps) {
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg">
           <div className="container mx-auto px-6">
             <BottomCTA
-              targetLink={post.frontmatter.targetLink || ""}
-              buttonText={post.frontmatter.buttonText || ""}
               isSponsored={post.frontmatter.isSponsored}
               relatedServices={post.frontmatter.relatedServices}
               isMobileFixed={true}

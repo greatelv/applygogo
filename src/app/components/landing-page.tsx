@@ -51,14 +51,12 @@ export function LandingPage({
               </div>
             </Link>
             <div className="flex items-center gap-4">
-              {/* Blog link hidden for now
               <Link
                 href="/blog"
                 className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 블로그
               </Link>
-              */}
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>

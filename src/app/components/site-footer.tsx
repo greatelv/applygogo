@@ -83,14 +83,12 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               >
                 고객문의
               </a>
-              {/* Blog link hidden for now
               <Link
                 href="/blog"
                 className="hover:text-foreground transition-colors"
               >
                 블로그
               </Link>
-              */}
             </div>
 
             {/* Business Info */}

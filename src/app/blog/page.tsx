@@ -3,8 +3,8 @@ import { BlogHeader } from "@/app/components/blog/blog-header";
 import { SiteFooter as Footer } from "@/app/components/site-footer";
 import { PostCard } from "@/app/components/blog/post-card";
 import Link from "next/link";
-import { ServiceTicker } from "@/app/components/blog/service-ticker";
-import { NewsletterForm } from "@/app/components/blog/newsletter-form";
+import { Button } from "@/app/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -108,7 +108,7 @@ export default function HomePage() {
 
               {/* Right: Service Tagline */}
               <div className="rounded-xl overflow-hidden bg-card border border-border shadow-sm p-8 md:p-12 flex flex-col justify-center items-center text-center">
-                <div className="space-y-8 w-full">
+                <div className="space-y-8 w-full max-w-md">
                   <div className="space-y-4">
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-balance">
                       <span className="text-foreground">
@@ -116,18 +116,23 @@ export default function HomePage() {
                         글로벌로 연결합니다
                       </span>
                     </h1>
+                    <p className="text-lg text-muted-foreground leading-relaxed text-balance">
+                      지원고고의 AI 이력서 빌더로 누구나 쉽고 빠르게
+                      <br className="hidden md:block" />
+                      전문가 수준의 영문 이력서를 완성할 수 있습니다.
+                    </p>
                   </div>
 
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto">
-                    영문 이력서 작성법, 해외 취업 팁, 그리고 커리어 성장을 위한
-                    다양한 정보를 지원고고 블로그에서 만나보세요.
-                  </p>
-
-                  <NewsletterForm />
-
-                  <div className="-mx-8 md:-mx-12 pt-4">
-                    <ServiceTicker />
-                  </div>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="w-full rounded-xl py-8 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
+                  >
+                    <Link href="/">
+                      무료로 영문 이력서 만들기
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>

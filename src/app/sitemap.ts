@@ -1,7 +1,32 @@
 import { MetadataRoute } from "next";
+import fs from "fs";
+import path from "path";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  // Get all blog posts
+  const postsDirectory = path.join(process.cwd(), "content/posts");
+  let blogPosts: MetadataRoute.Sitemap = [];
+
+  try {
+    if (fs.existsSync(postsDirectory)) {
+      const fileNames = fs.readdirSync(postsDirectory);
+      blogPosts = fileNames
+        .filter((fileName) => fileName.endsWith(".md"))
+        .map((fileName) => {
+          const slug = fileName.replace(/\.md$/, "");
+          return {
+            url: `${baseUrl}/blog/${slug}`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          };
+        });
+    }
+  } catch (error) {
+    console.error("Error reading blog posts for sitemap:", error);
+  }
 
   return [
     {
@@ -28,5 +53,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.5,
     },
+    ...blogPosts,
   ];
 }

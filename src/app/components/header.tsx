@@ -238,7 +238,6 @@ export function Header({
                   서비스 소개
                 </Link>
               </DropdownMenuItem>
-              {/* Blog link hidden for now
               <DropdownMenuItem asChild>
                 <Link href="/blog" className="cursor-pointer">
                   <FileText className="size-4 mr-2" />
@@ -246,7 +245,6 @@ export function Header({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              */}
               <DropdownMenuItem onClick={onLogout}>
                 <LogOut className="size-4 mr-2" />
                 로그아웃

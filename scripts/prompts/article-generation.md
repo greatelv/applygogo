@@ -103,7 +103,6 @@ tags:
   ]
 categories: ["Career", "Resume"]
 targetLink: "https://applygogo.com"
-buttonText: "내 이력서 무료 진단하기"
 isSponsored: false
 ```
 
@@ -121,3 +120,4 @@ isSponsored: false
 - **본문 3 (Bridge to ApplyGoGo)**: 수동 방식의 한계(시간, 비용, 퀄리티의 불확실성)를 지적하고, 지원고고를 통해 **"압도적 편의성과 전문가급 퀄리티"**를 얻을 수 있음을 비교 강조하세요.
 - **결론 (Actionable)**: 단순 요약이 아닌, "지금 당장 이력서를 열어 XX를 확인해보라"는 식의 구체적인 행동 제안과 함께 마무리하세요.
 - **주의**: 오직 마크다운 본문(Frontmatter 포함)만 리턴하세요. 추가 코멘트는 금지합니다.
+- **절대 금지**: 본문 내에 '버튼', 'CTA', '외부 링크'를 포함하지 마세요. UI 컴포넌트가 자동으로 처리합니다. 순수 텍스트 콘텐츠에만 집중하세요.
