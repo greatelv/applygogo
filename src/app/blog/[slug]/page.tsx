@@ -47,7 +47,7 @@ export async function generateMetadata({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
     keywords: post.frontmatter.tags,
-    authors: [{ name: post.frontmatter.author || "티입지기" }],
+    authors: [{ name: post.frontmatter.author || "지원고고팀" }],
     alternates: {
       canonical: postUrl,
     },
