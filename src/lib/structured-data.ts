@@ -8,7 +8,9 @@ export function generateArticleSchema(post: PostFrontmatter) {
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    image: post.thumbnail,
+    image: post.thumbnail?.startsWith("http")
+      ? post.thumbnail
+      : `${SITE_URL}${post.thumbnail}`,
     datePublished: post.date,
     dateModified: post.date,
     author: {
