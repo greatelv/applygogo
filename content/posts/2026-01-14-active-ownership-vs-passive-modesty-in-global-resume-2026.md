@@ -30,7 +30,7 @@ isSponsored: false
 2026년 글로벌 기업이 열광하는 인재상은 **'Active Ownership'**을 가진 인재다. 자신이 맡은 영역을 넘어서 비즈니스 목표를 달성하기 위해 주도적으로 행동하는 사람을 의미한다. 이를 위해서는 문장의 첫 단어인 'Action Verb(행동 동사)'부터 완전히 달라져야 한다.
 
 ![세련된 안경을 쓴 전문 컨설턴트가 듀얼 모니터 앞에서 심각한 표정으로 영문 이력서의 문구와 데이터 수치를 대조하며 분석하는 모습](/generated/active-ownership-vs-passive-modesty-in-global-resume-2026-resume-analysis-m6m5vx.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 'Active Ownership'을 보여주는 3단계 서술 공식
 
@@ -72,7 +72,7 @@ isSponsored: false
 - **여백의 미:** 상하좌우 여백을 0.5~1인치로 설정하여 가독성을 확보하라.
 
 ![환한 자연광이 들어오는 현대적인 사무실에서 글로벌 팀원들이 원형 테이블에 둘러앉아 영문 서류를 검토하며 활기차게 의견을 나누는 모습](/generated/active-ownership-vs-passive-modesty-in-global-resume-2026-global-business-teamwork-ft3f4j.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 개인이 직접 수정하기 어려운 '문화적 뉘앙스'의 벽
 

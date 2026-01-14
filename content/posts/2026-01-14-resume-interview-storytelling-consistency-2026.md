@@ -30,7 +30,7 @@ isSponsored: false
 과거의 ATS가 단순 키워드 매칭에 그쳤다면, 2026년의 지능형 ATS는 문장 간의 논리적 연결성과 성과의 구체성을 평가한다. 단순히 'Sales'라는 단어가 몇 번 들어갔느냐가 아니라, '어떤 환경에서 어떤 액션(Action Verb)을 통해 어떤 결과(Quantified Result)를 냈는가'를 분석한다. 
 
 ![밤늦게까지 스탠드 조명 아래에서 어두운 표정으로 모니터 속 영문 이력서와 씨름하며 머리를 감싸쥐고 고민하는 남성 지원자](/generated/resume-interview-storytelling-consistency-2026-stress-work-ntq3ta.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 합격하는 이력서의 핵심: 'Impact-Driven' 설계
 
@@ -74,7 +74,7 @@ Situation(상황), Task(과제), Action(행동), Result(결과) 중 이력서에
 -   **Impact Builder**: 단순 번역이 아닌, 해당 산업군에서 가장 선호하는 'Impact Verb'를 추천하여 당신의 성과를 3배 이상 돋보이게 만든다.
 
 ![밝고 현대적인 감각의 통창이 있는 오피스 회의실에서 자신감 넘치는 표정의 여성 지원자가 외국인 면접관들과 미소를 지으며 악수하고 있는 성공적인 인터뷰 장면](/generated/resume-interview-storytelling-consistency-2026-interview-success-0fwa2s.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. 결론: 지금 당장 당신의 이력서를 열어보라
 

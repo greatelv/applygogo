@@ -439,7 +439,7 @@ async function generateBlog() {
           replacements.push({
             match: fullMatch,
             replacement: `![${altText}](/generated/${filename})`,
-            credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${photo.photographerUrl}?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${photo.photographer}</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
+            credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${photo.photographerUrl}?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${photo.photographer}</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
           });
         } else {
           replacements.push({
@@ -472,7 +472,7 @@ async function generateBlog() {
             replacements.push({
               match: fullMatch,
               replacement: `![${altText}](/generated/${filename})`,
-              credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${fallbackPhoto.photographerUrl}?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${fallbackPhoto.photographer}</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
+              credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${fallbackPhoto.photographerUrl}?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${fallbackPhoto.photographer}</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
             });
           } else {
             replacements.push({

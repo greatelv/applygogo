@@ -38,7 +38,7 @@ isSponsored: false
 | 문제 해결 능력 | Good at problem solving | **Analytical Troubleshooting / Conflict Resolution** |
 
 ![밤늦게까지 스탠드 조명 아래에서 머리를 감싸쥐고 영문 이력서를 수정하며 고민하는 남성 지원자](/generated/linkedin-seo-keywords-for-global-recruiters-2026-stress-work-0y4gbc.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 단순히 단어를 바꾸는 것이 목적이 아니다. 해당 산업군에서 헤드헌터가 검색 필터에 입력하는 '검색어'와 당신의 이력서 단어를 일치시키는 것이 핵심이다. 이 과정이 생략된 이력서는 AI에게 '노이즈(Noise)'로 취급될 뿐이다.
 
@@ -69,7 +69,7 @@ AI는 숫자에 민감하다. "Managed a team" 보나 "Led a cross-functional te
 이 모든 규칙을 지키며 워드 파일을 수정하는 데에는 평균 5시간 이상의 집중력이 소요된다. 더욱 위험한 것은, 본인이 작성한 문장이 현지 비즈니스 맥락에서 '자연스러운지' 판단할 객관적 기준이 없다는 점이다.
 
 ![밝고 모던한 오피스 회의실에서 외국인 면접관들과 웃으며 악수하는 자신감 넘치는 여성](/generated/linkedin-seo-keywords-for-global-recruiters-2026-interview-success-8v9e3h.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 왜 '직접' 하는 것이 위험한 전략인가?
 

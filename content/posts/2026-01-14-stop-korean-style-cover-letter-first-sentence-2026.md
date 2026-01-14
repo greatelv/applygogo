@@ -33,7 +33,7 @@ isSponsored: false
 | **첫 문장** | "XX팀에 지원하게 되어 영광입니다." | "지난 5년간 XX분야에서 ROI 40%를 개선한..." |
 
 ![밤늦게까지 스탠드 조명 아래에서 머리를 감싸쥐고 영문 이력서를 수정하며 고민하는 남성 지원자](/generated/stop-korean-style-cover-letter-first-sentence-2026-stress-work-iupsgy.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 2026년 채용 시장의 핵심: 'Problem-Solver'형 서술 구조
 
@@ -81,7 +81,7 @@ isSponsored: false
 3.  **Expert Human Review**: AI가 잡지 못하는 산업군별 미세한 뉘앙스는 현직 글로벌 헤드헌터 출신 컨설턴트들이 직접 다듬는다. 
 
 ![밝고 모던한 오피스 회의실에서 외국인 면접관들과 웃으며 악수하는 자신감 넘치는 여성](/generated/stop-korean-style-cover-letter-first-sentence-2026-interview-success-69fbb5.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@miinrad?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Mina Rad</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. 지금 당장 당신의 이력서를 열어 확인해야 할 3가지
 

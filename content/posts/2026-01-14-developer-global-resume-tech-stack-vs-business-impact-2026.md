@@ -32,7 +32,7 @@ isSponsored: false
 결국 깃허브는 이력서에서 증명한 '비즈니스 임팩트'를 뒷받침하는 증거 자료여야지, 이력서 그 자체가 되어서는 안 된다.
 
 ![어두운 방 안에서 듀얼 모니터를 응시하며 수많은 코드와 이력서 파일을 대조하고 있는 피곤한 표정의 개발자](/generated/developer-global-resume-tech-stack-vs-business-impact-2026-fallback-2anv18.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@huntersrace?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Hunters Race</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@huntersrace?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Hunters Race</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 합격을 부르는 '비즈니스 언어'로의 번역: XYZ 프레임워크
 
@@ -62,7 +62,7 @@ isSponsored: false
 캔바(Canva)나 노션(Notion)에서 만든 화려한 이력서는 인간의 눈에는 예뻐 보일지 모르나, 구형 ATS 기계에는 '읽을 수 없는 데이터'일 뿐이다. 2단 구성, 복잡한 아이콘, 차트 등은 텍스트 추출 과정에서 글자를 깨지게 만든다. **표준적인 Single-column 워드 기반 PDF**가 정석이다.
 
 ![깔끔한 정장 차림으로 태블릿을 들고 자신의 성과 지표가 담긴 그래프를 설명하며 자신감 있게 미소 짓는 남성](/generated/developer-global-resume-tech-stack-vs-business-impact-2026-business-20presentation-20success-itxabf.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@p1mm1?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Piermario Eva</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@p1mm1?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Piermario Eva</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 지원고고(ApplyGoGo)가 당신의 코드를 '달러($)'로 번역하는 법
 

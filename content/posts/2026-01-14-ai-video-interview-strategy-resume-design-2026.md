@@ -33,7 +33,7 @@ isSponsored: false
 3. **직무 연관성(Relevance)의 오류**: 지원하는 포지션과 상관없는 경력을 구구절절 나열하는 것은 ATS의 혼란만 가중시킨다.
 
 ![어두운 사무실에서 모니터 화면의 복잡한 데이터와 영문 이력서 서식을 대조하며 심각한 표정으로 수정 작업을 하고 있는 30대 여성 전문직 지원자](/generated/ai-video-interview-strategy-resume-design-2026-resume-analysis-c6qjkt.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 면접을 지배하는 '질문 유도형' 작성법 (The Trigger Strategy)
 
@@ -74,7 +74,7 @@ isSponsored: false
 필자가 상담한 한 지원자는 챗GPT로 작성한 이력서로 50군데 지원했지만 단 한 곳에서도 연락을 받지 못했다. 원인은 'Over-optimization(과도한 최적화)'이었다. AI가 문장을 너무 매끄럽게 만든 나머지, 실무적인 구체성이 결여되어 진정성이 느껴지지 않았던 것이다.
 
 ![고급스러운 목재 책상 위에서 세련된 디자인의 영문 이력서와 태블릿 PC를 나란히 두고 전략을 구상하는 전문적인 커리어 코치의 손](/generated/ai-video-interview-strategy-resume-design-2026-business-strategy-pkxxlr.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@varpap?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vardan Papikyan</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@varpap?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vardan Papikyan</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. '지원고고(ApplyGoGo)'가 제안하는 이기는 레주메 설계
 

@@ -31,7 +31,7 @@ isSponsored: false
 | **인사** | 사내 교육 프로그램 기획 및 운영 | **Designed** a new onboarding framework that **shortened ramp-up time by 20%** for 100+ new hires. |
 
 ![어두운 조명 아래 듀얼 모니터를 응시하며 수많은 불합격 통지 메일 사이에서 자신의 영문 이력서를 분석하고 있는 고뇌에 찬 주니어 개발자](/generated/resume-impact-vs-task-list-2026-strategy-frustrated-work-s4vco.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@seogalaxy?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">SEO Galaxy</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@seogalaxy?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">SEO Galaxy</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ### 2. 2026년 ATS를 뚫는 '임팩트 문장' 설계 공식
 
@@ -63,7 +63,7 @@ ATS는 더 이상 키워드 매칭만 수행하지 않는다. 문맥(Context)과
 무료 AI 툴은 보조 수단일 뿐이다. 글로벌 기업의 시각에서 당신의 커리어를 '재구조화'하는 작업은 단순한 언어 변환을 넘어선 고도의 전략적 사고를 요한다.
 
 ![고층 빌딩 숲이 보이는 모던한 오피스에서 세련된 비즈니스 캐주얼 차림으로 외국인 동료들과 협업하며 웃고 있는 성공한 커리어 우먼](/generated/resume-impact-vs-task-list-2026-strategy-global-business-success-cwv08o.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@alex_boyd?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alex Boyd</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@alex_boyd?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Alex Boyd</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ### 4. 지원고고(ApplyGoGo)가 제안하는 합격 솔루션
 

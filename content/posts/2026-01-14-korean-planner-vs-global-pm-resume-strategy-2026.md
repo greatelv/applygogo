@@ -33,7 +33,7 @@ isSponsored: false
 위와 같은 서술은 전형적인 '열심히 일한 대리급'의 이력서다. 글로벌 PM 이력서에는 **Output(결과물)**이 아닌 **Outcome(성과)**이 담겨야 한다.
 
 ![복잡한 데이터 차트와 제품 로드맵이 펼쳐진 대형 화이트보드 앞에서 팀원들에게 비즈니스 임팩트를 설명하며 열정적으로 프레젠테이션을 진행하는 PM의 뒷모습](/generated/korean-planner-vs-global-pm-resume-strategy-2026-product-management-trqdm4.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@jexo?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jexo</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@jexo?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jexo</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 합격하는 이력서의 절대 공식: XYZ Formula
 
@@ -64,7 +64,7 @@ isSponsored: false
 3.  **PDF보다는 Word?**: 최근 ATS는 PDF도 잘 인식하지만, 보수적인 시스템은 여전히 .docx 형식을 선호한다. 지원하는 기업의 시스템에 맞게 최적화된 파일 형식을 선택하는 치밀함이 필요하다.
 
 ![밤늦게까지 어두운 방 안에서 스탠드 조명 하나에 의지해 모니터 속 영문 이력서의 빨간색 교정 표시를 보며 머리를 짚고 고민에 빠진 남성 지원자](/generated/korean-planner-vs-global-pm-resume-strategy-2026-stress-work-5svoo3.jpg)
-<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=teep_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 왜 '번역기'와 '챗GPT'만으로는 부족한가?
 

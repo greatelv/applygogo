@@ -1,6 +1,6 @@
 import type { PostFrontmatter } from "./markdown";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://teep.pe.kr";
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://applygogo.com";
 
 export function generateArticleSchema(post: PostFrontmatter) {
   return {
@@ -13,20 +13,20 @@ export function generateArticleSchema(post: PostFrontmatter) {
     dateModified: post.date,
     author: {
       "@type": "Person",
-      name: post.author || "티입지기",
+      name: post.author || "지원고고 팀",
     },
     publisher: {
       "@type": "Organization",
-      name: "TEEP",
+      name: "지원고고",
       logo: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/icon.svg`,
+        url: `${SITE_URL}/logo-for-light.svg`,
       },
     },
     keywords: (post.tags || []).join(", "),
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/posts/${post.slug}`,
+      "@id": `${SITE_URL}/blog/${post.slug}`,
     },
   };
 }
@@ -54,8 +54,8 @@ export function generateBreadcrumbListSchema(items: BreadcrumbItem[]) {
 export function generateBreadcrumbSchema(post: PostFrontmatter) {
   return generateBreadcrumbListSchema([
     { name: "홈", item: "/" },
-    { name: "전체 아티클", item: "/articles" },
-    { name: post.title, item: `/posts/${post.slug}` },
+    { name: "블로그", item: "/blog" },
+    { name: post.title, item: `/blog/${post.slug}` },
   ]);
 }
 
@@ -63,18 +63,11 @@ export function generateWebsiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "TEEP",
-    alternateName: "티입",
-    description: "당신의 생활을 업그레이드하는 종합 서비스 꿀팁",
+    name: "지원고고",
+    alternateName: "Applygogo",
+    description:
+      "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 만들어보세요.",
     url: SITE_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -82,12 +75,13 @@ export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "TEEP",
-    description: "당신의 생활을 업그레이드하는 종합 서비스 꿀팁",
+    name: "지원고고",
+    description:
+      "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 만들어보세요.",
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
-      url: `${SITE_URL}/icon.svg`,
+      url: `${SITE_URL}/logo-for-light.svg`,
     },
     sameAs: [],
   };
@@ -106,7 +100,7 @@ export function generateCollectionPageSchema(
     url,
     isPartOf: {
       "@type": "WebSite",
-      name: "TEEP",
+      name: "지원고고",
       url: SITE_URL,
     },
   };
