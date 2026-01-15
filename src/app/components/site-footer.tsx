@@ -84,6 +84,18 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 고객문의
               </a>
               <Link
+                href="/company"
+                className="hover:text-foreground transition-colors"
+              >
+                회사 소개
+              </Link>
+              <Link
+                href="/introduction"
+                className="hover:text-foreground transition-colors"
+              >
+                서비스 소개
+              </Link>
+              <Link
                 href="/blog"
                 className="hover:text-foreground transition-colors"
               >
