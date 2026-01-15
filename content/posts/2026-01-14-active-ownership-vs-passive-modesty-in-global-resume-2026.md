@@ -3,7 +3,7 @@ title: "당신의 영문 이력서가 '열심히 일한 보조원'처럼 보이�
 description: "영문 이력서에서 'Assisted in'이 당신의 합격을 가로막고 있다는 사실을 아는가? 2026년 글로벌 채용 시장이 요구하는 '주도적 소유권' 서술 전략과 ATS 최적화 비결을 공개한다."
 date: 1768384272593
 thumbnail: "/generated/active-ownership-vs-passive-modesty-in-global-resume-2026-hero.jpg"
-author: "지원고고 수석 컨설턴트"
+author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, 커리어전략, ATS최적화, 외국계이직]
 categories: ["Career", "Resume"]
@@ -15,7 +15,7 @@ isSponsored: false
 
 아무리 화려한 경력을 가진 지원자라도 영문 이력서(Resume)를 받아 들었을 때 가장 많이 범하는 치명적인 실수가 있다. 바로 한국적 미덕인 ‘겸손’을 이력서에 그대로 녹여내는 것이다. "팀 프로젝트에 참여했다", "상사를 도와 업무를 수행했다"와 같은 표현들은 한국 기업에서는 원만한 협업 능력을 보여주는 지표가 될지 모른다. 하지만 2026년 현재, 구글(Google), 아마존(Amazon), 테슬라(Tesla)를 포함한 글로벌 기업의 리크루터들에게 이러한 서술은 **"이 사람은 스스로 의사결정을 내릴 줄 모르는 수동적인 보조원(Assistant)일 뿐이다"**라는 강력한 거절의 신호로 읽힌다.
 
-수천 건의 합격과 불합격 데이터를 분석해온 지원고고(ApplyGoGo)의 관점에서 단언컨대, 영문 이력서는 당신이 '무엇을 했는지(Duty)'를 나열하는 일기장이 아니다. 당신이 '어떤 임팩트를 냈는지(Achievement)'를 증명하는 비즈니스 제안서여야 한다. 특히 AI 기반의 채용 관리 시스템(ATS)이 고도로 정교해진 2026년의 채용 시장에서, 모호하고 수동적인 표현은 인간 검토자의 눈에 닿기도 전에 시스템에 의해 필터링된다. 
+수천 건의 합격과 불합격 데이터를 분석해온 지원고고(ApplyGoGo)의 관점에서 단언컨대, 영문 이력서는 당신이 '무엇을 했는지(Duty)'를 나열하는 일기장이 아니다. 당신이 '어떤 임팩트를 냈는지(Achievement)'를 증명하는 비즈니스 제안서여야 한다. 특히 AI 기반의 채용 관리 시스템(ATS)이 고도로 정교해진 2026년의 채용 시장에서, 모호하고 수동적인 표현은 인간 검토자의 눈에 닿기도 전에 시스템에 의해 필터링된다.
 
 지금부터 당신의 이력서를 '열심히 일한 보조원'에서 '반드시 영입해야 할 핵심 인재'로 탈바꿈시키는 **Active Ownership 서술법**의 핵심 전략을 공개한다.
 
@@ -30,6 +30,7 @@ isSponsored: false
 2026년 글로벌 기업이 열광하는 인재상은 **'Active Ownership'**을 가진 인재다. 자신이 맡은 영역을 넘어서 비즈니스 목표를 달성하기 위해 주도적으로 행동하는 사람을 의미한다. 이를 위해서는 문장의 첫 단어인 'Action Verb(행동 동사)'부터 완전히 달라져야 한다.
 
 ![세련된 안경을 쓴 전문 컨설턴트가 듀얼 모니터 앞에서 심각한 표정으로 영문 이력서의 문구와 데이터 수치를 대조하며 분석하는 모습](/generated/active-ownership-vs-passive-modesty-in-global-resume-2026-resume-analysis-m6m5vx.jpg)
+
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 'Active Ownership'을 보여주는 3단계 서술 공식
@@ -37,6 +38,7 @@ isSponsored: false
 단순히 단어 몇 개를 바꾼다고 해서 이력서의 격이 올라가지는 않는다. 문장의 구조 자체를 성과 중심(Outcome-driven)으로 재설계해야 한다. 필자가 컨설팅 현장에서 사용하는 **'Impact-First' 공식**을 제안한다.
 
 ### Step 1: 강렬한 행동 동사(Power Action Verbs) 선택
+
 문장의 시작은 반드시 능동적이고 구체적인 동사로 시작해야 한다. 2026년 리크루터들이 선호하는 동사는 다음과 같다.
 
 - **기획 및 주도:** Spearheaded, Orchestrated, Pioneered, Initiated
@@ -44,16 +46,18 @@ isSponsored: false
 - **문제 해결:** Resolved, Overhauled, Rectified, Transformed
 
 ### Step 2: 수치화된 성과(Quantifiable Results) 삽입
+
 "매출을 올렸다"는 표현은 무의미하다. "6개월 만에 매출을 25% 성장시켰다"고 써야 한다. 숫자는 국경을 초월한 공용어이며, 당신의 유능함을 가장 객관적으로 증명하는 도구다.
 
 ### Step 3: 구체적인 방법론(Action/Tool) 명시
+
 어떤 기술이나 전략을 사용했는지 명시하여 재현 가능성을 보여주어야 한다.
 
-| 잘못된 표현 (Passive/Humble) | 합격하는 표현 (Active Ownership) |
-| :--- | :--- |
-| Responsible for managing the social media team. | **Spearheaded** a team of 5 to execute a global SNS strategy, resulting in a **35% increase** in organic engagement. |
-| Assisted in the development of a new software module. | **Architected and deployed** a core microservice module using Java/Spring Boot, reducing system latency by **20%**. |
-| Participated in the annual budget planning process. | **Optimized** the $1M annual marketing budget by reallocating resources, achieving a **15% cost saving** without KPI loss. |
+| 잘못된 표현 (Passive/Humble)                          | 합격하는 표현 (Active Ownership)                                                                                           |
+| :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| Responsible for managing the social media team.       | **Spearheaded** a team of 5 to execute a global SNS strategy, resulting in a **35% increase** in organic engagement.       |
+| Assisted in the development of a new software module. | **Architected and deployed** a core microservice module using Java/Spring Boot, reducing system latency by **20%**.        |
+| Participated in the annual budget planning process.   | **Optimized** the $1M annual marketing budget by reallocating resources, achieving a **15% cost saving** without KPI loss. |
 
 > **Consultant's Tip:** 위 표에서 볼 수 있듯이, 'Active Ownership' 서술법은 당신을 '팀의 부속품'이 아닌 '변화의 주역'으로 묘사한다.
 
@@ -62,16 +66,19 @@ isSponsored: false
 많은 지원자가 간과하는 사실 중 하나는, 당신의 이력서를 처음 읽는 존재가 사람이 아닐 확률이 95%라는 점이다. 현대의 ATS(Applicant Tracking System)는 단순히 키워드를 매칭하는 수준을 넘어, 문맥을 이해하고 동사의 강도를 측정한다.
 
 ### ATS 탈락을 부르는 치명적인 실수들
+
 1.  **이미지 및 복잡한 레이아웃:** 캔바(Canva) 등에서 만든 화려한 이력서는 ATS가 텍스트를 파싱(Parsing)하는 과정에서 글자를 깨뜨릴 위험이 크다.
 2.  **직역된 콩글리시:** "I worked hard to achieve goals"와 같은 초등 수준의 표현은 전문성을 의심케 한다.
 3.  **불필요한 개인정보:** 2026년 글로벌 스탠다드에서 사진, 나이, 결혼 여부 기재는 무조건적인 탈락 사유다. (Bias 방지를 위한 기업 정책)
 
 ### ATS 통과를 위한 워크플로우
+
 - **표준 폰트 사용:** Arial, Calibri, Roboto 등 가독성 높은 폰트를 사용하라.
 - **키워드 동기화:** 채용 공고(JD)에 등장하는 핵심 역량 단어를 이력서 내에 자연스럽게 녹여내라.
 - **여백의 미:** 상하좌우 여백을 0.5~1인치로 설정하여 가독성을 확보하라.
 
 ![환한 자연광이 들어오는 현대적인 사무실에서 글로벌 팀원들이 원형 테이블에 둘러앉아 영문 서류를 검토하며 활기차게 의견을 나누는 모습](/generated/active-ownership-vs-passive-modesty-in-global-resume-2026-global-business-teamwork-ft3f4j.jpg)
+
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 개인이 직접 수정하기 어려운 '문화적 뉘앙스'의 벽
@@ -104,5 +111,4 @@ isSponsored: false
 
 ---
 
-> **지금 당신의 영문 이력서 합격 확률이 궁금하다면?**
-> [지원고고에서 AI 무료 진단 시작하기](https://applygogo.com)
+> **지금 당신의 영문 이력서 합격 확률이 궁금하다면?** > [지원고고에서 AI 무료 진단 시작하기](https://applygogo.com)

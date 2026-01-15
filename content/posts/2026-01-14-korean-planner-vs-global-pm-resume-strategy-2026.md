@@ -3,9 +3,18 @@ title: "경력직 PM의 흔한 실수: '열심히 기획했다'는 영문 이력
 description: "한국식 '서비스 기획' 이력서로는 실리콘밸리의 문턱을 넘을 수 없다. 단순 직역을 넘어 비즈니스 임팩트를 증명하는 Product Thinking 이식법과 ATS 통과 전략을 공개한다."
 date: 1768384368161
 thumbnail: "/generated/korean-planner-vs-global-pm-resume-strategy-2026-hero.jpg"
-author: "지원고고 수석 컨설턴트"
+author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
-tags: [영문이력서, 해외취업, 프로듀트매니저, PM이직, ATS최적화, 실리콘밸리취업, 커리어전략]
+tags:
+  [
+    영문이력서,
+    해외취업,
+    프로듀트매니저,
+    PM이직,
+    ATS최적화,
+    실리콘밸리취업,
+    커리어전략,
+  ]
 categories: ["Career", "Resume"]
 targetLink: "https://applygogo.com"
 isSponsored: false
@@ -15,7 +24,7 @@ isSponsored: false
 
 국내 유수의 IT 대기업이나 촉망받는 스타트업에서 수년간 '서비스 기획' 경력을 쌓은 시니어급 인재들이 해외 시장의 문을 두드릴 때 가장 먼저 마주하는 벽은 언어 장벽이 아니다. 바로 **이력서의 '관점' 차이**다.
 
-한국에서 칭송받던 '꼼꼼한 기획자'가 실리콘밸리 리크루터의 눈에는 '단순 오퍼레이터'로 전락하는 현상은 비일비재하다. 수천 장의 합격과 불합격 이력서를 검토해온 지원고고(ApplyGoGo) 수석 컨설턴트로서 단언컨대, 당신의 영문 이력서가 광탈하는 이유는 영어를 못해서가 아니라 **'Product Management'의 본질을 담아내지 못했기 때문이다.** 
+한국에서 칭송받던 '꼼꼼한 기획자'가 실리콘밸리 리크루터의 눈에는 '단순 오퍼레이터'로 전락하는 현상은 비일비재하다. 수천 장의 합격과 불합격 이력서를 검토해온 지원고고(ApplyGoGo) 수석 컨설턴트로서 단언컨대, 당신의 영문 이력서가 광탈하는 이유는 영어를 못해서가 아니라 **'Product Management'의 본질을 담아내지 못했기 때문이다.**
 
 이 아티클에서는 글로벌 채용 시장이 원하는 PM의 언어로 당신의 경력을 재정의하는 필승 전략을 제시한다.
 
@@ -26,6 +35,7 @@ isSponsored: false
 리크루터가 확인하고 싶은 것은 오직 하나다. **"당신이 비즈니스 문제를 정의하고, 데이터에 기반해 의사결정을 내려, 실제로 어떤 임팩트를 만들어냈는가?"**이다.
 
 ### 당신의 이력서가 'Planner'에 머물러 있다는 증거
+
 - "OO 서비스 신규 기능 기획 및 런칭" (Launched new features for OO service)
 - "개발 및 디자인 팀과의 협업 및 일정 관리" (Managed schedule and collaborated with dev/design teams)
 - "고객 요구사항 정의서 작성" (Wrote PRD and customer requirements)
@@ -33,6 +43,7 @@ isSponsored: false
 위와 같은 서술은 전형적인 '열심히 일한 대리급'의 이력서다. 글로벌 PM 이력서에는 **Output(결과물)**이 아닌 **Outcome(성과)**이 담겨야 한다.
 
 ![복잡한 데이터 차트와 제품 로드맵이 펼쳐진 대형 화이트보드 앞에서 팀원들에게 비즈니스 임팩트를 설명하며 열정적으로 프레젠테이션을 진행하는 PM의 뒷모습](/generated/korean-planner-vs-global-pm-resume-strategy-2026-product-management-trqdm4.jpg)
+
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@jexo?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Jexo</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 합격하는 이력서의 절대 공식: XYZ Formula
@@ -44,12 +55,12 @@ isSponsored: false
 
 ### 실전 적용: Before vs. After 비교
 
-| 항목 | 잘못된 서술 (Planner 방식) | 합격하는 서술 (Product Thinking) |
-| :--- | :--- | :--- |
-| **핵심 관점** | 수행한 업무 내용 (What I did) | 비즈니스 가치 증명 (Value created) |
-| **메인 동사** | Participated, Managed, Assisted | **Spearheaded, Optimized, Orchestrated** |
-| **성과 표현** | "Successful launch" (추상적) | **"Reduced churn rate by 15%"** (구체적) |
-| **예시 문장** | 신규 결제 시스템 기획 및 도입 | Spearheaded the integration of a new payment gateway, **increasing checkout conversion rate by 12%** within 6 months. |
+| 항목          | 잘못된 서술 (Planner 방식)      | 합격하는 서술 (Product Thinking)                                                                                      |
+| :------------ | :------------------------------ | :-------------------------------------------------------------------------------------------------------------------- |
+| **핵심 관점** | 수행한 업무 내용 (What I did)   | 비즈니스 가치 증명 (Value created)                                                                                    |
+| **메인 동사** | Participated, Managed, Assisted | **Spearheaded, Optimized, Orchestrated**                                                                              |
+| **성과 표현** | "Successful launch" (추상적)    | **"Reduced churn rate by 15%"** (구체적)                                                                              |
+| **예시 문장** | 신규 결제 시스템 기획 및 도입   | Spearheaded the integration of a new payment gateway, **increasing checkout conversion rate by 12%** within 6 months. |
 
 단순히 "기획했다"는 표현 대신 "주도했다(Spearheaded)", "최적화했다(Optimized)", "성장시켰다(Scaled)"와 같은 강력한 **Action Verbs**를 사용하라. 이것이 리크루터의 시선을 6초 안에 사로잡는 비결이다.
 
@@ -64,11 +75,12 @@ isSponsored: false
 3.  **PDF보다는 Word?**: 최근 ATS는 PDF도 잘 인식하지만, 보수적인 시스템은 여전히 .docx 형식을 선호한다. 지원하는 기업의 시스템에 맞게 최적화된 파일 형식을 선택하는 치밀함이 필요하다.
 
 ![밤늦게까지 어두운 방 안에서 스탠드 조명 하나에 의지해 모니터 속 영문 이력서의 빨간색 교정 표시를 보며 머리를 짚고 고민에 빠진 남성 지원자](/generated/korean-planner-vs-global-pm-resume-strategy-2026-stress-work-5svoo3.jpg)
+
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@officestock?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Sebastian Herrmann</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 왜 '번역기'와 '챗GPT'만으로는 부족한가?
 
-많은 지원자가 DeepL이나 ChatGPT를 활용해 영문 이력서를 작성한다. 하지만 인공지능은 당신의 '맥락'을 모른다. 
+많은 지원자가 DeepL이나 ChatGPT를 활용해 영문 이력서를 작성한다. 하지만 인공지능은 당신의 '맥락'을 모른다.
 
 - **치명적 한계 1: 뉘앙스의 부재**: "운영 효율화"를 단순히 "Operational Efficiency"라고 번역하는 것은 쉽다. 하지만 그것이 `Streamlined workflows`인지 `Automated manual processes`인지에 따라 당신의 전문 역량은 완전히 다르게 평가된다.
 - **치명적 한계 2: 오버 엔지니어링**: AI는 때로 지나치게 화려하거나 문어체적인 표현을 남발한다. 실리콘밸리는 '간결하고 명확한(Concise and Clear)' 소통을 최우선으로 한다. 불필요한 수식어는 오히려 신뢰도를 떨어뜨린다.

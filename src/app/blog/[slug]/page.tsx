@@ -47,7 +47,7 @@ export async function generateMetadata({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
     keywords: post.frontmatter.tags,
-    authors: [{ name: post.frontmatter.author || "지원고고팀" }],
+    authors: [{ name: post.frontmatter.author || "고고지기" }],
     alternates: {
       canonical: postUrl,
     },
@@ -121,14 +121,16 @@ export default async function PostPage({ params }: PostPageProps) {
                 { label: post.frontmatter.title, href: `/blog/${slug}` },
               ]}
             />
-            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+            <div className="flex flex-row items-center gap-4 text-sm text-muted-foreground mb-6">
               {post.frontmatter.categories &&
                 post.frontmatter.categories.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {post.frontmatter.categories.map((category) => (
+                    {post.frontmatter.categories.map((category, index) => (
                       <Badge
                         key={category}
-                        className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                        className={`bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 ${
+                          index > 0 ? "hidden sm:inline-flex" : ""
+                        }`}
                       >
                         {category}
                       </Badge>
@@ -137,8 +139,9 @@ export default async function PostPage({ params }: PostPageProps) {
                 )}
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="h-4 w-4 flex-shrink-0" />
                   <time
+                    className="whitespace-nowrap"
                     dateTime={new Date(post.frontmatter.date).toISOString()}
                   >
                     {new Date(post.frontmatter.date).toLocaleDateString(
@@ -155,7 +158,9 @@ export default async function PostPage({ params }: PostPageProps) {
                 {post.frontmatter.author && (
                   <div className="flex items-center gap-2">
                     <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
-                    <span>{post.frontmatter.author}</span>
+                    <span className="whitespace-nowrap">
+                      {post.frontmatter.author}
+                    </span>
                   </div>
                 )}
               </div>

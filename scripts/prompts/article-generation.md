@@ -92,7 +92,7 @@ title: "{{title}}"
 description: "단순 요약을 넘어, 해외 취업/이직을 꿈꾸는 독자가 클릭하지 않으면 손해라고 느낄 만큼 강력한 후킹(Hooking) 메시지를 작성하고, 클릭을 유도하세요. 구체적인 이득(Benefit)을 암시하세요. (80-100자)"
 date: { { currentIsoDate } }
 thumbnail: "/placeholder.svg?height=600&width=1200"
-author: "지원고고 수석 컨설턴트"
+author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags:
   [

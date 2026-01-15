@@ -11,11 +11,11 @@ export function generateArticleSchema(post: PostFrontmatter) {
     image: post.thumbnail?.startsWith("http")
       ? post.thumbnail
       : `${SITE_URL}${post.thumbnail}`,
-    datePublished: post.date,
-    dateModified: post.date,
+    datePublished: new Date(post.date).toISOString(),
+    dateModified: new Date(post.date).toISOString(),
     author: {
       "@type": "Person",
-      name: post.author || "지원고고 팀",
+      name: post.author || "고고지기",
     },
     publisher: {
       "@type": "Organization",
