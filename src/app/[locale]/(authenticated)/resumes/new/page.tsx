@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useApp } from "../../../context/app-context";
-import { NewResumePage } from "../../../components/new-resume-page";
-import { uploadResumeAction } from "../../../lib/actions";
+import { useApp } from "@/app/context/app-context";
+import { NewResumePage } from "@/app/components/new-resume-page";
+import { uploadResumeAction } from "@/app/lib/actions";
 
 const steps = [
   { id: "upload", label: "업로드" },

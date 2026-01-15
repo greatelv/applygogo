@@ -2,63 +2,86 @@ import { MetadataRoute } from "next";
 import fs from "fs";
 import path from "path";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+export default function sitemap(): MetadataRoute.Sitemap {
   // Get all blog posts
   const postsDirectory = path.join(process.cwd(), "content/posts");
-  let blogPosts: MetadataRoute.Sitemap = [];
+  let blogPostSlugs: string[] = [];
 
   try {
     if (fs.existsSync(postsDirectory)) {
       const fileNames = fs.readdirSync(postsDirectory);
-      blogPosts = fileNames
+      blogPostSlugs = fileNames
         .filter((fileName) => fileName.endsWith(".md"))
-        .map((fileName) => {
-          const slug = fileName.replace(/\.md$/, "");
-          return {
-            url: `${baseUrl}/blog/${slug}`,
-            lastModified: new Date(),
-            changeFrequency: "weekly",
-            priority: 0.7,
-          };
-        });
+        .map((fileName) => fileName.replace(/\.md$/, ""));
     }
   } catch (error) {
     console.error("Error reading blog posts for sitemap:", error);
   }
 
-  return [
-    {
-      url: baseUrl,
+  const routes = ["", "/blog", "/login", "/privacy", "/terms"];
+
+  const sitemapEntries: MetadataRoute.Sitemap = [];
+
+  // Helper to generate entries for a path
+  const addEntriesForPath = (
+    routePath: string,
+    changeFreq: any,
+    priority: number
+  ) => {
+    const koUrl = `${baseUrl}${routePath}`;
+    const enUrl = `${baseUrl}/en${routePath}`;
+
+    const alternates = {
+      languages: {
+        ko: koUrl,
+        en: enUrl,
+      },
+    };
+
+    // Default Locale (ko) - No prefix
+    sitemapEntries.push({
+      url: koUrl,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/blog`,
+      changeFrequency: changeFreq,
+      priority: priority,
+      alternates: alternates,
+    });
+
+    // English Locale (en) - /en prefix
+    sitemapEntries.push({
+      url: enUrl,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-    ...blogPosts,
-  ];
+      changeFrequency: changeFreq,
+      priority: priority,
+      alternates: alternates,
+    });
+  };
+
+  // 1. Static Routes
+  routes.forEach((route) => {
+    let priority = 0.5;
+    let changeFreq = "yearly";
+
+    if (route === "") {
+      priority = 1;
+      changeFreq = "daily";
+    } else if (route === "/blog") {
+      priority = 0.8;
+      changeFreq = "daily";
+    } else if (route === "/login") {
+      priority = 0.8;
+      changeFreq = "monthly";
+    }
+
+    addEntriesForPath(route, changeFreq, priority);
+  });
+
+  // 2. Blog Posts
+  blogPostSlugs.forEach((slug) => {
+    addEntriesForPath(`/blog/${slug}`, "weekly", 0.7);
+  });
+
+  return sitemapEntries;
 }

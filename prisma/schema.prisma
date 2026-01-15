@@ -59,6 +59,13 @@ model Resume {
   updated_at        DateTime           @updatedAt
   email             String?
   links             Json?
+  
+  // Data Fields for Flexible/Multi-stage Processing
+  data              Json?    @map("original_data") // Raw Extraction Data
+  convertedData     Json?    @map("converted_data") // Transformed Result (e.g. Narrative)
+  sourceLang        String   @default("ko") @map("source_lang") // "ko" | "en"
+  targetLang        String   @default("en") @map("target_lang") // "en" | "ko"
+
   name_en           String?
   name_kr           String             @default("")
   phone             String?

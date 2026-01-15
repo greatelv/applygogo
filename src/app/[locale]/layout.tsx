@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import "../styles/index.css";
-import { Providers } from "./providers";
+import "../../styles/index.css";
+import { Providers } from "../providers";
 import NextTopLoader from "nextjs-toploader";
-import { GoogleAnalytics, MicrosoftClarity } from "./components/analytics";
+import { GoogleAnalytics, MicrosoftClarity } from "../components/analytics";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "../../i18n/routing";
 
 const title = "AI로 완성하는 고품질의 영문 이력서 - 지원고고";
 const description =
@@ -100,28 +104,50 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
+
+  // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+
+  // Enable static rendering
+  setRequestLocale(locale);
+
+  // Providing all messages to the client
+  // side is the easiest way to get started
+  const messages = await getMessages();
+
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <GoogleAnalytics />
-        <MicrosoftClarity />
-        <NextTopLoader
-          color="#2563eb"
-          initialPosition={0.08}
-          crawlSpeed={200}
-          height={3}
-          crawl={true}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-          shadow="0 0 10px #2563eb,0 0 5px #2563eb"
-        />
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider messages={messages}>
+          <GoogleAnalytics />
+          <MicrosoftClarity />
+          <NextTopLoader
+            color="#2563eb"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #2563eb,0 0 5px #2563eb"
+          />
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

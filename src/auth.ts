@@ -2,13 +2,14 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Naver from "next-auth/providers/naver";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { DynamicPrismaAdapter } from "@/lib/auth-adapter";
+import { getPrismaClient, Region } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
+import { headers } from "next/headers";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  adapter: PrismaAdapter(prisma),
+  adapter: DynamicPrismaAdapter(),
   session: { strategy: "jwt" },
   trustHost: true,
   providers: [
@@ -46,6 +47,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
           return null;
         }
+
+        // Determine Region Dynamic
+        let region: Region = "KR";
+        try {
+          const headersList = await headers();
+          if (headersList.get("x-application-region") === "GLOBAL") {
+            region = "GLOBAL";
+          }
+        } catch (e) {}
+
+        const prisma = getPrismaClient(region);
 
         // Upsert user to ensure valid foreign keys for test account
         const user = await prisma.user.upsert({

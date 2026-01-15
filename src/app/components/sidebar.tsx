@@ -13,6 +13,7 @@ import { useState } from "react";
 import { FeedbackModal } from "./feedback-modal";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
+import LanguageSwitcher from "./language-switcher";
 
 interface SidebarProps {
   activeItem: string;
@@ -129,6 +130,15 @@ export function Sidebar({
                   </li>
                 );
               })}
+              {/* Mobile Language Switcher */}
+              <li className="lg:hidden mt-4 px-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground mr-2">
+                    언어 설정
+                  </span>
+                  <LanguageSwitcher />
+                </div>
+              </li>
             </ul>
           </nav>
 

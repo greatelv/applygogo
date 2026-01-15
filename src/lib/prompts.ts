@@ -11,6 +11,7 @@
 // - 법인명/브랜드명 구분 없이 일단 보이는 대로 추출
 // - 이전 회사명 복사 금지 (Data Isolation)
 // ============================================================================
+
 export const RESUME_EXTRACTION_PROMPT = `
 당신은 **이력서 데이터 추출 전문가**입니다.
 주어진 PDF에서 **모든 경력 사항**을 빠짐없이 추출하는 것이 당신의 유일한 임무입니다.
@@ -23,17 +24,18 @@ export const RESUME_EXTRACTION_PROMPT = `
 
 1. **"무조건 추출" (Greedy Capture)**:
    - "이게 회사명이 맞나?" 고민하지 말고, **날짜와 직무가 보이면 무조건 추출**하세요.
-   - 법인명((주) 등)이 없어도 괜찮습니다. "숨고", "월급쟁이부자들" 처럼 브랜드명만 있어도 **그대로 추출**하세요.
+   - 법인명((주) 등)이 없어도 괜찮습니다. 브랜드명만 있어도 **그대로 추출**하세요.
    - 짧은 경력, 인턴, 아르바이트도 모두 포함합니다.
 
 2. **문맥 격리 (Context Isolation) - 가장 중요**:
    - **새로운 날짜/직무가 시작되면, 반드시 새로운 회사명을 찾으세요.**
    - 회사명이 명확히 안 보이면 차라리 "Unknown"이라고 하세요.
-   - **절대! 네버! 바로 앞의 회사명을 복사해서 붙여넣지 마세요.** (예: 월부 경력에 브레이브모바일 붙이기 금지)
+   - **절대! 네버! 바로 앞의 회사명을 복사해서 붙여넣지 마세요.**
 
 3. **텍스트 그대로 추출 (No Hallucination)**:
+   - **중요**: 문서가 **영문(English)**이면 영문 그대로, **국문(Korean)**이면 국문 그대로 추출하세요. 번역하지 마세요.
    - "송우아이엔티" -> "송우아이엔티" (O)
-   - "송우아이엔티" -> "송우 I&T" (X - 멋대로 영어로 바꾸지 마세요)
+   - "Samsung Electronics" -> "Samsung Electronics" (O)
    - 오타가 있어도 원문 그대로 가져오세요.
 
 4. **최신순 정렬**:
@@ -42,38 +44,47 @@ export const RESUME_EXTRACTION_PROMPT = `
 **추출 가이드:**
 
 1. **회사명 (Work Experience) - 중요**:
-   - 1순위: "(주)", "Inc" 등이 붙은 **법인명**.
-   - 2순위: 가장 크고 진하게 적힌 **브랜드명/서비스명**.
+   - 1순위: 법인명 (Inc, Corp, Ltd, (주) 등).
+   - 2순위: 가장 크고 진하게 적힌 브랜드명/서비스명.
    - **절대 금지**: 이전 회사명 복사하기.
 
 2. **학력 (Education) - 중요**:
-   - **학교명(school_name)**을 반드시 찾아내세요. "대학교", "University", "High School" 등의 키워드를 찾으세요.
+   - **학교명(school_name)**을 반드시 찾아내세요. 
    - 전공, 학위, 입학/졸업년월을 빠짐없이 추출하세요.
-   - **학교명이 없으면 "Unknown School"이라고 하지 말고, 최대한 본문에서 찾아보세요.**
 
 3. **추가 정보 (Certifications, Awards, Languages)**:
-   - **자격증명, 수상명, 언어명**을 정확히 추출하세요. 
+   - 자격증명, 수상명, 언어명을 정확히 추출하세요.
    - 날짜가 있으면 YYYY-MM 형식으로, 없으면 생략 가능.
-   - 발행기관/점수 등 세부 정보도 놓치지 마세요.
-  
+   
 4. **불릿 포인트**:
-  - 가능한 모든 불릿을 다 가져오세요.
+   - 가능한 모든 불릿을 다 가져오세요.
 
 **응답 형식:**
-- **링크(Links) 추출 시**: URL만 넣지 말고, URL을 분석해서 적절한 **Label(LinkedIn, GitHub, Blog, Portfolio 등)**을 반드시 넣어주세요.
+- **언어 감지**: 문서의 주된 언어가 무엇인지 'metadata.detected_language'에 표기하세요. ("ko" 또는 "en")
 
 \`\`\`json
 {
+  "metadata": {
+    "detected_language": "ko" // "ko" | "en"
+  },
   "personal_info": {
-    "name_kr": "...",
+    "name_kr": "...", // 원문 이름 (Name in original language)
     "email": "...",
     "phone": "...",
     "links": [
-      { "label": "LinkedIn/GitHub/Blog/Portfolio... (URL보고 추론)", "url": "..." }
+      { "label": "LinkedIn/GitHub/Blog/Portfolio...", "url": "..." }
     ]
   },
-  "professional_summary_kr": "...",
-  "work_experiences": [ ... ],
+  "professional_summary_kr": "...", // 원문 요약 (Summary in original language)
+  "work_experiences": [ 
+    {
+      "company_name_kr": "...", // 원문 회사명
+      "role_kr": "...", // 원문 직무
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM",
+      "bullets_kr": ["..."] // 원문 불렛 (번역 X)
+    }
+  ],
   "educations": [
     {
       "school_name": "... (반드시 추출)",
@@ -350,6 +361,61 @@ export const getTranslationPrompt = (
   - Output ONLY a JSON array of strings. Do not include markdown code blocks.
 
   Input:
-  ${JSON.stringify(texts)}
+  `;
+};
+
+// ============================================================================
+// Global Expansion (Phase 3): 영문 불렛 -> 국문 자소서 (Generative Localization)
+// - 목표: Action Verb로 된 압축된 영문 문장을, 풍부한 서사의 국문 자소서 문장으로 "확장(Expand)"
+// - 단순 번역이 아닌 "Generative Localization"
+// ============================================================================
+export const getNarrativeGenerationPrompt = (
+  bullets: string[],
+  jobContext?: string
+) => {
+  return `
+  당신은 **최고의 글로벌 커리어 코치이자 전문 에디터**입니다.
+  사용자가 제공한 **영문 이력서의 불렛 포인트(Action Verb 중심)**를 바탕으로, 한국 채용 시장에 적합한 **국문 자기소개서(서술형)** 문장으로 변환하는 것이 당신의 임무입니다.
+
+  **핵심 목표 (Goal):**
+  - 단순 번역이 아닙니다. 압축된 영문 표현을 **"서사(Narrative)"가 있는 국문 문장으로 확장(Expand)**하세요.
+  - **STAR 기법 (Situation, Task, Action, Result)**을 내재화하여 문장을 구성하세요.
+  - 논리적 비약 없이, 불렛 포인트에 내포된 맥락을 자연스럽게 살려내세요.
+
+  **변환 가이드 (Guidelines):**
+
+  1. **Action Verb의 해체 및 재구성**:
+     - "Led", "Developed", "Architected" 등의 단어를 단순히 "이끌었다", "개발했다"로 끝내지 마십시오.
+     - "주도적인 역할을 수행하여...", "~문제를 해결하기 위해 ~방법론을 도입하여...", "~시스템을 설계하고 구축함으로써..." 와 같이 구체적인 프로세스를 묘사하세요.
+
+  2. **수치(Metrics)의 강조**:
+     - 영문 이력서의 수치는 결과 중심입니다. 국문에서는 **이 결과가 왜 중요한지**, **어떤 노력을 통해 달성했는지**를 덧붙여 설명하세요.
+     - 예: "Reduced latency by 50%" -> "기존 시스템의 병목 현상을 정밀 분석하고 캐싱 전략을 최적화함으로써, 전체 응답 지연 시간을 50%까지 획기적으로 단축시켰습니다."
+
+  3. **전문적인 어조 (Tone & Manner)**:
+     - **자신감 있으면서도 겸손한** 한국의 비즈니스 화법을 사용하세요.
+     - "~했습니다", "~하였습니다" 체를 기본으로 하되, 문맥에 따라 "~임", "~함" (개조식) 스타일이 아닌 **완전한 문장**으로 서술하세요.
+
+  4. **직무 맥락 반영 (Context Awareness)**:
+     - ${
+       jobContext
+         ? `지원하려는 직무 컨텍스트: "${jobContext}"`
+         : "일반적인 SW 엔지니어링/비즈니스 직무"
+     }
+     - 위 직무 맥락에 어울리는 전문 용어와 표현을 적극적으로 사용하세요.
+
+  **입력 데이터 (English Bullet Points):**
+  ${JSON.stringify(bullets, null, 2)}
+
+  **출력 형식:**
+  - 입력된 각 불렛 포인트에 대해 **1:1로 대응되는 국문 서술형 문장**을 반환하세요.
+  - JSON Array of Strings 형식(\`string[]\`)으로 반환하세요.
+  - 마크다운 코드 블록 없이 **순수 JSON 문자열**만 반환하세요.
+
+  예시 출력:
+  [
+    "기존 모놀리식 아키텍처의 한계를 극복하기 위해 마이크로서비스 전환을 주도하였고, 이 과정에서...",
+    "데이터 파이프라인 최적화를 통해 일일 처리량을 2배 증대시키며 데이터 기반 의사결정 체계를..."
+  ]
   `;
 };

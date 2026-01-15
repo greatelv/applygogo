@@ -97,6 +97,7 @@ export default async function Page({
       template={resume.selected_template?.toLowerCase() || "modern"}
       updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}
+      convertedData={resume.convertedData}
     />
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LandingPage } from "../components/landing-page";
+import { LandingPage } from "../../components/landing-page";
 
 import { useSession } from "next-auth/react";
 

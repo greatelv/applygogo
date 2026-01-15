@@ -1,9 +1,11 @@
 "use client";
 
+import { useLocale } from "next-intl";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ResumeDetailPage } from "@/app/components/resume-detail-page";
 import { useApp } from "@/app/context/app-context";
-import { useEffect } from "react";
 
 interface DetailClientProps {
   resumeId: string;
@@ -16,6 +18,7 @@ interface DetailClientProps {
   template: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
+  convertedData?: any;
 }
 
 export function DetailClient({
@@ -29,9 +32,12 @@ export function DetailClient({
   template,
   updatedAt,
   isWorkflowComplete,
+  convertedData,
 }: DetailClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
+  const locale = useLocale();
+  const [isGeneratingKo, setIsGeneratingKo] = useState(false);
 
   // Show stepper as "Complete" when viewing detail page
   useEffect(() => {
@@ -47,6 +53,32 @@ export function DetailClient({
     return () => setWorkflowState(undefined, undefined);
   }, [setWorkflowState]);
 
+  const handleGenerateKo = async () => {
+    try {
+      setIsGeneratingKo(true);
+      toast.info("국문 이력서 변환을 시작합니다...");
+
+      const res = await fetch(`/api/resumes/${resumeId}/generate-ko`, {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "변환 실패");
+      }
+
+      toast.success("국문 이력서가 생성되었습니다!");
+      router.refresh();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "오류가 발생했습니다.");
+    } finally {
+      setIsGeneratingKo(false);
+    }
+  };
+
+  const isGlobalUser = locale === "en";
+
   return (
     <ResumeDetailPage
       resumeId={resumeId}
@@ -59,6 +91,10 @@ export function DetailClient({
       template={template}
       updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}
+      convertedData={convertedData}
+      showGenerateKo={isGlobalUser} // Only show for global users
+      isGeneratingKo={isGeneratingKo}
+      onGenerateKo={handleGenerateKo}
       onBack={() => {
         router.push("/resumes");
       }}

@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   Edit,
   Layout,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -76,6 +77,10 @@ interface ResumeDetailPageProps {
   onDownload?: () => void;
   onEdit?: () => void;
   onChangeTemplate?: () => void;
+  convertedData?: any;
+  showGenerateKo?: boolean;
+  isGeneratingKo?: boolean;
+  onGenerateKo?: () => void;
 }
 
 export function ResumeDetailPage({
@@ -88,6 +93,10 @@ export function ResumeDetailPage({
   additionalItems = [],
   template = "modern",
   isWorkflowComplete = false,
+  convertedData,
+  showGenerateKo,
+  isGeneratingKo,
+  onGenerateKo,
   onBack,
   onDelete,
   onDownload,
@@ -401,7 +410,91 @@ export function ResumeDetailPage({
         </div>
       </div>
 
-      {/* Preview */}
+      {/* Korean Narrative Generation (Global Users) */}
+      {showGenerateKo && (
+        <div className="mb-6">
+          {convertedData?.type === "narrative_ko" ? (
+            <details
+              className="bg-card border border-border rounded-lg p-6 group"
+              open
+            >
+              <summary className="cursor-pointer font-bold text-lg mb-4 flex items-center gap-2 select-none">
+                <span className="text-primary flex items-center gap-2">
+                  <span className="text-2xl">🇰🇷</span>
+                  Korean Self-Introduction (Generated)
+                </span>
+                <span className="text-xs font-normal text-muted-foreground ml-auto group-open:hidden">
+                  (Click to expand)
+                </span>
+              </summary>
+              <div className="space-y-6 pt-2 border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-sm text-muted-foreground mb-4">
+                  This narrative is automatically generated based on your
+                  English bullet points, tailored for the Korean job market
+                  (JaSoSeo style).
+                </p>
+                {convertedData.work_experiences.map((exp: any) => (
+                  <div
+                    key={exp.id}
+                    className="p-5 bg-muted/30 border border-border/50 rounded-lg"
+                  >
+                    <div className="flex items-baseline justify-between mb-3">
+                      <h4 className="font-bold text-base">{exp.company}</h4>
+                      <span className="text-xs text-muted-foreground font-medium px-2 py-1 bg-background rounded border">
+                        {exp.role}
+                      </span>
+                    </div>
+                    <div className="space-y-3 text-sm leading-relaxed text-foreground/90 font-sans">
+                      {exp.narrative_ko.map((para: string, idx: number) => (
+                        <p key={idx} className="break-keep">
+                          {para}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ) : (
+            <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+              <div className="space-y-2 text-center md:text-left">
+                <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2 justify-center md:justify-start">
+                  Targeting the Korean Job Market?
+                  <Badge
+                    variant="secondary"
+                    className="bg-indigo-100/50 text-indigo-700 border-indigo-200"
+                  >
+                    Beta
+                  </Badge>
+                </h3>
+                <p className="text-sm text-indigo-700 dark:text-indigo-400 max-w-lg">
+                  Generate a professional{" "}
+                  <strong>Korean Self-Introduction (Narrative Resume)</strong>{" "}
+                  from your English bullet points. We expand your achievements
+                  into the "STAR" format preferred by Korean recruiters.
+                </p>
+              </div>
+              <Button
+                onClick={onGenerateKo}
+                disabled={isGeneratingKo}
+                size="lg"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md whitespace-nowrap min-w-[200px]"
+              >
+                {isGeneratingKo ? (
+                  <>
+                    <Clock className="size-4 mr-2 animate-spin" /> Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="size-4 mr-2" /> Generate Korean
+                    Narrative
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
       <div className="bg-card border border-border rounded-lg overflow-hidden mb-6 lg:mb-0">
         <div
           ref={previewContainerRef}

@@ -22,6 +22,7 @@ import { cn } from "../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
+import LanguageSwitcher from "./language-switcher";
 
 interface HeaderProps {
   plan: string;
@@ -154,6 +155,11 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
+
           {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
           <div className="hidden sm:block">
             <ThemeToggle />

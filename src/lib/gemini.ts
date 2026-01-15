@@ -25,6 +25,12 @@ export const translationModel = genAI.getGenerativeModel({
   model: "gemini-2.5-flash-lite",
 });
 
+// 4단계: 국문 자소서 생성 (Narrative) - High Creative Capability
+// 풍부한 어휘와 서사 구성 능력 필요
+export const narrativeModel = genAI.getGenerativeModel({
+  model: "gemini-2.0-flash-exp", // Experimental or Latest Flash for better writing
+});
+
 // ============================================================================
 // 레거시 호환성 (기존 코드에서 사용 중인 경우)
 // ============================================================================

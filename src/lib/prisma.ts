@@ -3,18 +3,61 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+const globalForPrisma = global as unknown as {
+  prismaKr: PrismaClient;
+  prismaGlobal: PrismaClient;
+};
 
-const connectionString = process.env.DIRECT_URL;
+// ============================================================================
+// 1. KR Region (Seoul) - Default
+// ============================================================================
+const connectionStringKr = process.env.DIRECT_URL!;
+const poolKr = new Pool({ connectionString: connectionStringKr });
+const adapterKr = new PrismaPg(poolKr);
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-
-export const prisma =
-  globalForPrisma.prisma ||
+export const prismaKr =
+  globalForPrisma.prismaKr ||
   new PrismaClient({
-    adapter,
+    adapter: adapterKr,
     log: ["query"],
   });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// ============================================================================
+// 2. Global Region (Singapore)
+// ============================================================================
+// Fallback to KR if GLOBAL var is missing (e.g. in local dev without env setup)
+const connectionStringGlobal =
+  process.env.DIRECT_URL_GLOBAL || process.env.DIRECT_URL!;
+
+const poolGlobal = new Pool({ connectionString: connectionStringGlobal });
+const adapterGlobal = new PrismaPg(poolGlobal);
+
+export const prismaGlobal =
+  globalForPrisma.prismaGlobal ||
+  new PrismaClient({
+    adapter: adapterGlobal,
+    log: ["query"],
+  });
+
+// Singleton preservation in Dev
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prismaKr = prismaKr;
+  globalForPrisma.prismaGlobal = prismaGlobal;
+}
+
+// ============================================================================
+// Factory & Helper
+// ============================================================================
+
+export type Region = "KR" | "GLOBAL";
+
+/**
+ * Returns the appropriate PrismaClient instance based on the region.
+ * @param region "KR" (default) or "GLOBAL"
+ */
+export function getPrismaClient(region: Region = "KR") {
+  return region === "GLOBAL" ? prismaGlobal : prismaKr;
+}
+
+// Default export for backward compatibility
+export const prisma = prismaKr;
