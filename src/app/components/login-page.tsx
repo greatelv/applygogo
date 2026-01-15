@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { Chrome } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
@@ -9,10 +10,16 @@ import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 interface LoginPageProps {
   onGoogleLogin: () => void;
   onNaverLogin: () => void;
+  onCredentialLogin?: (formData: FormData) => void;
 }
 
-export function LoginPage({ onGoogleLogin, onNaverLogin }: LoginPageProps) {
+export function LoginPage({
+  onGoogleLogin,
+  onNaverLogin,
+  onCredentialLogin,
+}: LoginPageProps) {
   const { pending } = useFormStatus();
+  const searchParams = useSearchParams();
   const { isInAppBrowser } = useInAppBrowser();
 
   return (
@@ -59,6 +66,42 @@ export function LoginPage({ onGoogleLogin, onNaverLogin }: LoginPageProps) {
             <span className="font-bold mr-2 text-lg">N</span>
             네이버로 시작하기
           </Button>
+
+          {/* Test Login Form (Only visible with ?mode=test) */}
+          {searchParams.get("mode") === "test" && onCredentialLogin && (
+            <form
+              action={onCredentialLogin}
+              className="mt-4 p-4 border border-dashed border-neutral-700/50 rounded-lg bg-neutral-900/50"
+            >
+              <div className="text-xs text-muted-foreground mb-3 text-center font-mono">
+                DEVELOPER ACCESS
+              </div>
+              <div className="space-y-3">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Test Email"
+                  className="w-full h-10 px-3 rounded-md border border-neutral-800 bg-neutral-950 text-sm text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-600 transition-colors"
+                  required
+                />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Test Password"
+                  className="w-full h-10 px-3 rounded-md border border-neutral-800 bg-neutral-950 text-sm text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-600 transition-colors"
+                  required
+                />
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="w-full h-10 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700"
+                  disabled={pending}
+                >
+                  테스트 계정 로그인
+                </Button>
+              </div>
+            </form>
+          )}
 
           <p className="text-xs text-center text-muted-foreground mt-6">
             로그인하면{" "}

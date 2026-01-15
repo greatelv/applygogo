@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Naver from "next-auth/providers/naver";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
@@ -18,6 +19,48 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Naver({
       clientId: process.env.AUTH_NAVER_ID,
       clientSecret: process.env.AUTH_NAVER_SECRET,
+    }),
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        // Only allow specific test account
+        const TEST_ID = process.env.TEST_ID;
+        const TEST_PASSWORD = process.env.TEST_PASSWORD;
+
+        if (
+          !TEST_ID ||
+          !TEST_PASSWORD ||
+          credentials?.email !== TEST_ID ||
+          credentials?.password !== TEST_PASSWORD
+        ) {
+          console.log("[AuthDebug] Credentials Login Failed", {
+            envTestId: TEST_ID,
+            inputEmail: credentials?.email,
+            match:
+              credentials?.email === TEST_ID &&
+              credentials?.password === TEST_PASSWORD,
+          });
+          return null;
+        }
+
+        // Upsert user to ensure valid foreign keys for test account
+        const user = await prisma.user.upsert({
+          where: { email: TEST_ID },
+          update: {},
+          create: {
+            email: TEST_ID,
+            name: "Test User",
+            image: "",
+            planType: "FREE",
+          },
+        });
+
+        return user;
+      },
     }),
   ],
   callbacks: {

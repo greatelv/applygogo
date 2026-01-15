@@ -17,6 +17,14 @@ export async function authenticateNaver() {
   await signIn("naver", { redirectTo: "/resumes" });
 }
 
+export async function authenticateWithCredentials(formData: FormData) {
+  await signIn("credentials", {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    redirectTo: "/resumes",
+  });
+}
+
 export async function getUserSettings() {
   const session = await auth();
   const userId = session?.user?.id;

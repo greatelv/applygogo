@@ -359,7 +359,15 @@ export function SettingsPage({
                   : "default"
               }
               className="w-full mt-auto"
-              disabled={true}
+              disabled={
+                // 1. 이미 같은 이용권을 사용 중이면 비활성화
+                (hasActivePass && passType === "PASS_30DAY") ||
+                // 2. 이용권 업그레이드 등 로직상 비활성화
+                (hasActivePass && passType !== "PASS_30DAY") ||
+                // 3. 테스트 계정이 아니고 베타 기간이면 비활성화
+                (userEmail !== "test@applygogo.com" &&
+                  process.env.NODE_ENV !== "development")
+              }
               onClick={() => onUpgrade("PASS_30DAY")}
               isLoading={isUpgrading}
             >
@@ -367,6 +375,8 @@ export function SettingsPage({
                 ? passType === "PASS_30DAY"
                   ? "현재 이용 중"
                   : "전환 불가"
+                : userEmail === "test@applygogo.com"
+                ? "이용권 구매 (테스트)"
                 : "베타 기간 준비 중"}
             </Button>
           </div>
@@ -422,7 +432,15 @@ export function SettingsPage({
                   : "outline"
               }
               className="w-full mt-auto"
-              disabled={true}
+              disabled={
+                // 1. 이미 같은 이용권을 사용 중이면 비활성화
+                (hasActivePass && passType === "PASS_7DAY") ||
+                // 2. 이용권 업그레이드 등 로직상 비활성화
+                (hasActivePass && passType !== "PASS_7DAY") ||
+                // 3. 테스트 계정이 아니고 베타 기간이면 비활성화
+                (userEmail !== "test@applygogo.com" &&
+                  process.env.NODE_ENV !== "development")
+              }
               onClick={() => onUpgrade("PASS_7DAY")}
               isLoading={isUpgrading}
             >
@@ -430,6 +448,8 @@ export function SettingsPage({
                 ? passType === "PASS_7DAY"
                   ? "현재 이용 중"
                   : "전환 불가"
+                : userEmail === "test@applygogo.com"
+                ? "이용권 구매 (테스트)"
                 : "베타 기간 준비 중"}
             </Button>
           </div>
@@ -469,11 +489,19 @@ export function SettingsPage({
             <Button
               variant="outline"
               className="w-full mt-auto"
-              disabled={true}
+              disabled={
+                // 1. 이용권이 없으면 비활성화 (크레딧 충전은 이용권 보유 시에만 가능)
+                !hasActivePass ||
+                // 3. 테스트 계정이 아니고 베타 기간이면 비활성화
+                (userEmail !== "test@applygogo.com" &&
+                  process.env.NODE_ENV !== "development")
+              }
               onClick={() => onUpgrade("REFILL_50")}
               isLoading={isUpgrading}
             >
-              베타 기간 준비 중
+              {userEmail === "test@applygogo.com"
+                ? "크레딧 충전 (테스트)"
+                : "베타 기간 준비 중"}
             </Button>
           </div>
         </div>
