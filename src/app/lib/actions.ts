@@ -13,6 +13,10 @@ export async function logOut() {
   await signOut({ redirectTo: "/" });
 }
 
+export async function authenticateNaver() {
+  await signIn("naver", { redirectTo: "/resumes" });
+}
+
 export async function getUserSettings() {
   const session = await auth();
   const userId = session?.user?.id;

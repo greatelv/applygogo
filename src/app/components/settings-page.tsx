@@ -242,8 +242,8 @@ export function SettingsPage({
                 </span>
               </div>
 
-              {/* Integrated Payment Method Info (Only for active pass users) */}
-              {hasActivePass && (
+              {/* Integrated Payment Method Info (Only for active pass users with payment info) */}
+              {hasActivePass && paymentInfo && (
                 <div className="mt-4 pt-4 border-t border-border space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

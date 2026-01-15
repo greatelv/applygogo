@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Naver from "next-auth/providers/naver";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
@@ -13,6 +14,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+    Naver({
+      clientId: process.env.AUTH_NAVER_ID,
+      clientSecret: process.env.AUTH_NAVER_SECRET,
     }),
   ],
   callbacks: {

@@ -4,12 +4,16 @@ import { Chrome } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 
+import { useInAppBrowser } from "../../hooks/use-in-app-browser";
+
 interface LoginPageProps {
-  onLogin: () => void;
+  onGoogleLogin: () => void;
+  onNaverLogin: () => void;
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
+export function LoginPage({ onGoogleLogin, onNaverLogin }: LoginPageProps) {
   const { pending } = useFormStatus();
+  const { isInAppBrowser } = useInAppBrowser();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -22,17 +26,38 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         </div>
 
         <div className="space-y-4">
+          {!isInAppBrowser ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full"
+              onClick={onGoogleLogin}
+              disabled={pending}
+            >
+              <Chrome className="size-5 mr-2" />
+              Google로 시작하기
+            </Button>
+          ) : (
+            <div className="p-3 text-sm text-center text-amber-600 bg-amber-50 rounded-md border border-amber-200 mb-2">
+              <span className="block mb-1 break-keep">
+                ⚠️ 인앱 브라우저에서는 구글 로그인을 지원하지 않습니다.
+              </span>
+              <span className="text-xs text-muted-foreground block break-keep">
+                (원활한 사용을 위해 네이버 로그인을 이용해주세요)
+              </span>
+            </div>
+          )}
+
           <Button
-            type="submit"
-            variant="outline"
+            type="button"
             size="lg"
-            className="w-full"
-            onClick={onLogin}
-            isLoading={pending}
+            className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
+            onClick={onNaverLogin}
             disabled={pending}
           >
-            <Chrome className="size-5" />
-            Google로 시작하기
+            <span className="font-bold mr-2 text-lg">N</span>
+            네이버로 시작하기
           </Button>
 
           <p className="text-xs text-center text-muted-foreground mt-6">
