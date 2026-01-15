@@ -7,12 +7,16 @@ import {
   authenticateWithCredentials,
 } from "../../lib/actions";
 
+import { Suspense } from "react";
+
 export default function Page() {
   return (
-    <LoginPage
-      onGoogleLogin={authenticate}
-      onNaverLogin={authenticateNaver}
-      onCredentialLogin={authenticateWithCredentials}
-    />
+    <Suspense fallback={null}>
+      <LoginPage
+        onGoogleLogin={authenticate}
+        onNaverLogin={authenticateNaver}
+        onCredentialLogin={authenticateWithCredentials}
+      />
+    </Suspense>
   );
 }
