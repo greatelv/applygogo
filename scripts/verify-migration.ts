@@ -59,7 +59,7 @@ async function getTableCount(
 }
 
 async function getStorageFileCount(
-  client: ReturnType<typeof createClient>,
+  client: any,
   bucketName: string
 ): Promise<number> {
   try {
@@ -73,7 +73,7 @@ async function getStorageFileCount(
 }
 
 async function getAllFiles(
-  client: ReturnType<typeof createClient>,
+  client: any,
   bucketName: string,
   prefix: string = ""
 ): Promise<string[]> {

@@ -110,7 +110,7 @@ async function migrateBucket(bucketName: string) {
 }
 
 async function getAllFiles(
-  client: ReturnType<typeof createClient>,
+  client: any,
   bucketName: string,
   prefix: string = ""
 ): Promise<string[]> {
