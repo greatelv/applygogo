@@ -144,7 +144,7 @@ export function LandingPage({
                         Average Cost
                       </div>
                       <div className="font-semibold text-sm line-through text-muted-foreground decoration-red-500/50">
-                        100,000원
+                        $100.00
                       </div>
                     </div>
                   </div>
@@ -160,7 +160,7 @@ export function LandingPage({
                         ApplyGogo
                       </div>
                       <div className="font-bold text-lg text-primary">
-                        {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
+                        ${PLAN_PRODUCTS.PASS_30DAY.price.toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export function LandingPage({
                         <span className="text-muted-foreground">
                           Other Services
                         </span>
-                        <span className="font-medium">100,000원+</span>
+                        <span className="font-medium">$100+</span>
                       </div>
                       <div className="h-3 bg-muted rounded-full overflow-hidden">
                         <div className="h-full bg-gray-400 w-full" />
@@ -195,7 +195,7 @@ export function LandingPage({
                           ApplyGogo
                         </span>
                         <span className="font-bold text-primary">
-                          {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
+                          ${PLAN_PRODUCTS.PASS_30DAY.price.toFixed(2)}
                         </span>
                       </div>
                       <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
@@ -421,7 +421,7 @@ export function LandingPage({
                 <span className="text-lg font-medium text-transparent mb-1 min-h-[28px]">
                   Placeholder
                 </span>
-                <div className="text-4xl font-bold">₩0</div>
+                <div className="text-4xl font-bold">$0</div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
                 Try the service
@@ -460,11 +460,11 @@ export function LandingPage({
               <h4 className="text-lg font-semibold mb-2">7-Day Pass</h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
-                  ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                  ${PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toFixed(2)}
                 </span>
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-bold">
-                    ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                    ${PLAN_PRODUCTS.PASS_7DAY.price.toFixed(2)}
                   </span>
                   <Badge
                     variant="outline"
@@ -516,11 +516,11 @@ export function LandingPage({
               <h4 className="text-lg font-semibold mb-2">30-Day Pass</h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
-                  ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                  ${PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toFixed(2)}
                 </span>
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-bold text-primary">
-                    ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                    ${PLAN_PRODUCTS.PASS_30DAY.price.toFixed(2)}
                   </span>
                   <Badge
                     variant="outline"

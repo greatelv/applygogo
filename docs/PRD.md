@@ -73,12 +73,12 @@
 
 ### 4.1 Payment Model (Pass + Credit System)
 
-| 상품명 (Product)     | 가격 (VAT 포함) | 제공 혜택                  | 유효 기간 | 비고          |
-| :------------------- | :-------------- | :------------------------- | :-------- | :------------ |
-| **Free Plan** (기본) | 무료            | 가입 시 **10 크레딧** 제공 | 무제한    | 체험용        |
-| **7일 이용권**       | **9,900원**     | **50 크레딧** + 무제한 DB  | **7일**   | 단기 집중용   |
-| **30일 이용권**      | **12,900원**    | **300 크레딧** + 무제한 DB | **30일**  | 여유로운 준비 |
-| **크레딧 충전 (50)** | **3,900원**     | **50 크레딧** 추가         | 영구      | 부족 시 충전  |
+| Product               | Price (USD) | Benefits                       | Validity    | Note        |
+| :-------------------- | :---------- | :----------------------------- | :---------- | :---------- |
+| **Free Plan**         | Free        | **10 Credits** provided        | Unlimited   | Trial       |
+| **7-Day Pass**        | **$9.90**   | **50 Credits** + Unlimited DB  | **7 Days**  | Short-term  |
+| **30-Day Pass**       | **$12.90**  | **300 Credits** + Unlimited DB | **30 Days** | Recommended |
+| **50 Credits Top-up** | **$3.90**   | **50 Credits** added           | Permanent   | Top-up      |
 
 - **Credit 차감 정책:**
   - **AI Processing (이력서 생성):** 5 크레딧 차감.

@@ -40,8 +40,8 @@ export function SettingsClientPage({
     ? new Date(settings.planExpiresAt)
     : null;
   const createdAt = settings?.created_at
-    ? new Date(settings.created_at).toLocaleDateString("ko-KR")
-    : "정보 없음";
+    ? new Date(settings.created_at).toLocaleDateString("en-US")
+    : "No Info";
 
   // 디버깅: settings 데이터 확인
   console.log("Settings data:", settings);
@@ -100,7 +100,7 @@ export function SettingsClientPage({
           .substr(2, 9)}`,
         orderName: product.name,
         totalAmount: product.amount,
-        currency: "KRW",
+        currency: "USD",
         payMethod: "EASY_PAY",
         customer: {
           customerId: user.id,
@@ -122,9 +122,9 @@ export function SettingsClientPage({
         body: JSON.stringify({ paymentId: response.paymentId }),
       });
 
-      if (!res.ok) throw new Error("결제 검증에 실패했습니다.");
+      if (!res.ok) throw new Error("Payment verification failed.");
 
-      toast.success(`${product.name} 구매가 완료되었습니다! 감사합니다.`);
+      toast.success(`${product.name} purchase completed! Thank you.`);
 
       // 결제 내역 즉시 새로고침
       await fetchHistory();
@@ -137,7 +137,7 @@ export function SettingsClientPage({
       }
     } catch (error: any) {
       console.error(error);
-      toast.error(`구매 오류: ${error.message}`);
+      toast.error(`Purchase error: ${error.message}`);
     } finally {
       setIsUpgrading(false);
     }
@@ -167,10 +167,10 @@ export function SettingsClientPage({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "환불 요청에 실패했습니다.");
+        throw new Error(data.message || "Refund request failed.");
       }
 
-      toast.success("환불이 완료되었습니다. 이용권 권한이 회수되었습니다.");
+      toast.success("Refund completed. Access revoked.");
 
       // 2. 실제 데이터 재검증 (백그라운드)
       await fetchHistory();
@@ -179,7 +179,7 @@ export function SettingsClientPage({
       setPlan("FREE");
     } catch (error: any) {
       console.error(error);
-      toast.error(`환불 오류: ${error.message}`);
+      toast.error(`Refund error: ${error.message}`);
 
       // 실패 시 롤백
       // @ts-ignore
@@ -224,9 +224,9 @@ export function SettingsClientPage({
     const promise = deleteAccount();
 
     toast.promise(promise, {
-      loading: "계정을 삭제하고 있습니다...",
-      success: "계정이 안전하게 삭제되었습니다. 안녕히 가세요.",
-      error: "계정 삭제 중 오류가 발생했습니다.",
+      loading: "Deleting account...",
+      success: "Account deleted safely. Goodbye.",
+      error: "Error deleting account.",
     });
 
     try {
@@ -239,7 +239,7 @@ export function SettingsClientPage({
 
   return (
     <SettingsPage
-      userName={user.name || "사용자"}
+      userName={user.name || "User"}
       userEmail={user.email || ""}
       userImage={user.image || undefined}
       createdAt={createdAt}

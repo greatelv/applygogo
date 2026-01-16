@@ -242,9 +242,7 @@ export function SettingsPage({
                   {!hasActivePass
                     ? "Unlimited"
                     : currentPeriodEnd
-                    ? new Date(currentPeriodEnd).toLocaleDateString(
-                        false ? "ko-KR" : "en-US"
-                      )
+                    ? new Date(currentPeriodEnd).toLocaleDateString("en-US")
                     : "No Info"}
                 </span>
               </div>
@@ -262,9 +260,9 @@ export function SettingsPage({
                   </div>
 
                   <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
-                    {/* Toss Pay Badge */}
-                    <div className="h-6 px-2 bg-[#0064FF] rounded flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap">
-                      {"Toss Pay"}
+                    {/* PayPal Badge */}
+                    <div className="h-6 px-2 bg-[#003087] rounded flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap">
+                      {"PayPal"}
                     </div>
                     <div className="flex-1 text-left min-w-0">
                       <p className="text-sm font-medium truncate">
@@ -332,11 +330,11 @@ export function SettingsPage({
             <h3 className="text-lg font-bold mb-2 mt-2">{"30-Day Pass"}</h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                ${PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toFixed(2)}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-primary">
-                  ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                  ${PLAN_PRODUCTS.PASS_30DAY.price.toFixed(2)}
                 </span>
                 <Badge
                   variant="outline"
@@ -405,11 +403,11 @@ export function SettingsPage({
             <h3 className="text-lg font-bold mb-2 mt-2">{"7-Day Pass"}</h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                ${PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toFixed(2)}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-foreground">
-                  ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                  ${PLAN_PRODUCTS.PASS_7DAY.price.toFixed(2)}
                 </span>
                 <Badge
                   variant="outline"
@@ -476,7 +474,7 @@ export function SettingsPage({
               </span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-bold">
-                  ₩{PLAN_PRODUCTS.CREDIT_50.price.toLocaleString()}
+                  ${PLAN_PRODUCTS.CREDIT_50.price.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -614,9 +612,7 @@ export function SettingsPage({
                         className="border-b border-border last:border-0 hover:bg-muted/20"
                       >
                         <td className="py-3 px-4 whitespace-nowrap">
-                          {new Date(item.paidAt).toLocaleDateString(
-                            false ? "ko-KR" : "en-US"
-                          )}
+                          {new Date(item.paidAt).toLocaleDateString("en-US")}
                         </td>
                         <td className="py-3 px-4">
                           <code className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
