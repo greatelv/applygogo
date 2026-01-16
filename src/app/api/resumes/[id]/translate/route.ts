@@ -58,7 +58,7 @@ export async function POST(
     if (!hasEnoughCredits) {
       return NextResponse.json(
         {
-          error: "크레딧이 부족합니다",
+          error: "Insufficient credits",
           requiredCredits: cost,
           currentCredits: planStatus.credits,
         },

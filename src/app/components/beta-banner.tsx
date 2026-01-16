@@ -17,18 +17,20 @@ export function BetaBanner({ isConsole }: BetaBannerProps) {
           <Sparkles className="size-3 text-yellow-300 shrink-0" />
           <span className="inline-block">
             <span className="text-yellow-300 font-bold">
-              <span className="sm:hidden">베타 기념 </span>
-              <span className="hidden sm:inline">베타 런칭 기념 </span>
-              <span className="hidden sm:inline">2만원 상당의 </span>
-              3일 무제한 이용권 증정!
+              <span className="sm:hidden">Beta Special: </span>
+              <span className="hidden sm:inline">
+                Celebrating Beta Launch!{" "}
+              </span>
+              <span className="hidden sm:inline">Worth $15, </span>
+              Free 3-Day Unlimited Pass!
             </span>
             {isConsole && (
               <span className="hidden sm:inline ml-1">
-                마음껏 이용해보시고{" "}
+                Enjoy full access and{" "}
                 <span className="underline underline-offset-2 decoration-yellow-300/50 font-semibold">
-                  좌측 하단
-                </span>
-                에서 서비스 의견 혹은 버그를 제보해주세요.
+                  report feedback/bugs
+                </span>{" "}
+                in the bottom left corner.
               </span>
             )}
           </span>

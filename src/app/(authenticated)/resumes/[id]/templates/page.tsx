@@ -41,33 +41,34 @@ export default async function Page({
   const mappedExperiences = resume.work_experiences.map((exp: any) => ({
     id: exp.id,
     company: exp.company_name_original,
-    companyEn: exp.company_name_translated || exp.company_name_original,
+    companyTranslated: exp.company_name_translated || exp.company_name_original,
     position: exp.role_original,
-    positionEn: exp.role_translated || exp.role_original,
+    positionTranslated: exp.role_translated || exp.role_original,
     period: `${exp.start_date} - ${exp.end_date}`,
     bullets: (exp.bullets_original as string[]) || [],
-    bulletsEn: (exp.bullets_translated as string[]) || [],
+    bulletsTranslated: (exp.bullets_translated as string[]) || [],
   }));
 
   const mappedEducations = resume.educations.map((edu: any) => ({
     id: edu.id,
     school_name: edu.school_name_original,
-    school_name_en: edu.school_name_translated || edu.school_name_original,
+    school_name_translated:
+      edu.school_name_translated || edu.school_name_original,
     major: edu.major_original,
-    major_en: edu.major_translated || edu.major_original,
+    major_translated: edu.major_translated || edu.major_original,
     degree: edu.degree_original,
-    degree_en: edu.degree_translated || edu.degree_original,
+    degree_translated: edu.degree_translated || edu.degree_original,
     start_date: edu.start_date,
     end_date: edu.end_date,
   }));
 
   const mappedPersonalInfo = {
-    name_kr: resume.name_original || "",
-    name_en: resume.name_translated || resume.name_original || "",
+    name_original: resume.name_original || "",
+    name_translated: resume.name_translated || resume.name_original || "",
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as { label: string; url: string }[]) || [],
-    summary: resume.summary_original || "",
+    summary: resume.summary_translated || resume.summary_original || "",
   };
 
   const mappedSkills = resume.skills.map((s: any) => ({
@@ -80,10 +81,11 @@ export default async function Page({
     (item: any) => ({
       id: item.id,
       type: item.type,
-      name_kr: item.name_original,
-      name_en: item.name_translated || item.name_original,
-      description_kr: item.description_original,
-      description_en: item.description_translated || item.description_original,
+      name_original: item.name_original,
+      name_translated: item.name_translated || item.name_original,
+      description_original: item.description_original,
+      description_translated:
+        item.description_translated || item.description_original,
       date: item.date,
     })
   );

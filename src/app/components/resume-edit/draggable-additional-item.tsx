@@ -154,7 +154,7 @@ export const DraggableAdditionalItem = ({
                     e.currentTarget.textContent || ""
                   )
                 }
-                data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
+                data-placeholder="활동/자격증/수상 명칭 (예: 정보Processing기사)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
                 {item.name_original}

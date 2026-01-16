@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "@/app/components/theme-toggle";
+import { Logo } from "../logo";
 
 export function BlogHeader() {
   const { data: session, status } = useSession();
@@ -41,21 +42,7 @@ export function BlogHeader() {
     <header className="sticky top-0 z-30 bg-background border-b border-border">
       <div className="flex items-center justify-between h-16 px-4 max-w-7xl mx-auto">
         <div className="flex items-center">
-          <Link
-            href="/"
-            className="flex items-center hover:opacity-80 transition-opacity"
-          >
-            <img
-              src="/logo-for-light.svg"
-              alt="지원고고"
-              className="h-6 w-auto dark:hidden"
-            />
-            <img
-              src="/logo-for-dark.svg"
-              alt="지원고고"
-              className="h-6 w-auto hidden dark:block"
-            />
-          </Link>
+          <Logo href="/" />
         </div>
 
         <div className="flex items-center gap-4">

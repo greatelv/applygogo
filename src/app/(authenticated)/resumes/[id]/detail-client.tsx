@@ -1,6 +1,5 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -38,17 +37,16 @@ export function DetailClient({
 }: DetailClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
-  const locale = useLocale();
   const [isGeneratingKo, setIsGeneratingKo] = useState(false);
 
   // Show stepper as "Complete" when viewing detail page
   useEffect(() => {
     const steps = [
-      { id: "upload", label: "업로드" },
-      { id: "processing", label: "AI 처리" },
-      { id: "edit", label: "편집" },
-      { id: "preview", label: "템플릿 선택" },
-      { id: "complete", label: "완료" },
+      { id: "upload", label: "Upload" },
+      { id: "processing", label: "AI Processing" },
+      { id: "edit", label: "Edit" },
+      { id: "preview", label: "Template" },
+      { id: "complete", label: "Complete" },
     ];
     setWorkflowState(steps, "complete");
 
@@ -79,7 +77,8 @@ export function DetailClient({
     }
   };
 
-  const isGlobalUser = locale === "en";
+  // Global instance - always true
+  const isGlobalUser = true;
 
   return (
     <ResumeDetailPage

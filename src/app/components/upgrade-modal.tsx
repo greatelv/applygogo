@@ -83,7 +83,7 @@ export function UpgradeModal({
         throw new Error("결제 검증에 실패했습니다.");
       }
 
-      toast.success(`${config.name} 구매가 완료되었습니다!`);
+      toast.success(`${config.name} 구매가 Complete되었습니다!`);
       onOpenChange(false);
       router.refresh();
     } catch (error: any) {
@@ -106,7 +106,7 @@ export function UpgradeModal({
             <DialogDescription className="text-base mt-2">
               프리미엄 템플릿을 사용하려면 이용권이 필요합니다. <br />
               <span className="text-foreground font-medium">
-                Split View 편집
+                Split View Edit
               </span>
               과{" "}
               <span className="text-foreground font-medium">재번역 무제한</span>{" "}
@@ -117,11 +117,11 @@ export function UpgradeModal({
 
         <div className="p-6 bg-muted/10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* 7일 이용권 (Basic) */}
+            {/* 7-Day Pass (Basic) */}
             <div className="relative rounded-xl border bg-card p-6 shadow-sm transition-all hover:border-primary/50 flex flex-col">
               <div className="mb-4">
                 <h3 className="font-semibold text-lg text-foreground">
-                  7일 이용권
+                  7-Day Pass
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   단기 집중 준비에 적합
@@ -182,7 +182,7 @@ export function UpgradeModal({
               </Button>
             </div>
 
-            {/* 30일 이용권 (Premium) */}
+            {/* 30-Day Pass (Premium) */}
             <div className="relative rounded-xl border border-primary bg-primary/5 p-6 shadow-md transition-all flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-primary text-primary-foreground hover:bg-primary px-4 py-1">
@@ -192,7 +192,7 @@ export function UpgradeModal({
 
               <div className="mb-4 mt-2">
                 <h3 className="font-semibold text-lg text-primary">
-                  30일 이용권
+                  30-Day Pass
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   여유로운 이직 준비
@@ -255,7 +255,7 @@ export function UpgradeModal({
 
           <div className="mt-6 p-4 bg-muted/50 border border-border rounded-lg">
             <p className="text-xs text-muted-foreground text-center break-keep">
-              💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 무료
+              💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 Free
               플랜으로 전환되니 안심하고 구매하세요.
             </p>
           </div>

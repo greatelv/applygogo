@@ -157,7 +157,7 @@ export function ModernTemplate({
                   </span>
                 </div>
                 <ul className="space-y-1.5 ml-4">
-                  {exp.bulletsTranslated.map((bullet, index) => (
+                  {(exp.bulletsTranslated || []).map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-700 flex gap-2"

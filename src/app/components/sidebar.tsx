@@ -13,7 +13,6 @@ import { useState } from "react";
 import { FeedbackModal } from "./feedback-modal";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
-import LanguageSwitcher from "./language-switcher";
 
 interface SidebarProps {
   activeItem: string;
@@ -25,10 +24,10 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: "resumes", label: "이력서 관리", icon: FileText },
-  { id: "settings", label: "설정", icon: Settings },
-  { id: "help", label: "도움말", icon: CircleHelp },
-  { id: "home", label: "서비스 소개", icon: Info, href: "/" },
+  { id: "resumes", label: "Resumes", icon: FileText },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "help", label: "Help", icon: CircleHelp },
+  { id: "home", label: "Service Info", icon: Info, href: "/" },
 ];
 
 export function Sidebar({
@@ -62,7 +61,7 @@ export function Sidebar({
         <div className="h-full flex flex-col">
           {/* Mobile close button */}
           <div className="flex items-center justify-between p-4 lg:hidden border-b border-border">
-            <span className="font-semibold">메뉴</span>
+            <span className="font-semibold">Menu</span>
             <button
               onClick={onCloseMobile}
               className="p-2 hover:bg-accent rounded-md"
@@ -84,7 +83,8 @@ export function Sidebar({
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
                   size="default"
                 >
-                  <Plus className="size-4" />새 이력서 만들기
+                  <Plus className="size-4" />
+                  Create New Resume
                 </Button>
               </div>
             )}
@@ -134,9 +134,8 @@ export function Sidebar({
               <li className="lg:hidden mt-4 px-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground mr-2">
-                    언어 설정
+                    Language
                   </span>
-                  <LanguageSwitcher />
                 </div>
               </li>
             </ul>
@@ -148,7 +147,7 @@ export function Sidebar({
               className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-accent/50"
             >
               <MessageSquarePlus className="size-4 shrink-0" />
-              기능 요청 및 의견
+              Feature Request & Feedback
             </button>
           </div>
         </div>

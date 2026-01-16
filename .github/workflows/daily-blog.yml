@@ -25,6 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: epic/global
           fetch-depth: 0
 
       - name: Install pnpm
@@ -71,7 +72,7 @@ jobs:
         if: steps.git-check.outputs.changes == 'true'
         run: |
           git commit -m "chore(blog): auto-generate daily post"
-          git push origin main
+          git push origin epic/global
 
       - name: Wait for Vercel Deployment
         if: steps.git-check.outputs.changes == 'true'

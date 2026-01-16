@@ -155,10 +155,10 @@ export function TemplatePreviewDialog({
             <div className="flex items-center justify-between">
               <div>
                 <DialogTitle className="text-xl">
-                  이력서 템플릿 미리보기
+                  Resume 템플릿 미리보기
                 </DialogTitle>
                 <DialogDescription className="mt-1">
-                  실제 이력서가 아래처럼 자동 변환됩니다. 원하시는 스타일을
+                  실제 Resume가 아래처럼 자동 변환됩니다. 원하시는 스타일을
                   선택하세요.
                 </DialogDescription>
               </div>

@@ -26,7 +26,7 @@ export function NewsletterForm() {
     // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success("구독 완료! 매주 유용한 꿀팁과 인사이트를 보내드릴게요.");
+      toast.success("구독 Complete! 매주 유용한 꿀팁과 인사이트를 보내드릴게요.");
       setEmail("");
     } catch {
       toast.error(
@@ -66,7 +66,7 @@ export function NewsletterForm() {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              처리 중...
+              Processing 중...
             </>
           ) : (
             <>

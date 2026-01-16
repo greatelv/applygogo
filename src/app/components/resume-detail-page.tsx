@@ -1,14 +1,23 @@
+"use client";
+
 import { useRef, useState, useEffect } from "react";
 import {
-  Download,
-  Trash2,
-  Clock,
-  CheckCircle2,
   ArrowLeft,
+  CheckCircle2,
+  Clock,
+  Download,
   Edit,
+  FileText,
   Layout,
+  Share2,
+  Trash2,
   Sparkles,
 } from "lucide-react";
+
+import {
+  generateResumeHwpHtml,
+  generateNarrativeHwpHtml,
+} from "@/lib/hwp-generator";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ModernTemplate } from "./resume-templates/modern-template";
@@ -48,10 +57,10 @@ interface TranslatedExperience {
 }
 
 const statusConfig = {
-  IDLE: { label: "업로드됨", variant: "outline" as const },
+  IDLE: { label: "Upload됨", variant: "outline" as const },
   SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
   TRANSLATED: { label: "번역됨", variant: "secondary" as const },
-  COMPLETED: { label: "완료", variant: "default" as const },
+  COMPLETED: { label: "Complete", variant: "default" as const },
   FAILED: { label: "실패", variant: "warning" as const },
 };
 
@@ -135,7 +144,7 @@ export function ResumeDetailPage({
   // Use props data
   const resume = {
     id: resumeId || "",
-    title: resumeTitle || "이력서",
+    title: resumeTitle || "Resume",
     personalInfo,
     status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED",
     updatedAt: updatedAt || new Date().toISOString(),
@@ -159,13 +168,16 @@ export function ResumeDetailPage({
     }
 
     try {
-      const { pdf } = await import("@react-pdf/renderer");
+      const { pdf, Document } = await import("@react-pdf/renderer");
       // Dynamic import to avoid SSR issues with React-PDF
-      const { ModernPdf, registerFonts } = await import(
+      const { ModernPdf, ModernPdfPage, registerFonts } = await import(
         "./pdf-templates/modern-pdf"
       );
       const { ClassicPdf } = await import("./pdf-templates/classic-pdf");
       const { MinimalPdf } = await import("./pdf-templates/minimal-pdf");
+      const { NarrativePdfPage } = await import(
+        "./pdf-templates/narrative-pdf"
+      );
 
       // Register fonts with correct URL
       registerFonts();
@@ -180,37 +192,77 @@ export function ResumeDetailPage({
       };
 
       const templateKey = resume.template.toLowerCase();
-      switch (templateKey) {
-        case "classic":
-          // @ts-ignore
-          doc = <ClassicPdf {...commonProps} />;
-          break;
-        case "minimal":
-          // @ts-ignore
-          doc = <MinimalPdf {...commonProps} />;
-          break;
+      // Check if narrative exists and is v2
+      const narrativeContent =
+        convertedData?.type === "narrative_ko_v2"
+          ? convertedData.content
+          : null;
 
-        case "professional":
-          // Dynamic import for Professional PDF
-          const { ProfessionalPdf } = await import(
-            "./pdf-templates/professional-pdf"
-          );
-          // @ts-ignore
-          doc = <ProfessionalPdf {...commonProps} />;
-          break;
-        case "executive":
-          // Dynamic import for Executive PDF
-          const { ExecutivePdf } = await import(
-            "./pdf-templates/executive-pdf"
-          );
-          // @ts-ignore
-          doc = <ExecutivePdf {...commonProps} />;
-          break;
-        case "modern":
-        default:
-          // @ts-ignore
-          doc = <ModernPdf {...commonProps} />;
-          break;
+      if (templateKey === "modern" && narrativeContent) {
+        // MERGED DOWNLOAD (Modern + Narrative)
+        doc = (
+          <Document
+            title={
+              resume.personalInfo?.name_translated ||
+              resume.personalInfo?.name_original ||
+              "Resume"
+            }
+          >
+            {/* 1. Resume Page */}
+            {/* @ts-ignore */}
+            <ModernPdfPage {...commonProps} />
+
+            {/* 2. Narrative Page */}
+            <NarrativePdfPage
+              content={narrativeContent}
+              name={
+                resume.personalInfo?.name_translated ||
+                resume.personalInfo?.name_original ||
+                ""
+              }
+            />
+          </Document>
+        );
+      } else {
+        // If narrative exists but merging not supported (not Modern), download separately
+        if (narrativeContent && templateKey !== "modern") {
+          toast.info("Resume and Cover Letter will be downloaded separately.");
+          handleDownloadNarrative();
+        }
+
+        // ORIGINAL SINGLE DOWNLOAD logic
+        switch (templateKey) {
+          case "classic":
+            // @ts-ignore
+            doc = <ClassicPdf {...commonProps} />;
+            break;
+          case "minimal":
+            // @ts-ignore
+            doc = <MinimalPdf {...commonProps} />;
+            break;
+
+          case "professional":
+            // Dynamic import for Professional PDF
+            const { ProfessionalPdf } = await import(
+              "./pdf-templates/professional-pdf"
+            );
+            // @ts-ignore
+            doc = <ProfessionalPdf {...commonProps} />;
+            break;
+          case "executive":
+            // Dynamic import for Executive PDF
+            const { ExecutivePdf } = await import(
+              "./pdf-templates/executive-pdf"
+            );
+            // @ts-ignore
+            doc = <ExecutivePdf {...commonProps} />;
+            break;
+          case "modern":
+          default:
+            // @ts-ignore
+            doc = <ModernPdf {...commonProps} />;
+            break;
+        }
       }
 
       const blob = await pdf(doc).toBlob();
@@ -223,10 +275,104 @@ export function ResumeDetailPage({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success("PDF 다운로드가 완료되었습니다");
+      toast.success("PDF download completed successfully.");
     } catch (error) {
       console.error("PDF generation error:", error);
-      toast.error("PDF 생성 중 오류가 발생했습니다");
+      toast.error("Error generating PDF.");
+    }
+  };
+
+  const handleDownloadNarrative = async () => {
+    try {
+      const { pdf, Document } = await import("@react-pdf/renderer");
+      const { NarrativePdfPage } = await import(
+        "./pdf-templates/narrative-pdf"
+      );
+      // Need fonts registered
+      const { registerFonts } = await import("./pdf-templates/modern-pdf");
+      registerFonts();
+
+      if (convertedData?.type !== "narrative_ko_v2" || !convertedData.content) {
+        toast.error("다운로드할 자기소개서 데이터가 없습니다.");
+        return;
+      }
+
+      const doc = (
+        <Document
+          title={`${
+            personalInfo?.name_translated || personalInfo?.name_original
+          }_자기소개서`}
+        >
+          <NarrativePdfPage
+            content={convertedData.content}
+            name={
+              personalInfo?.name_translated || personalInfo?.name_original || ""
+            }
+          />
+        </Document>
+      );
+
+      const blob = await pdf(doc).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${resume.title || "resume"}_narrative.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success("Cover Letter PDF downloaded successfully.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to download Cover Letter.");
+    }
+  };
+
+  const handleDownloadHwp = async () => {
+    try {
+      // 1. Download Resume HWP
+      const resumeHtml = generateResumeHwpHtml(resume);
+      const resumeBlob = new Blob(["\ufeff" + resumeHtml], {
+        type: "application/msword;charset=utf-8",
+      });
+      const resumeUrl = URL.createObjectURL(resumeBlob);
+      const link = document.createElement("a");
+      link.href = resumeUrl;
+      link.download = `${resume.title || "resume"}.hwp`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(resumeUrl);
+
+      // 2. Download Narrative HWP if exists
+      if (convertedData?.type === "narrative_ko_v2" && convertedData.content) {
+        // Small delay to prevent browser blocking multiple downloads
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        const narrativeHtml = generateNarrativeHwpHtml(
+          resume,
+          convertedData.content
+        );
+        const narrBlob = new Blob(["\ufeff" + narrativeHtml], {
+          type: "application/msword;charset=utf-8",
+        });
+        const narrUrl = URL.createObjectURL(narrBlob);
+        const narrLink = document.createElement("a");
+        narrLink.href = narrUrl;
+        narrLink.download = `${resume.title || "resume"}_narrative.hwp`;
+        document.body.appendChild(narrLink);
+        narrLink.click();
+        document.body.removeChild(narrLink);
+        URL.revokeObjectURL(narrUrl);
+
+        toast.info("Resume and Cover Letter downloaded separately.");
+      } else {
+        toast.success("Resume HWP downloaded.");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to generate HWP.");
     }
   };
 
@@ -259,492 +405,371 @@ export function ResumeDetailPage({
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Success Banner */}
-      {isWorkflowComplete && (
-        <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 rounded-lg flex items-start gap-3">
-          <div className="p-1 bg-green-100 dark:bg-green-900/40 rounded-full shrink-0 mt-0.5">
-            <CheckCircle2 className="size-4 text-green-600 dark:text-green-400" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-green-900 dark:text-green-300">
-              이력서가 성공적으로 생성되었습니다!
-            </h3>
-            <p className="text-xs text-green-700 dark:text-green-400 mt-1 leading-relaxed">
-              아래에서 최종 결과물을 확인하고 PDF로 다운로드하세요.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Header & Actions */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2 flex-1 min-w-0">
-              <h1 className="text-2xl font-bold break-keep leading-tight">
-                {resume.title}
-              </h1>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5 shrink-0">
-                  <Clock className="size-3.5" />
-                  {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
-                </span>
-                <span className="flex items-center gap-1.5 shrink-0">
-                  <Layout className="size-3.5" />
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] px-1.5 h-5 font-normal"
-                  >
-                    {resume.template.charAt(0).toUpperCase() +
-                      resume.template.slice(1)}
-                  </Badge>
-                </span>
-              </div>
+    <div className="w-full">
+      {/* Top Section: Centered max-w-4xl */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Success Banner */}
+        {isWorkflowComplete && (
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 rounded-lg flex items-start gap-3">
+            <div className="p-1 bg-green-100 dark:bg-green-900/40 rounded-full shrink-0 mt-0.5">
+              <CheckCircle2 className="size-4 text-green-600 dark:text-green-400" />
             </div>
-
-            {/* Desktop Actions (Hidden on Mobile) */}
-            <div className="hidden lg:flex items-center gap-2 shrink-0">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={onBack}>
-                      <ArrowLeft className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>뒤로가기</TooltipContent>
-                </Tooltip>
-
-                {onDelete && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleDeleteConfirm}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>삭제</TooltipContent>
-                  </Tooltip>
-                )}
-
-                {onEdit && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" onClick={onEdit}>
-                        <Edit className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>편집</TooltipContent>
-                  </Tooltip>
-                )}
-
-                {onChangeTemplate && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={onChangeTemplate}
-                      >
-                        <Layout className="size-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>템플릿 변경</TooltipContent>
-                  </Tooltip>
-                )}
-              </TooltipProvider>
-
-              <Button onClick={handleDownload} className="shadow-sm ml-2">
-                <Download className="size-4 mr-1.5" />
-                PDF 다운로드
-              </Button>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-green-900 dark:text-green-300">
+                Resume Created Successfully!
+              </h3>
+              <p className="text-xs text-green-700 dark:text-green-400 mt-1 leading-relaxed">
+                Check the final result below and download as PDF.
+              </p>
             </div>
           </div>
+        )}
 
-          {/* Mobile Toolbar (Visible only on Mobile) */}
-          <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onBack}
-              className="shrink-0 h-9"
-            >
-              <ArrowLeft className="size-4 mr-1.5" />
-              목록
-            </Button>
-            <div className="w-px h-4 bg-border shrink-0 mx-1" />
-            {onEdit && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onEdit}
-                className="shrink-0 h-9"
-              >
-                <Edit className="size-4 mr-1.5" />
-                편집
-              </Button>
-            )}
-            {onChangeTemplate && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onChangeTemplate}
-                className="shrink-0 h-9"
-              >
-                <Layout className="size-4 mr-1.5" />
-                템플릿
-              </Button>
-            )}
-            {onDelete && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDeleteConfirm}
-                className="shrink-0 h-9 text-muted-foreground hover:text-destructive ml-auto"
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Korean Narrative Generation (Global Users) */}
-      {showGenerateKo && (
-        <div className="mb-6">
-          {convertedData?.type === "narrative_ko" ? (
-            <details
-              className="bg-card border border-border rounded-lg p-6 group"
-              open
-            >
-              <summary className="cursor-pointer font-bold text-lg mb-4 flex items-center gap-2 select-none">
-                <span className="text-primary flex items-center gap-2">
-                  <span className="text-2xl">🇰🇷</span>
-                  Korean Self-Introduction (Generated)
-                </span>
-                <span className="text-xs font-normal text-muted-foreground ml-auto group-open:hidden">
-                  (Click to expand)
-                </span>
-              </summary>
-              <div className="space-y-6 pt-2 border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-300">
-                <p className="text-sm text-muted-foreground mb-4">
-                  This narrative is automatically generated based on your
-                  English bullet points, tailored for the Korean job market
-                  (JaSoSeo style).
-                </p>
-                {convertedData.work_experiences.map((exp: any) => (
-                  <div
-                    key={exp.id}
-                    className="p-5 bg-muted/30 border border-border/50 rounded-lg"
-                  >
-                    <div className="flex items-baseline justify-between mb-3">
-                      <h4 className="font-bold text-base">{exp.company}</h4>
-                      <span className="text-xs text-muted-foreground font-medium px-2 py-1 bg-background rounded border">
-                        {exp.role}
-                      </span>
-                    </div>
-                    <div className="space-y-3 text-sm leading-relaxed text-foreground/90 font-sans">
-                      {exp.narrative_ko.map((para: string, idx: number) => (
-                        <p key={idx} className="break-keep">
-                          {para}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </details>
-          ) : (
-            <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-              <div className="space-y-2 text-center md:text-left">
-                <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2 justify-center md:justify-start">
-                  Targeting the Korean Job Market?
-                  <Badge
-                    variant="secondary"
-                    className="bg-indigo-100/50 text-indigo-700 border-indigo-200"
-                  >
-                    Beta
-                  </Badge>
-                </h3>
-                <p className="text-sm text-indigo-700 dark:text-indigo-400 max-w-lg">
-                  Generate a professional{" "}
-                  <strong>Korean Self-Introduction (Narrative Resume)</strong>{" "}
-                  from your English bullet points. We expand your achievements
-                  into the "STAR" format preferred by Korean recruiters.
-                </p>
-              </div>
-              <Button
-                onClick={onGenerateKo}
-                disabled={isGeneratingKo}
-                size="lg"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md whitespace-nowrap min-w-[200px]"
-              >
-                {isGeneratingKo ? (
-                  <>
-                    <Clock className="size-4 mr-2 animate-spin" /> Generating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="size-4 mr-2" /> Generate Korean
-                    Narrative
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-      <div className="bg-card border border-border rounded-lg overflow-hidden mb-8">
-        <div
-          ref={previewContainerRef}
-          className="bg-muted/30 p-0 sm:p-8 flex justify-center overflow-x-auto min-h-[400px]"
-        >
-          <div
-            className="origin-top"
-            style={{
-              width: "210mm",
-              height: `${297 * scale}mm`,
-              overflow: "visible",
-            }}
-          >
-            <div
-              className="bg-white text-black shadow-2xl origin-top mx-auto"
-              style={{
-                width: "210mm",
-                minHeight: "297mm",
-                transform: `scale(${scale})`,
-                transformOrigin: "top center",
-              }}
-            >
-              {renderTemplate()}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Original Version */}
-      <details className="bg-card border border-border rounded-lg p-6">
-        <summary className="cursor-pointer font-semibold mb-4 flex items-center gap-2">
-          <span>
-            {sourceLang === "en" ? "Review English Original" : "한글 원본 보기"}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            (클릭하여 펼치기)
-          </span>
-        </summary>
-        <div className="space-y-6 pt-4 border-t border-border">
-          {/* Basic Info */}
-          <section>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              {sourceLang === "en" ? "Personal Information" : "기본 정보"}
-            </h4>
-            <div className="space-y-2 text-sm">
-              <div className="grid grid-cols-[100px_1fr] gap-2">
-                <span className="font-medium text-muted-foreground">
-                  {sourceLang === "en" ? "Name" : "이름"}
-                </span>
-                <span>{resume.personalInfo?.name_original || "-"}</span>
-              </div>
-              {resume.personalInfo?.email && (
-                <div className="grid grid-cols-[100px_1fr] gap-2">
-                  <span className="font-medium text-muted-foreground">
-                    이메일
+        {/* Header & Actions */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-2 flex-1 min-w-0">
+                <h1 className="text-2xl font-bold break-keep leading-tight">
+                  {resume.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    <Clock className="size-3.5" />
+                    {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
                   </span>
-                  <span>{resume.personalInfo.email}</span>
-                </div>
-              )}
-              {resume.personalInfo?.phone && (
-                <div className="grid grid-cols-[100px_1fr] gap-2">
-                  <span className="font-medium text-muted-foreground">
-                    {sourceLang === "en" ? "Phone" : "연락처"}
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    <Layout className="size-3.5" />
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] px-1.5 h-5 font-normal"
+                    >
+                      {resume.template.charAt(0).toUpperCase() +
+                        resume.template.slice(1)}
+                    </Badge>
                   </span>
-                  <span>{resume.personalInfo.phone}</span>
                 </div>
-              )}
-              {resume.personalInfo?.links &&
-                resume.personalInfo.links.length > 0 && (
-                  <div className="grid grid-cols-[100px_1fr] gap-2">
-                    <span className="font-medium text-muted-foreground">
-                      링크
-                    </span>
-                    <div className="flex flex-col gap-1">
-                      {resume.personalInfo.links.map((link: any, i: number) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-primary hover:underline truncate"
+              </div>
+
+              {/* Desktop Actions (Hidden on Mobile) */}
+              <div className="hidden lg:flex items-center gap-2 shrink-0">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon" onClick={onBack}>
+                        <ArrowLeft className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Back</TooltipContent>
+                  </Tooltip>
+
+                  {onDelete && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleDeleteConfirm}
+                          className="text-muted-foreground hover:text-destructive"
                         >
-                          {link.label || link.url}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-            </div>
-          </section>
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Delete</TooltipContent>
+                    </Tooltip>
+                  )}
 
-          {/* Experiences */}
-          <section>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              {sourceLang === "en" ? "Work Experience" : "경력 사항"}
-            </h4>
-            <div className="space-y-6">
-              {(resume.experiences || []).map((exp: any) => (
-                <div key={exp.id}>
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-semibold">{exp.company}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {exp.position}
-                      </p>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {exp.period}
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {exp.bullets.map((bullet: string, index: number) => (
-                      <li
-                        key={index}
-                        className="text-sm flex gap-2 text-muted-foreground"
+                  {onEdit && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon" onClick={onEdit}>
+                          <Edit className="size-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Edit</TooltipContent>
+                    </Tooltip>
+                  )}
+
+                  {onChangeTemplate && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={onChangeTemplate}
+                        >
+                          <Layout className="size-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Change Template</TooltipContent>
+                    </Tooltip>
+                  )}
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={handleDownloadHwp}
+                        variant="outline"
+                        className="shadow-sm ml-2"
                       >
-                        <span className="flex-shrink-0">•</span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                        <FileText className="size-4 mr-1.5" />
+                        HWP
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs text-center">
+                      <p>Due to HWP format obfuscation,</p>
+                      <p>only a basic document format is provided.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Button onClick={handleDownload} className="shadow-sm ml-2">
+                  <Download className="size-4 mr-1.5" />
+                  PDF
+                </Button>
+              </div>
             </div>
-          </section>
 
-          {/* Educations */}
-          {resume.educations && resume.educations.length > 0 && (
-            <section className="pt-6 border-t border-border/50">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                {sourceLang === "en" ? "Education" : "학력 사항"}
-              </h4>
-              <div className="space-y-4">
-                {resume.educations.map((edu: any) => (
+            {/* Mobile Toolbar (Visible only on Mobile) */}
+            <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onBack}
+                className="shrink-0 h-9"
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                목록
+              </Button>
+              <div className="w-px h-4 bg-border shrink-0 mx-1" />
+              {onEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onEdit}
+                  className="shrink-0 h-9"
+                >
+                  <Edit className="size-4 mr-1.5" />
+                  Edit
+                </Button>
+              )}
+              {onChangeTemplate && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onChangeTemplate}
+                  className="shrink-0 h-9"
+                >
+                  <Layout className="size-4 mr-1.5" />
+                  템플릿
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDeleteConfirm}
+                  className="shrink-0 h-9 text-muted-foreground hover:text-destructive ml-auto"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section: Full Width */}
+      <div className="w-full px-4 sm:px-6 lg:px-12 mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column: Resume Preview */}
+          <div className="min-w-0 w-full">
+            <div className="bg-card border border-border rounded-lg overflow-hidden mb-8 lg:mb-0 lg:sticky lg:top-8">
+              <div
+                ref={previewContainerRef}
+                className="bg-muted/30 p-0 sm:p-8 flex justify-center overflow-x-auto min-h-[400px] lg:min-h-[calc(100vh-200px)]"
+              >
+                <div
+                  className="origin-top"
+                  style={{
+                    width: "210mm",
+                    height: `${297 * scale}mm`,
+                    overflow: "visible",
+                  }}
+                >
                   <div
-                    key={edu.id}
-                    className="flex justify-between items-start"
+                    className="bg-white text-black shadow-2xl origin-top mx-auto"
+                    style={{
+                      width: "210mm",
+                      minHeight: "297mm",
+                      transform: `scale(${scale})`,
+                      transformOrigin: "top center",
+                    }}
                   >
-                    <div>
-                      <h4 className="font-semibold">{edu.school_name}</h4>
-                      {((edu.degree && edu.degree !== "-") ||
-                        (edu.major && edu.major !== "-")) && (
-                        <p className="text-sm text-muted-foreground">
-                          {edu.degree}
-                          {edu.degree && edu.major && ", "}
-                          {edu.major}
-                        </p>
-                      )}
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {edu.start_date} - {edu.end_date}
-                    </span>
+                    {renderTemplate()}
                   </div>
-                ))}
+                </div>
               </div>
-            </section>
-          )}
+            </div>
+          </div>
 
-          {/* Skills */}
-          {resume.skills && resume.skills.length > 0 && (
-            <section className="pt-6 border-t border-border/50">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                {sourceLang === "en" ? "Skills" : "보유 기술"}
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {resume.skills.map((skill: any) => (
-                  <Badge key={skill.id} variant="outline">
-                    {skill.name}
-                  </Badge>
-                ))}
-              </div>
-            </section>
-          )}
+          {/* Right Column: Narrative & Original Details */}
+          <div className="space-y-6 w-full">
+            {/* Korean Narrative Generation (Global Users) */}
+            {showGenerateKo && (
+              <div>
+                {convertedData?.type === "narrative_ko_v2" ? (
+                  <div className="bg-card border border-border rounded-lg overflow-hidden mb-8 lg:mb-0 lg:sticky lg:top-8">
+                    <div className="bg-muted/30 p-0 sm:p-8 flex justify-center overflow-x-auto min-h-[400px] lg:min-h-[calc(100vh-200px)]">
+                      <div
+                        className="origin-top"
+                        style={{
+                          width: "210mm",
+                          height: `${297 * scale}mm`,
+                          overflow: "visible",
+                        }}
+                      >
+                        <div
+                          className="bg-white text-black shadow-2xl origin-top mx-auto p-[12mm]"
+                          style={{
+                            width: "210mm",
+                            minHeight: "297mm",
+                            transform: `scale(${scale})`,
+                            transformOrigin: "top center",
+                          }}
+                        >
+                          {/* Narrative Content in A4 */}
+                          <div className="space-y-8 font-sans">
+                            <div className="text-center border-b border-gray-900/10 pb-8 mb-8">
+                              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                                자기소개서
+                              </h2>
+                              <p className="text-gray-500 text-sm">
+                                {personalInfo?.name_translated ||
+                                  personalInfo?.name_original}
+                              </p>
+                            </div>
 
-          {/* Additional Items regrouped for KR View */}
-          {resume.additionalItems && resume.additionalItems.length > 0 && (
-            <section className="pt-6 border-t border-border/50">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                {sourceLang === "en" ? "Additional Information" : "추가 정보"}
-              </h4>
-              <div className="space-y-4">
-                {[
-                  "CERTIFICATION",
-                  "AWARD",
-                  "LANGUAGE",
-                  "ACTIVITY",
-                  "OTHER",
-                ].map((type) => {
-                  const items = resume.additionalItems.filter(
-                    (i) => i.type === type
-                  );
-                  if (items.length === 0) return null;
+                            <div className="space-y-8 text-[11pt] leading-[1.8] text-gray-800 text-justify">
+                              {/* 1. 핵심 역량 */}
+                              {convertedData.content.core_competency && (
+                                <section>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-3 border-l-4 border-gray-900 pl-3">
+                                    핵심 역량 및 강점
+                                  </h3>
+                                  <p className="whitespace-pre-wrap">
+                                    {convertedData.content.core_competency}
+                                  </p>
+                                </section>
+                              )}
 
-                  const typeLabels: Record<string, string> = {
-                    CERTIFICATION: "자격증",
-                    AWARD: "수상 경력",
-                    LANGUAGE: "언어",
-                    ACTIVITY: "활동",
-                    OTHER: "기타",
-                  };
+                              {/* 2. 주요 성과 */}
+                              {convertedData.content.key_achievements && (
+                                <section>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-3 border-l-4 border-gray-900 pl-3">
+                                    주요 성과 (Key Achievements)
+                                  </h3>
+                                  <p className="whitespace-pre-wrap">
+                                    {convertedData.content.key_achievements}
+                                  </p>
+                                </section>
+                              )}
 
-                  return (
-                    <div key={type}>
-                      <h5 className="text-xs font-medium text-muted-foreground mb-2">
-                        {typeLabels[type]}
-                      </h5>
-                      <div className="space-y-2">
-                        {items.map((item) => (
-                          <div
-                            key={item.id}
-                            className="text-sm flex justify-between"
-                          >
-                            <div>
-                              <span className="font-medium">{item.name}</span>
-                              {item.description && (
-                                <span className="text-muted-foreground ml-2">
-                                  ({item.description})
-                                </span>
+                              {/* 3. 성장 과정 */}
+                              {convertedData.content.growth_process && (
+                                <section>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-3 border-l-4 border-gray-900 pl-3">
+                                    성장 과정
+                                  </h3>
+                                  <p className="whitespace-pre-wrap">
+                                    {convertedData.content.growth_process}
+                                  </p>
+                                </section>
+                              )}
+
+                              {/* 4. 지원 동기 및 포부 */}
+                              {convertedData.content.motivation_and_goals && (
+                                <section>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-3 border-l-4 border-gray-900 pl-3">
+                                    입사 후 포부
+                                  </h3>
+                                  <p className="whitespace-pre-wrap">
+                                    {convertedData.content.motivation_and_goals}
+                                  </p>
+                                </section>
                               )}
                             </div>
-                            {item.date && (
-                              <span className="text-muted-foreground">
-                                {item.date}
-                              </span>
-                            )}
                           </div>
-                        ))}
+                        </div>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ) : (
+                  <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-lg flex flex-col items-center text-center gap-6 shadow-sm">
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 flex items-center justify-center gap-2">
+                        Targeting the Korean Job Market?
+                        <Badge
+                          variant="secondary"
+                          className="bg-indigo-100/50 text-indigo-700 border-indigo-200"
+                        >
+                          Beta
+                        </Badge>
+                      </h3>
+                      <p className="text-sm text-indigo-700 dark:text-indigo-400 max-w-sm mx-auto">
+                        Generate a professional{" "}
+                        <strong>
+                          Korean Self-Introduction (Narrative Resume)
+                        </strong>{" "}
+                        from your English bullet points. We expand your
+                        achievements into the "STAR" format preferred by Korean
+                        recruiters.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={onGenerateKo}
+                      disabled={isGeneratingKo}
+                      size="lg"
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md"
+                    >
+                      {isGeneratingKo ? (
+                        <>
+                          <Clock className="size-4 mr-2 animate-spin" />{" "}
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="size-4 mr-2" /> Generate Korean
+                          Narrative
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
               </div>
-            </section>
-          )}
+            )}
+          </div>
         </div>
-      </details>
+      </div>
 
-      {isDeleting && <LoadingOverlay message="이력서를 삭제하고 있습니다..." />}
+      {isDeleting && <LoadingOverlay message="Deleting resume..." />}
 
-      {/* Mobile Sticky Footer */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50">
+      {/* Mobile Sticky Footer - Dual Buttons */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50 flex gap-3">
+        <Button
+          onClick={handleDownloadHwp}
+          variant="outline"
+          className="flex-1 h-12 text-base shadow-lg"
+        >
+          <FileText className="size-5 mr-2" />
+          HWP
+        </Button>
         <Button
           onClick={handleDownload}
-          className="w-full h-12 text-base shadow-lg"
+          className="flex-1 h-12 text-base shadow-lg"
         >
           <Download className="size-5 mr-2" />
-          PDF 다운로드
+          PDF
         </Button>
       </div>
 
@@ -757,14 +782,14 @@ export function ResumeDetailPage({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+            <AlertDialogTitle>Delete Resume</AlertDialogTitle>
             <AlertDialogDescription>
-              정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
-              없습니다.
+              Are you sure you want to delete this resume? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               disabled={isDeleting}
@@ -774,7 +799,7 @@ export function ResumeDetailPage({
                   try {
                     setIsDeleting(true);
                     await onDelete(resumeId);
-                    toast.success("이력서가 삭제되었습니다");
+                    toast.success("Resume deleted successfully.");
                     onBack();
                     setIsDeleteAlertOpen(false);
                   } catch (error) {
@@ -785,7 +810,7 @@ export function ResumeDetailPage({
                 }
               }}
             >
-              {isDeleting ? "삭제 중..." : "삭제"}
+              {isDeleting ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

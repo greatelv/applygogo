@@ -22,7 +22,6 @@ import { cn } from "../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
-import LanguageSwitcher from "./language-switcher";
 import { Logo } from "./logo";
 
 interface HeaderProps {
@@ -44,22 +43,22 @@ const planConfig: Record<
   { label: string; variant: "outline" | "secondary" | "default"; color: string }
 > = {
   FREE: {
-    label: "무료",
+    label: "Free",
     variant: "outline" as const,
     color: "text-neutral-600",
   },
   PASS_7DAY: {
-    label: "7일 이용권",
+    label: "7-Day Pass",
     variant: "secondary" as const,
     color: "text-blue-600",
   },
   PASS_30DAY: {
-    label: "30일 이용권",
+    label: "30-Day Pass",
     variant: "default" as const,
     color: "text-purple-600",
   },
   PASS_BETA_3DAY: {
-    label: "베타 무제한",
+    label: "Beta Unlimited",
     variant: "default" as const,
     color: "text-indigo-600",
   },
@@ -128,11 +127,6 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Language Switcher */}
-          <div className="hidden sm:block">
-            <LanguageSwitcher />
-          </div>
-
           {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
           <div className="hidden sm:block">
             <ThemeToggle />
@@ -207,14 +201,14 @@ export function Header({
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">
                   <Settings className="size-4 mr-2" />
-                  설정
+                  Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/" className="cursor-pointer">
                   <Info className="size-4 mr-2" />
-                  서비스 소개
+                  Service Info
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>

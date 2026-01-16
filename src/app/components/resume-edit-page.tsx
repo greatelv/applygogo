@@ -71,8 +71,6 @@ import { DraggableExperienceItem } from "./resume-edit/draggable-experience-item
 
 import { useResumeEditor } from "./resume-edit/use-resume-editor";
 
-import { useTranslations, useLocale } from "next-intl";
-
 export function ResumeEditPage({
   resumeId,
   resumeTitle,
@@ -90,9 +88,6 @@ export function ResumeEditPage({
   onDeductCredit,
   sourceLang = "ko",
 }: ResumeEditPageProps) {
-  const t = useTranslations("Edit");
-  const locale = useLocale();
-
   const {
     // States
     personalInfo,
@@ -145,18 +140,16 @@ export function ResumeEditPage({
   });
 
   const isEnSource = sourceLang === "en";
-  const leftLabel = isEnSource
-    ? `${t("english")} (${t("original")})`
-    : `${t("korean")} (${t("original")})`;
-  const rightLabel = isEnSource
-    ? `${t("korean")} (${t("translated")})`
-    : `${t("english")} (${t("translated")})`;
+  const leftLabel = "Original Language";
+  const rightLabel = "Translated Language";
 
   return (
     <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-2xl mb-2">{"Edit"}</h1>
+        <p className="text-sm text-muted-foreground">
+          {"Review and edit the content analyzed by AI."}
+        </p>
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg p-4 mb-8 flex items-start gap-3">
@@ -165,10 +158,12 @@ export function ResumeEditPage({
         </div>
         <div>
           <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
-            {t("tip.title")}
+            {"You can edit content directly by clicking it"}
           </h3>
           <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
-            {t("tip.description")}
+            {
+              "Edit the original content and click the [Sync & Retranslate] button to have AI re-translate according to the changes. Delete unnecessary items using the trash icon."
+            }
           </p>
         </div>
       </div>
@@ -176,18 +171,22 @@ export function ResumeEditPage({
       <div className="space-y-8">
         {/* Personal Info */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">{t("personal.title")}</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            {"Personal Information"}
+          </h2>
           <p className="text-sm text-muted-foreground">
-            {t("personal.description")}
+            {
+              "Manage essential details such as name, contact information, and professional summary."
+            }
           </p>
         </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
             <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
-                <h3 className="font-semibold text-lg border-b border-border/50 pb-2 mb-4">
-                  {t("personal.professionalSummary")}
-                </h3>
+                <p className="text-xs text-muted-foreground font-semibold mb-1">
+                  {leftLabel}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
@@ -210,8 +209,8 @@ export function ResumeEditPage({
                 )}
                 <span className="hidden lg:inline ml-2 text-xs">
                   {isTranslating.personal
-                    ? t("processing")
-                    : t("sync_retranslate")}
+                    ? "Processing..."
+                    : "Sync & Retranslate"}
                 </span>
               </Button>
             </div>
@@ -225,7 +224,7 @@ export function ResumeEditPage({
                 </p>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                    {t("personal.name")}
+                    {"Name"}
                   </label>
                   <div
                     contentEditable
@@ -237,7 +236,7 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder={
-                      isEnSource ? t("personal.nameEn") : t("personal.nameKo")
+                      isEnSource ? "Name (English)" : "Name (Korean)"
                     }
                     className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
@@ -247,7 +246,7 @@ export function ResumeEditPage({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      {t("personal.email")}
+                      {"Email"}
                     </label>
                     <div
                       contentEditable
@@ -265,7 +264,7 @@ export function ResumeEditPage({
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      {t("personal.phone")}
+                      {"Phone"}
                     </label>
                     <div
                       contentEditable
@@ -276,7 +275,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      data-placeholder={t("personal.phonePlaceholder")}
+                      data-placeholder={"Phone Number"}
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.phone}
@@ -287,7 +286,7 @@ export function ResumeEditPage({
                 {/* Links KR (Original rendering style but shared logic) */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
-                    {t("personal.links")}
+                    {"Links"}
                   </label>
                   <div className="space-y-2">
                     {personalInfo.links.map((link, index) => (
@@ -307,7 +306,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder={t("personal.linkLabel")}
+                            data-placeholder={"Link Label"}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
@@ -323,7 +322,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder={t("personal.linkUrl")}
+                            data-placeholder={"Link URL"}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
@@ -354,7 +353,7 @@ export function ResumeEditPage({
                 {/* Name EN */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                    {t("personal.name")}
+                    {"Name"}
                   </label>
                   <div
                     contentEditable
@@ -366,7 +365,7 @@ export function ResumeEditPage({
                       )
                     }
                     data-placeholder={
-                      isEnSource ? t("personal.nameKo") : t("personal.nameEn")
+                      isEnSource ? "Name (Korean)" : "Name (English)"
                     }
                     className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.name
@@ -382,7 +381,7 @@ export function ResumeEditPage({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      {t("personal.email")}
+                      {"Email"}
                     </label>
                     <div
                       contentEditable
@@ -393,7 +392,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      data-placeholder={t("personal.emailPlaceholder")}
+                      data-placeholder={"Email Address"}
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.email}
@@ -401,7 +400,7 @@ export function ResumeEditPage({
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      {t("personal.phone")}
+                      {"Phone"}
                     </label>
                     <div
                       contentEditable
@@ -422,7 +421,7 @@ export function ResumeEditPage({
                 {/* Shared Links (EN Side) */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
-                    {t("personal.links")}
+                    {"Links"}
                   </label>
                   <div className="space-y-2">
                     {personalInfo.links.map((link, index) => (
@@ -446,7 +445,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder={t("personal.linkLabel")}
+                            data-placeholder={"Link Label"}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
@@ -462,7 +461,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder={t("personal.linkUrl")}
+                            data-placeholder={"Link URL"}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
@@ -499,14 +498,14 @@ export function ResumeEditPage({
                 }}
                 className="w-full"
               >
-                <Plus className="size-4 mr-2" /> {t("personal.addLink")}
+                <Plus className="size-4 mr-2" /> {"Add Link"}
               </Button>
             </div>
 
             {/* Summary Section */}
             <div className="mt-8 border-t border-border pt-6">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                {t("personal.professionalSummary")}
+                {"Professional Summary"}
               </h4>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -524,7 +523,7 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder={t("personal.summaryPlaceholder")}
+                    data-placeholder={"Enter a professional summary."}
                     className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {personalInfo.summary_original}
@@ -545,7 +544,7 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder={t("personal.summaryPlaceholder")}
+                    data-placeholder={"Enter a professional summary."}
                     className={`w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.summary
                         ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
@@ -562,11 +561,11 @@ export function ResumeEditPage({
         {/* Experiences */}
         <div className="mb-6 flex items-end justify-between">
           <div>
-            <h2 className="text-xl font-semibold mb-1">
-              {t("experience.title")}
-            </h2>
+            <h2 className="text-xl font-semibold mb-1">{"Experience"}</h2>
             <p className="text-sm text-muted-foreground">
-              {t("experience.description")}
+              {
+                "List your professional experience and key achievements in reverse chronological order."
+              }
             </p>
           </div>
           <Button
@@ -575,7 +574,7 @@ export function ResumeEditPage({
             className="h-9 px-4 shadow-sm text-sm font-semibold"
           >
             <Plus className="size-4 mr-1.5" />
-            {t("add_item")}
+            {"Add Item"}
           </Button>
         </div>
         <DndProvider backend={HTML5Backend}>
@@ -602,11 +601,11 @@ export function ResumeEditPage({
           <div className="mt-12">
             <div className="mb-6 flex items-end justify-between">
               <div>
-                <h2 className="text-xl font-semibold mb-1">
-                  {t("education.title")}
-                </h2>
+                <h2 className="text-xl font-semibold mb-1">{"Education"}</h2>
                 <p className="text-sm text-muted-foreground">
-                  {t("education.description")}
+                  {
+                    "Provide details about your educational background, starting with the most recent."
+                  }
                 </p>
               </div>
               <Button
@@ -615,20 +614,18 @@ export function ResumeEditPage({
                 className="h-9 px-4 shadow-sm text-sm font-semibold"
               >
                 <Plus className="size-4 mr-1.5" />
-                {t("add_item")}
+                {"Add Item"}
               </Button>
             </div>
             <div className="space-y-6">
               {educations.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   <p className="text-sm text-muted-foreground">
-                    {t.rich("education.empty", {
-                      button: (chunks) => (
-                        <span className="font-medium text-foreground">
-                          + {t("add_item")}
-                        </span>
-                      ),
-                    })}
+                    Click the{" "}
+                    <span className="font-medium text-foreground">
+                      + Add Item
+                    </span>{" "}
+                    button above to add education.
                   </p>
                 </div>
               )}
@@ -651,15 +648,17 @@ export function ResumeEditPage({
 
           {/* Skills */}
           <div className="mt-12">
-            <h2 className="text-xl font-semibold mb-1">{t("skills.title")}</h2>
+            <h2 className="text-xl font-semibold mb-1">{"Core Skills"}</h2>
             <p className="text-sm text-muted-foreground mb-6">
-              {t("skills.description")}
+              {
+                "Add your key technical skills or professional competencies as keywords."
+              }
             </p>
             <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex flex-wrap gap-2 mb-6 min-h-[40px]">
                 {skills.length === 0 && (
                   <p className="text-sm text-muted-foreground italic">
-                    {t("skills.empty")}
+                    {"No skills added yet."}
                   </p>
                 )}
                 {skills.map((skill) => (
@@ -680,7 +679,7 @@ export function ResumeEditPage({
 
                 <div className="flex gap-2 max-w-xs relative top-0.5">
                   <Input
-                    placeholder={t("skills.placeholder")}
+                    placeholder={"New skill"}
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyDown={(e) => {
@@ -709,29 +708,22 @@ export function ResumeEditPage({
             <div className="mb-6 flex items-end justify-between">
               <div>
                 <h2 className="text-xl font-semibold mb-1">
-                  {t("additional.title")}
+                  {"Additional Info"}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  {t("additional.description")}
+                  {
+                    "Add certifications, awards, languages, activities, and other details."
+                  }
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleAddAdditionalItem("CERTIFICATION")}
-                  className="h-9 px-4 shadow-sm text-sm font-semibold"
-                >
-                  <Plus className="size-4 mr-1.5" />
-                  {t("additional.addCertification")}
-                </Button>
                 <Button
                   size="sm"
                   onClick={() => handleAddAdditionalItem("ACTIVITY")}
                   className="h-9 px-4 shadow-sm text-sm font-semibold"
                 >
                   <Plus className="size-4 mr-1.5" />
-                  {t("add_item")}
+                  {"Add Item"}
                 </Button>
               </div>
             </div>
@@ -739,13 +731,11 @@ export function ResumeEditPage({
               {additionalItems.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   <p className="text-sm text-muted-foreground">
-                    {t.rich("additional.empty", {
-                      button: (chunks) => (
-                        <span className="font-medium text-foreground">
-                          + {t("add_item")}
-                        </span>
-                      ),
-                    })}
+                    Click the{" "}
+                    <span className="font-medium text-foreground">
+                      + Add Item
+                    </span>{" "}
+                    button above to add certifications, awards, or activities.
                   </p>
                 </div>
               )}
@@ -776,7 +766,7 @@ export function ResumeEditPage({
           className="flex-1 h-12 sm:h-11 text-base"
           disabled={isLoading}
         >
-          {isEditingExisting ? t("back_create_new") : t("back")}
+          {isEditingExisting ? "Start New" : "Back"}
         </Button>
 
         <Button
@@ -825,10 +815,10 @@ export function ResumeEditPage({
           isLoading={isLoading}
         >
           {isLoading ? (
-            t("processing")
+            "Processing..."
           ) : (
             <>
-              {t("next")}
+              {"Next"}
               <ArrowRight className="size-4 ml-2" />
             </>
           )}
@@ -852,7 +842,7 @@ export function ResumeEditPage({
                 variant="default"
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                <Link href="/settings">{t("buy_pass")}</Link>
+                <Link href="/settings">{"Purchase Pass"}</Link>
               </Button>
             )}
             <AlertDialogAction
@@ -864,7 +854,7 @@ export function ResumeEditPage({
                 }))
               }
             >
-              {t("alert.confirm")}
+              {"OK"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

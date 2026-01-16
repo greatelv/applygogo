@@ -53,7 +53,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>기능 요청 및 의견 보내기</DialogTitle>
+          <DialogTitle>Feature Request & Feedback 보내기</DialogTitle>
           <DialogDescription>
             서비스 이용 중 불편한 점이나 필요한 기능을 자유롭게 남겨주세요.
           </DialogDescription>
@@ -84,7 +84,7 @@ export function FeedbackModal({ open, onOpenChange }: FeedbackModalProps) {
             <Label htmlFor="feedback">내용</Label>
             <Textarea
               id="feedback"
-              placeholder="여기에 의견을 작성해주세요. (예: 이력서 템플릿이 더 다양했으면 좋겠어요, 번역 속도가 더 빨랐으면 좋겠어요 등)"
+              placeholder="여기에 의견을 작성해주세요. (예: Resume 템플릿이 더 다양했으면 좋겠어요, 번역 속도가 더 빨랐으면 좋겠어요 등)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="h-32 resize-none"

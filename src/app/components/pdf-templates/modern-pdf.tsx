@@ -203,7 +203,7 @@ interface ModernPdfProps {
   additionalItems?: any[];
 }
 
-export const ModernPdf = ({
+export const ModernPdfPage = ({
   personalInfo,
   experiences = [],
   educations = [],
@@ -223,277 +223,276 @@ export const ModernPdf = ({
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
   const languages = validItems.filter((i) => i.type === "LANGUAGE");
-  // @ts-ignore
-  const others = validItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
-  );
 
+  return (
+    <Page size="A4" style={styles.page}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.name}>
+          {personalInfo?.name_translated ||
+            personalInfo?.name_original ||
+            "이름 없음"}
+        </Text>
+        <View style={styles.contactRow}>
+          {personalInfo?.email && <Text>{personalInfo.email}</Text>}
+          {personalInfo?.phone && (
+            <>
+              <Text>•</Text>
+              <Text>{personalInfo.phone}</Text>
+            </>
+          )}
+          {personalInfo?.links
+            ?.filter((link: any) => link.label && link.url)
+            .map((link: any, i: number) => (
+              <React.Fragment key={i}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <Text>•</Text>
+                  <Link src={link.url} style={styles.linkText}>
+                    <Text style={{ color: "#374151", fontWeight: "bold" }}>
+                      {link.label}:{" "}
+                    </Text>
+                    {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </Link>
+                </View>
+              </React.Fragment>
+            ))}
+        </View>
+      </View>
+
+      {/* Summary */}
+      {personalInfo?.summary && (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View style={styles.sectionTitleBar} />
+            <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
+          </View>
+          <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+        </View>
+      )}
+
+      {/* Experience */}
+      {validExperiences.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View style={styles.sectionTitleBar} />
+            <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
+          </View>
+          <View style={styles.expContainer}>
+            {validExperiences.map((exp) => (
+              // @ts-ignore
+              <View key={exp.id}>
+                <View style={styles.expHeader}>
+                  <View>
+                    <Text style={styles.companyName}>
+                      {exp.companyTranslated}
+                    </Text>
+                    <Text style={styles.position}>
+                      {exp.positionTranslated}
+                    </Text>
+                  </View>
+                  <Text style={styles.period}>
+                    {formatDate(exp.period.split(" - ")[0])} -{" "}
+                    {formatDate(exp.period.split(" - ")[1])}
+                  </Text>
+                </View>
+                <View style={styles.bulletList}>
+                  {exp.bulletsTranslated?.map((bullet: string, idx: number) => (
+                    // @ts-ignore
+                    <View key={idx} style={styles.bulletItem}>
+                      <View style={styles.bulletIconContainer}>
+                        <Svg width={7} height={7} viewBox="0 0 24 24">
+                          <Path d="M8 5v14l11-7z" fill="#2563eb" />
+                        </Svg>
+                      </View>
+                      <Text style={styles.bulletText}>{bullet}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Skills */}
+      {skills.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View style={styles.sectionTitleBar} />
+            <Text style={styles.sectionTitle}>TECHNICAL SKILLS</Text>
+          </View>
+          <View style={styles.skillRow}>
+            {skills.map((skill) => (
+              <React.Fragment key={skill.id}>
+                <Text style={styles.skillBadge}>{skill.name}</Text>
+              </React.Fragment>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Education */}
+      {validEducations.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View style={styles.sectionTitleBar} />
+            <Text style={styles.sectionTitle}>EDUCATION</Text>
+          </View>
+          <View style={{ gap: 12 }}>
+            {validEducations.map((edu) => (
+              // @ts-ignore
+              <View key={edu.id} style={styles.eduItem}>
+                <View>
+                  <Text style={styles.companyName}>
+                    {edu.school_name_translated || edu.school_name}
+                  </Text>
+                  {((edu.degree_translated && edu.degree_translated !== "-") ||
+                    (edu.degree && edu.degree !== "-") ||
+                    (edu.major_translated && edu.major_translated !== "-") ||
+                    (edu.major && edu.major !== "-")) && (
+                    <Text
+                      style={{
+                        fontSize: 10.5,
+                        color: "#4b5563",
+                        marginTop: 2,
+                      }}
+                    >
+                      {edu.degree_translated || edu.degree}
+                      {(edu.degree_translated || edu.degree) &&
+                        (edu.major_translated || edu.major) &&
+                        ", "}
+                      {edu.major_translated || edu.major}
+                    </Text>
+                  )}
+                </View>
+                <Text style={styles.period}>
+                  {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Certifications & Awards & Languages */}
+      {(certifications.length > 0 ||
+        awards.length > 0 ||
+        languages.length > 0) && (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View style={styles.sectionTitleBar} />
+            <Text style={styles.sectionTitle}>ADDITIONAL INFORMATION</Text>
+          </View>
+          <View style={{ gap: 8 }}>
+            {certifications.length > 0 && (
+              <View style={{ marginBottom: 4 }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    marginBottom: 2,
+                  }}
+                >
+                  Certifications
+                </Text>
+                {certifications.map((cert: any, i: number) => {
+                  const name = cert.name_translated || cert.name_original;
+                  const desc =
+                    cert.description_translated || cert.description_original;
+                  const date = formatDate(cert.date);
+                  return (
+                    <React.Fragment key={i}>
+                      <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+            )}
+            {awards.length > 0 && (
+              <View style={{ marginBottom: 4 }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    marginBottom: 2,
+                  }}
+                >
+                  Awards
+                </Text>
+                {awards.map((award: any, i: number) => {
+                  const name = award.name_translated || award.name_original;
+                  const desc =
+                    award.description_translated || award.description_original;
+                  const date = formatDate(award.date);
+                  return (
+                    <React.Fragment key={i}>
+                      <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                        • {name}
+                        {desc && desc !== "-" ? ` | ${desc}` : ""}
+                        {date ? ` (${date})` : ""}
+                      </Text>
+                    </React.Fragment>
+                  );
+                })}
+              </View>
+            )}
+            {languages.length > 0 && (
+              <View>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 11,
+                    marginBottom: 2,
+                  }}
+                >
+                  Languages
+                </Text>
+                <View
+                  style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
+                >
+                  {languages.map((lang: any, i: number) => {
+                    const name = lang.name_translated || lang.name_original;
+                    const desc =
+                      lang.description_translated || lang.description_original;
+                    return (
+                      <React.Fragment key={i}>
+                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
+                          • {name}
+                          {desc && desc !== "-" ? ` (${desc})` : ""}
+                        </Text>
+                      </React.Fragment>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+    </Page>
+  );
+};
+
+export const ModernPdf = (props: ModernPdfProps) => {
   return (
     <Document
       title={
-        personalInfo?.name_translated || personalInfo?.name_original || "Resume"
+        props.personalInfo?.name_translated ||
+        props.personalInfo?.name_original ||
+        "Resume"
       }
     >
-      <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.name}>
-            {personalInfo?.name_translated ||
-              personalInfo?.name_original ||
-              "이름 없음"}
-          </Text>
-          <View style={styles.contactRow}>
-            {personalInfo?.email && <Text>{personalInfo.email}</Text>}
-            {personalInfo?.phone && (
-              <>
-                <Text>•</Text>
-                <Text>{personalInfo.phone}</Text>
-              </>
-            )}
-            {personalInfo?.links
-              ?.filter((link: any) => link.label && link.url)
-              .map((link: any, i: number) => (
-                <React.Fragment key={i}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 6,
-                    }}
-                  >
-                    <Text>•</Text>
-                    <Link src={link.url} style={styles.linkText}>
-                      <Text style={{ color: "#374151", fontWeight: "bold" }}>
-                        {link.label}:{" "}
-                      </Text>
-                      {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                    </Link>
-                  </View>
-                </React.Fragment>
-              ))}
-          </View>
-        </View>
-
-        {/* Summary */}
-        {personalInfo?.summary && (
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
-            </View>
-            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
-          </View>
-        )}
-
-        {/* Experience */}
-        {validExperiences.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
-            </View>
-            <View style={styles.expContainer}>
-              {validExperiences.map((exp) => (
-                // @ts-ignore
-                <View key={exp.id}>
-                  <View style={styles.expHeader}>
-                    <View>
-                      <Text style={styles.companyName}>
-                        {exp.companyTranslated}
-                      </Text>
-                      <Text style={styles.position}>
-                        {exp.positionTranslated}
-                      </Text>
-                    </View>
-                    <Text style={styles.period}>
-                      {formatDate(exp.period.split(" - ")[0])} -{" "}
-                      {formatDate(exp.period.split(" - ")[1])}
-                    </Text>
-                  </View>
-                  <View style={styles.bulletList}>
-                    {exp.bulletsTranslated?.map(
-                      (bullet: string, idx: number) => (
-                        // @ts-ignore
-                        <View key={idx} style={styles.bulletItem}>
-                          <View style={styles.bulletIconContainer}>
-                            <Svg width={7} height={7} viewBox="0 0 24 24">
-                              <Path d="M8 5v14l11-7z" fill="#2563eb" />
-                            </Svg>
-                          </View>
-                          <Text style={styles.bulletText}>{bullet}</Text>
-                        </View>
-                      )
-                    )}
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Skills */}
-        {skills.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>TECHNICAL SKILLS</Text>
-            </View>
-            <View style={styles.skillRow}>
-              {skills.map((skill) => (
-                <React.Fragment key={skill.id}>
-                  <Text style={styles.skillBadge}>{skill.name}</Text>
-                </React.Fragment>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Education */}
-        {validEducations.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>EDUCATION</Text>
-            </View>
-            <View style={{ gap: 12 }}>
-              {validEducations.map((edu) => (
-                // @ts-ignore
-                <View key={edu.id} style={styles.eduItem}>
-                  <View>
-                    <Text style={styles.companyName}>
-                      {edu.school_name_translated || edu.school_name}
-                    </Text>
-                    {((edu.degree_translated &&
-                      edu.degree_translated !== "-") ||
-                      (edu.degree && edu.degree !== "-") ||
-                      (edu.major_translated && edu.major_translated !== "-") ||
-                      (edu.major && edu.major !== "-")) && (
-                      <Text
-                        style={{
-                          fontSize: 10.5,
-                          color: "#4b5563",
-                          marginTop: 2,
-                        }}
-                      >
-                        {edu.degree_translated || edu.degree}
-                        {(edu.degree_translated || edu.degree) &&
-                          (edu.major_translated || edu.major) &&
-                          ", "}
-                        {edu.major_translated || edu.major}
-                      </Text>
-                    )}
-                  </View>
-                  <Text style={styles.period}>
-                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Certifications & Awards & Languages */}
-        {(certifications.length > 0 ||
-          awards.length > 0 ||
-          languages.length > 0) && (
-          <View style={styles.section}>
-            <View style={styles.sectionTitleRow}>
-              <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>ADDITIONAL INFORMATION</Text>
-            </View>
-            <View style={{ gap: 8 }}>
-              {certifications.length > 0 && (
-                <View style={{ marginBottom: 4 }}>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 11,
-                      marginBottom: 2,
-                    }}
-                  >
-                    Certifications
-                  </Text>
-                  {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_translated || cert.name_original;
-                    const desc =
-                      cert.description_translated || cert.description_original;
-                    const date = formatDate(cert.date);
-                    return (
-                      <React.Fragment key={i}>
-                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
-                          • {name}
-                          {desc && desc !== "-" ? ` | ${desc}` : ""}
-                          {date ? ` (${date})` : ""}
-                        </Text>
-                      </React.Fragment>
-                    );
-                  })}
-                </View>
-              )}
-              {awards.length > 0 && (
-                <View style={{ marginBottom: 4 }}>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 11,
-                      marginBottom: 2,
-                    }}
-                  >
-                    Awards
-                  </Text>
-                  {awards.map((award: any, i: number) => {
-                    const name = award.name_translated || award.name_original;
-                    const desc =
-                      award.description_translated ||
-                      award.description_original;
-                    const date = formatDate(award.date);
-                    return (
-                      <React.Fragment key={i}>
-                        <Text style={{ fontSize: 10.5, color: "#374151" }}>
-                          • {name}
-                          {desc && desc !== "-" ? ` | ${desc}` : ""}
-                          {date ? ` (${date})` : ""}
-                        </Text>
-                      </React.Fragment>
-                    );
-                  })}
-                </View>
-              )}
-              {languages.length > 0 && (
-                <View>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 11,
-                      marginBottom: 2,
-                    }}
-                  >
-                    Languages
-                  </Text>
-                  <View
-                    style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
-                  >
-                    {languages.map((lang: any, i: number) => {
-                      const name = lang.name_translated || lang.name_original;
-                      const desc =
-                        lang.description_translated ||
-                        lang.description_original;
-                      return (
-                        <React.Fragment key={i}>
-                          <Text style={{ fontSize: 10.5, color: "#374151" }}>
-                            • {name}
-                            {desc && desc !== "-" ? ` (${desc})` : ""}
-                          </Text>
-                        </React.Fragment>
-                      );
-                    })}
-                  </View>
-                </View>
-              )}
-            </View>
-          </View>
-        )}
-      </Page>
+      <ModernPdfPage {...props} />
     </Document>
   );
 };

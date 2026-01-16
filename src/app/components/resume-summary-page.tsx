@@ -92,7 +92,7 @@ export function ResumeSummaryPage({ resumeTitle, onNext, onBack }: ResumeSummary
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="secondary" className="gap-1">
             <Sparkles className="size-3" />
-            AI 요약 완료
+            AI 요약 Complete
           </Badge>
           <span className="text-sm text-muted-foreground">1 / 3 단계</span>
         </div>

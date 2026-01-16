@@ -111,31 +111,34 @@ export function ResumePreviewPage({
     {
       id: "modern",
       name: "Modern",
-      description: "깔끔하고 현대적인 디자인. IT/스타트업 추천",
+      description: "Clean and modern design. Recommended for IT/Startups",
       isPro: false,
     },
     {
       id: "professional",
       name: "Professional",
-      description: "2단 레이아웃으로 전문적인 느낌. 경력직 추천",
+      description:
+        "Two-column layout, professional look. Recommended for experienced hires",
       isPro: true,
     },
     {
       id: "executive",
       name: "Executive",
-      description: "강렬한 헤더와 고급스러운 디자인. 리더/임원급 추천",
+      description:
+        "Bold header and premium design. Recommended for Executives/Leadership",
       isPro: true,
     },
     {
       id: "classic",
       name: "Classic",
-      description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
+      description:
+        "Traditional and formal style. Recommended for Corporate/Finance",
       isPro: true,
     },
     {
       id: "minimal",
       name: "Minimal",
-      description: "미니멀하고 세련된 느낌. 디자인/크리에이티브 추천",
+      description: "Minimalist and chic. Recommended for Design/Creative",
       isPro: true,
     },
   ];
@@ -209,9 +212,9 @@ export function ResumePreviewPage({
   return (
     <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">템플릿 선택</h1>
+        <h1 className="text-2xl mb-2">Template Selection</h1>
         <p className="text-sm text-muted-foreground">
-          원하는 템플릿을 선택하세요
+          Select a template for your resume
         </p>
       </div>
 
@@ -288,18 +291,18 @@ export function ResumePreviewPage({
             ))}
           </div>
 
-          {/* PRO 템플릿 선택 시 업그레이드 안내 */}
+          {/* PRO Template Selection 시 업그레이드 안내 */}
           {isProTemplateSelected && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-400">
-                ⭐ 이 템플릿은 이용권 전용입니다.
+                ⭐ This template requires a paid pass.
               </p>
             </div>
           )}
 
           <div className="pt-4 space-y-2 hidden lg:block">
             <Button variant="outline" onClick={onBack} className="w-full">
-              이전
+              Back
             </Button>
             <Button
               onClick={handleNext}
@@ -310,21 +313,21 @@ export function ResumePreviewPage({
               {isCompleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  처리 중...
+                  Processing...
                 </>
               ) : isProTemplateSelected ? (
-                "이용권 구매하기"
+                "Purchase Pass"
               ) : (
-                "완료"
+                "Complete"
               )}
             </Button>
           </div>
 
           <div className="hidden lg:block mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-400">
-              💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에
-              최적화되어 있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을
-              선택하세요.
+              💡 <strong>Tip:</strong> Each template is optimized for different
+              styles and purposes. Choose the one that best fits the company and
+              position you are applying for.
             </p>
           </div>
         </div>
@@ -355,7 +358,7 @@ export function ResumePreviewPage({
           onClick={onBack}
           className="flex-1 h-12 text-base"
         >
-          이전
+          Back
         </Button>
         <Button
           onClick={handleNext}
@@ -366,12 +369,12 @@ export function ResumePreviewPage({
           {isCompleting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              처리 중
+              Processing...
             </>
           ) : isProTemplateSelected ? (
-            "구매하기"
+            "Purchase"
           ) : (
-            "완료"
+            "Complete"
           )}
         </Button>
       </div>

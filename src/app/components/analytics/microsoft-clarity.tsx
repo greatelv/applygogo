@@ -5,7 +5,7 @@ import Script from "next/script";
 export function MicrosoftClarity() {
   const projectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
 
-  // Clarity Project ID가 설정되지 않았으면 아무것도 렌더링하지 않음
+  // Clarity Project ID가 Settings되지 않았으면 아무것도 렌더링하지 않음
   if (!projectId) {
     return null;
   }

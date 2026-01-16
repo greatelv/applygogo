@@ -100,12 +100,25 @@ export function ProcessingPage({
 
         const refineResponse = await fetch(`/api/resumes/${resumeId}/refine`, {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ extractedData }),
         });
 
         if (!refineResponse.ok) {
-          const errorData = await refineResponse.json();
-          throw new Error(errorData.error || "Error Occurred");
+          let errorMessage = "Refinement Failed";
+          try {
+            const errorText = await refineResponse.text();
+            if (errorText) {
+              const errorData = JSON.parse(errorText);
+              errorMessage = errorData.error || errorMessage;
+            }
+          } catch (e) {
+            console.error("Failed to parse refine error:", e);
+          }
+          throw new Error(errorMessage);
         }
+
+        const { data: refinedData } = await refineResponse.json();
 
         if (isCancelled) return;
 
@@ -116,12 +129,25 @@ export function ProcessingPage({
 
         const translateResponse = await fetch(
           `/api/resumes/${resumeId}/translate`,
-          { method: "POST" }
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refinedData }),
+          }
         );
 
         if (!translateResponse.ok) {
-          const errorData = await translateResponse.json();
-          throw new Error(errorData.error || "Error Occurred");
+          let errorMessage = "Translation Failed";
+          try {
+            const errorText = await translateResponse.text();
+            if (errorText) {
+              const errorData = JSON.parse(errorText);
+              errorMessage = errorData.error || errorMessage;
+            }
+          } catch (e) {
+            console.error("Failed to parse translate error:", e);
+          }
+          throw new Error(errorMessage);
         }
 
         if (isCancelled) return;
@@ -133,8 +159,12 @@ export function ProcessingPage({
 
         // Wait a moment before transitioning
         setTimeout(() => {
-          if (!isCancelled && onComplete) {
+          if (isCancelled) return;
+
+          if (onComplete) {
             onComplete();
+          } else {
+            router.push(`/resumes/${resumeId}/edit`);
           }
         }, 1500);
       } catch (err: any) {
@@ -223,20 +253,27 @@ export function ProcessingPage({
               <div className="size-10 rounded-full bg-destructive/10 flex items-center justify-center">
                 <Sparkles className="size-5 text-destructive" />
               </div>
-              <div>
-                <h2 className="text-lg font-semibold text-destructive">
-                  Error Occurred
-                </h2>
-                <p className="text-sm text-muted-foreground">{error}</p>
-              </div>
+              <h3 className="font-semibold text-lg text-destructive">
+                AI Processing Failed
+              </h3>
             </div>
-            <Button
-              onClick={() => router.push("/resumes")}
-              variant="outline"
-              className="w-full"
-            >
-              Upload Again
-            </Button>
+            <p className="text-sm text-muted-foreground">{error}</p>
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
+                className="w-full"
+              >
+                Retry
+              </Button>
+              <Button
+                onClick={() => router.push(`/resumes`)}
+                variant="ghost"
+                className="w-full"
+              >
+                Go to Dashboard
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -244,36 +281,23 @@ export function ProcessingPage({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="max-w-2xl w-full mx-auto p-8">
-        <div className="bg-card border border-border rounded-lg p-8 space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold">AI Processing</h1>
-            <p className="text-sm text-muted-foreground">
-              AI is meticulously analyzing your resume and reconstructing it
-              into a professional format optimized for the global/local market.
-              <br />
-              Please wait as we extract text, select key achievements, and
-              perform specialized translation.
-            </p>
-          </div>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold">{resumeTitle}</h1>
+          <p className="text-muted-foreground">
+            ApplyGogo AI is analyzing your resume
+          </p>
+        </div>
 
-          {/* Warning */}
-          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg p-4">
-            <p className="text-sm text-amber-900 dark:text-amber-200">
-              ⚠️ Please keep this page open to ensure stable processing.
-              (Closing may interrupt the task)
-            </p>
-          </div>
-
-          {/* Processing Steps */}
-          <div className="space-y-4">
+        <div className="bg-card border rounded-xl overflow-hidden shadow-lg">
+          <div className="p-6 space-y-6">
             {processingSteps.map((step, index) => {
               const Icon = step.icon;
               const isActive = index === currentStepIndex;
               const isCompleted = index < currentStepIndex;
-              const isPending = index > currentStepIndex;
+              // Fix: Last step ("Complete") should show checkmark if active (meaning done)
+              const isLastStep = index === processingSteps.length - 1;
 
               return (
                 <div
@@ -301,9 +325,9 @@ export function ProcessingPage({
                     }
                   `}
                   >
-                    {isActive ? (
+                    {isActive && !isLastStep ? (
                       <Loader2 className="size-6 animate-spin" />
-                    ) : isCompleted ? (
+                    ) : (isActive && isLastStep) || isCompleted ? (
                       <CheckCircle className="size-6" />
                     ) : (
                       <Icon className="size-6" />
@@ -313,12 +337,12 @@ export function ProcessingPage({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold">{step.label}</h3>
-                      {isActive && (
+                      {isActive && !isLastStep && (
                         <span className="text-xs text-primary font-medium">
                           Processing...
                         </span>
                       )}
-                      {isCompleted && (
+                      {((isActive && isLastStep) || isCompleted) && (
                         <span className="text-xs text-green-600 dark:text-green-400 font-medium">
                           ✓ Done
                         </span>
@@ -352,24 +376,22 @@ export function ProcessingPage({
           {currentPhase === "done" && (
             <div className="text-center space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
-                <CheckCircle className="size-5" />
+                <CheckCircle className="size-4" />
                 <span className="font-medium">
                   Analysis is complete! Moving to the next step...
                 </span>
               </div>
               <Button
-                onClick={onComplete}
-                disabled={isCompleting}
+                onClick={() =>
+                  onComplete
+                    ? onComplete()
+                    : router.push(`/resumes/${resumeId}/edit`)
+                }
                 className="w-full"
+                size="lg"
+                variant="outline"
               >
-                {isCompleting ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin mr-2" />
-                    Loading...
-                  </>
-                ) : (
-                  "View Summary"
-                )}
+                View Summary
               </Button>
             </div>
           )}

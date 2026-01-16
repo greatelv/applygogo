@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+import Image from "next/image";
+
 interface LogoProps {
   className?: string;
   href?: string;
+  alt?: string;
 }
 
-export function Logo({ className, href = "/" }: LogoProps) {
+export function Logo({ className, href = "/", alt = "ApplyGogo" }: LogoProps) {
   return (
     <Link
       href={href}
@@ -15,9 +18,21 @@ export function Logo({ className, href = "/" }: LogoProps) {
         className
       )}
     >
-      <div className="flex items-center font-bold text-xl tracking-tight">
-        <span className="text-blue-600">Apply</span>
-        <span className="text-foreground">Gogo</span>
+      <div className="relative h-8 w-32">
+        <Image
+          src="/logo-for-light.svg"
+          alt={alt}
+          fill
+          className="object-contain dark:hidden"
+          priority
+        />
+        <Image
+          src="/logo-for-dark.svg"
+          alt={alt}
+          fill
+          className="object-contain hidden dark:block"
+          priority
+        />
       </div>
     </Link>
   );

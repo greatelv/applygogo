@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2, Plus } from "lucide-react";
-import { useLocale } from "next-intl";
 import { Button } from "../ui/button";
 import { TranslatedExperience } from "./types";
 import { ItemTypes } from "./constants";
@@ -48,7 +47,6 @@ export const DraggableExperienceItem = ({
   leftLabel: string;
   rightLabel: string;
 }) => {
-  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
   // ... rest of useDrop/useDrag ...
   const [{ handlerId }, drop] = useDrop({
@@ -180,11 +178,7 @@ export const DraggableExperienceItem = ({
                       e.currentTarget.textContent || ""
                     )
                   }
-                  data-placeholder={
-                    locale === "ko"
-                      ? "회사/조직명 (예: 삼성전자)"
-                      : "Company/Organization"
-                  }
+                  data-placeholder="Company/Organization"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {exp.company}
@@ -200,7 +194,7 @@ export const DraggableExperienceItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder={locale === "ko" ? "직무" : "Position"}
+                    data-placeholder={"Position"}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {exp.position}
@@ -216,11 +210,7 @@ export const DraggableExperienceItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder={
-                      locale === "ko"
-                        ? "기간 (예: 2020.01 - 2023.12)"
-                        : "Period"
-                    }
+                    data-placeholder="Period"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {exp.period}
@@ -245,11 +235,7 @@ export const DraggableExperienceItem = ({
                           false
                         )
                       }
-                      data-placeholder={
-                        locale === "ko"
-                          ? "업무 성과 및 활동 내용"
-                          : "Key achievement/Responsibility"
-                      }
+                      data-placeholder="Key achievement/Responsibility"
                       className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {bullet}

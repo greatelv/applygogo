@@ -13,73 +13,79 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     id: "1",
-    category: "시작하기",
-    question: "지원고고는 어떻게 사용하나요?",
+    category: "Getting Started",
+    question: "How do I use ApplyGoGo?",
     answer:
-      "1) PDF 이력서를 업로드하세요. 2) AI가 이력서를 분석하여 핵심 내용을 요약하고 번역합니다. 3) 요약된 내용을 검토하고, 한/영 분할 화면에서 번역 결과를 직접 수정하세요. 4) 원하는 디자인 템플릿을 적용해 PDF로 다운로드하세요.",
+      "1) Upload your PDF resume. 2) AI analyzes the resume to summarize and translate key content. 3) Review the summary and edit translation results in the split-view editor. 4) Apply your preferred design template and download as a PDF.",
   },
   {
     id: "2",
-    category: "시작하기",
-    question: "어떤 파일 형식을 지원하나요?",
+    category: "Getting Started",
+    question: "Which file formats are supported?",
     answer:
-      "현재 PDF 파일만 지원합니다. 파일 크기는 최대 10MB까지 업로드 가능합니다. Word나 한글 파일은 PDF로 변환 후 업로드해주세요.",
+      "Currently, only PDF files are supported. You can upload files up to 10MB. Please convert Word or HWP files to PDF before uploading.",
   },
   {
     id: "3",
-    category: "기능",
-    question: "Free 플랜과 Pro 플랜의 차이는 무엇인가요?",
-    answer: `Free 플랜은 가입 시 10 크레딧과 기본 템플릿을 제공하며, 이력서를 1개까지 저장할 수 있습니다. Pro 플랜(정상가 ${(
+    category: "Features",
+    question: "What's the difference between Free and Pro plans?",
+    answer: `The Free plan offers 10 credits and a basic template upon signup, and lets you save up to 1 resume. The Pro plan (Regular price ${(
       PLAN_PRODUCTS.PASS_30DAY.price * 2
-    ).toLocaleString()}원 → 런칭특가 ${PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원)은 월 ${
+    ).toLocaleString()} KRW → Launch Special ${PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()} KRW) includes ${
       PLAN_PRODUCTS.PASS_30DAY.credits
-    } 크레딧, 모든 템플릿(Minimal 포함), 그리고 이력서 무제한 저장을 지원합니다.`,
+    } monthly credits, all templates (including Minimal), and unlimited resume storage.`,
   },
   {
     id: "4",
-    category: "기능",
-    question: "크레딧은 어떻게 차감되나요?",
+    category: "Features",
+    question: "How are credits deducted?",
     answer:
-      "이력서 1개를 생성(AI 처리)할 때마다 5 크레딧이 차감됩니다. 특정 항목을 '재번역'할 경우 1 크레딧이 차감됩니다. 단순 다운로드는 크레딧이 소모되지 않습니다.",
+      "5 credits are deducted each time you generate a resume (AI processing). 'Re-translating' a specific section costs 1 credit. Downloading does not consume credits.",
   },
   {
     id: "5",
-    category: "기능",
-    question: "Word 파일로 다운로드할 수 있나요?",
+    category: "Features",
+    question: "Can I download it as a Word file?",
     answer:
-      "현재는 레이아웃 깨짐 없이 최적의 디자인을 보장하기 위해 PDF 형식의 다운로드만 지원하고 있습니다.",
+      "Currently, we only support PDF downloads to ensure the best design layout without formatting issues.",
   },
   {
     id: "6",
-    category: "기능",
-    question: "번역 결과를 수정할 수 있나요?",
+    category: "Features",
+    question: "Can I edit the translation results?",
     answer:
-      "네, 가능합니다. 편집 단계에서 'Split View' 기능을 통해 한글 원본과 영문 번역을 나란히 보며 문장 단위로 자유롭게 수정할 수 있습니다.",
+      "Yes, you can. In the Edit step, you can use the 'Split View' feature to see the original Korean and English translation side-by-side and edit sentence by sentence.",
   },
   {
     id: "7",
-    category: "결제",
-    question: "플랜 변경 및 해지는 어떻게 하나요?",
+    category: "Billing",
+    question: "How do I change or cancel my plan?",
     answer:
-      "설정 > 결제 관리 페이지에서 언제든지 플랜을 업그레이드하거나 해지할 수 있습니다. 구독을 해지하더라도 남은 기간 동안은 Pro 혜택이 유지됩니다.",
+      "You can upgrade or cancel your plan at any time in Settings > Billing Management. Even if you cancel, your Pro benefits will remain active until the end of the billing period.",
   },
   {
     id: "8",
-    category: "보안",
-    question: "내 이력서 데이터는 안전한가요?",
+    category: "Security",
+    question: "Is my resume data secure?",
     answer:
-      "네, 모든 데이터는 강력하게 암호화되어 저장됩니다. 사용자가 직접 삭제하기 전까지 안전하게 보관되며, 제3자에게 절대 공유되지 않으니 안심하셔도 됩니다.",
+      "Yes, all data is stored with strong encryption. Your data is kept secure until you delete it and is never shared with third parties.",
   },
 ];
 
-const categories = ["전체", "시작하기", "기능", "결제", "보안"];
+const categories = [
+  "All",
+  "Getting Started",
+  "Features",
+  "Billing",
+  "Security",
+];
 
 export function HelpPage() {
-  const [activeCategory, setActiveCategory] = useState("전체");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [openId, setOpenId] = useState<string | null>(null);
 
   const filteredFaqs =
-    activeCategory === "전체"
+    activeCategory === "All"
       ? faqs
       : faqs.filter((faq) => faq.category === activeCategory);
 
@@ -89,15 +95,17 @@ export function HelpPage() {
         <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 mb-4">
           <CircleHelp className="size-8 text-primary" />
         </div>
-        <h1 className="text-3xl mb-3">도움이 필요하신가요?</h1>
+        <h1 className="text-3xl mb-3">Need Help?</h1>
         <p className="text-muted-foreground">
-          자주 묻는 질문을 확인하거나 문의해주세요
+          Check our Frequently Asked Questions or contact us directly.
         </p>
       </div>
 
       {/* FAQ Section */}
       <div id="faq">
-        <h2 className="text-2xl font-semibold mb-6">자주 묻는 질문</h2>
+        <h2 className="text-2xl font-semibold mb-6">
+          Frequently Asked Questions
+        </h2>
 
         {/* Category Filter */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
@@ -158,9 +166,11 @@ export function HelpPage() {
         className="mt-16 bg-card border border-border rounded-lg p-8 text-center"
       >
         <Mail className="size-12 text-primary mx-auto mb-4" />
-        <h3 className="text-xl font-semibold mb-2">답변을 찾지 못하셨나요?</h3>
+        <h3 className="text-xl font-semibold mb-2">
+          Can't find what you're looking for?
+        </h3>
         <p className="text-muted-foreground mb-6">
-          이메일로 문의해주시면 24시간 내에 답변드리겠습니다
+          Contact us via email and we'll get back to you within 24 hours.
         </p>
         <a
           href="mailto:patakeique@gmail.com"

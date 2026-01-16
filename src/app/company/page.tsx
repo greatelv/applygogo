@@ -20,6 +20,7 @@ import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 import { SiteFooter } from "@/app/components/site-footer";
+import { Logo } from "@/app/components/logo";
 
 export default function CompanyPage() {
   return (
@@ -28,24 +29,7 @@ export default function CompanyPage() {
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center">
-              <div className="relative h-6 w-24">
-                <Image
-                  src="/logo-for-light.svg"
-                  alt="지원고고"
-                  fill
-                  className="object-contain dark:hidden"
-                  priority
-                />
-                <Image
-                  src="/logo-for-dark.svg"
-                  alt="지원고고"
-                  fill
-                  className="object-contain hidden dark:block"
-                  priority
-                />
-              </div>
-            </Link>
+            <Logo href="/" alt="지원고고" />
             <div className="flex items-center gap-4">
               <Link
                 href="/introduction"

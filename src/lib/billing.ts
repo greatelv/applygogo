@@ -84,7 +84,7 @@ export async function deductCredits(
     });
 
     if (!user || user.credits < amount) {
-      throw new Error("소진할 크레딧이 부족합니다.");
+      throw new Error("Insufficient credits to deduct.");
     }
 
     const paidBuckets = await tx.paymentHistory.findMany({

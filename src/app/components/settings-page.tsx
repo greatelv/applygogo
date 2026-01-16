@@ -66,8 +66,6 @@ interface SettingsPageProps {
   canRefund?: boolean;
 }
 
-import { useTranslations, useLocale } from "next-intl";
-
 export function SettingsPage({
   userName,
   userEmail,
@@ -91,14 +89,17 @@ export function SettingsPage({
   isUpdatingCard = false,
   canRefund = false,
 }: SettingsPageProps) {
-  const t = useTranslations("App.settings");
-  const locale = useLocale();
-
-  const labels = t.raw("pass.labels");
+  const labels = {
+    active: "Member",
+    inactive: "Free",
+    PASS_7DAY: "7-Day Pass",
+    PASS_30DAY: "30-Day Pass",
+    PASS_BETA_3DAY: "Beta Unlimited",
+  };
 
   const passConfig = {
-    active: { label: labels.active, variant: "default" as const },
-    inactive: { label: labels.inactive, variant: "outline" as const },
+    active: { label: "Member", variant: "default" as const },
+    inactive: { label: "Free", variant: "outline" as const },
   };
 
   const initials = userName
@@ -157,14 +158,16 @@ export function SettingsPage({
   return (
     <div className="max-w-5xl mx-auto space-y-12 pb-12">
       <div>
-        <h1 className="text-2xl mb-2">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-2xl mb-2">{"Settings"}</h1>
+        <p className="text-sm text-muted-foreground">
+          {"Manage your account information and billing in one place"}
+        </p>
       </div>
 
       {/* --- Section 1: Account and Pass Information --- */}
       <section className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2">
-          {t("account.title")}
+          {"Account & Pass"}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
@@ -174,7 +177,7 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <User className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{t("account.userName")}</p>
+                  <p className="text-sm font-medium">{"Username"}</p>
                   <p className="text-sm text-muted-foreground">{userName}</p>
                 </div>
               </div>
@@ -182,7 +185,7 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <Mail className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{t("account.email")}</p>
+                  <p className="text-sm font-medium">{"Email"}</p>
                   <p className="text-sm text-muted-foreground">{userEmail}</p>
                 </div>
               </div>
@@ -190,9 +193,7 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <Calendar className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {t("account.createdAt")}
-                  </p>
+                  <p className="text-sm font-medium">{"Joined At"}</p>
                   <p className="text-sm text-muted-foreground">{createdAt}</p>
                 </div>
               </div>
@@ -203,12 +204,12 @@ export function SettingsPage({
           <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               <Crown className="size-5 text-primary" />
-              <h3 className="font-semibold">{t("pass.title")}</h3>
+              <h3 className="font-semibold">{"Pass Information"}</h3>
             </div>
 
             <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-                <span className="text-sm font-medium">{t("pass.status")}</span>
+                <span className="text-sm font-medium">{"Pass Status"}</span>
                 <div className="flex gap-2">
                   <Badge variant={config.variant}>
                     {hasActivePass && passType && labels[passType]
@@ -217,14 +218,16 @@ export function SettingsPage({
                   </Badge>
                   {cancelAtPeriodEnd && (
                     <Badge variant="outline" className="text-muted-foreground">
-                      {t("pass.expiringSoon")}
+                      {"Expiring Soon"}
                     </Badge>
                   )}
                 </div>
               </div>
 
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-                <span className="text-sm font-medium">{t("pass.credits")}</span>
+                <span className="text-sm font-medium">
+                  {"Remaining Credits"}
+                </span>
                 <span className="text-sm font-semibold">{quota}</span>
               </div>
 
@@ -232,17 +235,17 @@ export function SettingsPage({
                 <div className="flex items-center gap-2">
                   <Calendar className="size-4 text-muted-foreground" />
                   <span className="text-sm font-medium">
-                    {hasActivePass ? t("pass.expiry") : t("pass.usagePeriod")}
+                    {hasActivePass ? "Expiry Date" : "Usage Period"}
                   </span>
                 </div>
                 <span className="text-sm text-muted-foreground">
                   {!hasActivePass
-                    ? t("pass.unlimited")
+                    ? "Unlimited"
                     : currentPeriodEnd
                     ? new Date(currentPeriodEnd).toLocaleDateString(
-                        locale === "ko" ? "ko-KR" : "en-US"
+                        false ? "ko-KR" : "en-US"
                       )
-                    : t("pass.notAvailable")}
+                    : "No Info"}
                 </span>
               </div>
 
@@ -253,7 +256,7 @@ export function SettingsPage({
                     <div className="flex items-center gap-2">
                       <PaymentIcon className="size-4 text-muted-foreground" />
                       <span className="text-sm font-medium">
-                        {t("pass.paymentMethod")}
+                        {"Last Payment Method"}
                       </span>
                     </div>
                   </div>
@@ -261,14 +264,14 @@ export function SettingsPage({
                   <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
                     {/* Toss Pay Badge */}
                     <div className="h-6 px-2 bg-[#0064FF] rounded flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap">
-                      {t("pass.tossPay")}
+                      {"Toss Pay"}
                     </div>
                     <div className="flex-1 text-left min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {paymentInfo?.cardName || t("pass.creditCard")}
+                        {paymentInfo?.cardName || "Credit Card"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {paymentInfo?.cardNumber || t("pass.placeholderCard")}
+                        {paymentInfo?.cardNumber || "**** **** **** ****"}
                       </p>
                     </div>
                   </div>
@@ -280,7 +283,9 @@ export function SettingsPage({
             {!hasActivePass && (
               <div className="mt-4 pt-4 border-t border-border">
                 <p className="text-xs text-muted-foreground text-center">
-                  {t("pass.upgradeTip")}
+                  {
+                    "💡 Purchase a pass to get all templates and unlimited re-translations"
+                  }
                 </p>
               </div>
             )}
@@ -295,13 +300,13 @@ export function SettingsPage({
             tabIndex={-1}
             className="text-xl font-semibold scroll-mt-20 outline-none"
           >
-            {t("purchase.title")}
+            {"Purchase Pass"}
           </h2>
           <Badge
             variant="outline"
             className="text-xs px-2.5 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
           >
-            {t("purchase.badge")}
+            {"🎉 Open Special Offer"}
           </Badge>
         </div>
 
@@ -316,17 +321,15 @@ export function SettingsPage({
           >
             {hasActivePass && passType === "PASS_30DAY" && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
-                {t("purchase.currentlyUsing")}
+                {"Currently Using"}
               </div>
             )}
             {!hasActivePass && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                {t("purchase.recommended")}
+                {"Recommended"}
               </div>
             )}
-            <h3 className="text-lg font-bold mb-2 mt-2">
-              {t("purchase.pass30")}
-            </h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">{"30-Day Pass"}</h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
@@ -339,24 +342,22 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  57% {t("purchase.off")}
+                  57% {"OFF"}
                 </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.credits", {
-                  count: PLAN_PRODUCTS.PASS_30DAY.credits,
-                })}
+                {PLAN_PRODUCTS.PASS_30DAY.credits} + " Credits included"
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.unlimitedBenefit")}
+                {"All Templates & Unlimited Re-translation"}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.days30")}
+                {"30 Days Free Access"}
               </li>
             </ul>
             <Button
@@ -380,11 +381,11 @@ export function SettingsPage({
             >
               {hasActivePass
                 ? passType === "PASS_30DAY"
-                  ? t("purchase.currentlyUsing")
-                  : t("purchase.notPossible")
+                  ? "Currently Using"
+                  : "Not Possible"
                 : userEmail === "test@applygogo.com"
-                ? t("purchase.buyTest")
-                : t("purchase.preparing")}
+                ? "Purchase Pass (Test)"
+                : "Preparing (Beta)"}
             </Button>
           </div>
 
@@ -398,12 +399,10 @@ export function SettingsPage({
           >
             {hasActivePass && passType === "PASS_7DAY" && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
-                {t("purchase.currentlyUsing")}
+                {"Currently Using"}
               </div>
             )}
-            <h3 className="text-lg font-bold mb-2 mt-2">
-              {t("purchase.pass7")}
-            </h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">{"7-Day Pass"}</h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
@@ -416,24 +415,22 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  50% {t("purchase.off")}
+                  50% {"OFF"}
                 </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.credits", {
-                  count: PLAN_PRODUCTS.PASS_7DAY.credits,
-                })}
+                {PLAN_PRODUCTS.PASS_7DAY.credits} + " Credits included"
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.unlimitedBenefit")}
+                {"All Templates & Unlimited Re-translation"}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.days7")}
+                {"7 Days Trial Access"}
               </li>
             </ul>
             <Button
@@ -457,11 +454,11 @@ export function SettingsPage({
             >
               {hasActivePass
                 ? passType === "PASS_7DAY"
-                  ? t("purchase.currentlyUsing")
-                  : t("purchase.notPossible")
+                  ? "Currently Using"
+                  : "Not Possible"
                 : userEmail === "test@applygogo.com"
-                ? t("purchase.buyTest")
-                : t("purchase.preparing")}
+                ? "Purchase Pass (Test)"
+                : "Preparing (Beta)"}
             </Button>
           </div>
 
@@ -471,9 +468,7 @@ export function SettingsPage({
               !hasActivePass ? "opacity-50" : ""
             }`}
           >
-            <h3 className="text-lg font-bold mb-2 mt-2">
-              {t("purchase.refill")}
-            </h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">{"Refill"}</h3>
             <div className="flex flex-col items-start mb-6">
               {/* Empty placeholder to match height of original price in other cards */}
               <span className="text-sm text-transparent min-h-[20px]">
@@ -488,17 +483,15 @@ export function SettingsPage({
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.credits", {
-                  count: PLAN_PRODUCTS.CREDIT_50.credits,
-                })}
+                {PLAN_PRODUCTS.CREDIT_50.credits} + " Credits included"
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {t("purchase.noLimit")}
+                {"No time limit"}
               </li>
               <li className="flex items-center gap-2 text-amber-600">
                 <Check className="size-4 text-amber-600 shrink-0" />
-                {t("purchase.requiresPass")}
+                {"Pass required"}
               </li>
             </ul>
             <Button
@@ -515,8 +508,8 @@ export function SettingsPage({
               isLoading={isUpgrading}
             >
               {userEmail === "test@applygogo.com"
-                ? t("purchase.buyTest")
-                : t("purchase.preparing")}
+                ? "Purchase Pass (Test)"
+                : "Preparing (Beta)"}
             </Button>
           </div>
         </div>
@@ -524,25 +517,25 @@ export function SettingsPage({
         {/* Beta Period Notice */}
         <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
           <p className="text-sm text-blue-900 dark:text-blue-100 text-center">
-            {t.rich("purchase.betaNotice", {
-              strong: (chunks) => <strong>{chunks}</strong>,
-            })}
+            🎉 During the <strong>BETA launch period</strong>, only the{" "}
+            <strong>3-day unlimited pass</strong> provided upon signup is
+            available. Full passes will be available after official launch!
           </p>
         </div>
 
         {/* Subtle Refund Policy Note for Free Users */}
         {!hasActivePass && (
           <p className="text-[11px] text-muted-foreground/60 text-center mt-4">
-            {t.rich("purchase.refundPolicyLink", {
-              a: (chunks) => (
-                <a
-                  href="/terms"
-                  className="underline hover:text-primary transition-colors"
-                >
-                  {chunks}
-                </a>
-              ),
-            })}
+            Check ApplyGogo's{" "}
+            <a
+              href="/terms"
+              className="underline hover:text-foreground transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Cancellation and Refund Policy
+            </a>{" "}
+            before purchasing.
           </p>
         )}
 
@@ -551,17 +544,31 @@ export function SettingsPage({
           <div className="bg-muted/30 border border-border rounded-lg p-6 mt-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold">{t("refund.title")}</h3>
+                <h3 className="text-sm font-semibold">
+                  {"Cancellation & Refund Policy"}
+                </h3>
                 <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• {t("refund.policy1")}</li>
-                  <li>• {t("refund.policy2")}</li>
-                  <li>• {t("refund.policy3")}</li>
+                  <li>
+                    •{" "}
+                    {
+                      "Full refund within 7 days of payment if service is not used"
+                    }
+                  </li>
+                  <li>
+                    •{" "}
+                    {
+                      "No refund if credits have been used or AI processing has started"
+                    }
+                  </li>
+                  <li>
+                    • {"This service does not operate a partial refund policy"}
+                  </li>
                 </ul>
                 <a
                   href="/terms"
                   className="text-xs text-primary underline-offset-4 hover:underline block pt-1"
                 >
-                  {t("refund.viewTerms")}
+                  {"View Full Terms"}
                 </a>
               </div>
             </div>
@@ -570,7 +577,7 @@ export function SettingsPage({
 
         {/* Payment History */}
         <div className="space-y-4">
-          <h3 className="font-semibold">{t("history.title")}</h3>
+          <h3 className="font-semibold">{"Payment History"}</h3>
           {paymentHistory.length > 0 ? (
             <div className="bg-card border border-border rounded-lg overflow-hidden">
               <div className="overflow-x-auto">
@@ -578,25 +585,25 @@ export function SettingsPage({
                   <thead className="bg-muted/50 border-b border-border">
                     <tr>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        {t("history.date")}
+                        {"Paid At"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        {t("history.orderId")}
+                        {"Order ID"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        {t("history.product")}
+                        {"Product"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        {t("history.method")}
+                        {"Method"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-right">
-                        {t("history.amount")}
+                        {"Amount"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-center">
-                        {t("history.status")}
+                        {"Status"}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-right">
-                        {t("history.manage")}
+                        {"Manage"}
                       </th>
                     </tr>
                   </thead>
@@ -608,7 +615,7 @@ export function SettingsPage({
                       >
                         <td className="py-3 px-4 whitespace-nowrap">
                           {new Date(item.paidAt).toLocaleDateString(
-                            locale === "ko" ? "ko-KR" : "en-US"
+                            false ? "ko-KR" : "en-US"
                           )}
                         </td>
                         <td className="py-3 px-4">
@@ -637,9 +644,9 @@ export function SettingsPage({
                             }
                           >
                             {item.status === "PAID"
-                              ? t("history.paid")
+                              ? "Paid"
                               : item.status === "REFUNDED"
-                              ? t("history.refunded")
+                              ? "Refunded"
                               : item.status}
                           </Badge>
                         </td>
@@ -664,7 +671,7 @@ export function SettingsPage({
                                   }}
                                   isLoading={isRefunding}
                                 >
-                                  {t("history.refund")}
+                                  {"Refund"}
                                 </Button>
                               )
                             );
@@ -680,7 +687,7 @@ export function SettingsPage({
             <div className="bg-card border border-border rounded-lg p-8 text-center">
               <CreditCard className="size-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
-                {t("history.empty")}
+                {"No payment history"}
               </p>
             </div>
           )}
@@ -690,7 +697,7 @@ export function SettingsPage({
       {/* --- Section 3: Danger Zone --- */}
       <section className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2 text-destructive">
-          {t("danger.title")}
+          {"Danger Zone"}
         </h2>
 
         <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-6">
@@ -700,10 +707,10 @@ export function SettingsPage({
             </div>
             <div className="flex-1">
               <h3 className="font-semibold mb-1 text-destructive">
-                {t("danger.deleteAccount")}
+                {"Delete Account"}
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                {t("danger.deleteDesc")}
+                {"Deleting your account will permanently remove all data"}
               </p>
 
               <Button
@@ -712,7 +719,7 @@ export function SettingsPage({
                 className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
               >
                 <Trash2 className="size-4" />
-                {t("danger.deleteAccount")}
+                {"Delete Account"}
               </Button>
             </div>
           </div>
@@ -723,21 +730,20 @@ export function SettingsPage({
       <AlertDialog open={isPassWarningOpen} onOpenChange={setIsPassWarningOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("danger.warning.title")}</AlertDialogTitle>
+            <AlertDialogTitle>{"Are you absolutely sure?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t.rich("danger.warning.desc", {
-                strong: (chunks) => <strong>{chunks}</strong>,
-                br: () => <br />,
-              })}
+              This action cannot be undone. This will{" "}
+              <strong>permanently delete your account</strong> and remove all
+              your data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("danger.warning.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={handlePassWarningConfirm}
             >
-              {t("danger.warning.confirm")}
+              {"Continue"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -748,31 +754,29 @@ export function SettingsPage({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-destructive">
-              {t("danger.confirm.title")}
+              {"Permanently delete account"}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <p>
-                {t.rich("danger.confirm.desc1", {
-                  strong: (chunks) => <strong>{chunks}</strong>,
-                })}
+                To confirm, please type <strong>DELETE</strong> below.
               </p>
               <ul className="list-disc list-inside text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                <li>{t("danger.confirm.data1")}</li>
-                <li>{t("danger.confirm.data2")}</li>
-                <li>{t("danger.confirm.data3")}</li>
+                <li>{"All your resumes will be deleted"}</li>
+                <li>{"Your subscription and credits will be forfeited"}</li>
+                <li>{"This action cannot be undone"}</li>
               </ul>
               <p className="font-medium text-destructive pt-2">
-                {t("danger.confirm.desc2")}
+                {"Please type DELETE to confirm"}
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("danger.confirm.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={confirmDeleteAccount}
             >
-              {t("danger.confirm.delete")}
+              {"Delete Account"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -785,18 +789,20 @@ export function SettingsPage({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("refundConfirm.title")}</AlertDialogTitle>
+            <AlertDialogTitle>{"Request Refund?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("refundConfirm.desc")}
+              {
+                "Refund will be processed according to our policy. This may take 3-5 business days."
+              }
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("refundConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={confirmRefund}
             >
-              {t("refundConfirm.confirm")}
+              {"Request Refund"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

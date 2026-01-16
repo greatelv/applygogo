@@ -29,20 +29,13 @@ export async function POST(
 
     const { id: resumeId } = await params;
 
-    // 1. Determine Region and Get DB Client
     const headersList = await headers();
     const region = (headersList.get("x-application-region") || "KR") as Region;
     const prisma = getPrismaClient(region);
 
-    // 2. Billing Check (Optional: You might want to charge for this)
-    // Assuming same cost as 'GENERATE' or 'TRANSLATE'
     const planStatus = await checkAndUpdatePlanStatus(session.user.id);
-    const cost = 1; // 1 Credit for narrative generation? Or calculate based on length?
-    // Let's assume 1 credit for now as it's a high-value feature.
-    // Or reuse calculateCost("TRANSLATE", ...) ?
-    // Let's hardcode 1 or use existing logic if compatible. "GENERATE" is extraction.
+    const cost = 1;
 
-    // Check credits
     const hasEnoughCredits = await checkCredits(session.user.id, cost);
     if (!hasEnoughCredits) {
       return NextResponse.json(
@@ -54,15 +47,16 @@ export async function POST(
         { status: 402 }
       );
     }
-    await deductCredits(session.user.id, cost, "국문 이력서 생성");
+    await deductCredits(session.user.id, cost, "국문 이력서 생성 (종합)");
 
-    // 3. Fetch Resume Data
+    // Fetch Resume Data with Skills
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId, userId: session.user.id },
       include: {
         work_experiences: {
-          orderBy: { start_date: "desc" }, // Usually stored as string YYYY-MM, works ok for sort if consistent
+          orderBy: { start_date: "desc" },
         },
+        skills: true, // Include skills
       },
     });
 
@@ -70,68 +64,52 @@ export async function POST(
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    // 4. Update Status
     await prisma.resume.update({
       where: { id: resumeId },
       data: { status: "PROCESSING" },
     });
 
-    const workExperiences = resume.work_experiences;
-    const narrativeResults = [];
+    // Prepare Data for Prompt
+    const experiences = resume.work_experiences.map((exp: any) => ({
+      company: exp.company_name_original,
+      role: exp.role_original,
+      period: `${exp.start_date} ~ ${exp.end_date || "Present"}`,
+      bullets: exp.bullets_original, // Assuming source extracted bullets
+    }));
+    const skills = resume.skills.map((s: any) => s.name);
 
-    // 5. Generate Narrative for each Work Experience
-    for (const exp of workExperiences) {
-      // Assuming 'bullets_original' holds the SOURCE text (even if English) as per schema convention
-      // If the user is global, they uploaded EN resume, extracted to 'bullets_original'.
-      // We should detect if it is proper to generate narrative.
+    console.log(
+      `[Narrative API] Generating structured essay for ${resumeId}...`
+    );
 
-      const sourceBullets = exp.bullets_original as string[]; // JSON array
+    // Call Gemini
+    const prompt = getNarrativeGenerationPrompt(experiences, skills);
+    const result = await generateContentWithRetry(narrativeModel, prompt);
 
-      if (!sourceBullets || sourceBullets.length === 0) continue;
+    // Parse Response
+    const jsonText = result.response
+      .text()
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-      console.log(`[Narrative API] Generating for exp ${exp.id}...`);
-
-      const prompt = getNarrativeGenerationPrompt(
-        sourceBullets,
-        exp.role_original
-      ); // Pass role as context
-
-      const result = await generateContentWithRetry(narrativeModel, prompt);
-
-      // Parse JSON output
-      const jsonText = result.response
-        .text()
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
-      let generatedNarrative: string[] = [];
-      try {
-        generatedNarrative = JSON.parse(jsonText);
-      } catch (e) {
-        console.error("Failed to parse narrative JSON", e);
-        // Fallback: split by newline if parse fails
-        generatedNarrative = jsonText
-          .split("\n")
-          .filter((line) => line.trim().length > 0);
-      }
-
-      narrativeResults.push({
-        id: exp.id,
-        role: exp.role_original,
-        company: exp.company_name_original,
-        narrative_ko: generatedNarrative,
-      });
+    let narrativeData;
+    try {
+      narrativeData = JSON.parse(jsonText);
+    } catch (e) {
+      console.error("Failed to parse narrative JSON", e);
+      // Fallback: dummy structure if parse fails, or throw
+      throw new Error("Failed to parse generated narrative content.");
     }
 
-    // 6. Save to convertedData
-    // We update the resume record.
+    // Save Result
     await prisma.resume.update({
       where: { id: resumeId },
       data: {
         status: "COMPLETED",
         convertedData: {
-          type: "narrative_ko", // Metadata tag
-          work_experiences: narrativeResults,
+          type: "narrative_ko_v2", // New version tag
+          content: narrativeData,
         },
         targetLang: "ko",
       },
@@ -140,24 +118,12 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: {
-        type: "narrative_ko",
-        work_experiences: narrativeResults,
+        type: "narrative_ko_v2",
+        content: narrativeData,
       },
     });
   } catch (error: any) {
     console.error("Narrative generation error:", error);
-
-    // Fail status update logic... needs prisma client
-    const headersList = await headers();
-    const region = (headersList.get("x-application-region") || "KR") as Region;
-    const prisma = getPrismaClient(region);
-    const { id: resumeId } = await params;
-
-    await prisma.resume.update({
-      where: { id: resumeId },
-      data: { status: "FAILED", failure_message: error.message },
-    });
-
     return NextResponse.json(
       { error: error.message || "Failed to generate narrative" },
       { status: 500 }

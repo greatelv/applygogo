@@ -111,7 +111,7 @@ export function ResumeTranslatePage({
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="secondary" className="gap-1">
             <Languages className="size-3" />
-            AI 번역 완료
+            AI 번역 Complete
           </Badge>
           <span className="text-sm text-muted-foreground">2 / 3 단계</span>
         </div>
@@ -242,7 +242,7 @@ export function ResumeTranslatePage({
           이전
         </Button>
         <Button onClick={() => onNext(translatedExperiences)} className="flex-1">
-          다음: 템플릿 선택
+          다음: Template Selection
           <ArrowRight className="size-4" />
         </Button>
       </div>

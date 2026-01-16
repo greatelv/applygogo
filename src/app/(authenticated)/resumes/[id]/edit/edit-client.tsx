@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { ResumeEditPage } from "@/app/components/resume-edit-page";
 import { useState, useEffect } from "react";
 import { useApp } from "@/app/context/app-context";
-import { useTranslations, useLocale } from "next-intl";
 
 interface EditClientProps {
   resumeId: string;
@@ -34,15 +33,12 @@ export function EditClient({
   sourceLang,
 }: EditClientProps) {
   const router = useRouter();
-  const t = useTranslations("Edit");
-  const locale = useLocale();
-
   const steps = [
-    { id: "upload", label: locale === "ko" ? "업로드" : "Upload" },
-    { id: "processing", label: locale === "ko" ? "AI 처리" : "AI Processing" },
-    { id: "edit", label: locale === "ko" ? "편집" : "Edit" },
-    { id: "preview", label: locale === "ko" ? "템플릿 선택" : "Preview" },
-    { id: "complete", label: locale === "ko" ? "완료" : "Complete" },
+    { id: "upload", label: "Upload" },
+    { id: "processing", label: "AI Processing" },
+    { id: "edit", label: "Edit" },
+    { id: "preview", label: "Preview" },
+    { id: "complete", label: "Complete" },
   ];
 
   const { setWorkflowState, quota, setQuota } = useApp();
@@ -136,11 +132,7 @@ export function EditClient({
       router.push(`/resumes/${resumeId}/templates`);
     } catch (error) {
       console.error(error);
-      alert(
-        locale === "ko"
-          ? "이력서 내용을 저장하는 중 오류가 발생했습니다."
-          : "An error occurred while saving your resume."
-      );
+      alert("An error occurred while saving your resume.");
     } finally {
       setIsSaving(false);
     }

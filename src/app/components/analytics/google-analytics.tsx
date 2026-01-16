@@ -5,7 +5,7 @@ import Script from "next/script";
 export function GoogleAnalytics() {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-  // GA ID가 설정되지 않았으면 아무것도 렌더링하지 않음
+  // GA ID가 Settings되지 않았으면 아무것도 렌더링하지 않음
   if (!measurementId) {
     return null;
   }

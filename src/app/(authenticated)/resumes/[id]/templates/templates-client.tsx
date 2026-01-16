@@ -8,11 +8,11 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
+  { id: "upload", label: "Upload" },
+  { id: "processing", label: "AI Processing" },
+  { id: "edit", label: "Edit" },
+  { id: "preview", label: "Select Template" },
+  { id: "complete", label: "Complete" },
 ];
 
 interface TemplatesClientProps {
@@ -87,7 +87,7 @@ export function TemplatesClient({
       console.error("Error saving template:", error);
       // Fallback navigation even on error? Or show alert?
       // router.push(`/resumes/${resumeId}`);
-      alert("템플릿 저장 중 오류가 발생했습니다.");
+      alert("An error occurred while saving the template.");
       setIsCompleting(false);
     }
   };

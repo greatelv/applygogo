@@ -37,14 +37,17 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             </div>
 
             <div className="text-[10px] text-muted-foreground/60 leading-normal text-center md:text-left">
-              <span>케익코퍼레이션</span>
+              <span>Cake Corporation</span>
               <span className="mx-1.5">|</span>
-              <span>CEO: 전태경</span>
+              <span>CEO: Taekyoung Jun</span>
               <span className="mx-1.5">|</span>
               <span>Business Number: 639-34-01724</span>
               <span className="mx-1.5 hidden sm:inline">|</span>
               <br className="sm:hidden" />
-              <span>Address: 서울시 성북구 동소문로 60 동방빌딩 4층</span>
+              <span>
+                Address: 4F, Dongbang Bldg, 60, Dongsomun-ro, Seongbuk-gu,
+                Seoul, Republic of Korea
+              </span>
               <span className="mx-1.5">|</span>
               <span>Email: patakeique@gmail.com</span>
             </div>
@@ -106,14 +109,15 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             {/* Business Info */}
             <div className="space-y-1 text-xs text-muted-foreground leading-relaxed">
               <p>
-                <span className="font-medium">케익코퍼레이션</span>
+                <span className="font-medium">Cake Corporation</span>
                 <span className="mx-2">|</span>
-                CEO: 전태경
+                CEO: Taekyoung Jun
                 <span className="mx-2">|</span>
                 Business Number: 639-34-01724
               </p>
               <p>
-                Address: 서울시 성북구 동소문로 60 동방빌딩 4층
+                Address: 4F, Dongbang Bldg, 60, Dongsomun-ro, Seongbuk-gu,
+                Seoul, Republic of Korea
                 <span className="mx-2">|</span>
                 Email: patakeique@gmail.com
               </p>

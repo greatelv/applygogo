@@ -28,7 +28,7 @@ export function LoginPage({
         <div className="text-center mb-12">
           <h1 className="text-4xl tracking-tight mb-3">지원고고</h1>
           <p className="text-muted-foreground text-sm">
-            한국어 이력서를 글로벌 스탠다드 영문 이력서로
+            한국어 Resume를 글로벌 스탠다드 영문 Resume로
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export function LoginPage({
             </a>
             과{" "}
             <a href="#" className="underline hover:text-foreground">
-              개인정보 처리방침
+              개인정보 Processing방침
             </a>
             에 동의하게 됩니다
           </p>

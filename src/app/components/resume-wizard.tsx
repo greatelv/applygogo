@@ -38,17 +38,17 @@ interface TranslatedExperience extends Experience {
 }
 
 export const createSteps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
+  { id: "upload", label: "Upload" },
+  { id: "processing", label: "AI Processing" },
+  { id: "edit", label: "Edit" },
+  { id: "preview", label: "Template Selection" },
+  { id: "complete", label: "Complete" },
 ];
 
 const editSteps = [
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
+  { id: "edit", label: "Edit" },
+  { id: "preview", label: "Template Selection" },
+  { id: "complete", label: "Complete" },
 ];
 
 interface ResumeWizardProps {
@@ -129,7 +129,7 @@ export function ResumeWizard({
       setAlertConfig({
         open: true,
         title: "오류 발생",
-        description: error.message || "업로드 중 오류가 발생했습니다.",
+        description: error.message || "Upload 중 오류가 발생했습니다.",
       });
     } finally {
       setIsUploading(false);
