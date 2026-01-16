@@ -2,16 +2,16 @@ export const PLAN_PRODUCTS = {
   PASS_7DAY: {
     id: "PASS_7DAY",
     name: "ApplyGogo 7-Day Pass",
-    price: 9.9,
-    originalPrice: 19.9, // Anchoring
+    price: 10,
+    originalPrice: 20, // Anchoring
     credits: 50,
     days: 7,
   },
   PASS_30DAY: {
     id: "PASS_30DAY",
     name: "ApplyGogo 30-Day Pass",
-    price: 12.9,
-    originalPrice: 29.9, // Anchoring
+    price: 13,
+    originalPrice: 30, // Anchoring
     credits: 300,
     days: 30,
   },
@@ -25,7 +25,7 @@ export const PLAN_PRODUCTS = {
   CREDIT_50: {
     id: "CREDIT_50",
     name: "50 Credits Top-up",
-    price: 3.9,
+    price: 4,
     credits: 50,
     days: 0,
   },

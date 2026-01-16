@@ -92,6 +92,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <script src="https://cdn.portone.io/v2/browser-sdk.js" />
         <GoogleAnalytics />
         <MicrosoftClarity />
         <NextTopLoader
