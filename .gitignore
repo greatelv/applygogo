@@ -77,6 +77,7 @@ typings/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.kr
 .env.global
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -131,3 +132,4 @@ dist-ssr
 /src/generated/prisma
 
 *.sql
+.vercel
