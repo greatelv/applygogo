@@ -726,7 +726,7 @@ export function ResumeEditPage({
           variant="outline"
           onClick={onBack}
           size="lg"
-          className="flex-1 h-12 sm:h-auto text-base"
+          className="flex-1 h-12 sm:h-11 text-base"
           disabled={isLoading}
         >
           {isEditingExisting ? "새로 만들기" : "이전"}
@@ -773,7 +773,7 @@ export function ResumeEditPage({
             });
           }}
           size="lg"
-          className="flex-1 h-12 sm:h-auto text-base"
+          className="flex-1 h-12 sm:h-11 text-base"
           isLoading={isLoading}
         >
           {isLoading ? (

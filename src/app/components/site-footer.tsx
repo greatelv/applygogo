@@ -7,7 +7,7 @@ interface SiteFooterProps {
 export function SiteFooter({ simple }: SiteFooterProps) {
   if (simple) {
     return (
-      <footer className="border-t border-border py-4 bg-muted/20">
+      <footer className="border-t border-border p-4 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-[11px] text-muted-foreground">

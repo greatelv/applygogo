@@ -495,7 +495,7 @@ export function ResumeDetailPage({
           )}
         </div>
       )}
-      <div className="bg-card border border-border rounded-lg overflow-hidden mb-6 lg:mb-0">
+      <div className="bg-card border border-border rounded-lg overflow-hidden mb-8">
         <div
           ref={previewContainerRef}
           className="bg-muted/30 p-0 sm:p-8 flex justify-center overflow-x-auto min-h-[400px]"
