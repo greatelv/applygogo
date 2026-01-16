@@ -24,7 +24,9 @@ export const DraggableEducationItem = ({
   onTranslate,
   onRemove,
   onChange,
-}: DraggableEducationItemProps) => {
+  leftLabel,
+  rightLabel,
+}: DraggableEducationItemProps & { leftLabel: string; rightLabel: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.EDUCATION,
@@ -96,12 +98,12 @@ export const DraggableEducationItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                한글 (원본)
+                {leftLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                English (번역)
+                {rightLabel}
               </p>
             </div>
           </div>
@@ -119,7 +121,7 @@ export const DraggableEducationItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="ml-2 hidden lg:inline text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating ? "Processing..." : "Sync & Retranslate"}
               </span>
             </Button>
             <button
@@ -127,7 +129,7 @@ export const DraggableEducationItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">Delete</span>
             </button>
           </div>
         </div>
@@ -137,7 +139,7 @@ export const DraggableEducationItem = ({
             {/* Korean Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {leftLabel}
               </p>
               <div
                 contentEditable
@@ -221,7 +223,7 @@ export const DraggableEducationItem = ({
             {/* English Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {rightLabel}
               </p>
               <div
                 contentEditable
@@ -229,14 +231,14 @@ export const DraggableEducationItem = ({
                 onBlur={(e) =>
                   onChange(
                     edu.id,
-                    "school_name_en",
+                    "school_name_translated",
                     e.currentTarget.textContent || ""
                   )
                 }
                 data-placeholder="School Name (EN)"
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {edu.school_name_en || edu.school_name}
+                {edu.school_name_translated || edu.school_name}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div
@@ -245,14 +247,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "major_en",
+                      "major_translated",
                       e.currentTarget.textContent || ""
                     )
                   }
                   data-placeholder="Major (EN)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.major_en || edu.major}
+                  {edu.major_translated || edu.major}
                 </div>
                 <span className="text-muted-foreground select-none">•</span>
                 <div
@@ -261,14 +263,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "degree_en",
+                      "degree_translated",
                       e.currentTarget.textContent || ""
                     )
                   }
                   data-placeholder="Degree (EN)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.degree_en || edu.degree}
+                  {edu.degree_translated || edu.degree}
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">

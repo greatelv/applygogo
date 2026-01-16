@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
 import LanguageSwitcher from "./language-switcher";
+import { Logo } from "./logo";
 
 interface HeaderProps {
   plan: string;
@@ -99,21 +100,7 @@ export function Header({
 
           {/* Desktop Logo Area + Toggle */}
           <div className="hidden lg:flex items-center justify-between pl-6 h-full w-60 border-r border-border/40 shrink-0">
-            <Link
-              href="/resumes"
-              className="flex items-center hover:opacity-80 transition-opacity"
-            >
-              <img
-                src="/logo-for-light.svg"
-                alt="지원고고"
-                className="h-6 w-auto dark:hidden"
-              />
-              <img
-                src="/logo-for-dark.svg"
-                alt="지원고고"
-                className="h-6 w-auto hidden dark:block"
-              />
-            </Link>
+            <Logo href="/resumes" />
 
             {onToggleSidebar && (
               <button
@@ -127,21 +114,7 @@ export function Header({
           </div>
 
           {/* Mobile Logo Only */}
-          <Link
-            href="/resumes"
-            className="lg:hidden flex items-center mr-4 hover:opacity-80 transition-opacity"
-          >
-            <img
-              src="/logo-for-light.svg"
-              alt="지원고고"
-              className="h-6 w-auto dark:hidden"
-            />
-            <img
-              src="/logo-for-dark.svg"
-              alt="지원고고"
-              className="h-6 w-auto hidden dark:block"
-            />
-          </Link>
+          <Logo href="/resumes" className="lg:hidden mr-4" />
 
           {/* Workflow Stepper - starts after logo container */}
           {workflowSteps && currentStep && (

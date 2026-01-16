@@ -4,7 +4,11 @@ interface SiteFooterProps {
   simple?: boolean;
 }
 
+import { useTranslations } from "next-intl";
+
 export function SiteFooter({ simple }: SiteFooterProps) {
+  const t = useTranslations("Footer");
+
   if (simple) {
     return (
       <footer className="border-t border-border p-4 bg-muted/20">
@@ -16,41 +20,43 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                   href="/terms"
                   className="hover:text-foreground transition-colors"
                 >
-                  이용약관
+                  {t("terms")}
                 </Link>
                 <Link
                   href="/privacy"
                   className="font-bold hover:text-foreground transition-colors"
                 >
-                  개인정보처리방침
+                  {t("privacy")}
                 </Link>
                 <a
                   href="mailto:patakeique@gmail.com"
                   className="hover:text-foreground transition-colors"
                 >
-                  고객문의
+                  {t("contact")}
                 </a>
               </div>
               <div className="hidden md:block text-[10px] text-muted-foreground/60">
-                © 2026 지원고고 (K-Corporation). All rights reserved.
+                © 2026 ApplyGogo (K-Corporation). All rights reserved.
               </div>
             </div>
 
             <div className="text-[10px] text-muted-foreground/60 leading-normal text-center md:text-left">
               <span>케익코퍼레이션</span>
               <span className="mx-1.5">|</span>
-              <span>대표자: 전태경</span>
+              <span>{t("ceo")}: 전태경</span>
               <span className="mx-1.5">|</span>
-              <span>사업자등록번호: 639-34-01724</span>
+              <span>{t("businessNumber")}: 639-34-01724</span>
               <span className="mx-1.5 hidden sm:inline">|</span>
               <br className="sm:hidden" />
-              <span>주소: 서울시 성북구 동소문로 60 동방빌딩 4층</span>
+              <span>
+                {t("address")}: 서울시 성북구 동소문로 60 동방빌딩 4층
+              </span>
               <span className="mx-1.5">|</span>
-              <span>이메일: patakeique@gmail.com</span>
+              <span>{t("email")}: patakeique@gmail.com</span>
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
-              © 2026 지원고고 (K-Corporation). All rights reserved.
+              © 2026 ApplyGogo (K-Corporation). All rights reserved.
             </div>
           </div>
         </div>
@@ -69,37 +75,37 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 href="/terms"
                 className="hover:text-foreground transition-colors"
               >
-                이용약관
+                {t("terms")}
               </Link>
               <Link
                 href="/privacy"
                 className="font-bold hover:text-foreground transition-colors"
               >
-                개인정보처리방침
+                {t("privacy")}
               </Link>
               <a
                 href="mailto:patakeique@gmail.com"
                 className="hover:text-foreground transition-colors"
               >
-                고객문의
+                {t("contact")}
               </a>
               <Link
                 href="/company"
                 className="hover:text-foreground transition-colors"
               >
-                회사 소개
+                {t("company")}
               </Link>
               <Link
                 href="/introduction"
                 className="hover:text-foreground transition-colors"
               >
-                서비스 소개
+                {t("serviceIntro")}
               </Link>
               <Link
                 href="/blog"
                 className="hover:text-foreground transition-colors"
               >
-                블로그
+                {t("blog")}
               </Link>
             </div>
 
@@ -108,21 +114,21 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               <p>
                 <span className="font-medium">케익코퍼레이션</span>
                 <span className="mx-2">|</span>
-                대표자: 전태경
+                {t("ceo")}: 전태경
                 <span className="mx-2">|</span>
-                사업자등록번호: 639-34-01724
+                {t("businessNumber")}: 639-34-01724
               </p>
               <p>
-                주소: 서울시 성북구 동소문로 60 동방빌딩 4층
+                {t("address")}: 서울시 성북구 동소문로 60 동방빌딩 4층
                 <span className="mx-2">|</span>
-                이메일: patakeique@gmail.com
+                {t("email")}: patakeique@gmail.com
               </p>
             </div>
           </div>
 
           {/* Copyright */}
           <div className="text-xs text-muted-foreground">
-            © 2026 지원고고 (K-Corporation). All rights reserved.
+            © 2026 ApplyGogo (K-Corporation). All rights reserved.
           </div>
         </div>
       </div>

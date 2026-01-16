@@ -24,8 +24,14 @@ export const DraggableAdditionalItem = ({
   onRetranslate,
   onRemove,
   onChange,
-}: DraggableAdditionalItemProps) => {
+  leftLabel,
+  rightLabel,
+}: DraggableAdditionalItemProps & {
+  leftLabel: string;
+  rightLabel: string;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
+  // ... rest of component logic ...
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.ADDITIONAL_ITEM,
     collect(monitor) {
@@ -96,12 +102,12 @@ export const DraggableAdditionalItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                한글 (원본)
+                {leftLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                English (번역)
+                {rightLabel}
               </p>
             </div>
           </div>
@@ -119,7 +125,7 @@ export const DraggableAdditionalItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating ? "Processing..." : "Sync & Retranslate"}
               </span>
             </Button>
             <button
@@ -127,7 +133,7 @@ export const DraggableAdditionalItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">Delete</span>
             </button>
           </div>
         </div>
@@ -136,7 +142,7 @@ export const DraggableAdditionalItem = ({
             {/* Left: Original (KR) */}
             <div className="space-y-4">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {leftLabel}
               </p>
               <div
                 contentEditable
@@ -144,14 +150,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_kr",
+                    "name_original",
                     e.currentTarget.textContent || ""
                   )
                 }
                 data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_kr}
+                {item.name_original}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -161,14 +167,14 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_kr",
+                        "description_original",
                         e.currentTarget.textContent || ""
                       )
                     }
                     data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_kr}
+                    {item.description_original}
                   </div>
                 </div>
                 <div className="col-span-1">
@@ -194,7 +200,7 @@ export const DraggableAdditionalItem = ({
             {/* Right: Translated (EN) */}
             <div className="space-y-4">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {rightLabel}
               </p>
               <div
                 contentEditable
@@ -202,14 +208,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_en",
+                    "name_translated",
                     e.currentTarget.textContent || ""
                   )
                 }
                 data-placeholder="Item Name (EN)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_en}
+                {item.name_translated}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -219,14 +225,14 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_en",
+                        "description_translated",
                         e.currentTarget.textContent || ""
                       )
                     }
                     data-placeholder="Description/Issuer/Level (EN)"
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_en}
+                    {item.description_translated}
                   </div>
                 </div>
                 <div className="col-span-1">

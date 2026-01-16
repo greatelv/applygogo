@@ -32,8 +32,10 @@ export async function POST(
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
+    const sourceLang = resume.sourceLang || "ko";
+
     // 2. Get extracted data from request body
-    const { extractedData } = await request.json();
+    const { extractedData, saveToDb = false } = await request.json();
 
     if (!extractedData) {
       return NextResponse.json(
@@ -64,7 +66,7 @@ export async function POST(
       extractedData.work_experiences.length > 0
     ) {
       console.log(
-        "[Refine API] Starting refinement (Korean-based selection)..."
+        `[Refine API] Starting refinement (${sourceLang}-based selection)...`
       );
 
       const refinementPrompt = getRefinementPrompt(extractedData);
@@ -78,7 +80,7 @@ export async function POST(
 
       const totalBullets =
         refinedData.work_experiences?.reduce(
-          (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
+          (sum: number, exp: any) => sum + (exp.bullets_original?.length || 0),
           0
         ) || 0;
 
@@ -87,6 +89,55 @@ export async function POST(
           refinedData.work_experiences?.length || 0
         } companies, ${totalBullets} bullets selected.`
       );
+
+      // 4. Save to DB if requested (Global Expansion Track B)
+      if (saveToDb) {
+        console.log("[Refine API] Saving refined data to DB...");
+
+        await prisma.$transaction(async (tx) => {
+          // Delete existing experiences
+          await tx.workExperience.deleteMany({
+            where: { resumeId },
+          });
+
+          // Create new ones
+          if (refinedData.work_experiences?.length > 0) {
+            await tx.workExperience.createMany({
+              data: refinedData.work_experiences.map(
+                (exp: any, index: number) => ({
+                  resumeId: resumeId,
+                  company_name_original:
+                    exp.company_name_original || "회사명 없음",
+                  company_name_translated:
+                    exp.company_name_translated ||
+                    exp.company_name_original ||
+                    "Unknown Company",
+                  role_original: exp.role_original || "-",
+                  role_translated:
+                    exp.role_translated || exp.role_original || "-",
+                  start_date: exp.start_date || "",
+                  end_date: exp.end_date || "",
+                  bullets_original: exp.bullets_original || [],
+                  bullets_translated:
+                    exp.bullets_translated || exp.bullets_original || [],
+                  order: index,
+                })
+              ),
+            });
+          }
+
+          // Update status
+          await tx.resume.update({
+            where: { id: resumeId },
+            data: {
+              status: "COMPLETED",
+              current_step: "EDIT",
+            },
+          });
+        });
+
+        console.log("[Refine API] DB update complete.");
+      }
     } else {
       console.log("[Refine API] Skipped (no work experiences to refine)");
     }

@@ -23,19 +23,19 @@ interface Experience {
   position: string;
   period: string;
   bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  companyTranslated: string;
+  positionTranslated: string;
+  bulletsTranslated: string[];
 }
 
 interface Education {
   id: string;
   school_name: string;
-  school_name_en?: string;
+  school_name_translated?: string;
   major: string;
-  major_en?: string;
+  major_translated?: string;
   degree: string;
-  degree_en?: string;
+  degree_translated?: string;
   start_date: string;
   end_date: string;
 }
@@ -46,30 +46,9 @@ interface Skill {
   level?: string | null;
 }
 
-interface Certification {
-  id: string;
-  name: string;
-  issuer?: string;
-  date?: string;
-}
-
-interface Award {
-  id: string;
-  name: string;
-  issuer?: string;
-  date?: string;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  level?: string;
-  score?: string;
-}
-
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_original?: string;
+  name_translated?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
@@ -96,6 +75,7 @@ export function ModernTemplate({
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  // @ts-ignore
   const others = additionalItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
@@ -104,7 +84,9 @@ export function ModernTemplate({
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-gray-900">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_translated ||
+            personalInfo?.name_original ||
+            "이름 없음"}
         </h1>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
           {personalInfo?.email && <span>{personalInfo.email}</span>}
@@ -162,9 +144,11 @@ export function ModernTemplate({
               <div key={exp.id}>
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
+                    <h3 className="font-bold text-gray-900">
+                      {exp.companyTranslated}
+                    </h3>
                     <p className="text-sm text-blue-600 font-medium">
-                      {exp.positionEn}
+                      {exp.positionTranslated}
                     </p>
                   </div>
                   <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
@@ -173,7 +157,7 @@ export function ModernTemplate({
                   </span>
                 </div>
                 <ul className="space-y-1.5 ml-4">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bulletsTranslated.map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-700 flex gap-2"
@@ -221,18 +205,21 @@ export function ModernTemplate({
               <div key={edu.id} className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_translated || edu.school_name}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
+                  {((edu.school_name_translated &&
+                    edu.school_name_translated !== "-") ||
+                    (edu.school_name && edu.school_name !== "-") ||
+                    (edu.major_translated && edu.major_translated !== "-") ||
+                    (edu.major && edu.major !== "-") ||
+                    (edu.degree_translated && edu.degree_translated !== "-") ||
+                    (edu.degree && edu.degree !== "-")) && (
                     <p className="text-sm text-gray-600">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
+                      {edu.degree_translated || edu.degree}
+                      {(edu.degree_translated || edu.degree) &&
+                        (edu.major_translated || edu.major) &&
                         ", "}
-                      {edu.major_en || edu.major}
+                      {edu.major_translated || edu.major}
                     </p>
                   )}
                 </div>
@@ -263,9 +250,12 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {certifications.map((cert) => (
                     <li key={cert.id}>
-                      {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
+                      {cert.name_translated || cert.name_original}{" "}
+                      {cert.description_translated || cert.description_original
+                        ? `| ${
+                            cert.description_translated ||
+                            cert.description_original
+                          }`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </li>
@@ -279,9 +269,13 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {awards.map((award) => (
                     <li key={award.id}>
-                      {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
+                      {award.name_translated || award.name_original}{" "}
+                      {award.description_translated ||
+                      award.description_original
+                        ? `| ${
+                            award.description_translated ||
+                            award.description_original
+                          }`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </li>
@@ -301,11 +295,15 @@ export function ModernTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1">
-                        {lang.name_en || lang.name}
+                        {lang.name_translated || lang.name_original}
                       </span>
-                      {(lang.description_en || lang.description) && (
+                      {(lang.description_translated ||
+                        lang.description_original) && (
                         <span className="text-gray-500">
-                          ({lang.description_en || lang.description})
+                          (
+                          {lang.description_translated ||
+                            lang.description_original}
+                          )
                         </span>
                       )}
                     </span>

@@ -29,16 +29,16 @@ model Account {
 model Education {
   id             String  @id @default(cuid())
   resumeId       String  @map("resume_id")
-  school_name    String
-  major          String
-  degree         String
-  start_date     String
-  end_date       String
-  order          Int     @default(0)
-  degree_en      String?
-  major_en       String?
-  school_name_en String?
-  resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  school_name_original    String   @map("school_name_original")
+  major_original          String   @map("major_original")
+  degree_original         String   @map("degree_original")
+  start_date              String
+  end_date                String
+  order                   Int     @default(0)
+  degree_translated       String?  @map("degree_translated")
+  major_translated        String?  @map("major_translated")
+  school_name_translated  String?  @map("school_name_translated")
+  resume                  Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("educations")
 }
@@ -66,11 +66,11 @@ model Resume {
   sourceLang        String   @default("ko") @map("source_lang") // "ko" | "en"
   targetLang        String   @default("en") @map("target_lang") // "en" | "ko"
 
-  name_en           String?
-  name_kr           String             @default("")
+  name_translated   String?  @map("name_translated")
+  name_original     String   @default("") @map("name_original")
   phone             String?
-  summary           String?            @default("")
-  summary_kr        String?            @default("")
+  summary_translated String?  @default("") @map("summary_translated")
+  summary_original  String?  @default("") @map("summary_original")
   additionalItems   AdditionalItem[]
   educations        Education[]
   user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -174,14 +174,14 @@ model VerificationToken {
 model WorkExperience {
   id              String  @id @default(cuid())
   resumeId        String  @map("resume_id")
-  company_name_kr String
-  company_name_en String?
-  role_kr         String
-  role_en         String?
-  start_date      String
-  end_date        String
-  bullets_kr      Json
-  bullets_en      Json?
+  company_name_original   String   @map("company_name_original")
+  company_name_translated String?  @map("company_name_translated")
+  role_original           String   @map("role_original")
+  role_translated         String?  @map("role_translated")
+  start_date              String
+  end_date                String
+  bullets_original        Json     @map("bullets_original")
+  bullets_translated      Json?    @map("bullets_translated")
   order           Int     @default(0)
   resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -192,10 +192,10 @@ model AdditionalItem {
   id             String   @id @default(cuid())
   resumeId      String   @map("resume_id")
   type           ItemType @default(OTHER)
-  name_kr        String
-  name_en        String?
-  description_kr String?  @default("")
-  description_en String?  @default("")
+  name_original        String   @map("name_original")
+  name_translated      String?  @map("name_translated")
+  description_original String?  @default("") @map("description_original")
+  description_translated String?  @default("") @map("description_translated")
   date           String?
   order          Int      @default(0)
   resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)

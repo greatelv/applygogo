@@ -11,7 +11,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { texts, type = "bullets", resumeId } = await req.json();
+    const {
+      texts,
+      type = "bullets",
+      resumeId,
+      targetLang = "en",
+    } = await req.json();
 
     if (!texts || !Array.isArray(texts) || texts.length === 0) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
@@ -27,7 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const prompt = getTranslationPrompt(texts, type);
+    const prompt = getTranslationPrompt(texts, type, targetLang);
 
     const result = await generateContentWithRetry(translationModel, prompt);
     const responseText = result.response.text();

@@ -81,17 +81,20 @@ export async function POST(
 
     // 5. Generate Narrative for each Work Experience
     for (const exp of workExperiences) {
-      // Assuming 'bullets_kr' holds the SOURCE text (even if English) as per schema convention
-      // If the user is global, they uploaded EN resume, extracted to 'bullets_kr'.
+      // Assuming 'bullets_original' holds the SOURCE text (even if English) as per schema convention
+      // If the user is global, they uploaded EN resume, extracted to 'bullets_original'.
       // We should detect if it is proper to generate narrative.
 
-      const sourceBullets = exp.bullets_kr as string[]; // JSON array
+      const sourceBullets = exp.bullets_original as string[]; // JSON array
 
       if (!sourceBullets || sourceBullets.length === 0) continue;
 
       console.log(`[Narrative API] Generating for exp ${exp.id}...`);
 
-      const prompt = getNarrativeGenerationPrompt(sourceBullets, exp.role_kr); // Pass role as context
+      const prompt = getNarrativeGenerationPrompt(
+        sourceBullets,
+        exp.role_original
+      ); // Pass role as context
 
       const result = await generateContentWithRetry(narrativeModel, prompt);
 
@@ -114,8 +117,8 @@ export async function POST(
 
       narrativeResults.push({
         id: exp.id,
-        role: exp.role_kr,
-        company: exp.company_name_kr,
+        role: exp.role_original,
+        company: exp.company_name_original,
         narrative_ko: generatedNarrative,
       });
     }

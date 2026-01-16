@@ -62,6 +62,7 @@ interface ResumeEditPageProps {
   onBack: () => void;
   onRetranslate?: () => void;
   onDeductCredit?: (amount: number) => void;
+  sourceLang?: string;
 }
 
 import { DraggableAdditionalItem } from "./resume-edit/draggable-additional-item";
@@ -69,6 +70,8 @@ import { DraggableEducationItem } from "./resume-edit/draggable-education-item";
 import { DraggableExperienceItem } from "./resume-edit/draggable-experience-item";
 
 import { useResumeEditor } from "./resume-edit/use-resume-editor";
+
+import { useTranslations, useLocale } from "next-intl";
 
 export function ResumeEditPage({
   resumeId,
@@ -85,7 +88,11 @@ export function ResumeEditPage({
   onBack,
   onRetranslate,
   onDeductCredit,
+  sourceLang = "ko",
 }: ResumeEditPageProps) {
+  const t = useTranslations("Edit");
+  const locale = useLocale();
+
   const {
     // States
     personalInfo,
@@ -134,15 +141,22 @@ export function ResumeEditPage({
     initialAdditionalItems,
     resumeId,
     onDeductCredit,
+    targetLang: sourceLang === "en" ? "ko" : "en",
   });
+
+  const isEnSource = sourceLang === "en";
+  const leftLabel = isEnSource
+    ? `${t("english")} (${t("original")})`
+    : `${t("korean")} (${t("original")})`;
+  const rightLabel = isEnSource
+    ? `${t("korean")} (${t("translated")})`
+    : `${t("english")} (${t("translated")})`;
 
   return (
     <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">편집</h1>
-        <p className="text-sm text-muted-foreground">
-          AI가 분석한 내용을 검토하고 수정하세요.
-        </p>
+        <h1 className="text-2xl mb-2">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg p-4 mb-8 flex items-start gap-3">
@@ -151,12 +165,10 @@ export function ResumeEditPage({
         </div>
         <div>
           <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
-            내용을 클릭하여 직접 수정할 수 있습니다
+            {t("tip.title")}
           </h3>
           <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
-            한글 내용을 수정하고 <strong>[동기화 후 재번역]</strong> 버튼을
-            누르면 AI가 변경된 내용에 맞춰 다시 번역해줍니다. 불필요한 항목은
-            휴지통 아이콘을 눌러 삭제하세요.
+            {t("tip.description")}
           </p>
         </div>
       </div>
@@ -164,22 +176,22 @@ export function ResumeEditPage({
       <div className="space-y-8">
         {/* Personal Info */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">기본 정보</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("personal.title")}</h2>
           <p className="text-sm text-muted-foreground">
-            이름, 연락처, 프로페셔널 요약 등 필수 인적 사항을 관리합니다.
+            {t("personal.description")}
           </p>
         </div>
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
             <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
-                <p className="text-xs text-muted-foreground font-semibold mb-1">
-                  한글 (원본)
-                </p>
+                <h3 className="font-semibold text-lg border-b border-border/50 pb-2 mb-4">
+                  {t("personal.professionalSummary")}
+                </h3>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
-                  English (번역)
+                  {rightLabel}
                 </p>
               </div>
             </div>
@@ -189,15 +201,17 @@ export function ResumeEditPage({
                 size="sm"
                 onClick={handleTranslatePersonalInfo}
                 disabled={isTranslating.personal}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground h-8 px-2"
               >
                 {isTranslating.personal ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
                   <RefreshCw className="size-4" />
                 )}
-                <span className="hidden lg:inline ml-2">
-                  {isTranslating.personal ? "처리 중..." : "동기화 후 재번역"}
+                <span className="hidden lg:inline ml-2 text-xs">
+                  {isTranslating.personal
+                    ? t("processing")
+                    : t("sync_retranslate")}
                 </span>
               </Button>
             </div>
@@ -207,31 +221,33 @@ export function ResumeEditPage({
               {/* Korean Info */}
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                  한글 (원본)
+                  {leftLabel}
                 </p>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                    이름
+                    {t("personal.name")}
                   </label>
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_kr",
+                        "name_original",
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="이름 (한국어)"
+                    data-placeholder={
+                      isEnSource ? t("personal.nameEn") : t("personal.nameKo")
+                    }
                     className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.name_kr}
+                    {personalInfo.name_original}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      이메일
+                      {t("personal.email")}
                     </label>
                     <div
                       contentEditable
@@ -249,7 +265,7 @@ export function ResumeEditPage({
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      전화번호
+                      {t("personal.phone")}
                     </label>
                     <div
                       contentEditable
@@ -260,7 +276,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      data-placeholder="전화번호"
+                      data-placeholder={t("personal.phonePlaceholder")}
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.phone}
@@ -271,7 +287,7 @@ export function ResumeEditPage({
                 {/* Links KR (Original rendering style but shared logic) */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
-                    링크
+                    {t("personal.links")}
                   </label>
                   <div className="space-y-2">
                     {personalInfo.links.map((link, index) => (
@@ -291,7 +307,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="링크 라벨"
+                            data-placeholder={t("personal.linkLabel")}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
@@ -307,7 +323,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="링크 URL"
+                            data-placeholder={t("personal.linkUrl")}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
@@ -333,30 +349,32 @@ export function ResumeEditPage({
               {/* English Info */}
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                  English (번역)
+                  {rightLabel}
                 </p>
                 {/* Name EN */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                    Name
+                    {t("personal.name")}
                   </label>
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_en",
+                        "name_translated",
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="Name (English)"
+                    data-placeholder={
+                      isEnSource ? t("personal.nameKo") : t("personal.nameEn")
+                    }
                     className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.name
                         ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
                         : ""
                     }`}
                   >
-                    {personalInfo.name_en}
+                    {personalInfo.name_translated}
                   </div>
                 </div>
 
@@ -364,7 +382,7 @@ export function ResumeEditPage({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      Email
+                      {t("personal.email")}
                     </label>
                     <div
                       contentEditable
@@ -375,7 +393,7 @@ export function ResumeEditPage({
                           e.currentTarget.textContent || ""
                         )
                       }
-                      data-placeholder="이메일 주소"
+                      data-placeholder={t("personal.emailPlaceholder")}
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {personalInfo.email}
@@ -383,7 +401,7 @@ export function ResumeEditPage({
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
-                      Phone
+                      {t("personal.phone")}
                     </label>
                     <div
                       contentEditable
@@ -404,7 +422,7 @@ export function ResumeEditPage({
                 {/* Shared Links (EN Side) */}
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-2 block uppercase">
-                    Links
+                    {t("personal.links")}
                   </label>
                   <div className="space-y-2">
                     {personalInfo.links.map((link, index) => (
@@ -428,7 +446,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="Link Label"
+                            data-placeholder={t("personal.linkLabel")}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.label}
@@ -444,7 +462,7 @@ export function ResumeEditPage({
                               };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="Link URL"
+                            data-placeholder={t("personal.linkUrl")}
                             className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                           >
                             {link.url}
@@ -481,42 +499,42 @@ export function ResumeEditPage({
                 }}
                 className="w-full"
               >
-                <Plus className="size-4 mr-2" /> 링크 추가 (Add Link)
+                <Plus className="size-4 mr-2" /> {t("personal.addLink")}
               </Button>
             </div>
 
             {/* Summary Section */}
             <div className="mt-8 border-t border-border pt-6">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                Professional Summary
+                {t("personal.professionalSummary")}
               </h4>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Korean Summary */}
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    한글 (원본)
+                    {leftLabel}
                   </p>
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "summary_kr",
+                        "summary_original",
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="Professional Summary (Korean) - 전문적인 요약을 입력하세요."
+                    data-placeholder={t("personal.summaryPlaceholder")}
                     className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.summary_kr}
+                    {personalInfo.summary_original}
                   </div>
                 </div>
 
                 {/* English Summary */}
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    English (번역)
+                    {rightLabel}
                   </p>
                   <div
                     contentEditable
@@ -527,7 +545,7 @@ export function ResumeEditPage({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="Professional Summary (English) - Write a professional summary."
+                    data-placeholder={t("personal.summaryPlaceholder")}
                     className={`w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                       highlightedPersonal.summary
                         ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
@@ -544,9 +562,11 @@ export function ResumeEditPage({
         {/* Experiences */}
         <div className="mb-6 flex items-end justify-between">
           <div>
-            <h2 className="text-xl font-semibold mb-1">경력</h2>
+            <h2 className="text-xl font-semibold mb-1">
+              {t("experience.title")}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              주요 경력사항과 업무 성과를 최신순으로 작성해주세요.
+              {t("experience.description")}
             </p>
           </div>
           <Button
@@ -555,7 +575,7 @@ export function ResumeEditPage({
             className="h-9 px-4 shadow-sm text-sm font-semibold"
           >
             <Plus className="size-4 mr-1.5" />
-            항목 추가
+            {t("add_item")}
           </Button>
         </div>
         <DndProvider backend={HTML5Backend}>
@@ -573,6 +593,8 @@ export function ResumeEditPage({
               onAddBullet={handleAddBullet}
               onRemoveBullet={handleRemoveBullet}
               highlightedBullets={highlightedBullets[exp.id]}
+              leftLabel={leftLabel}
+              rightLabel={rightLabel}
             />
           ))}
 
@@ -580,9 +602,11 @@ export function ResumeEditPage({
           <div className="mt-12">
             <div className="mb-6 flex items-end justify-between">
               <div>
-                <h2 className="text-xl font-semibold mb-1">학력사항</h2>
+                <h2 className="text-xl font-semibold mb-1">
+                  {t("education.title")}
+                </h2>
                 <p className="text-sm text-muted-foreground">
-                  최종 학력부터 학위 및 전공 정보를 입력해주세요.
+                  {t("education.description")}
                 </p>
               </div>
               <Button
@@ -591,18 +615,20 @@ export function ResumeEditPage({
                 className="h-9 px-4 shadow-sm text-sm font-semibold"
               >
                 <Plus className="size-4 mr-1.5" />
-                항목 추가
+                {t("add_item")}
               </Button>
             </div>
             <div className="space-y-6">
               {educations.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   <p className="text-sm text-muted-foreground">
-                    위의{" "}
-                    <span className="font-medium text-foreground">
-                      + 항목 추가
-                    </span>{" "}
-                    버튼을 눌러 학력을 추가해주세요.
+                    {t.rich("education.empty", {
+                      button: (chunks) => (
+                        <span className="font-medium text-foreground">
+                          + {t("add_item")}
+                        </span>
+                      ),
+                    })}
                   </p>
                 </div>
               )}
@@ -616,6 +642,8 @@ export function ResumeEditPage({
                   onTranslate={handleTranslateEducation}
                   onRemove={handleRemoveEducation}
                   onChange={handleEducationChange}
+                  leftLabel={leftLabel}
+                  rightLabel={rightLabel}
                 />
               ))}
             </div>
@@ -623,15 +651,17 @@ export function ResumeEditPage({
 
           {/* Skills */}
           <div className="mt-12">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">기술 스택</h2>
-              <p className="text-sm text-muted-foreground">
-                보유한 핵심 기술 및 도구들을 태그로 관리해보세요.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <div className="flex flex-wrap gap-2">
+            <h2 className="text-xl font-semibold mb-1">{t("skills.title")}</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              {t("skills.description")}
+            </p>
+            <div className="bg-card border border-border rounded-lg p-6">
+              <div className="flex flex-wrap gap-2 mb-6 min-h-[40px]">
+                {skills.length === 0 && (
+                  <p className="text-sm text-muted-foreground italic">
+                    {t("skills.empty")}
+                  </p>
+                )}
                 {skills.map((skill) => (
                   <Badge
                     key={skill.id}
@@ -650,7 +680,7 @@ export function ResumeEditPage({
 
                 <div className="flex gap-2 max-w-xs relative top-0.5">
                   <Input
-                    placeholder="새 기술 스택"
+                    placeholder={t("skills.placeholder")}
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyDown={(e) => {
@@ -678,29 +708,44 @@ export function ResumeEditPage({
           <div className="mt-12">
             <div className="mb-6 flex items-end justify-between">
               <div>
-                <h2 className="text-xl font-semibold mb-1">추가 정보</h2>
+                <h2 className="text-xl font-semibold mb-1">
+                  {t("additional.title")}
+                </h2>
                 <p className="text-sm text-muted-foreground">
-                  자격증, 수상경력, 언어, 활동, 기타 정보를 추가할 수 있습니다.
+                  {t("additional.description")}
                 </p>
               </div>
-              <Button
-                size="sm"
-                onClick={() => handleAddAdditionalItem("CERTIFICATION")}
-                className="h-9 px-4 shadow-sm text-sm font-semibold"
-              >
-                <Plus className="size-4 mr-1.5" />
-                항목 추가
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleAddAdditionalItem("CERTIFICATION")}
+                  className="h-9 px-4 shadow-sm text-sm font-semibold"
+                >
+                  <Plus className="size-4 mr-1.5" />
+                  {t("additional.addCertification")}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => handleAddAdditionalItem("ACTIVITY")}
+                  className="h-9 px-4 shadow-sm text-sm font-semibold"
+                >
+                  <Plus className="size-4 mr-1.5" />
+                  {t("add_item")}
+                </Button>
+              </div>
             </div>
             <div className="space-y-8">
               {additionalItems.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   <p className="text-sm text-muted-foreground">
-                    위의{" "}
-                    <span className="font-medium text-foreground">
-                      + 항목 추가
-                    </span>{" "}
-                    버튼을 눌러 자격증, 수상, 활동 등을 추가해주세요.
+                    {t.rich("additional.empty", {
+                      button: (chunks) => (
+                        <span className="font-medium text-foreground">
+                          + {t("add_item")}
+                        </span>
+                      ),
+                    })}
                   </p>
                 </div>
               )}
@@ -714,6 +759,8 @@ export function ResumeEditPage({
                   onRetranslate={handleRetranslateAdditionalItem}
                   onRemove={handleRemoveAdditionalItem}
                   onChange={handleAdditionalItemChange}
+                  leftLabel={leftLabel}
+                  rightLabel={rightLabel}
                 />
               ))}
             </div>
@@ -729,7 +776,7 @@ export function ResumeEditPage({
           className="flex-1 h-12 sm:h-11 text-base"
           disabled={isLoading}
         >
-          {isEditingExisting ? "새로 만들기" : "이전"}
+          {isEditingExisting ? t("back_create_new") : t("back")}
         </Button>
 
         <Button
@@ -745,13 +792,14 @@ export function ResumeEditPage({
             const compactedExperiences = experiences.filter(
               (exp) =>
                 (exp.company && exp.company.trim() !== "") ||
-                (exp.companyEn && exp.companyEn.trim() !== "")
+                (exp.companyTranslated && exp.companyTranslated.trim() !== "")
             );
 
             const compactedEducations = educations.filter(
               (edu) =>
                 (edu.school_name && edu.school_name.trim() !== "") ||
-                (edu.school_name_en && edu.school_name_en.trim() !== "")
+                (edu.school_name_translated &&
+                  edu.school_name_translated.trim() !== "")
             );
 
             const compactedSkills = skills.filter(
@@ -760,8 +808,8 @@ export function ResumeEditPage({
 
             const compactedAdditionalItems = additionalItems.filter(
               (item) =>
-                (item.name_kr && item.name_kr.trim() !== "") ||
-                (item.name_en && item.name_en.trim() !== "")
+                (item.name_original && item.name_original.trim() !== "") ||
+                (item.name_translated && item.name_translated.trim() !== "")
             );
 
             onNext({
@@ -777,10 +825,10 @@ export function ResumeEditPage({
           isLoading={isLoading}
         >
           {isLoading ? (
-            "처리 중..."
+            t("processing")
           ) : (
             <>
-              다음
+              {t("next")}
               <ArrowRight className="size-4 ml-2" />
             </>
           )}
@@ -804,7 +852,7 @@ export function ResumeEditPage({
                 variant="default"
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                <Link href="/settings">이용권 구매하기</Link>
+                <Link href="/settings">{t("buy_pass")}</Link>
               </Button>
             )}
             <AlertDialogAction
@@ -816,7 +864,7 @@ export function ResumeEditPage({
                 }))
               }
             >
-              확인
+              {t("alert.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

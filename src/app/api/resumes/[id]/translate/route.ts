@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { translationModel, generateContentWithRetry } from "@/lib/gemini";
-import { getResumeTranslationPrompt } from "@/lib/prompts";
+import {
+  getResumeTranslationPrompt,
+  getResumeEnToKoTranslationPrompt,
+} from "@/lib/prompts";
 import {
   calculateCost,
   checkCredits,
@@ -40,6 +43,8 @@ export async function POST(
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
+
+    const sourceLang = resume.sourceLang || "ko";
 
     // 2. Calculate cost for RETRANSLATE action
     // 만약 이미 완료된 이력서라면(재번역) 비용 발생, 초기 생성 중이라면 0
@@ -88,7 +93,11 @@ export async function POST(
     // 3. Translate with Gemini AI
     console.log("[Translate API] Starting translation...");
 
-    const translationPrompt = getResumeTranslationPrompt(refinedData);
+    const isEnSource = sourceLang === "en";
+    const translationPrompt = isEnSource
+      ? getResumeEnToKoTranslationPrompt(refinedData)
+      : getResumeTranslationPrompt(refinedData);
+
     const translationResult = await generateContentWithRetry(
       translationModel,
       translationPrompt
@@ -130,11 +139,11 @@ export async function POST(
     if (finalExperiences && finalExperiences.length > 0) {
       finalExperiences = finalExperiences.map((exp: any) => ({
         ...exp,
-        bullets_kr: Array.isArray(exp.bullets_kr)
-          ? exp.bullets_kr.slice(0, 5)
+        bullets_original: Array.isArray(exp.bullets_original)
+          ? exp.bullets_original.slice(0, 5)
           : [],
-        bullets_en: Array.isArray(exp.bullets_en)
-          ? exp.bullets_en.slice(0, 5)
+        bullets_translated: Array.isArray(exp.bullets_translated)
+          ? exp.bullets_translated.slice(0, 5)
           : [],
       }));
     }
@@ -146,27 +155,29 @@ export async function POST(
       await prisma.workExperience.createMany({
         data: finalExperiences.map((exp: any, index: number) => ({
           resumeId: resumeId,
-          company_name_kr: exp.company_name_kr
-            ? String(exp.company_name_kr)
+          company_name_original: exp.company_name_original
+            ? String(exp.company_name_original)
             : "회사명 없음",
-          company_name_en: exp.company_name_en
-            ? String(exp.company_name_en)
-            : exp.company_name_kr
-            ? String(exp.company_name_kr)
+          company_name_translated: exp.company_name_translated
+            ? String(exp.company_name_translated)
+            : exp.company_name_original
+            ? String(exp.company_name_original)
             : "Unknown Company",
-          role_kr: exp.role_kr ? String(exp.role_kr) : "-",
-          role_en: exp.role_en
-            ? String(exp.role_en)
-            : exp.role_kr
-            ? String(exp.role_kr)
+          role_original: exp.role_original ? String(exp.role_original) : "-",
+          role_translated: exp.role_translated
+            ? String(exp.role_translated)
+            : exp.role_original
+            ? String(exp.role_original)
             : "-",
           start_date: exp.start_date ? String(exp.start_date) : "",
           end_date: exp.end_date ? String(exp.end_date) : "",
-          bullets_kr: Array.isArray(exp.bullets_kr) ? exp.bullets_kr : [],
-          bullets_en: Array.isArray(exp.bullets_en)
-            ? exp.bullets_en
-            : Array.isArray(exp.bullets_kr)
-            ? exp.bullets_kr
+          bullets_original: Array.isArray(exp.bullets_original)
+            ? exp.bullets_original
+            : [],
+          bullets_translated: Array.isArray(exp.bullets_translated)
+            ? exp.bullets_translated
+            : Array.isArray(exp.bullets_original)
+            ? exp.bullets_original
             : [],
           order: index,
         })),
@@ -179,25 +190,27 @@ export async function POST(
       await prisma.education.createMany({
         data: educations.map((edu: any, index: number) => ({
           resumeId: resumeId,
-          school_name: edu.school_name
-            ? String(edu.school_name)
+          school_name_original: edu.school_name_original
+            ? String(edu.school_name_original)
             : "학교명 없음",
-          school_name_en: edu.school_name_en
-            ? String(edu.school_name_en)
-            : edu.school_name
-            ? String(edu.school_name)
+          school_name_translated: edu.school_name_translated
+            ? String(edu.school_name_translated)
+            : edu.school_name_original
+            ? String(edu.school_name_original)
             : "Unknown School",
-          major: edu.major ? String(edu.major) : "",
-          major_en: edu.major_en
-            ? String(edu.major_en)
-            : edu.major
-            ? String(edu.major)
+          major_original: edu.major_original ? String(edu.major_original) : "",
+          major_translated: edu.major_translated
+            ? String(edu.major_translated)
+            : edu.major_original
+            ? String(edu.major_original)
             : "",
-          degree: edu.degree ? String(edu.degree) : "",
-          degree_en: edu.degree_en
-            ? String(edu.degree_en)
-            : edu.degree
-            ? String(edu.degree)
+          degree_original: edu.degree_original
+            ? String(edu.degree_original)
+            : "",
+          degree_translated: edu.degree_translated
+            ? String(edu.degree_translated)
+            : edu.degree_original
+            ? String(edu.degree_original)
             : "",
           start_date: edu.start_date ? String(edu.start_date) : "",
           end_date: edu.end_date ? String(edu.end_date) : "",
@@ -241,10 +254,16 @@ export async function POST(
         additionalItemsData.push({
           resumeId: resumeId,
           type: "CERTIFICATION",
-          name_kr: cert.name ? String(cert.name) : "Unknown Certification",
-          name_en: cert.name_en ? String(cert.name_en) : undefined,
-          description_kr: cert.issuer ? String(cert.issuer) : undefined,
-          description_en: cert.issuer_en ? String(cert.issuer_en) : undefined,
+          name_original: cert.name_original
+            ? String(cert.name_original)
+            : "Unknown Certification",
+          name_translated: cert.name_translated
+            ? String(cert.name_translated)
+            : undefined,
+          description_original: cert.issuer ? String(cert.issuer) : undefined,
+          description_translated: cert.issuer_translated
+            ? String(cert.issuer_translated)
+            : undefined,
           date: cert.date ? String(cert.date) : undefined,
         });
       });
@@ -255,10 +274,16 @@ export async function POST(
         additionalItemsData.push({
           resumeId: resumeId,
           type: "AWARD",
-          name_kr: award.name ? String(award.name) : "Unknown Award",
-          name_en: award.name_en ? String(award.name_en) : undefined,
-          description_kr: award.issuer ? String(award.issuer) : undefined,
-          description_en: award.issuer_en ? String(award.issuer_en) : undefined,
+          name_original: award.name_original
+            ? String(award.name_original)
+            : "Unknown Award",
+          name_translated: award.name_translated
+            ? String(award.name_translated)
+            : undefined,
+          description_original: award.issuer ? String(award.issuer) : undefined,
+          description_translated: award.issuer_translated
+            ? String(award.issuer_translated)
+            : undefined,
           date: award.date ? String(award.date) : undefined,
         });
       });
@@ -269,10 +294,14 @@ export async function POST(
         additionalItemsData.push({
           resumeId: resumeId,
           type: "LANGUAGE",
-          name_kr: lang.name ? String(lang.name) : "Unknown Language",
-          name_en: lang.name_en ? String(lang.name_en) : undefined,
-          description_kr: lang.level ? String(lang.level) : undefined,
-          description_en: lang.score ? String(lang.score) : undefined,
+          name_original: lang.name_original
+            ? String(lang.name_original)
+            : "Unknown Language",
+          name_translated: lang.name_translated
+            ? String(lang.name_translated)
+            : undefined,
+          description_original: lang.level ? String(lang.level) : undefined,
+          description_translated: lang.score ? String(lang.score) : undefined,
           date: undefined,
         });
       });
@@ -295,13 +324,16 @@ export async function POST(
       data: {
         status: "COMPLETED",
         current_step: "EDIT",
-        name_kr: personalInfo.name_kr || "",
-        name_en: personalInfo.name_en || "",
+        sourceLang: sourceLang,
+        targetLang: sourceLang === "en" ? "ko" : "en",
+        name_original: personalInfo.name_original || "",
+        name_translated: personalInfo.name_translated || "",
         email: personalInfo.email || "",
         phone: personalInfo.phone || "",
         links: personalInfo.links || [],
-        summary: translatedData.professional_summary || "",
-        summary_kr: translatedData.professional_summary_kr || "",
+        summary_translated:
+          translatedData.professional_summary_translated || "",
+        summary_original: translatedData.professional_summary_original || "",
       },
     });
 
@@ -314,6 +346,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
+      data: translatedData,
       message: "Resume re-translation completed",
     });
   } catch (error: any) {

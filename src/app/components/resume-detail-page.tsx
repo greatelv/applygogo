@@ -42,9 +42,9 @@ interface TranslatedExperience {
   position: string;
   period: string;
   bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  companyTranslated: string;
+  positionTranslated: string;
+  bulletsTranslated: string[];
 }
 
 const statusConfig = {
@@ -59,11 +59,12 @@ interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
   personalInfo?: {
-    name_kr: string;
-    name_en: string;
+    name_original: string;
+    name_translated: string;
     email: string;
     phone: string;
     links: any[];
+    summary_original?: string;
   };
   experiences?: TranslatedExperience[];
   educations?: any[];
@@ -81,6 +82,7 @@ interface ResumeDetailPageProps {
   showGenerateKo?: boolean;
   isGeneratingKo?: boolean;
   onGenerateKo?: () => void;
+  sourceLang?: string;
 }
 
 export function ResumeDetailPage({
@@ -103,6 +105,7 @@ export function ResumeDetailPage({
   onEdit,
   onChangeTemplate,
   updatedAt,
+  sourceLang = "ko",
 }: ResumeDetailPageProps) {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -523,10 +526,12 @@ export function ResumeDetailPage({
         </div>
       </div>
 
-      {/* Original Korean Version */}
+      {/* Original Version */}
       <details className="bg-card border border-border rounded-lg p-6">
         <summary className="cursor-pointer font-semibold mb-4 flex items-center gap-2">
-          <span>한글 원본 보기</span>
+          <span>
+            {sourceLang === "en" ? "Review English Original" : "한글 원본 보기"}
+          </span>
           <span className="text-xs text-muted-foreground">
             (클릭하여 펼치기)
           </span>
@@ -535,12 +540,14 @@ export function ResumeDetailPage({
           {/* Basic Info */}
           <section>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              기본 정보
+              {sourceLang === "en" ? "Personal Information" : "기본 정보"}
             </h4>
             <div className="space-y-2 text-sm">
               <div className="grid grid-cols-[100px_1fr] gap-2">
-                <span className="font-medium text-muted-foreground">이름</span>
-                <span>{resume.personalInfo?.name_kr || "-"}</span>
+                <span className="font-medium text-muted-foreground">
+                  {sourceLang === "en" ? "Name" : "이름"}
+                </span>
+                <span>{resume.personalInfo?.name_original || "-"}</span>
               </div>
               {resume.personalInfo?.email && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
@@ -553,7 +560,7 @@ export function ResumeDetailPage({
               {resume.personalInfo?.phone && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
                   <span className="font-medium text-muted-foreground">
-                    연락처
+                    {sourceLang === "en" ? "Phone" : "연락처"}
                   </span>
                   <span>{resume.personalInfo.phone}</span>
                 </div>
@@ -585,7 +592,7 @@ export function ResumeDetailPage({
           {/* Experiences */}
           <section>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              경력 사항
+              {sourceLang === "en" ? "Work Experience" : "경력 사항"}
             </h4>
             <div className="space-y-6">
               {(resume.experiences || []).map((exp: any) => (
@@ -621,7 +628,7 @@ export function ResumeDetailPage({
           {resume.educations && resume.educations.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                학력 사항
+                {sourceLang === "en" ? "Education" : "학력 사항"}
               </h4>
               <div className="space-y-4">
                 {resume.educations.map((edu: any) => (
@@ -653,7 +660,7 @@ export function ResumeDetailPage({
           {resume.skills && resume.skills.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                보유 기술
+                {sourceLang === "en" ? "Skills" : "보유 기술"}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {resume.skills.map((skill: any) => (
@@ -669,7 +676,7 @@ export function ResumeDetailPage({
           {resume.additionalItems && resume.additionalItems.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                추가 정보
+                {sourceLang === "en" ? "Additional Information" : "추가 정보"}
               </h4>
               <div className="space-y-4">
                 {[

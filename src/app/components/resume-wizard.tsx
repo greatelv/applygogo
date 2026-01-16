@@ -32,9 +32,9 @@ interface Experience {
 }
 
 interface TranslatedExperience extends Experience {
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  companyTranslated: string;
+  positionTranslated: string;
+  bulletsTranslated: string[];
 }
 
 export const createSteps = [
@@ -159,13 +159,13 @@ export function ResumeWizard({
           const transformedExperiences = data.work_experiences.map(
             (exp: any) => ({
               id: exp.id,
-              company: exp.company_name_kr,
-              companyEn: exp.company_name_en,
-              position: exp.role_kr,
-              positionEn: exp.role_en,
+              company: exp.company_name_original,
+              companyTranslated: exp.company_name_translated,
+              position: exp.role_original,
+              positionTranslated: exp.role_translated,
               period: `${exp.start_date} ~ ${exp.end_date}`,
-              bullets: exp.bullets_kr,
-              bulletsEn: exp.bullets_en,
+              bullets: exp.bullets_original,
+              bulletsTranslated: exp.bullets_translated,
             })
           );
 
@@ -176,13 +176,13 @@ export function ResumeWizard({
           setAwards(data.awards || []);
           setLanguages(data.languages || []);
           setPersonalInfo({
-            name_kr: data.name_kr,
-            name_en: data.name_en,
+            name_original: data.name_original,
+            name_translated: data.name_translated,
             email: data.email,
             phone: data.phone,
             links: (data.links as any[]) || [],
-            summary: data.summary || "",
-            summary_kr: data.summary_kr || "",
+            summary: data.summary_translated || "",
+            summary_original: data.summary_original || "",
           });
 
           if (data.selected_template) {

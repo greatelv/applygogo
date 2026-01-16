@@ -203,7 +203,7 @@ export const ExecutivePdf = ({
   additionalItems = [],
 }: ExecutivePdfProps) => {
   const validExperiences = experiences.filter(
-    (e) => e.company?.trim() || e.companyEn?.trim()
+    (e) => e.company?.trim() || e.companyTranslated?.trim()
   );
 
   const certifications = additionalItems.filter(
@@ -213,12 +213,18 @@ export const ExecutivePdf = ({
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
 
   return (
-    <Document>
+    <Document
+      title={
+        personalInfo?.name_translated || personalInfo?.name_original || "Resume"
+      }
+    >
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "Name"}
+            {personalInfo?.name_translated ||
+              personalInfo?.name_original ||
+              "Name"}
           </Text>
           <View style={styles.headerContact}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -259,8 +265,12 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.expItem}>
                   <View style={styles.expHeader}>
                     <View>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
-                      <Text style={styles.position}>{exp.positionEn}</Text>
+                      <Text style={styles.companyName}>
+                        {exp.companyTranslated}
+                      </Text>
+                      <Text style={styles.position}>
+                        {exp.positionTranslated}
+                      </Text>
                     </View>
                     <Text style={styles.period}>
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -268,13 +278,15 @@ export const ExecutivePdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <View key={idx} style={styles.bulletItem}>
-                        <Text style={styles.bulletPoint}>•</Text>
-                        <Text style={styles.bulletText}>{bullet}</Text>
-                      </View>
-                    ))}
+                    {exp.bulletsTranslated?.map(
+                      (bullet: string, idx: number) => (
+                        // @ts-ignore
+                        <View key={idx} style={styles.bulletItem}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{bullet}</Text>
+                        </View>
+                      )
+                    )}
                   </View>
                 </View>
               ))}
@@ -290,15 +302,15 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.eduItem}>
                   <View style={styles.eduMain}>
                     <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
+                      {edu.school_name_translated || edu.school_name}
                     </Text>
                     <Text style={{ fontSize: 10, color: "#334155" }}>
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                      (edu.major_en || edu.major)
+                      {edu.degree_translated || edu.degree}
+                      {(edu.degree_translated || edu.degree) &&
+                      (edu.major_translated || edu.major)
                         ? ", "
                         : ""}
-                      {edu.major_en || edu.major}
+                      {edu.major_translated || edu.major}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -353,7 +365,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_en || item.name}{" "}
+                      • {item.name_translated || item.name_original}{" "}
                       {item.date ? `(${formatDate(item.date)})` : ""}
                     </TextAny>
                   ))}
@@ -382,7 +394,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_en || item.name}
+                      • {item.name_translated || item.name_original}
                     </TextAny>
                   ))}
                 </View>
@@ -403,9 +415,13 @@ export const ExecutivePdf = ({
                     {languages.map((item: any, i: number) => (
                       // @ts-ignore
                       <Text key={i} style={{ fontSize: 10, color: "#334155" }}>
-                        • {item.name_en || item.name}
-                        {(item.description_en || item.description) &&
-                          ` (${item.description_en || item.description})`}
+                        • {item.name_translated || item.name_original}
+                        {(item.description_translated ||
+                          item.description_original) &&
+                          ` (${
+                            item.description_translated ||
+                            item.description_original
+                          })`}
                       </Text>
                     ))}
                   </View>

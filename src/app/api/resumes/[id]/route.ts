@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
@@ -63,16 +63,17 @@ export async function PUT(
     const { id: resumeId } = await params;
     const body = await request.json();
     const {
-      name_kr,
-      name_en,
+      name_original,
+      name_translated,
       email,
       phone,
       links,
-      summary,
-      summary_kr,
+      summary_original,
+      summary_translated,
       work_experiences,
       educations,
       skills,
+      additional_items,
     } = body;
 
     // Verify ownership
@@ -90,20 +91,21 @@ export async function PUT(
       await tx.workExperience.deleteMany({ where: { resumeId } });
       await tx.education.deleteMany({ where: { resumeId } });
       await tx.skill.deleteMany({ where: { resumeId } });
+      await tx.additionalItem.deleteMany({ where: { resumeId } });
 
       // 2. Create new work experiences
       if (work_experiences?.length > 0) {
         await tx.workExperience.createMany({
           data: work_experiences.map((exp: any, index: number) => ({
             resumeId,
-            company_name_kr: exp.company_name_kr,
-            company_name_en: exp.company_name_en,
-            role_kr: exp.role_kr,
-            role_en: exp.role_en,
+            company_name_original: exp.company_name_original,
+            company_name_translated: exp.company_name_translated,
+            role_original: exp.role_original,
+            role_translated: exp.role_translated,
             start_date: exp.start_date,
             end_date: exp.end_date,
-            bullets_kr: exp.bullets_kr,
-            bullets_en: exp.bullets_en,
+            bullets_original: exp.bullets_original,
+            bullets_translated: exp.bullets_translated,
             order: index,
           })),
         });
@@ -114,12 +116,12 @@ export async function PUT(
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
             resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
+            school_name_original: edu.school_name,
+            school_name_translated: edu.school_name_translated,
+            major_original: edu.major,
+            major_translated: edu.major_translated,
+            degree_original: edu.degree,
+            degree_translated: edu.degree_translated,
             start_date: edu.start_date,
             end_date: edu.end_date,
             order: index,
@@ -133,38 +135,38 @@ export async function PUT(
           data: skills.map((skill: any, index: number) => ({
             resumeId,
             name: skill.name,
+            level: skill.level,
             order: index,
           })),
         });
       }
 
       // 5. Update resume metadata
-      await (tx as any).resume.update({
+      await tx.resume.update({
         where: { id: resumeId },
         data: {
-          name_kr,
-          name_en,
+          name_original,
+          name_translated,
           email,
           phone,
           links,
-          summary,
-          summary_kr,
+          summary_original,
+          summary_translated,
           current_step: body.current_step || "TEMPLATE",
           updated_at: new Date(),
         },
       });
 
       // Additional Items (Certifications, Awards, Languages, etc.)
-      await (tx as any).additionalItem.deleteMany({ where: { resumeId } });
-      if (body.additional_items && body.additional_items.length > 0) {
-        await (tx as any).additionalItem.createMany({
-          data: body.additional_items.map((item: any, index: number) => ({
+      if (additional_items && additional_items.length > 0) {
+        await tx.additionalItem.createMany({
+          data: additional_items.map((item: any, index: number) => ({
             resumeId,
             type: item.type,
-            name_kr: item.name_kr,
-            name_en: item.name_en,
-            description_kr: item.description_kr,
-            description_en: item.description_en,
+            name_original: item.name_original,
+            name_translated: item.name_translated,
+            description_original: item.description_original,
+            description_translated: item.description_translated,
             date: item.date,
             order: index,
           })),
@@ -252,8 +254,10 @@ export async function DELETE(
     // 2. Delete file from Storage if exists
     if (resume.original_file_url) {
       try {
-        const { error: storageError } = await supabaseAdmin.storage
-          .from("resumes")
+        const bucketName =
+          process.env.NEXT_PUBLIC_STORAGE_BUCKET || "applygogo";
+        const { error: storageError } = await getSupabaseAdmin()
+          .storage.from(bucketName)
           .remove([resume.original_file_url]);
 
         if (storageError) {

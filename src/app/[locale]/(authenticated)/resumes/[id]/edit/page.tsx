@@ -40,24 +40,28 @@ export default async function Page({
 
     return {
       id: exp.id,
-      company: clean(exp.company_name_kr),
-      companyEn: clean(exp.company_name_en) || clean(exp.company_name_kr),
-      position: clean(exp.role_kr),
-      positionEn: clean(exp.role_en) || clean(exp.role_kr),
+      company: clean(exp.company_name_original),
+      companyTranslated:
+        clean(exp.company_name_translated) || clean(exp.company_name_original),
+      position: clean(exp.role_original),
+      positionTranslated:
+        clean(exp.role_translated) || clean(exp.role_original),
       period,
-      bullets: ((exp.bullets_kr as string[]) || []).map(clean),
-      bulletsEn: ((exp.bullets_en as string[]) || []).map(clean),
+      bullets: ((exp.bullets_original as string[]) || []).map(clean),
+      bulletsTranslated: ((exp.bullets_translated as string[]) || []).map(
+        clean
+      ),
     };
   });
 
   const mappedEducations = resume.educations.map((edu) => ({
     id: edu.id,
-    school_name: clean(edu.school_name),
-    school_name_en: clean(edu.school_name_en),
-    major: clean(edu.major),
-    major_en: clean(edu.major_en),
-    degree: clean(edu.degree),
-    degree_en: clean(edu.degree_en),
+    school_name: clean(edu.school_name_original),
+    school_name_translated: clean(edu.school_name_translated),
+    major: clean(edu.major_original),
+    major_translated: clean(edu.major_translated),
+    degree: clean(edu.degree_original),
+    degree_translated: clean(edu.degree_translated),
     start_date: clean(edu.start_date),
     end_date: clean(edu.end_date),
   }));
@@ -71,24 +75,24 @@ export default async function Page({
   const mappedAdditionalItems = resume.additionalItems.map((item) => ({
     id: item.id,
     type: item.type,
-    name_kr: clean(item.name_kr),
-    name_en: clean(item.name_en) || clean(item.name_kr),
-    description_kr: clean(item.description_kr),
-    description_en: clean(item.description_en),
+    name_original: clean(item.name_original),
+    name_translated: clean(item.name_translated) || clean(item.name_original),
+    description_original: clean(item.description_original),
+    description_translated: clean(item.description_translated),
     date: clean(item.date),
   }));
 
   const initialPersonalInfo = {
-    name_kr: clean(resume.name_kr),
-    name_en: clean(resume.name_en),
+    name_original: clean(resume.name_original),
+    name_translated: clean(resume.name_translated),
     email: clean(resume.email),
     phone: clean(resume.phone),
     links: ((resume.links as any[]) || []).map((link) => ({
       label: clean(link.label),
       url: clean(link.url),
     })),
-    summary: clean(resume.summary),
-    summary_kr: clean(resume.summary_kr),
+    summary: clean(resume.summary_translated),
+    summary_original: clean(resume.summary_original),
   };
 
   return (
@@ -100,6 +104,7 @@ export default async function Page({
       initialSkills={mappedSkills}
       initialAdditionalItems={mappedAdditionalItems}
       initialPersonalInfo={initialPersonalInfo}
+      sourceLang={resume.sourceLang}
     />
   );
 }

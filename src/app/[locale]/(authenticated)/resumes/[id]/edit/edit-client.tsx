@@ -4,14 +4,7 @@ import { useRouter } from "next/navigation";
 import { ResumeEditPage } from "@/app/components/resume-edit-page";
 import { useState, useEffect } from "react";
 import { useApp } from "@/app/context/app-context";
-
-const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
-];
+import { useTranslations, useLocale } from "next-intl";
 
 interface EditClientProps {
   resumeId: string;
@@ -19,11 +12,12 @@ interface EditClientProps {
   initialExperiences: any[];
   initialEducations: any[];
   initialSkills: any[];
-  initialCertifications?: any[]; // Keep for compatibility if needed, but unused
+  initialCertifications?: any[];
   initialAwards?: any[];
   initialLanguages?: any[];
   initialAdditionalItems?: any[];
   initialPersonalInfo: any;
+  sourceLang?: string;
 }
 
 export function EditClient({
@@ -37,8 +31,20 @@ export function EditClient({
   initialLanguages,
   initialAdditionalItems,
   initialPersonalInfo,
+  sourceLang,
 }: EditClientProps) {
   const router = useRouter();
+  const t = useTranslations("Edit");
+  const locale = useLocale();
+
+  const steps = [
+    { id: "upload", label: locale === "ko" ? "업로드" : "Upload" },
+    { id: "processing", label: locale === "ko" ? "AI 처리" : "AI Processing" },
+    { id: "edit", label: locale === "ko" ? "편집" : "Edit" },
+    { id: "preview", label: locale === "ko" ? "템플릿 선택" : "Preview" },
+    { id: "complete", label: locale === "ko" ? "완료" : "Complete" },
+  ];
+
   const { setWorkflowState, quota, setQuota } = useApp();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -87,27 +93,30 @@ export function EditClient({
       );
       const filteredSkills = data.skills.filter((skill) => skill.name?.trim());
       const filteredAdditionalItems = (data.additionalItems || []).filter(
-        (item) => item.name_kr?.trim() || item.description_kr?.trim()
+        (item) =>
+          item.name_original?.trim() || item.description_original?.trim()
       );
 
       // Map frontend data structure back to DB structure
       const payload = {
-        name_kr: data.personalInfo.name_kr,
-        name_en: data.personalInfo.name_en,
+        name_original: data.personalInfo.name_original,
+        name_translated: data.personalInfo.name_translated,
         email: data.personalInfo.email,
         phone: data.personalInfo.phone,
         links: data.personalInfo.links,
-        summary: data.personalInfo.summary,
-        summary_kr: data.personalInfo.summary_kr,
+        summary_translated: data.personalInfo.summary,
+        summary_original: data.personalInfo.summary_original,
         work_experiences: filteredExperiences.map((exp) => ({
-          company_name_kr: exp.company,
-          company_name_en: exp.companyEn,
-          role_kr: exp.position,
-          role_en: exp.positionEn,
+          company_name_original: exp.company,
+          company_name_translated: exp.companyTranslated,
+          role_original: exp.position,
+          role_translated: exp.positionTranslated,
           start_date: exp.period.split(" - ")[0] || "",
           end_date: exp.period.split(" - ")[1] || "",
-          bullets_kr: exp.bullets.filter((b: string) => b?.trim()),
-          bullets_en: exp.bulletsEn.filter((b: string) => b?.trim()),
+          bullets_original: exp.bullets.filter((b: string) => b?.trim()),
+          bullets_translated: exp.bulletsTranslated.filter((b: string) =>
+            b?.trim()
+          ),
         })),
         educations: filteredEducations,
         skills: filteredSkills,
@@ -127,7 +136,11 @@ export function EditClient({
       router.push(`/resumes/${resumeId}/templates`);
     } catch (error) {
       console.error(error);
-      alert("이력서 내용을 저장하는 중 오류가 발생했습니다.");
+      alert(
+        locale === "ko"
+          ? "이력서 내용을 저장하는 중 오류가 발생했습니다."
+          : "An error occurred while saving your resume."
+      );
     } finally {
       setIsSaving(false);
     }
@@ -143,6 +156,7 @@ export function EditClient({
       initialSkills={initialSkills}
       initialAdditionalItems={initialAdditionalItems}
       onNext={handleNext}
+      sourceLang={sourceLang}
       onBack={() => {
         setIsSaving(true);
         router.push("/resumes/new");

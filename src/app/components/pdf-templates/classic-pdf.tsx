@@ -178,27 +178,34 @@ export const ClassicPdf = ({
 }: ClassicPdfProps) => {
   // Filter out empty items first
   const validExperiences = experiences.filter(
-    (exp) => exp.company?.trim() || exp.companyEn?.trim()
+    (exp) => exp.company?.trim() || exp.companyTranslated?.trim()
   );
   const validEducations = educations.filter(
-    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+    (edu) => edu.school_name?.trim() || edu.school_name_translated?.trim()
   );
   const validItems = additionalItems.filter(
-    (i) => i.name_kr?.trim() || i.name_en?.trim()
+    (i) => i.name_original?.trim() || i.name_translated?.trim()
   );
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
   const languages = validItems.filter((i) => i.type === "LANGUAGE");
+  // @ts-ignore
   const others = validItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
   return (
-    <Document>
+    <Document
+      title={
+        personalInfo?.name_translated || personalInfo?.name_original || "Resume"
+      }
+    >
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+            {personalInfo?.name_translated ||
+              personalInfo?.name_original ||
+              "이름 없음"}
           </Text>
           <View style={styles.contactContainer}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -244,24 +251,30 @@ export const ClassicPdf = ({
                 <View key={exp.id}>
                   <View style={styles.expItemHeader}>
                     <View style={styles.expRow}>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
+                      <Text style={styles.companyName}>
+                        {exp.companyTranslated}
+                      </Text>
                       <Text style={styles.period}>
                         {formatDate(exp.period.split(" - ")[0])} -{" "}
                         {formatDate(exp.period.split(" - ")[1])}
                       </Text>
                     </View>
-                    <Text style={styles.position}>{exp.positionEn}</Text>
+                    <Text style={styles.position}>
+                      {exp.positionTranslated}
+                    </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <View key={idx} style={styles.bulletItem}>
-                        <View style={styles.bulletIconContainer}>
-                          <Text style={styles.bulletPoint}>•</Text>
+                    {exp.bulletsTranslated?.map(
+                      (bullet: string, idx: number) => (
+                        // @ts-ignore
+                        <View key={idx} style={styles.bulletItem}>
+                          <View style={styles.bulletIconContainer}>
+                            <Text style={styles.bulletPoint}>•</Text>
+                          </View>
+                          <Text style={styles.bulletText}>{bullet}</Text>
                         </View>
-                        <Text style={styles.bulletText}>{bullet}</Text>
-                      </View>
-                    ))}
+                      )
+                    )}
                   </View>
                 </View>
               ))}
@@ -292,10 +305,11 @@ export const ClassicPdf = ({
                 <View key={edu.id} style={styles.eduItem}>
                   <View>
                     <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
+                      {edu.school_name_translated || edu.school_name}
                     </Text>
                     <Text style={styles.position}>
-                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                      {edu.degree_translated || edu.degree},{" "}
+                      {edu.major_translated || edu.major}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -326,8 +340,9 @@ export const ClassicPdf = ({
                     Certifications
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_en || cert.name;
-                    const desc = cert.description_en || cert.description;
+                    const name = cert.name_translated || cert.name_original;
+                    const desc =
+                      cert.description_translated || cert.description_original;
                     const date = formatDate(cert.date);
                     return (
                       <React.Fragment key={i}>
@@ -353,8 +368,10 @@ export const ClassicPdf = ({
                     Awards
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name = award.name_en || award.name;
-                    const desc = award.description_en || award.description;
+                    const name = award.name_translated || award.name_original;
+                    const desc =
+                      award.description_translated ||
+                      award.description_original;
                     const date = formatDate(award.date);
                     return (
                       <React.Fragment key={i}>
@@ -380,8 +397,9 @@ export const ClassicPdf = ({
                     Languages
                   </Text>
                   {languages.map((lang: any, i: number) => {
-                    const name = lang.name_en || lang.name;
-                    const desc = lang.description_en || lang.description;
+                    const name = lang.name_translated || lang.name_original;
+                    const desc =
+                      lang.description_translated || lang.description_original;
                     return (
                       <React.Fragment key={i}>
                         <Text style={styles.skillText}>

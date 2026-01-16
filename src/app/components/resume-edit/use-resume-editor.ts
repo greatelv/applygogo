@@ -17,6 +17,7 @@ interface UseResumeEditorProps {
   initialAdditionalItems?: AdditionalItem[];
   resumeId?: string | null;
   onDeductCredit?: (amount: number) => void;
+  targetLang?: string;
 }
 
 export const useResumeEditor = ({
@@ -27,16 +28,17 @@ export const useResumeEditor = ({
   initialAdditionalItems,
   resumeId,
   onDeductCredit,
+  targetLang = "en",
 }: UseResumeEditorProps) => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     initialPersonalInfo || {
-      name_kr: "",
-      name_en: "",
+      name_original: "",
+      name_translated: "",
       email: "",
       phone: "",
       links: [],
       summary: "",
-      summary_kr: "",
+      summary_original: "",
     }
   );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
@@ -54,13 +56,13 @@ export const useResumeEditor = ({
   const [baselinePersonalInfo, setBaselinePersonalInfo] =
     useState<PersonalInfo>(
       initialPersonalInfo || {
-        name_kr: "",
-        name_en: "",
+        name_original: "",
+        name_translated: "",
         email: "",
         phone: "",
         links: [],
         summary: "",
-        summary_kr: "",
+        summary_original: "",
       }
     );
   const [baselineExperiences, setBaselineExperiences] = useState<
@@ -104,10 +106,10 @@ export const useResumeEditor = ({
     const newItem: AdditionalItem = {
       id: `add-${Date.now()}`,
       type,
-      name_kr: "",
-      name_en: "",
-      description_kr: "",
-      description_en: "",
+      name_original: "",
+      name_translated: "",
+      description_original: "",
+      description_translated: "",
       date: "",
     };
     setAdditionalItems((prev) => [newItem, ...prev]);
@@ -138,9 +140,9 @@ export const useResumeEditor = ({
       prev.map((exp) => {
         if (exp.id !== expId) return exp;
         if (isEnglish) {
-          const newBulletsEn = [...exp.bulletsEn];
-          newBulletsEn[index] = value;
-          return { ...exp, bulletsEn: newBulletsEn };
+          const newBulletsTranslated = [...exp.bulletsTranslated];
+          newBulletsTranslated[index] = value;
+          return { ...exp, bulletsTranslated: newBulletsTranslated };
         } else {
           const newBullets = [...exp.bullets];
           newBullets[index] = value;
@@ -157,7 +159,7 @@ export const useResumeEditor = ({
         return {
           ...exp,
           bullets: [...exp.bullets, ""],
-          bulletsEn: [...exp.bulletsEn, ""],
+          bulletsTranslated: [...exp.bulletsTranslated, ""],
         };
       })
     );
@@ -170,7 +172,9 @@ export const useResumeEditor = ({
         return {
           ...exp,
           bullets: exp.bullets.filter((_, i) => i !== index),
-          bulletsEn: exp.bulletsEn.filter((_, i) => i !== index),
+          bulletsTranslated: exp.bulletsTranslated.filter(
+            (_, i) => i !== index
+          ),
         };
       })
     );
@@ -180,12 +184,12 @@ export const useResumeEditor = ({
     const newExp: TranslatedExperience = {
       id: `new-${Date.now()}`,
       company: "",
-      companyEn: "",
+      companyTranslated: "",
       position: "",
-      positionEn: "",
+      positionTranslated: "",
       period: "",
       bullets: [""],
-      bulletsEn: [""],
+      bulletsTranslated: [""],
     };
     setExperiences((prev) => [newExp, ...prev]);
     // Also add to baseline as empty so it doesn't trigger "changed" logic incorrectly if valid
@@ -265,9 +269,9 @@ export const useResumeEditor = ({
 
     // Update state with trimmed values
     const newBullets = trimmedBullets.length > 0 ? trimmedBullets : [""];
-    const newBulletsEn =
+    const newBulletsTranslated =
       trimmedBullets.length > 0
-        ? trimmedBullets.map((_, i) => currentExp.bulletsEn[i] || "")
+        ? trimmedBullets.map((_, i) => currentExp.bulletsTranslated[i] || "")
         : [""];
 
     setExperiences((prev) =>
@@ -279,7 +283,7 @@ export const useResumeEditor = ({
               position: trimmedPosition,
               period: trimmedPeriod,
               bullets: newBullets,
-              bulletsEn: newBulletsEn,
+              bulletsTranslated: newBulletsTranslated,
             }
           : exp
       )
@@ -336,6 +340,7 @@ export const useResumeEditor = ({
               texts: textsToTranslate,
               type: "general",
               resumeId,
+              targetLang,
             }),
           }).then(async (res) => {
             if (!res.ok) {
@@ -365,6 +370,7 @@ export const useResumeEditor = ({
               texts: bulletTexts,
               type: "bullets",
               resumeId,
+              targetLang,
             }),
           }).then(async (res) => {
             if (!res.ok) {
@@ -393,24 +399,26 @@ export const useResumeEditor = ({
         position: trimmedPosition,
         period: trimmedPeriod,
         bullets: newBullets,
-        bulletsEn: newBulletsEn,
+        bulletsTranslated: newBulletsTranslated,
       };
 
       if (metaResult) {
         const { translatedTexts } = metaResult;
         let tIndex = 0;
-        if (isCompanyChanged) newItem.companyEn = translatedTexts[tIndex++];
-        if (isPositionChanged) newItem.positionEn = translatedTexts[tIndex++];
+        if (isCompanyChanged)
+          newItem.companyTranslated = translatedTexts[tIndex++];
+        if (isPositionChanged)
+          newItem.positionTranslated = translatedTexts[tIndex++];
         if (isPeriodChanged) newItem.period = translatedTexts[tIndex++];
       }
 
       if (bulletsResult) {
         const { translatedTexts } = bulletsResult;
-        const updatedBulletsEn = [...newItem.bulletsEn];
+        const updatedBulletsTranslated = [...newItem.bulletsTranslated];
         changedBullets.forEach((item, i) => {
-          updatedBulletsEn[item.index] = translatedTexts[i];
+          updatedBulletsTranslated[item.index] = translatedTexts[i];
         });
-        newItem.bulletsEn = updatedBulletsEn;
+        newItem.bulletsTranslated = updatedBulletsTranslated;
       }
 
       setExperiences((prev) => prev.map((e) => (e.id === expId ? newItem : e)));
@@ -465,9 +473,10 @@ export const useResumeEditor = ({
 
   const handleTranslatePersonalInfo = async () => {
     // Check for changes against baseline
-    const isNameChanged = personalInfo.name_kr !== baselinePersonalInfo.name_kr;
+    const isNameChanged =
+      personalInfo.name_original !== baselinePersonalInfo.name_original;
     const isSummaryChanged =
-      personalInfo.summary_kr !== baselinePersonalInfo.summary_kr;
+      personalInfo.summary_original !== baselinePersonalInfo.summary_original;
 
     // Check link changes
     let isLinksChanged =
@@ -493,11 +502,11 @@ export const useResumeEditor = ({
     try {
       // Collect name, summary, and all link labels that need translation
       const textsToTranslate = [];
-      textsToTranslate.push(personalInfo.name_kr);
+      textsToTranslate.push(personalInfo.name_original);
 
-      const hasSummary = !!personalInfo.summary_kr;
-      if (hasSummary && personalInfo.summary_kr) {
-        textsToTranslate.push(personalInfo.summary_kr);
+      const hasSummary = !!personalInfo.summary_original;
+      if (hasSummary && personalInfo.summary_original) {
+        textsToTranslate.push(personalInfo.summary_original);
       }
 
       personalInfo.links.forEach((link: any) => {
@@ -510,6 +519,7 @@ export const useResumeEditor = ({
         body: JSON.stringify({
           texts: textsToTranslate,
           type: "general",
+          targetLang,
         }),
       });
 
@@ -543,7 +553,7 @@ export const useResumeEditor = ({
 
       const newPersonalInfo = {
         ...personalInfo,
-        name_en: translatedTexts[0],
+        name_translated: translatedTexts[0],
         summary: summaryEn,
         links: newLinks,
       };
@@ -594,8 +604,8 @@ export const useResumeEditor = ({
     if (!item) return;
 
     // 1. Cleanup and Trim
-    const trimmedName = item.name_kr?.trim() || "";
-    const trimmedDesc = item.description_kr?.trim() || "";
+    const trimmedName = item.name_original?.trim() || "";
+    const trimmedDesc = item.description_original?.trim() || "";
     const trimmedDate = item.date?.trim() || "";
 
     // Check if empty
@@ -610,8 +620,8 @@ export const useResumeEditor = ({
         i.id === id
           ? {
               ...i,
-              name_kr: trimmedName,
-              description_kr: trimmedDesc,
+              name_original: trimmedName,
+              description_original: trimmedDesc,
               date: trimmedDate,
             }
           : i
@@ -621,9 +631,10 @@ export const useResumeEditor = ({
     setIsTranslating((prev) => ({ ...prev, [id]: true }));
 
     try {
-      const textsToTranslate = [item.name_kr, item.description_kr].filter(
-        Boolean
-      );
+      const textsToTranslate = [
+        item.name_original,
+        item.description_original,
+      ].filter(Boolean);
 
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -632,6 +643,7 @@ export const useResumeEditor = ({
           texts: textsToTranslate,
           type: "general",
           resumeId,
+          targetLang,
         }),
       });
 
@@ -652,8 +664,9 @@ export const useResumeEditor = ({
           if (i.id !== id) return i;
           return {
             ...i,
-            name_en: translatedTexts[0] || i.name_en,
-            description_en: translatedTexts[1] || i.description_en,
+            name_translated: translatedTexts[0] || i.name_translated,
+            description_translated:
+              translatedTexts[1] || i.description_translated,
           };
         })
       );
@@ -726,6 +739,7 @@ export const useResumeEditor = ({
         body: JSON.stringify({
           texts: textsToTranslate,
           type: "general",
+          targetLang,
         }),
       });
 
@@ -746,9 +760,10 @@ export const useResumeEditor = ({
           if (e.id !== eduId) return e;
           return {
             ...e,
-            school_name_en: translatedTexts[0] || e.school_name_en,
-            major_en: translatedTexts[1] || e.major_en,
-            degree_en: translatedTexts[2] || e.degree_en,
+            school_name_translated:
+              translatedTexts[0] || e.school_name_translated,
+            major_translated: translatedTexts[1] || e.major_translated,
+            degree_translated: translatedTexts[2] || e.degree_translated,
           };
         })
       );

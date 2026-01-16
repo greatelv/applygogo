@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
 import { extractionModel, generateContentWithRetry } from "@/lib/gemini";
 import { RESUME_EXTRACTION_PROMPT } from "@/lib/prompts";
 
@@ -68,8 +68,9 @@ export async function POST(
     });
 
     // 3. Download PDF from Supabase Storage
-    const { data: fileData, error: downloadError } = await supabaseAdmin.storage
-      .from("resumes")
+    const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || "applygogo";
+    const { data: fileData, error: downloadError } = await getSupabaseAdmin()
+      .storage.from(bucketName)
       .download(resume.original_file_url);
 
     if (downloadError || !fileData) {
@@ -119,8 +120,8 @@ export async function POST(
       try {
         // Delete file from storage
         if (resume.original_file_url) {
-          await supabaseAdmin.storage
-            .from("resumes")
+          await getSupabaseAdmin()
+            .storage.from(bucketName)
             .remove([resume.original_file_url]);
         }
 
@@ -150,11 +151,19 @@ export async function POST(
       } experiences, ` +
         `${
           extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
+            (sum: number, exp: any) =>
+              sum + (exp.bullets_original?.length || 0),
             0
           ) || 0
         } total bullets.`
     );
+
+    // 7. Save detected language to DB for subsequent steps
+    const detectedLanguage = extractedData.metadata?.detected_language || "ko";
+    await prisma.resume.update({
+      where: { id: resumeId },
+      data: { sourceLang: detectedLanguage },
+    });
 
     return NextResponse.json({
       success: true,

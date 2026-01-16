@@ -13,19 +13,19 @@ interface TranslatedExperience {
   position: string;
   period: string;
   bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  companyTranslated: string;
+  positionTranslated: string;
+  bulletsTranslated: string[];
 }
 
 interface Education {
   id: string;
   school_name: string;
-  school_name_en?: string;
+  school_name_translated?: string;
   major: string;
-  major_en?: string;
+  major_translated?: string;
   degree: string;
-  degree_en?: string;
+  degree_translated?: string;
   start_date: string;
   end_date: string;
 }

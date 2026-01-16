@@ -27,13 +27,15 @@ const workflowSteps = [
   { id: "preview", label: "미리보기", description: "템플릿 선택" },
 ];
 
+import { useTranslations } from "next-intl";
+
 export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
+  const t = useTranslations("App.newResume");
+  const tw = useTranslations("App.workflow");
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(
-    "PDF 파일만 업로드 가능합니다. 다시 시도해주세요."
-  );
+  const [errorMessage, setErrorMessage] = useState(t("error.pdfOnly"));
 
   const router = useRouter();
   const { quota, plan } = useApp();
@@ -57,16 +59,14 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMessage(
-          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
-        );
+        setErrorMessage(t("error.tooLarge"));
         setShowErrorDialog(true);
         return;
       }
       onUpload(file);
       setSelectedFile(file);
     } else {
-      setErrorMessage("PDF 파일만 업로드 가능합니다. 다시 시도해주세요.");
+      setErrorMessage(t("error.pdfOnly"));
       setShowErrorDialog(true);
     }
   };
@@ -76,9 +76,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMessage(
-          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
-        );
+        setErrorMessage(t("error.tooLarge"));
         setShowErrorDialog(true);
         e.target.value = ""; // Reset input
         return;
@@ -91,10 +89,8 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">업로드</h1>
-        <p className="text-sm text-muted-foreground">
-          PDF 이력서를 업로드하면 AI가 자동으로 요약하고 영문 번역해드립니다
-        </p>
+        <h1 className="text-2xl mb-2">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {!hasSufficientCredits ? (
@@ -106,12 +102,10 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">
-                  크레딧이 부족합니다
+                  {t("creditsNeeded")}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                  AI 이력서 분석을 진행하기 위해 필요한 크레딧이 부족합니다.
-                  <br />
-                  결제를 통해 크레딧을 충전하고 분석을 시작해보세요.
+                  {t("creditsNeededDesc")}
                 </p>
               </div>
             </div>
@@ -124,7 +118,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                 >
                   <span className="flex items-center gap-2">
                     <Sparkles className="size-4" />
-                    이용권 구매하고 무제한 이용하기
+                    {t("buyPass")}
                   </span>
                 </Button>
               ) : (
@@ -132,7 +126,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                   onClick={() => router.push("/settings#payment-section")}
                   className="w-full h-11"
                 >
-                  크레딧 충전하기
+                  {t("recharge")}
                 </Button>
               )}
             </div>
@@ -154,9 +148,9 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
           {isUploading ? (
             <div className="flex flex-col items-center">
               <Loader2 className="size-12 animate-spin text-primary mb-4" />
-              <h3 className="text-lg font-medium">업로드 중...</h3>
+              <h3 className="text-lg font-medium">{t("uploading")}</h3>
               <p className="text-sm text-muted-foreground">
-                파일을 안전하게 저장하고 있습니다.
+                {t("uploadingDesc")}
               </p>
             </div>
           ) : (
@@ -165,9 +159,9 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                 <Upload className="size-8 text-muted-foreground" />
               </div>
 
-              <h3 className="text-lg mb-2">PDF 파일을 드래그하여 업로드</h3>
+              <h3 className="text-lg mb-2">{t("dropHint")}</h3>
               <p className="text-sm text-muted-foreground mb-6">
-                또는 아래 버튼을 클릭하여 파일 선택
+                {t("selectHint")}
               </p>
 
               <input
@@ -183,7 +177,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                 onClick={() => document.getElementById("file-upload")?.click()}
               >
                 <FileText className="size-4" />
-                파일 선택
+                {t("selectButton")}
               </Button>
             </>
           )}
@@ -193,12 +187,12 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
       <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>올바르지 않은 파일 형식</AlertDialogTitle>
+            <AlertDialogTitle>{t("error.title")}</AlertDialogTitle>
             <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setShowErrorDialog(false)}>
-              확인
+              OK
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -206,14 +200,12 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
 
       <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
         <h4 className="text-sm font-semibold mb-2 text-blue-900 dark:text-blue-300">
-          💡 팁
+          💡 {t("tips.title")}
         </h4>
         <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
-          <li>• 경력사항이 명확하게 구분된 이력서가 가장 좋은 결과를 냅니다</li>
-          <li>• 5MB 이하의 PDF 파일을 권장합니다</li>
-          <li>
-            • 업로드 후 요약, 번역 단계를 거쳐 최종 PDF를 받을 수 있습니다
-          </li>
+          <li>• {t("tips.content1")}</li>
+          <li>• {t("tips.content2")}</li>
+          <li>• {t("tips.content3")}</li>
         </ul>
       </div>
     </div>

@@ -66,17 +66,7 @@ interface SettingsPageProps {
   canRefund?: boolean;
 }
 
-const passConfig = {
-  active: { label: "이용권", variant: "default" as const },
-  inactive: { label: "무료", variant: "outline" as const },
-};
-
-const passLabels: Record<string, string> = {
-  PASS_7DAY: "7일 이용권",
-  PASS_30DAY: "30일 이용권",
-  PASS_BETA_3DAY: "베타 런칭 기념 3일 무제한",
-  FREE: "무료",
-};
+import { useTranslations, useLocale } from "next-intl";
 
 export function SettingsPage({
   userName,
@@ -101,6 +91,16 @@ export function SettingsPage({
   isUpdatingCard = false,
   canRefund = false,
 }: SettingsPageProps) {
+  const t = useTranslations("App.settings");
+  const locale = useLocale();
+
+  const labels = t.raw("pass.labels");
+
+  const passConfig = {
+    active: { label: labels.active, variant: "default" as const },
+    inactive: { label: labels.inactive, variant: "outline" as const },
+  };
+
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -157,15 +157,15 @@ export function SettingsPage({
   return (
     <div className="max-w-5xl mx-auto space-y-12 pb-12">
       <div>
-        <h1 className="text-2xl mb-2">설정</h1>
-        <p className="text-sm text-muted-foreground">
-          계정 정보 및 결제 관리를 한곳에서 설정하세요
-        </p>
+        <h1 className="text-2xl mb-2">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {/* --- Section 1: Account and Pass Information --- */}
       <section className="space-y-6">
-        <h2 className="text-xl font-semibold border-b pb-2">계정과 이용권</h2>
+        <h2 className="text-xl font-semibold border-b pb-2">
+          {t("account.title")}
+        </h2>
 
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
           {/* Left: Account Details */}
@@ -174,7 +174,7 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <User className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">사용자 이름</p>
+                  <p className="text-sm font-medium">{t("account.userName")}</p>
                   <p className="text-sm text-muted-foreground">{userName}</p>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <Mail className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">이메일</p>
+                  <p className="text-sm font-medium">{t("account.email")}</p>
                   <p className="text-sm text-muted-foreground">{userEmail}</p>
                 </div>
               </div>
@@ -190,7 +190,9 @@ export function SettingsPage({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-md">
                 <Calendar className="size-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">가입일</p>
+                  <p className="text-sm font-medium">
+                    {t("account.createdAt")}
+                  </p>
                   <p className="text-sm text-muted-foreground">{createdAt}</p>
                 </div>
               </div>
@@ -201,28 +203,28 @@ export function SettingsPage({
           <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               <Crown className="size-5 text-primary" />
-              <h3 className="font-semibold">이용권 정보</h3>
+              <h3 className="font-semibold">{t("pass.title")}</h3>
             </div>
 
             <div className="space-y-3 flex-1">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-                <span className="text-sm font-medium">이용권 상태</span>
+                <span className="text-sm font-medium">{t("pass.status")}</span>
                 <div className="flex gap-2">
                   <Badge variant={config.variant}>
-                    {hasActivePass && passType && passLabels[passType]
-                      ? passLabels[passType]
+                    {hasActivePass && passType && labels[passType]
+                      ? labels[passType]
                       : config.label}
                   </Badge>
                   {cancelAtPeriodEnd && (
                     <Badge variant="outline" className="text-muted-foreground">
-                      만료 예정
+                      {t("pass.expiringSoon")}
                     </Badge>
                   )}
                 </div>
               </div>
 
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-                <span className="text-sm font-medium">남은 크레딧</span>
+                <span className="text-sm font-medium">{t("pass.credits")}</span>
                 <span className="text-sm font-semibold">{quota}</span>
               </div>
 
@@ -230,15 +232,17 @@ export function SettingsPage({
                 <div className="flex items-center gap-2">
                   <Calendar className="size-4 text-muted-foreground" />
                   <span className="text-sm font-medium">
-                    {hasActivePass ? "만료일" : "이용 기간"}
+                    {hasActivePass ? t("pass.expiry") : t("pass.usagePeriod")}
                   </span>
                 </div>
                 <span className="text-sm text-muted-foreground">
                   {!hasActivePass
-                    ? "무제한"
+                    ? t("pass.unlimited")
                     : currentPeriodEnd
-                    ? new Date(currentPeriodEnd).toLocaleDateString("ko-KR")
-                    : "정보 없음"}
+                    ? new Date(currentPeriodEnd).toLocaleDateString(
+                        locale === "ko" ? "ko-KR" : "en-US"
+                      )
+                    : t("pass.notAvailable")}
                 </span>
               </div>
 
@@ -249,7 +253,7 @@ export function SettingsPage({
                     <div className="flex items-center gap-2">
                       <PaymentIcon className="size-4 text-muted-foreground" />
                       <span className="text-sm font-medium">
-                        최근 결제 수단
+                        {t("pass.paymentMethod")}
                       </span>
                     </div>
                   </div>
@@ -257,14 +261,14 @@ export function SettingsPage({
                   <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
                     {/* Toss Pay Badge */}
                     <div className="h-6 px-2 bg-[#0064FF] rounded flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap">
-                      토스페이
+                      {t("pass.tossPay")}
                     </div>
                     <div className="flex-1 text-left min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {paymentInfo?.cardName || "신용카드"}
+                        {paymentInfo?.cardName || t("pass.creditCard")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {paymentInfo?.cardNumber || "**** **** **** ****"}
+                        {paymentInfo?.cardNumber || t("pass.placeholderCard")}
                       </p>
                     </div>
                   </div>
@@ -276,8 +280,7 @@ export function SettingsPage({
             {!hasActivePass && (
               <div className="mt-4 pt-4 border-t border-border">
                 <p className="text-xs text-muted-foreground text-center">
-                  💡 이용권을 구매하면 모든 템플릿과 재번역 무제한 혜택을 받을
-                  수 있습니다
+                  {t("pass.upgradeTip")}
                 </p>
               </div>
             )}
@@ -292,13 +295,13 @@ export function SettingsPage({
             tabIndex={-1}
             className="text-xl font-semibold scroll-mt-20 outline-none"
           >
-            이용권 구매
+            {t("purchase.title")}
           </h2>
           <Badge
             variant="outline"
             className="text-xs px-2.5 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
           >
-            🎉 오픈 기념 초특가
+            {t("purchase.badge")}
           </Badge>
         </div>
 
@@ -313,15 +316,17 @@ export function SettingsPage({
           >
             {hasActivePass && passType === "PASS_30DAY" && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
-                현재 이용 중
+                {t("purchase.currentlyUsing")}
               </div>
             )}
             {!hasActivePass && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                추천
+                {t("purchase.recommended")}
               </div>
             )}
-            <h3 className="text-lg font-bold mb-2 mt-2">30일 이용권</h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">
+              {t("purchase.pass30")}
+            </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
@@ -334,22 +339,24 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  57% OFF
+                  57% {t("purchase.off")}
                 </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {PLAN_PRODUCTS.PASS_30DAY.credits} 크레딧
+                {t("purchase.credits", {
+                  count: PLAN_PRODUCTS.PASS_30DAY.credits,
+                })}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                모든 템플릿 & 재번역 무제한
+                {t("purchase.unlimitedBenefit")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                30일간 자유 이용
+                {t("purchase.days30")}
               </li>
             </ul>
             <Button
@@ -373,11 +380,11 @@ export function SettingsPage({
             >
               {hasActivePass
                 ? passType === "PASS_30DAY"
-                  ? "현재 이용 중"
-                  : "전환 불가"
+                  ? t("purchase.currentlyUsing")
+                  : t("purchase.notPossible")
                 : userEmail === "test@applygogo.com"
-                ? "이용권 구매 (테스트)"
-                : "베타 기간 준비 중"}
+                ? t("purchase.buyTest")
+                : t("purchase.preparing")}
             </Button>
           </div>
 
@@ -391,10 +398,12 @@ export function SettingsPage({
           >
             {hasActivePass && passType === "PASS_7DAY" && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
-                현재 이용 중
+                {t("purchase.currentlyUsing")}
               </div>
             )}
-            <h3 className="text-lg font-bold mb-2 mt-2">7일 이용권</h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">
+              {t("purchase.pass7")}
+            </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
                 ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
@@ -407,22 +416,24 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  50% OFF
+                  50% {t("purchase.off")}
                 </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {PLAN_PRODUCTS.PASS_7DAY.credits} 크레딧
+                {t("purchase.credits", {
+                  count: PLAN_PRODUCTS.PASS_7DAY.credits,
+                })}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                모든 템플릿 & 재번역 무제한
+                {t("purchase.unlimitedBenefit")}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                7일간 맛보기 이용
+                {t("purchase.days7")}
               </li>
             </ul>
             <Button
@@ -446,11 +457,11 @@ export function SettingsPage({
             >
               {hasActivePass
                 ? passType === "PASS_7DAY"
-                  ? "현재 이용 중"
-                  : "전환 불가"
+                  ? t("purchase.currentlyUsing")
+                  : t("purchase.notPossible")
                 : userEmail === "test@applygogo.com"
-                ? "이용권 구매 (테스트)"
-                : "베타 기간 준비 중"}
+                ? t("purchase.buyTest")
+                : t("purchase.preparing")}
             </Button>
           </div>
 
@@ -460,7 +471,9 @@ export function SettingsPage({
               !hasActivePass ? "opacity-50" : ""
             }`}
           >
-            <h3 className="text-lg font-bold mb-2 mt-2">크레딧 충전</h3>
+            <h3 className="text-lg font-bold mb-2 mt-2">
+              {t("purchase.refill")}
+            </h3>
             <div className="flex flex-col items-start mb-6">
               {/* Empty placeholder to match height of original price in other cards */}
               <span className="text-sm text-transparent min-h-[20px]">
@@ -475,15 +488,17 @@ export function SettingsPage({
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                {PLAN_PRODUCTS.CREDIT_50.credits} 크레딧 충전
+                {t("purchase.credits", {
+                  count: PLAN_PRODUCTS.CREDIT_50.credits,
+                })}
               </li>
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-primary shrink-0" />
-                기간 제한 없음
+                {t("purchase.noLimit")}
               </li>
               <li className="flex items-center gap-2 text-amber-600">
                 <Check className="size-4 text-amber-600 shrink-0" />
-                이용권 필요
+                {t("purchase.requiresPass")}
               </li>
             </ul>
             <Button
@@ -500,8 +515,8 @@ export function SettingsPage({
               isLoading={isUpgrading}
             >
               {userEmail === "test@applygogo.com"
-                ? "크레딧 충전 (테스트)"
-                : "베타 기간 준비 중"}
+                ? t("purchase.buyTest")
+                : t("purchase.preparing")}
             </Button>
           </div>
         </div>
@@ -509,24 +524,25 @@ export function SettingsPage({
         {/* Beta Period Notice */}
         <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
           <p className="text-sm text-blue-900 dark:text-blue-100 text-center">
-            🎉 <strong>베타 런칭 기간</strong>에는 가입 후 제공되는{" "}
-            <strong>3일 무제한 이용권</strong>만 사용 가능합니다.
-            <br />
-            정식 출시 후 다양한 이용권을 만나보실 수 있습니다!
+            {t.rich("purchase.betaNotice", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
 
         {/* Subtle Refund Policy Note for Free Users */}
         {!hasActivePass && (
           <p className="text-[11px] text-muted-foreground/60 text-center mt-4">
-            구매 전 지원고고의{" "}
-            <a
-              href="/terms"
-              className="underline hover:text-primary transition-colors"
-            >
-              취소 및 환불 규정
-            </a>
-            을 확인해 주세요.
+            {t.rich("purchase.refundPolicyLink", {
+              a: (chunks) => (
+                <a
+                  href="/terms"
+                  className="underline hover:text-primary transition-colors"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
         )}
 
@@ -535,17 +551,17 @@ export function SettingsPage({
           <div className="bg-muted/30 border border-border rounded-lg p-6 mt-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold">취소 및 환불 규정</h3>
+                <h3 className="text-sm font-semibold">{t("refund.title")}</h3>
                 <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• 결제 후 7일 이내, 서비스 미이용 시 전액 환불 가능</li>
-                  <li>• 크레딧 사용 또는 AI 처리 이력이 있는 경우 환불 불가</li>
-                  <li>• 본 서비스는 부분 환불 정책을 운영하지 않습니다</li>
+                  <li>• {t("refund.policy1")}</li>
+                  <li>• {t("refund.policy2")}</li>
+                  <li>• {t("refund.policy3")}</li>
                 </ul>
                 <a
                   href="/terms"
                   className="text-xs text-primary underline-offset-4 hover:underline block pt-1"
                 >
-                  상세 약관 보기
+                  {t("refund.viewTerms")}
                 </a>
               </div>
             </div>
@@ -554,7 +570,7 @@ export function SettingsPage({
 
         {/* Payment History */}
         <div className="space-y-4">
-          <h3 className="font-semibold">결제 내역</h3>
+          <h3 className="font-semibold">{t("history.title")}</h3>
           {paymentHistory.length > 0 ? (
             <div className="bg-card border border-border rounded-lg overflow-hidden">
               <div className="overflow-x-auto">
@@ -562,25 +578,25 @@ export function SettingsPage({
                   <thead className="bg-muted/50 border-b border-border">
                     <tr>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        결제일
+                        {t("history.date")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        주문 번호
+                        {t("history.orderId")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        상품명
+                        {t("history.product")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground">
-                        결제 수단
+                        {t("history.method")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-right">
-                        금액
+                        {t("history.amount")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-center">
-                        상태
+                        {t("history.status")}
                       </th>
                       <th className="py-3 px-4 font-medium text-muted-foreground text-right">
-                        관리
+                        {t("history.manage")}
                       </th>
                     </tr>
                   </thead>
@@ -591,7 +607,9 @@ export function SettingsPage({
                         className="border-b border-border last:border-0 hover:bg-muted/20"
                       >
                         <td className="py-3 px-4 whitespace-nowrap">
-                          {new Date(item.paidAt).toLocaleDateString("ko-KR")}
+                          {new Date(item.paidAt).toLocaleDateString(
+                            locale === "ko" ? "ko-KR" : "en-US"
+                          )}
                         </td>
                         <td className="py-3 px-4">
                           <code className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
@@ -619,9 +637,9 @@ export function SettingsPage({
                             }
                           >
                             {item.status === "PAID"
-                              ? "결제 완료"
+                              ? t("history.paid")
                               : item.status === "REFUNDED"
-                              ? "환불 완료"
+                              ? t("history.refunded")
                               : item.status}
                           </Badge>
                         </td>
@@ -646,7 +664,7 @@ export function SettingsPage({
                                   }}
                                   isLoading={isRefunding}
                                 >
-                                  환불하기
+                                  {t("history.refund")}
                                 </Button>
                               )
                             );
@@ -662,7 +680,7 @@ export function SettingsPage({
             <div className="bg-card border border-border rounded-lg p-8 text-center">
               <CreditCard className="size-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
-                결제 내역이 없습니다
+                {t("history.empty")}
               </p>
             </div>
           )}
@@ -672,7 +690,7 @@ export function SettingsPage({
       {/* --- Section 3: Danger Zone --- */}
       <section className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2 text-destructive">
-          위험 구역
+          {t("danger.title")}
         </h2>
 
         <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-6">
@@ -681,9 +699,11 @@ export function SettingsPage({
               <Trash2 className="size-5 text-destructive" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold mb-1 text-destructive">계정 삭제</h3>
+              <h3 className="font-semibold mb-1 text-destructive">
+                {t("danger.deleteAccount")}
+              </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                계정 삭제 시 모든 데이터가 영구적으로 삭제됩니다
+                {t("danger.deleteDesc")}
               </p>
 
               <Button
@@ -692,7 +712,7 @@ export function SettingsPage({
                 className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
               >
                 <Trash2 className="size-4" />
-                계정 삭제
+                {t("danger.deleteAccount")}
               </Button>
             </div>
           </div>
@@ -703,21 +723,21 @@ export function SettingsPage({
       <AlertDialog open={isPassWarningOpen} onOpenChange={setIsPassWarningOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>사용 중인 이용권이 있습니다!</AlertDialogTitle>
+            <AlertDialogTitle>{t("danger.warning.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              아직 만료되지 않은 유료 이용권이 남아있습니다.
-              <br />
-              지금 탈퇴하시면 <strong>잔여 이용권과 혜택이 모두 소멸</strong>
-              되며, 환불받으실 수 없습니다.
+              {t.rich("danger.warning.desc", {
+                strong: (chunks) => <strong>{chunks}</strong>,
+                br: () => <br />,
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소하고 더 이용하기</AlertDialogCancel>
+            <AlertDialogCancel>{t("danger.warning.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={handlePassWarningConfirm}
             >
-              포기하고 삭제 진행
+              {t("danger.warning.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -728,30 +748,31 @@ export function SettingsPage({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-destructive">
-              정말 계정을 삭제하시겠습니까? (복구 불가)
+              {t("danger.confirm.title")}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <p>
-                계정 삭제 시 다음 데이터가 <strong>모두 영구 삭제</strong>되며,
-                절대 복구할 수 없습니다.
+                {t.rich("danger.confirm.desc1", {
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
               </p>
               <ul className="list-disc list-inside text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                <li>생성한 모든 이력서 및 자기소개서 데이터</li>
-                <li>결제 내역 및 영수증 정보</li>
-                <li>보유 중인 모든 이용권 및 크레딧</li>
+                <li>{t("danger.confirm.data1")}</li>
+                <li>{t("danger.confirm.data2")}</li>
+                <li>{t("danger.confirm.data3")}</li>
               </ul>
               <p className="font-medium text-destructive pt-2">
-                그래도 삭제하시겠습니까?
+                {t("danger.confirm.desc2")}
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogCancel>{t("danger.confirm.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={confirmDeleteAccount}
             >
-              삭제
+              {t("danger.confirm.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -764,19 +785,18 @@ export function SettingsPage({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>환불을 진행하시겠습니까?</AlertDialogTitle>
+            <AlertDialogTitle>{t("refundConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              환불 시 해당 이용권의 모든 혜택(크레딧 및 기능)이 즉시 회수됩니다.
-              이 작업은 되돌릴 수 없습니다.
+              {t("refundConfirm.desc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogCancel>{t("refundConfirm.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={confirmRefund}
             >
-              환불하기
+              {t("refundConfirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

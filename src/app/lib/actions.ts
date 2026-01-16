@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn, signOut, auth } from "../../auth";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -123,16 +123,31 @@ export async function uploadResumeAction(formData: FormData) {
   const filePath = `${userId}/${fileName}`;
 
   // 1. Upload to Supabase Storage
-  const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
-    .from("resumes")
+  const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || "applygogo";
+  console.log(
+    `[Action] Uploading file to bucket: ${bucketName} path: ${filePath}`
+  );
+
+  const adminClient = getSupabaseAdmin();
+  const { data: uploadData, error: uploadError } = await adminClient.storage
+    .from(bucketName)
     .upload(filePath, file, {
       upsert: true,
     });
 
   if (uploadError) {
-    console.error("Storage upload error:", uploadError);
+    console.error(
+      "[Action] Storage upload error details:",
+      JSON.stringify(uploadError, null, 2)
+    );
+    console.error(`[Action] URL used: ${process.env.NEXT_PUBLIC_SUPABASE_URL}`);
+    console.error(
+      `[Action] Key len: ${process.env.SUPABASE_SERVICE_ROLE_KEY?.length}`
+    );
     throw new Error("파일 업로드 중 오류가 발생했습니다.");
   }
+
+  console.log("[Action] Upload success:", uploadData);
 
   // 2. Create DB record using Prisma
   try {
@@ -151,7 +166,8 @@ export async function uploadResumeAction(formData: FormData) {
   } catch (dbError) {
     console.error("Database error:", dbError);
     // Cleanup storage if DB fails
-    await supabaseAdmin.storage.from("resumes").remove([filePath]);
+    const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || "applygogo";
+    await getSupabaseAdmin().storage.from(bucketName).remove([filePath]);
     throw new Error("데이터베이스 저장 중 오류가 발생했습니다.");
   }
 }
@@ -241,14 +257,14 @@ export async function updateResumeAction(
         await tx.workExperience.createMany({
           data: experiences.map((exp: any, index: number) => ({
             resumeId,
-            company_name_kr: exp.company,
-            company_name_en: exp.companyEn,
-            role_kr: exp.position,
-            role_en: exp.positionEn,
+            company_name_original: exp.company,
+            company_name_translated: exp.companyTranslated,
+            role_original: exp.position,
+            role_translated: exp.positionTranslated,
             start_date: exp.period.split(" ~ ")[0] || "",
             end_date: exp.period.split(" ~ ")[1] || "",
-            bullets_kr: exp.bullets,
-            bullets_en: exp.bulletsEn,
+            bullets_original: exp.bullets,
+            bullets_translated: exp.bulletsTranslated,
             order: index,
           })),
         });
@@ -259,12 +275,12 @@ export async function updateResumeAction(
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
             resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
+            school_name_original: edu.school_name,
+            school_name_translated: edu.school_name_translated,
+            major_original: edu.major,
+            major_translated: edu.major_translated,
+            degree_original: edu.degree,
+            degree_translated: edu.degree_translated,
             start_date: edu.start_date,
             end_date: edu.end_date,
             order: index,
@@ -291,8 +307,8 @@ export async function updateResumeAction(
           data: certifications.map((cert: any) => ({
             resumeId,
             type: "CERTIFICATION",
-            name_kr: cert.name,
-            description_kr: cert.issuer,
+            name_original: cert.name,
+            description_original: cert.issuer,
             date: cert.date,
           })),
         });
@@ -305,8 +321,8 @@ export async function updateResumeAction(
           data: awards.map((award: any) => ({
             resumeId,
             type: "AWARD",
-            name_kr: award.name,
-            description_kr: award.issuer,
+            name_original: award.name,
+            description_original: award.issuer,
             date: award.date,
           })),
         });
@@ -319,8 +335,8 @@ export async function updateResumeAction(
           data: languages.map((lang: any) => ({
             resumeId,
             type: "LANGUAGE",
-            name_kr: lang.name,
-            description_kr: [lang.level, lang.score]
+            name_original: lang.name,
+            description_original: [lang.level, lang.score]
               .filter(Boolean)
               .join(" / "),
           })),
@@ -331,12 +347,13 @@ export async function updateResumeAction(
       await tx.resume.update({
         where: { id: resumeId, userId },
         data: {
-          name_kr: personalInfo.name_kr,
-          name_en: personalInfo.name_en,
+          name_original: personalInfo.name_original,
+          name_translated: personalInfo.name_translated,
           email: personalInfo.email,
           phone: personalInfo.phone,
           links: personalInfo.links,
-          summary: personalInfo.summary || "",
+          summary_original: personalInfo.summary_original,
+          summary_translated: personalInfo.summary || "",
           current_step: "TEMPLATE",
         },
       });

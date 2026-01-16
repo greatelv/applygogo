@@ -79,15 +79,15 @@ export function ProfessionalTemplate({
               {educations.map((edu: any) => (
                 <div key={edu.id}>
                   <div className="font-bold text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_translated || edu.school_name}
                   </div>
                   <div className="text-gray-600">
-                    {edu.degree_en || edu.degree}
-                    {(edu.degree_en || edu.degree) &&
-                    (edu.major_en || edu.major)
+                    {edu.degree_translated || edu.degree}
+                    {(edu.degree_translated || edu.degree) &&
+                    (edu.major_translated || edu.major)
                       ? ", "
                       : ""}
-                    {edu.major_en || edu.major}
+                    {edu.major_translated || edu.major}
                   </div>
                   <div className="text-gray-400 text-[10px] mt-0.5 font-medium">
                     {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -124,11 +124,12 @@ export function ProfessionalTemplate({
               {languages.map((lang: any) => (
                 <div key={lang.id} className="text-xs">
                   <span className="font-semibold text-gray-700 block">
-                    {lang.name_en || lang.name}
+                    {lang.name_translated || lang.name_original}
                   </span>
-                  {(lang.description_en || lang.description) && (
+                  {(lang.description_translated ||
+                    lang.description_original) && (
                     <span className="text-gray-500 text-[10px]">
-                      {lang.description_en || lang.description}
+                      {lang.description_translated || lang.description_original}
                     </span>
                   )}
                 </div>
@@ -147,7 +148,7 @@ export function ProfessionalTemplate({
               {certifications.map((cert: any) => (
                 <div key={cert.id}>
                   <span className="block text-gray-700">
-                    {cert.name_en || cert.name}
+                    {cert.name_translated || cert.name_original}
                   </span>
                   {cert.date && (
                     <span className="text-[10px] text-gray-400">
@@ -165,12 +166,14 @@ export function ProfessionalTemplate({
       <div className="flex-1 pt-8 pb-8 pr-8 pl-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-1">
-            {personalInfo?.name_en || personalInfo?.name_kr || "Name"}
+            {personalInfo?.name_translated ||
+              personalInfo?.name_original ||
+              "Name"}
           </h1>
           {/* Title Placeholder if specific field exists, usually use most recent job */}
-          {experiences[0]?.positionEn && (
+          {experiences[0]?.positionTranslated && (
             <div className="text-lg text-blue-600 font-medium">
-              {experiences[0].positionEn}
+              {experiences[0].positionTranslated}
             </div>
           )}
         </div>
@@ -199,10 +202,10 @@ export function ProfessionalTemplate({
                   <div className="flex justify-between items-baseline mb-1">
                     <div>
                       <span className="font-bold text-gray-900 text-[11pt] mr-2">
-                        {exp.companyEn}
+                        {exp.companyTranslated}
                       </span>
                       <span className="text-gray-700 text-[10pt] font-medium">
-                        {exp.positionEn}
+                        {exp.positionTranslated}
                       </span>
                     </div>
                     <span className="text-xs text-gray-500 font-medium italic shrink-0">
@@ -211,15 +214,19 @@ export function ProfessionalTemplate({
                     </span>
                   </div>
                   <ul className="space-y-1.5 mt-2">
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      <li
-                        key={idx}
-                        className="flex gap-2 text-[9.5pt] text-gray-600 leading-snug"
-                      >
-                        <span className="text-blue-600 mt-0.5 text-xs">•</span>
-                        <span className="flex-1">{bullet}</span>
-                      </li>
-                    ))}
+                    {exp.bulletsTranslated?.map(
+                      (bullet: string, idx: number) => (
+                        <li
+                          key={idx}
+                          className="flex gap-2 text-[9.5pt] text-gray-600 leading-snug"
+                        >
+                          <span className="text-blue-600 mt-0.5 text-xs">
+                            •
+                          </span>
+                          <span className="flex-1">{bullet}</span>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
               ))}
@@ -237,10 +244,10 @@ export function ProfessionalTemplate({
               {awards.map((award: any) => (
                 <div key={award.id} className="text-sm">
                   <span className="font-bold text-gray-800">
-                    {award.name_en || award.name}
+                    {award.name_translated || award.name_original}
                   </span>
                   <div className="text-gray-600 text-xs">
-                    {award.description_en || award.description}
+                    {award.description_translated || award.description_original}
                     {award.date ? ` | ${formatDate(award.date)}` : ""}
                   </div>
                 </div>

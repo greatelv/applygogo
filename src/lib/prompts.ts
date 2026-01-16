@@ -68,21 +68,21 @@ export const RESUME_EXTRACTION_PROMPT = `
     "detected_language": "ko" // "ko" | "en"
   },
   "personal_info": {
-    "name_kr": "...", // 원문 이름 (Name in original language)
+    "name_original": "...", // 원문 이름 (Name in original language)
     "email": "...",
     "phone": "...",
     "links": [
       { "label": "LinkedIn/GitHub/Blog/Portfolio...", "url": "..." }
     ]
   },
-  "professional_summary_kr": "...", // 원문 요약 (Summary in original language)
+  "professional_summary_original": "...", // 원문 요약 (Summary in original language)
   "work_experiences": [ 
     {
-      "company_name_kr": "...", // 원문 회사명
-      "role_kr": "...", // 원문 직무
+      "company_name_original": "...", // 원문 회사명
+      "role_original": "...", // 원문 직무
       "start_date": "YYYY-MM",
       "end_date": "YYYY-MM",
-      "bullets_kr": ["..."] // 원문 불렛 (번역 X)
+      "bullets_original": ["..."] // 원문 불렛 (번역 X)
     }
   ],
   "educations": [
@@ -146,17 +146,97 @@ ${JSON.stringify(extractedData, null, 2)}
 \`\`\`json
 {
   "personal_info": { ... },
-  "professional_summary_kr": "...",
+  "professional_summary_original": "...",
   "work_experiences": [
     {
-      "company_name_kr": "통합된 공식 회사명",
-      "role_kr": "...",
+      "company_name_original": "통합된 공식 회사명",
+      "company_name_translated": "...",
+      "role_original": "...",
+      "role_translated": "...",
       "start_date": "YYYY-MM (전체 기간)",
       "end_date": "YYYY-MM (전체 기간)",
-      "bullets_kr": ["... (선별된 핵심 성과)"]
+      "bullets_original": ["... (선별된 핵심 성과 - 원문 언어 유지)"],
+      "bullets_translated": ["... (선별된 핵심 성과 - 번역 언어 유지, 없다면 생략 가능)"]
     }
   ],
   ...
+}
+\`\`\`
+`;
+
+// ============================================================================
+// Global Expansion (Phase 2): 영문 이력서 -> 국문 번역 (Professional Translation)
+// - 목표: 영문 데이터를 한국 채용 시장에 적합한 격식 있는 국문으로 번역
+// - 고유명사는 한국식 표기를 따름
+// - 경력 누락 금지
+// ============================================================================
+export const getResumeEnToKoTranslationPrompt = (extractedData: any) => `
+당신은 **전문 이력서 번역가이자 커리어 컨설턴트**입니다.
+주어진 영문 이력서 데이터를 **한국 채용 시장에 적합한 격식 있는 국문으로 번역**해주세요.
+
+**⚠️ 번역 가이드 (Guidelines):**
+
+1. **격식 있는 비즈니스 화법**:
+   - 한국의 이력서 관행에 맞게 **격식 있고 전문적인 용어**를 사용하세요.
+   - 문장은 가급적 간결하게 처리하되, 의미가 명확해야 합니다.
+
+2. **용어의 현지화 (Localization)**:
+   - **이름(Name)**: 영문 이름을 한국식 한글 표기로 변환하세요.
+     * 예: "Jay Jeon" -> "전제이"
+   - **회사명/학교명**: 
+     * 한국에 공식 명칭이 있는 경우 해당 명칭을 사용하세요. (예: "University of Washington" -> "워싱턴 대학교")
+     * 고유명사는 한글로 음역하세요. (예: "Soomgo" -> "숨고")
+   - **직무명**: 한국 업계에서 통용되는 명칭을 사용하세요. (예: "Software Engineer" -> "소프트웨어 엔지니어")
+
+3. **누락 없는 정보 전달**:
+   - 모든 회사, 학력, 자격증 정보를 빠짐없이 포함하세요.
+   - 정렬 순서는 원문과 동일하게 유지하세요.
+
+**입력 데이터 (English Resume Data):**
+${JSON.stringify(extractedData, null, 2)}
+
+**출력 형식:**
+국문 필드를 추가한 완전한 JSON을 반환하세요. 원문 필드는 그대로 유지하거나 원문 데이터를 넣으세요.
+
+\`\`\`json
+{
+  "personal_info": {
+    "name_original": "... (English Name)",
+    "name_translated": "... (한글 이름 표기)",
+    "email": "...",
+    "phone": "...",
+    "links": [...]
+  },
+  "professional_summary_original": "...",
+  "professional_summary_translated": "... (국문 번역)",
+  "work_experiences": [
+    {
+      "company_name_original": "...",
+      "company_name_translated": "... (국문 회사명)",
+      "role_original": "...",
+      "role_translated": "... (국문 직무명)",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM",
+      "bullets_original": ["..."],
+      "bullets_translated": ["... (국문 번역)"]
+    }
+  ],
+  "educations": [
+    {
+      "school_name_original": "...",
+      "school_name_translated": "...",
+      "major_original": "...",
+      "major_translated": "...",
+      "degree_original": "...",
+      "degree_translated": "...",
+      "start_date": "...",
+      "end_date": "..."
+    }
+  ],
+  "skills": ["..."],
+  "certifications": [...],
+  "awards": [...],
+  "languages": [...]
 }
 \`\`\`
 `;
@@ -225,13 +305,13 @@ ${JSON.stringify(refinedData, null, 2)}
 - 입력 데이터의 모든 회사가 출력에 포함되어 있는가?
 - 정렬 순서가 입력과 동일한가?
 - 경력이 누락되거나 추가되지 않았는가?
-- **personal_info.name_en**이 올바르게 생성되었는가?
+- **personal_info.name_translated**이 올바르게 생성되었는가?
 
 \`\`\`json
 {
   "personal_info": {
-    "name_kr": "...",
-    "name_en": "Moon Ja Lee (Romanized English Name)",
+    "name_original": "...",
+    "name_translated": "Moon Ja Lee (Romanized English Name)",
     "email": "...",
     "phone": "...",
     "links": [
@@ -241,28 +321,28 @@ ${JSON.stringify(refinedData, null, 2)}
       }
     ]
   },
-  "professional_summary_kr": "...",
-  "professional_summary": "... (영문 번역)",
+  "professional_summary_original": "...",
+  "professional_summary_translated": "... (영문 번역)",
   "work_experiences": [
     {
-      "company_name_kr": "... (입력과 동일)",
-      "company_name_en": "... (로마자 표기)",
-      "role_kr": "...",
-      "role_en": "...",
+      "company_name_original": "... (입력과 동일)",
+      "company_name_translated": "... (로마자 표기)",
+      "role_original": "...",
+      "role_translated": "...",
       "start_date": "...",
       "end_date": "...",
-      "bullets_kr": ["..."],
-      "bullets_en": ["... (Action Verb로 번역)"]
+      "bullets_original": ["..."],
+      "bullets_translated": ["... (Action Verb로 번역)"]
     }
   ],
   "educations": [
     {
-      "school_name": "... (입력과 동일, 한글 유지)",
-      "school_name_en": "... (영문 번역)",
-      "major": "... (입력과 동일, 한글 유지)",
-      "major_en": "... (영문 번역)",
-      "degree": "... (입력과 동일, 한글 유지)",
-      "degree_en": "... (영문 번역)",
+      "school_name_original": "... (입력과 동일, 한글 유지)",
+      "school_name_translated": "... (영문 번역)",
+      "major_original": "... (입력과 동일, 한글 유지)",
+      "major_translated": "... (영문 번역)",
+      "degree_original": "... (입력과 동일, 한글 유지)",
+      "degree_translated": "... (영문 번역)",
       "start_date": "...",
       "end_date": "..."
     }
@@ -270,28 +350,28 @@ ${JSON.stringify(refinedData, null, 2)}
   "skills": ["..."],
   "certifications": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_original": "... (입력과 동일, 한글 유지)",
+      "name_translated": "... (영문 번역)",
       "date": "...",
       "issuer": "...",
-      "issuer_en": "..."
+      "issuer_translated": "..."
     }
   ],
   "awards": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_original": "... (입력과 동일, 한글 유지)",
+      "name_translated": "... (영문 번역)",
       "date": "...",
       "issuer": "...",
-      "issuer_en": "..."
+      "issuer_translated": "..."
     }
   ],
   "languages": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_original": "... (입력과 동일, 한글 유지)",
+      "name_translated": "... (영문 번역)",
       "level": "...",
-      "level_en": "..."
+      "level_translated": "..."
     }
   ]
 }
@@ -306,53 +386,73 @@ export const RESUME_ANALYSIS_PROMPT = RESUME_EXTRACTION_PROMPT;
 
 export const getTranslationPrompt = (
   texts: string[],
-  type: "bullets" | "general"
+  type: "bullets" | "general",
+  targetLang: string = "en"
 ) => {
+  const isEnTarget = targetLang === "en";
   let instruction = "";
   if (type === "bullets") {
-    instruction = `
-    Translate the following Korean bullet points into professional English resume bullet points optimized for US/global standards.
-    
-    CRITICAL FORMATTING RULES:
-    - Each bullet point MUST be 1-2 lines maximum (approximately 100-150 characters)
-    - Start with a strong action verb (e.g., Developed, Architected, Optimized, Led, Implemented)
-    - Focus on IMPACT and RESULTS, not detailed process descriptions
-    - Include quantifiable metrics (percentages, numbers, time savings) prominently
-    - Use concise, direct language - eliminate unnecessary words and redundant explanations
-    - Avoid Korean-style verbose storytelling - be punchy and achievement-focused
-    - Technical terms should remain in English (e.g., API, WebClient, Circuit Breaker)
-    - Remove excessive context and background - lead with the achievement
-    
-    STRUCTURE PATTERN:
-    [Action Verb] + [What you did] + [Quantifiable Result/Impact]
+    if (isEnTarget) {
+      instruction = `
+      Translate the following Korean bullet points into professional English resume bullet points optimized for US/global standards.
+      
+      CRITICAL FORMATTING RULES:
+      - Each bullet point MUST be 1-2 lines maximum (approximately 100-150 characters)
+      - Start with a strong action verb (e.g., Developed, Architected, Optimized, Led, Implemented)
+      - Focus on IMPACT and RESULTS, not detailed process descriptions
+      - Include quantifiable metrics (percentages, numbers, time savings) prominently
+      - Use concise, direct language - eliminate unnecessary words and redundant explanations
+      - Avoid Korean-style verbose storytelling - be punchy and achievement-focused
+      - Technical terms should remain in English (e.g., API, WebClient, Circuit Breaker)
+      - Remove excessive context and background - lead with the achievement
+      
+      STRUCTURE PATTERN:
+      [Action Verb] + [What you did] + [Quantifiable Result/Impact]
 
-    EXAMPLE TRANSFORMATION:
-    ❌ BAD (Korean style): "각 주문당 외부 API 3개를 순차 호출하여 주문 1,000건 등록에 평균 30초가 소요되었던 상황에서, WebClient 호출을 병렬 처리로 전환하여 처리량을 향상시키고 응답 속도를 개선했습니다."
-    ✅ GOOD (English resume): "Optimized order processing by parallelizing 3 external API calls, reducing registration time by 92% (30s → 2.3s for 1,000 orders)"
+      EXAMPLE TRANSFORMATION:
+      ❌ BAD (Korean style): "각 주문당 외부 API 3개를 순차 호출하여 주문 1,000건 등록에 평균 30초가 소요되었던 상황에서, WebClient 호출을 병렬 처리로 전환하여 처리량을 향상시키고 응답 속도를 개선했습니다."
+      ✅ GOOD (English resume): "Optimized order processing by parallelizing 3 external API calls, reducing registration time by 92% (30s → 2.3s for 1,000 orders)"
 
-    If a Korean bullet is overly long, CONDENSE it into the most impactful 1-2 achievements.
-    `;
+      If a Korean bullet is overly long, CONDENSE it into the most impactful 1-2 achievements.
+      `;
+    } else {
+      instruction = `
+      영문 이력서의 불렛 포인트를 한국 채용 시장에 적합한 격식 있는 국문 개조식 문장으로 번역해 주세요.
+      
+      단순 번역이 아닌 한국 기업들이 선호하는 '명사형 종결' 어미를 사용하여 전문성을 높여주세요.
+      - 예: "Developed a web application" -> "웹 애플리케이션 개발"
+      - 수치나 기술 스택은 그대로 유지하거나 적절히 배치하세요.
+      `;
+    }
   } else {
-    instruction = `
-    Translate the following Korean text into English suitable for a resume. The text could be a Person's Name, Company Name, Job Title, School Name, Major, etc.
+    if (isEnTarget) {
+      instruction = `
+      Translate the following Korean text into English suitable for a resume. The text could be a Person's Name, Company Name, Job Title, School Name, Major, etc.
 
-    RULES:
-    1. **Korean Personal Names (CRITICAL):**
-       - If the text is a person's name (e.g. 2-4 syllable Korean name), DO NOT just transliterate it as a single lowercase word (e.g., avoid "imunja", "gimcheolsu").
-       - Use standard English name conventions with Title Case.
-       - Format: [First Name] [Last Name] OR [Last Name] [First Name].
-       - Examples:
-         - "이문자" -> "Moon Ja Lee"
-         - "홍길동" -> "Gil Dong Hong" or "Gildong Hong"
-         - "박지성" -> "Jisung Park"
+      RULES:
+      1. **Korean Personal Names (CRITICAL):**
+         - If the text is a person's name (e.g. 2-4 syllable Korean name), DO NOT just transliterate it as a single lowercase word (e.g., avoid "imunja", "gimcheolsu").
+         - Use standard English name conventions with Title Case.
+         - Format: [First Name] [Last Name] OR [Last Name] [First Name].
+         - Examples:
+           - "이문자" -> "Moon Ja Lee"
+           - "홍길동" -> "Gil Dong Hong" or "Gildong Hong"
+           - "박지성" -> "Jisung Park"
 
-    2. **Company Names & Proper Nouns:**
-       - Use the official English name if available.
-       - If not, romanize with Title Case (e.g., "Soomgo", not "sumgo").
+      2. **Company Names & Proper Nouns:**
+         - Use the official English name if available.
+         - If not, romanize with Title Case (e.g., "Soomgo", not "sumgo").
 
-    3. **General Terms:**
-       - Use standard professional/academic terms (e.g., "Bachelor of Science", "Senior Engineer").
-    `;
+      3. **General Terms:**
+         - Use standard professional/academic terms (e.g., "Bachelor of Science", "Senior Engineer").
+      `;
+    } else {
+      instruction = `
+      다음 영문 텍스트를 한국어 이력서용 국문으로 번역해 주세요. (이름, 회사명, 직무, 학교명 등)
+      - 공식 명칭이 있는 경우 해당 명칭을 사용하세요.
+      - 인명의 경우 표준 한글 표기법을 따르세요.
+      `;
+    }
   }
 
   return `
@@ -419,3 +519,83 @@ export const getNarrativeGenerationPrompt = (
   ]
   `;
 };
+
+// ============================================================================
+// Global Expansion (Phase 3 Alternative): Full Resume Narrative Generation (EN -> KO)
+// - Applies the narrative logic to the entire resume structure
+// ============================================================================
+export const getResumeNarrativePrompt = (extractedData: any) => `
+당신은 **최고의 글로벌 커리어 코치이자 전문 에디터**입니다.
+영문 이력서(English Resume) 데이터를 **한국 채용 시장에 최적화된 국문 자기소개서 스타일의 이력서(Korean Narrative Resume)**로 변환해주세요.
+
+**⚠️ 3대 핵심 미션 (Mission):**
+
+1. **서사(Narrative)가 살아있는 경험 기술**:
+   - 영문 불렛 포인트(Action Verb 중심)를 **STAR 기법(Situation, Task, Action, Result)이 녹아든 국문 서술형 문장**으로 확장하세요.
+   - 단순 번역이 아닌 **"Generative Localization"**을 수행해야 합니다.
+   - 예: "Reduced latency by 50%" (EN)
+     -> "기존 시스템의 병목 현상을 정밀 분석하고 캐싱 전략을 최적화함으로써, 전체 응답 지연 시간을 50%까지 획기적으로 단축시켰습니다." (KO)
+
+2. **용어의 현지화 (Localization)**:
+   - **학교명/회사명**: 널리 알려진 경우 공식 국문 명칭을 사용하고(예: University of Washington -> 워싱턴 대학교), 모호하면 원문 영어를 병기하세요(예: Coupang -> 쿠팡).
+   - **직무/스킬**: 한국 업계에서 통용되는 전문 용어로 변환하세요.
+
+3. **누락 없는 정보 전달**:
+   - 입력된 모든 회사, 학력, 자격증 정보를 빠짐없이 포함하세요.
+   - 정렬 순서는 입력된 데이터(최신순)를 유지하세요.
+
+**변환 가이드 (Guidelines):**
+- **문체**: "~했습니다", "~하였습니다" 와 같은 **격식 있는 해요체(Polite Formal)** 사용. (단, 개조식 불렛 형태가 아니라 문장 형태로 자연스럽게 연결)
+- **불렛 개수**: 원문 불렛과 1:1 매칭될 필요는 없으나, 핵심 성과를 중심으로 3~5개의 풍부한 문장으로 구성하세요.
+
+**입력 데이터 (English Resume Data):**
+${JSON.stringify(extractedData, null, 2)}
+
+**출력 형식:**
+\`\`\`json
+{
+  "personal_info": {
+    "name_original": "... (English Name)",
+    "name_translated": "... (한글 이름 표기, 예: 홍길동)",
+    "email": "...",
+    "phone": "...",
+    "links": [...]
+  },
+  "professional_summary_original": "...",
+  "professional_summary_translated": "... (국문 요약: 지원자의 강점과 전문성을 3~4문장으로 매력적으로 서술)",
+  "work_experiences": [
+    {
+      "company_name_original": "...",
+      "company_name_translated": "... (국문 회사명)",
+      "role_original": "...",
+      "role_translated": "... (국문 직무명)",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM",
+      "bullets_original": ["... (Original English Bullets)"],
+      "bullets_translated": [
+        "첫 번째 서술형 문장...",
+        "두 번째 서술형 문장...",
+        ...
+      ]
+    }
+  ],
+  "educations": [
+    {
+      "school_name_original": "...",
+      "school_name_translated": "...",
+      "major_original": "...",
+      "major_translated": "...",
+      "degree_original": "...",
+      "degree_translated": "...",
+      "start_date": "...",
+      "end_date": "..."
+    }
+  ],
+  "skills": ["... (한글/영문 혼용 가능)"],
+  "certifications": [...],
+  "awards": [...],
+  "languages": [...]
+}
+\`\`\`
+- Output ONLY the JSON.
+`;

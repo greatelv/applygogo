@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2, Plus } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Button } from "../ui/button";
 import { TranslatedExperience } from "./types";
 import { ItemTypes } from "./constants";
@@ -40,9 +41,16 @@ export const DraggableExperienceItem = ({
   onBulletEdit,
   onAddBullet,
   onRemoveBullet,
+  leftLabel,
+  rightLabel,
   highlightedBullets,
-}: DraggableExperienceItemProps) => {
+}: DraggableExperienceItemProps & {
+  leftLabel: string;
+  rightLabel: string;
+}) => {
+  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
+  // ... rest of useDrop/useDrag ...
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.EXPERIENCE,
     collect(monitor) {
@@ -118,12 +126,12 @@ export const DraggableExperienceItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                한글 (원본)
+                {leftLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                English (번역)
+                {rightLabel}
               </p>
             </div>
           </div>
@@ -141,7 +149,7 @@ export const DraggableExperienceItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating ? "Processing..." : "Sync & Retranslate"}
               </span>
             </Button>
             <button
@@ -149,7 +157,7 @@ export const DraggableExperienceItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">Delete</span>
             </button>
           </div>
         </div>
@@ -159,7 +167,7 @@ export const DraggableExperienceItem = ({
             {/* Left: Original (KR) */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {leftLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -172,7 +180,11 @@ export const DraggableExperienceItem = ({
                       e.currentTarget.textContent || ""
                     )
                   }
-                  data-placeholder="회사/조직명 (예: 삼성전자)"
+                  data-placeholder={
+                    locale === "ko"
+                      ? "회사/조직명 (예: 삼성전자)"
+                      : "Company/Organization"
+                  }
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {exp.company}
@@ -188,7 +200,7 @@ export const DraggableExperienceItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="직무"
+                    data-placeholder={locale === "ko" ? "직무" : "Position"}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {exp.position}
@@ -204,7 +216,11 @@ export const DraggableExperienceItem = ({
                         e.currentTarget.textContent || ""
                       )
                     }
-                    data-placeholder="기간 (예: 2020.01 - 2023.12)"
+                    data-placeholder={
+                      locale === "ko"
+                        ? "기간 (예: 2020.01 - 2023.12)"
+                        : "Period"
+                    }
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
                     {exp.period}
@@ -229,7 +245,11 @@ export const DraggableExperienceItem = ({
                           false
                         )
                       }
-                      data-placeholder="업무 성과 및 활동 내용"
+                      data-placeholder={
+                        locale === "ko"
+                          ? "업무 성과 및 활동 내용"
+                          : "Key achievement/Responsibility"
+                      }
                       className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {bullet}
@@ -248,7 +268,7 @@ export const DraggableExperienceItem = ({
             {/* Right: Translated (EN) */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {rightLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -257,14 +277,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "companyEn",
+                      "companyTranslated",
                       e.currentTarget.textContent || ""
                     )
                   }
                   data-placeholder="Company Name (EN)"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.companyEn}
+                  {exp.companyTranslated}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -273,14 +293,14 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "positionEn",
+                        "positionTranslated",
                         e.currentTarget.textContent || ""
                       )
                     }
                     data-placeholder="Position (EN)"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.positionEn}
+                    {exp.positionTranslated}
                   </div>
                   <span className="text-muted-foreground select-none">•</span>
                   <div
@@ -302,7 +322,7 @@ export const DraggableExperienceItem = ({
               </div>
 
               <ul className="space-y-3">
-                {exp.bulletsEn.map((bullet, index) => (
+                {exp.bulletsTranslated.map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -345,7 +365,7 @@ export const DraggableExperienceItem = ({
               onClick={() => onAddBullet(exp.id)}
               className="w-full h-10 border border-border shadow-sm hover:bg-accent transition-colors text-sm font-medium"
             >
-              <Plus className="size-4 mr-2" /> 항목 추가
+              <Plus className="size-4 mr-2" /> Add Item
             </Button>
           </div>
         </div>

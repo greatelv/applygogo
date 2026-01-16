@@ -1,6 +1,7 @@
-import { supabaseAdmin } from "./src/lib/supabase";
+import { getSupabaseAdmin } from "./src/lib/supabase";
 
 async function initializeStorage() {
+  const supabaseAdmin = getSupabaseAdmin();
   const { data: buckets, error: listError } =
     await supabaseAdmin.storage.listBuckets();
 

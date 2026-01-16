@@ -23,19 +23,19 @@ interface Experience {
   position: string;
   period: string;
   bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  companyTranslated: string;
+  positionTranslated: string;
+  bulletsTranslated: string[];
 }
 
 interface Education {
   id: string;
   school_name: string;
-  school_name_en?: string;
+  school_name_translated?: string;
   major: string;
-  major_en?: string;
+  major_translated?: string;
   degree: string;
-  degree_en?: string;
+  degree_translated?: string;
   start_date: string;
   end_date: string;
 }
@@ -46,30 +46,9 @@ interface Skill {
   level?: string | null;
 }
 
-interface Certification {
-  id: string;
-  name: string;
-  issuer?: string;
-  date?: string;
-}
-
-interface Award {
-  id: string;
-  name: string;
-  issuer?: string;
-  date?: string;
-}
-
-interface Language {
-  id: string;
-  name: string;
-  level?: string;
-  score?: string;
-}
-
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_original?: string;
+  name_translated?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
@@ -96,6 +75,7 @@ export function MinimalTemplate({
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  // @ts-ignore
   const others = additionalItems.filter(
     (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
   );
@@ -104,7 +84,9 @@ export function MinimalTemplate({
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_translated ||
+            personalInfo?.name_original ||
+            "이름 없음"}
         </h1>
         {/* <p className="text-gray-500 text-sm mb-4">Frontend Developer</p> */}
         <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
@@ -150,9 +132,11 @@ export function MinimalTemplate({
                 <div className="flex justify-between items-baseline mb-3">
                   <div>
                     <h3 className="font-medium text-gray-900">
-                      {exp.companyEn}
+                      {exp.companyTranslated}
                     </h3>
-                    <p className="text-sm text-gray-500">{exp.positionEn}</p>
+                    <p className="text-sm text-gray-500">
+                      {exp.positionTranslated}
+                    </p>
                   </div>
                   <span className="text-xs text-gray-400 tabular-nums">
                     {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -160,7 +144,7 @@ export function MinimalTemplate({
                   </span>
                 </div>
                 <ul className="space-y-2">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bulletsTranslated.map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-600 leading-relaxed font-light"
@@ -205,18 +189,21 @@ export function MinimalTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-medium text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_translated || edu.school_name}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
+                  {((edu.school_name_translated &&
+                    edu.school_name_translated !== "-") ||
+                    (edu.school_name && edu.school_name !== "-") ||
+                    (edu.major_translated && edu.major_translated !== "-") ||
+                    (edu.major && edu.major !== "-") ||
+                    (edu.degree_translated && edu.degree_translated !== "-") ||
+                    (edu.degree && edu.degree !== "-")) && (
                     <p className="text-sm text-gray-500">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
+                      {edu.degree_translated || edu.degree}
+                      {(edu.degree_translated || edu.degree) &&
+                        (edu.major_translated || edu.major) &&
                         ", "}
-                      {edu.major_en || edu.major}
+                      {edu.major_translated || edu.major}
                     </p>
                   )}
                 </div>
@@ -249,9 +236,12 @@ export function MinimalTemplate({
                       key={cert.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
+                      {cert.name_translated || cert.name_original}{" "}
+                      {cert.description_translated || cert.description_original
+                        ? `| ${
+                            cert.description_translated ||
+                            cert.description_original
+                          }`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </div>
@@ -270,9 +260,13 @@ export function MinimalTemplate({
                       key={award.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
+                      {award.name_translated || award.name_original}{" "}
+                      {award.description_translated ||
+                      award.description_original
+                        ? `| ${
+                            award.description_translated ||
+                            award.description_original
+                          }`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </div>
@@ -292,11 +286,15 @@ export function MinimalTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1 text-gray-800">
-                        {lang.name_en || lang.name}
+                        {lang.name_translated || lang.name_original}
                       </span>
-                      {(lang.description_en || lang.description) && (
+                      {(lang.description_translated ||
+                        lang.description_original) && (
                         <span className="text-gray-400">
-                          ({lang.description_en || lang.description})
+                          (
+                          {lang.description_translated ||
+                            lang.description_original}
+                          )
                         </span>
                       )}
                     </span>

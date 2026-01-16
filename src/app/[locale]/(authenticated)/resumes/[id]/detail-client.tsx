@@ -19,6 +19,7 @@ interface DetailClientProps {
   updatedAt?: string;
   isWorkflowComplete?: boolean;
   convertedData?: any;
+  sourceLang?: string;
 }
 
 export function DetailClient({
@@ -33,6 +34,7 @@ export function DetailClient({
   updatedAt,
   isWorkflowComplete,
   convertedData,
+  sourceLang,
 }: DetailClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
@@ -92,6 +94,7 @@ export function DetailClient({
       updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}
       convertedData={convertedData}
+      sourceLang={sourceLang}
       showGenerateKo={isGlobalUser} // Only show for global users
       isGeneratingKo={isGeneratingKo}
       onGenerateKo={handleGenerateKo}

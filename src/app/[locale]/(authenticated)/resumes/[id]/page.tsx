@@ -38,32 +38,33 @@ export default async function Page({
 
   const mappedExperiences = resume.work_experiences.map((exp) => ({
     id: exp.id,
-    company: exp.company_name_kr,
-    companyEn: exp.company_name_en || exp.company_name_kr,
-    position: exp.role_kr,
-    positionEn: exp.role_en || exp.role_kr,
+    company: exp.company_name_original,
+    companyTranslated: exp.company_name_translated || exp.company_name_original,
+    position: exp.role_original,
+    positionTranslated: exp.role_translated || exp.role_original,
     period: `${exp.start_date} - ${exp.end_date}`,
-    bullets: (exp.bullets_kr as string[]) || [],
-    bulletsEn: (exp.bullets_en as string[]) || [],
+    bullets: (exp.bullets_original as string[]) || [],
+    bulletsTranslated: (exp.bullets_translated as string[]) || [],
   }));
 
   const mappedPersonalInfo = {
-    name_kr: resume.name_kr || "",
-    name_en: resume.name_en || "",
+    name_original: resume.name_original || "",
+    name_translated: resume.name_translated || "",
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as any[]) || [],
-    summary: resume.summary || "",
+    summary: resume.summary_translated || "",
+    summary_original: resume.summary_original || "",
   };
 
   const mappedEducations = resume.educations.map((edu) => ({
     id: edu.id,
-    school_name: edu.school_name,
-    school_name_en: edu.school_name_en,
-    major: edu.major,
-    major_en: edu.major_en,
-    degree: edu.degree,
-    degree_en: edu.degree_en,
+    school_name: edu.school_name_original,
+    school_name_translated: edu.school_name_translated,
+    major: edu.major_original,
+    major_translated: edu.major_translated,
+    degree: edu.degree_original,
+    degree_translated: edu.degree_translated,
     start_date: edu.start_date,
     end_date: edu.end_date,
   }));
@@ -77,10 +78,10 @@ export default async function Page({
   const mappedAdditionalItems = resume.additionalItems.map((item) => ({
     id: item.id,
     type: item.type,
-    name: item.name_kr,
-    name_en: item.name_en || item.name_kr,
-    description: item.description_kr || "",
-    description_en: item.description_en || "",
+    name_original: item.name_original,
+    name_translated: item.name_translated || item.name_original,
+    description_original: item.description_original || "",
+    description_translated: item.description_translated || "",
     date: item.date || "",
     order: item.order,
   }));
@@ -98,6 +99,7 @@ export default async function Page({
       updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}
       convertedData={resume.convertedData}
+      sourceLang={resume.sourceLang}
     />
   );
 }
