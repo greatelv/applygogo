@@ -6,7 +6,6 @@ import {
   Globe,
   Download,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -22,14 +21,10 @@ interface LandingPageProps {
   isLoading?: boolean;
 }
 
-import { useTranslations } from "next-intl";
-
 export function LandingPage({
   onGetStarted,
   isLoading = false,
 }: LandingPageProps) {
-  const t = useTranslations("Landing");
-
   return (
     <div className="min-h-screen bg-background">
       <BetaBanner />
@@ -43,13 +38,13 @@ export function LandingPage({
                 href="/blog"
                 className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                {t("header.blog")}
+                Blog
               </Link>
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
-                {t("header.getStarted")}
+                Get Started
               </Button>
             </div>
           </div>
@@ -63,20 +58,22 @@ export function LandingPage({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted mb-6">
               <Sparkles className="size-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                {t("hero.badge")}
+                AI-Powered Resume Conversion
               </span>
             </div>
 
             <h1 className="text-4xl lg:text-6xl font-bold tracking-tight mb-6">
-              {t("hero.title")}
+              Convert Your Resumes
               <br />
               <span className="text-muted-foreground">
-                {t("hero.titleSub")}
+                to Global Standard Korean
               </span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {t("hero.description")}
+              AI automatically converts your English resume to professional
+              Korean in minutes, creating a local-ready CV that top companies in
+              Korea notice.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -86,7 +83,7 @@ export function LandingPage({
                 isLoading={isLoading}
                 className="w-full sm:w-auto"
               >
-                {t("hero.getStarted")}
+                Start for Free
                 <ArrowRight className="size-4" />
               </Button>
               <TemplatePreviewDialog
@@ -97,14 +94,14 @@ export function LandingPage({
                     size="lg"
                     className="w-full sm:w-auto"
                   >
-                    {t("hero.viewSamples")}
+                    View Samples
                   </Button>
                 }
               />
             </div>
 
             <p className="text-sm text-muted-foreground mt-4">
-              {t("hero.freeNote")}
+              Start for free without a credit card • First 2 conversions free
             </p>
           </div>
         </div>
@@ -122,27 +119,29 @@ export function LandingPage({
                   variant="outline"
                   className="bg-background text-primary border-primary/30 px-3 py-1"
                 >
-                  {t("cost.badge")}
+                  Unbeatable Value
                 </Badge>
                 <h2 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
-                  {t("cost.title")}
+                  Faster than outsourcing,
                   <br />
-                  <span className="text-primary">{t("cost.titleSub")}</span>
+                  <span className="text-primary">at 1/10th the cost</span>
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  {t("cost.description")}
+                  Don't spend $50-$100 on a single English resume. Get
+                  professional results instantly at a reasonable price without
+                  the long wait.
                 </p>
 
                 <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <div className="flex items-center gap-3 bg-background/50 rounded-lg p-3 shadow-sm border border-border">
                     <div className="size-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
                       <span className="text-red-600 dark:text-red-400 font-bold text-sm">
-                        {t("cost.previous")}
+                        Previous
                       </span>
                     </div>
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground">
-                        {t("cost.averageCost")}
+                        Average Cost
                       </div>
                       <div className="font-semibold text-sm line-through text-muted-foreground decoration-red-500/50">
                         100,000원
@@ -158,7 +157,7 @@ export function LandingPage({
                     </div>
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground">
-                        ApplyGoGo
+                        ApplyGogo
                       </div>
                       <div className="font-bold text-lg text-primary">
                         {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
@@ -173,7 +172,7 @@ export function LandingPage({
                 <div className="bg-background rounded-2xl shadow-xl border border-border overflow-hidden transform hover:scale-105 transition-transform duration-500">
                   <div className="p-6 border-b border-border bg-muted/30">
                     <div className="text-sm font-medium text-center text-muted-foreground">
-                      {t("cost.compareTitle")}
+                      Price Comparison
                     </div>
                   </div>
                   <div className="p-8 space-y-8">
@@ -193,7 +192,7 @@ export function LandingPage({
                     <div className="space-y-2">
                       <div className="flex justify-between text-base">
                         <span className="font-bold text-primary">
-                          ApplyGoGo
+                          ApplyGogo
                         </span>
                         <span className="font-bold text-primary">
                           {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
@@ -220,10 +219,11 @@ export function LandingPage({
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-3xl tracking-tight mb-4">
-              {t("features.title")}
-            </h3>
-            <p className="text-muted-foreground">{t("features.subtitle")}</p>
+            <h3 className="text-3xl tracking-tight mb-4">Why ApplyGogo?</h3>
+            <p className="text-muted-foreground">
+              We create resumes optimized for the Korean job market, not just
+              simple translations.
+            </p>
           </div>
 
           <ul className="grid md:grid-cols-3 gap-8">
@@ -231,11 +231,11 @@ export function LandingPage({
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Sparkles className="size-6 text-primary" />
               </div>
-              <h4 className="text-lg font-semibold mb-2">
-                {t("features.summary.title")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">AI Summarization</h4>
               <p className="text-muted-foreground text-sm">
-                {t("features.summary.description")}
+                Gemini Pro analyzes your English career and reconstructs it into
+                3-4 impactful bullet points. Exactly the format Korean
+                recruiters want.
               </p>
             </li>
 
@@ -244,10 +244,11 @@ export function LandingPage({
                 <Globe className="size-6 text-primary" />
               </div>
               <h4 className="text-lg font-semibold mb-2">
-                {t("features.translation.title")}
+                Professional Translation
               </h4>
               <p className="text-muted-foreground text-sm">
-                {t("features.translation.description")}
+                Edit and compare English/Korean side-by-side with Split View.
+                Fully customizable with direct editing.
               </p>
             </li>
 
@@ -255,11 +256,10 @@ export function LandingPage({
               <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
                 <Download className="size-6 text-primary" />
               </div>
-              <h4 className="text-lg font-semibold mb-2">
-                {t("features.templates.title")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">Premium Templates</h4>
               <p className="text-muted-foreground text-sm">
-                {t("features.templates.description")}
+                Choose from Modern, Professional, Executive, and more. Download
+                as PDF instantly and submit to Korean top companies.
               </p>
             </li>
           </ul>
@@ -270,8 +270,12 @@ export function LandingPage({
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-3xl tracking-tight mb-4">{t("steps.title")}</h3>
-            <p className="text-muted-foreground">{t("steps.subtitle")}</p>
+            <h3 className="text-3xl tracking-tight mb-4">
+              Complete in 3 Steps
+            </h3>
+            <p className="text-muted-foreground">
+              Fast and easy without complex processes
+            </p>
           </div>
 
           <ol className="grid md:grid-cols-3 gap-8">
@@ -279,11 +283,9 @@ export function LandingPage({
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 1
               </div>
-              <h4 className="text-lg font-semibold mb-2">
-                {t("steps.upload.title")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">Upload PDF</h4>
               <p className="text-muted-foreground text-sm">
-                {t("steps.upload.description")}
+                Drag and drop your English resume PDF
               </p>
             </li>
 
@@ -291,11 +293,10 @@ export function LandingPage({
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 2
               </div>
-              <h4 className="text-lg font-semibold mb-2">
-                {t("steps.convert.title")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">AI Conversion</h4>
               <p className="text-muted-foreground text-sm">
-                {t("steps.convert.description")}
+                AI handles summarization and professional Korean translation
+                automatically. You can also edit directly.
               </p>
             </li>
 
@@ -303,11 +304,9 @@ export function LandingPage({
               <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
                 3
               </div>
-              <h4 className="text-lg font-semibold mb-2">
-                {t("steps.download.title")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">Download PDF</h4>
               <p className="text-muted-foreground text-sm">
-                {t("steps.download.description")}
+                Export to your favorite template and you're done
               </p>
             </li>
           </ol>
@@ -320,7 +319,7 @@ export function LandingPage({
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-3xl tracking-tight mb-6 leading-tight">
-                {t("recommended.title")}
+                Built for Global Talents Applying to Korea
               </h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
@@ -329,10 +328,12 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      {t("recommended.jobHunt.title")}
+                      Korean Company Resume & CV
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      {t("recommended.jobHunt.description")}
+                      We provide global standard Korean formats for those
+                      unfamiliar with local styles and professional Korean
+                      translations.
                     </p>
                   </div>
                 </div>
@@ -342,10 +343,11 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      {t("recommended.speed.title")}
+                      Fast English to Korean Conversion
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      {t("recommended.speed.description")}
+                      Need a Korean resume now? Just upload your existing
+                      English resume and finish in 5 minutes.
                     </p>
                   </div>
                 </div>
@@ -355,10 +357,11 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      {t("recommended.editing.title")}
+                      AI Korean Resume Editing
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      {t("recommended.editing.description")}
+                      Not just translation—we polish your experience into
+                      sophisticated Korean matching local recruitment standards.
                     </p>
                   </div>
                 </div>
@@ -383,7 +386,7 @@ export function LandingPage({
                   </div>
                   <div className="space-y-1 flex-1">
                     <p className="text-sm font-medium">
-                      Professional English Resume
+                      Professional Korean Resume
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Perfectly formatted & translated
@@ -400,24 +403,20 @@ export function LandingPage({
       <section className="py-20 bg-muted/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-4">
-            <h3 className="text-3xl tracking-tight font-bold">
-              {t("pricingPreview.title")}
-            </h3>
+            <h3 className="text-3xl tracking-tight font-bold">Simple Passes</h3>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground text-sm font-medium">
               <span>🎉</span>
-              <span>{t("pricingPreview.badge")}</span>
+              <span>Limited Launch Special</span>
             </div>
             <p className="text-muted-foreground">
-              {t("pricingPreview.subtitle")}
+              Prices you won't see again. Start with a reasonable pass.
             </p>
           </div>
 
           <ul className="grid md:grid-cols-3 gap-6">
-            {/* 무료 체험 */}
+            {/* Free Plan */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
-              <h4 className="text-lg font-semibold mb-2">
-                {useTranslations("App.resumes")("startFree")}
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">Start for Free</h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-transparent mb-1 min-h-[28px]">
                   Placeholder
@@ -452,11 +451,11 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                {t("hero.getStarted")}
+                Get Started
               </Button>
             </li>
 
-            {/* 7일 이용권 */}
+            {/* 7-Day Pass */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-2">7-Day Pass</h4>
               <div className="flex flex-col items-center justify-center mb-4">
@@ -505,11 +504,11 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                {t("header.getStarted")}
+                Get Started
               </Button>
             </li>
 
-            {/* 30일 이용권 (추천) */}
+            {/* 30-Day Pass (Recommended) */}
             <li className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20 flex flex-col h-full">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
                 Recommended
@@ -560,12 +559,13 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                {t("header.getStarted")}
+                Get Started
               </Button>
             </li>
           </ul>
           <p className="text-center text-sm text-muted-foreground mt-8">
-            {t("pricingPreview.note")}
+            * 5 credits deducted per resume creation. Free for pass holders or 1
+            credit for free users for re-translations.
           </p>
         </div>
       </section>
@@ -574,22 +574,38 @@ export function LandingPage({
       <section className="py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl tracking-tight mb-4">{t("faq.title")}</h3>
-            <p className="text-muted-foreground">{t("faq.subtitle")}</p>
+            <h3 className="text-3xl tracking-tight mb-4">FAQ</h3>
+            <p className="text-muted-foreground">Check common questions</p>
           </div>
 
           <div className="space-y-6">
             <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">{t("faq.q1.q")}</h4>
-              <p className="text-sm text-muted-foreground">{t("faq.q1.a")}</p>
+              <h4 className="font-semibold mb-2">
+                Does the Korean resume format matter?
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                No, we support most PDF formats including free-form and
+                downloads from job sites. AI extracts and analyzes text
+                regardless of complexity.
+              </p>
             </div>
             <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">{t("faq.q2.q")}</h4>
-              <p className="text-sm text-muted-foreground">{t("faq.q2.a")}</p>
+              <h4 className="font-semibold mb-2">
+                Can I edit the translated content?
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                Yes! After AI conversion, you can freely edit the summary and
+                English translation in our editor. Use Split View to refine it
+                alongside the original.
+              </p>
             </div>
             <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">{t("faq.q3.q")}</h4>
-              <p className="text-sm text-muted-foreground">{t("faq.q3.a")}</p>
+              <h4 className="font-semibold mb-2">Is the free plan enough?</h4>
+              <p className="text-sm text-muted-foreground">
+                We provide 10 credits monthly for you to try the service. It's
+                enough to complete and download a resume, but we recommend a
+                pass for premium templates and unlimited edits.
+              </p>
             </div>
           </div>
         </div>
@@ -598,10 +614,14 @@ export function LandingPage({
       {/* CTA */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-3xl tracking-tight mb-4">{t("cta.title")}</h3>
-          <p className="text-muted-foreground mb-8">{t("cta.subtitle")}</p>
+          <h3 className="text-3xl tracking-tight mb-4">
+            Start Your Global Career Now
+          </h3>
+          <p className="text-muted-foreground mb-8">
+            Stop worrying about Korean resumes with ApplyGogo.
+          </p>
           <Button onClick={onGetStarted} size="lg" isLoading={isLoading}>
-            {t("cta.button")}
+            Start for Free
             <ArrowRight className="size-4" />
           </Button>
         </div>

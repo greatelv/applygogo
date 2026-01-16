@@ -13,14 +13,13 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { useApp } from "../context/app-context";
-import { useTranslations, useLocale } from "next-intl";
 
 const steps = [
-  { id: "upload", label: { ko: "업로드", en: "Upload" } },
-  { id: "processing", label: { ko: "AI 처리", en: "AI Processing" } },
-  { id: "edit", label: { ko: "편집", en: "Edit" } },
-  { id: "preview", label: { ko: "템플릿 선택", en: "Selection" } },
-  { id: "complete", label: { ko: "완료", en: "Complete" } },
+  { id: "upload", label: "Upload" },
+  { id: "processing", label: "AI Processing" },
+  { id: "edit", label: "Edit" },
+  { id: "preview", label: "Selection" },
+  { id: "complete", label: "Complete" },
 ];
 
 interface ProcessingPageProps {
@@ -30,7 +29,7 @@ interface ProcessingPageProps {
   isCompleting?: boolean;
 }
 
-// 3단계 AI 프로세싱 단계 (추출 → 정제 → 번역)
+// 3-phase AI processing (Extract → Refine → Translate)
 type ProcessingPhase =
   | "uploading"
   | "extracting"
@@ -45,8 +44,6 @@ export function ProcessingPage({
   isCompleting = false,
 }: ProcessingPageProps) {
   const router = useRouter();
-  const t = useTranslations("Processing");
-  const locale = useLocale();
   const { setWorkflowState, plan } = useApp();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
@@ -54,13 +51,9 @@ export function ProcessingPage({
   const [sourceLang, setSourceLang] = useState<string>("ko");
 
   useEffect(() => {
-    const localizedSteps = steps.map((s) => ({
-      id: s.id,
-      label: s.label[locale as keyof typeof s.label] || s.label.ko,
-    }));
-    setWorkflowState(localizedSteps, "processing");
+    setWorkflowState(steps, "processing");
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState, locale]);
+  }, [setWorkflowState]);
 
   useEffect(() => {
     if (!resumeId) {
@@ -90,7 +83,7 @@ export function ProcessingPage({
 
         if (!extractResponse.ok) {
           const errorData = await extractResponse.json();
-          throw new Error(errorData.error || t("error_title"));
+          throw new Error(errorData.error || "Error Occurred");
         }
 
         const { data: extractedData } = await extractResponse.json();
@@ -100,102 +93,54 @@ export function ProcessingPage({
 
         if (isCancelled) return;
 
-        if (detectedLanguage === "en") {
-          // ================================================================
-          // Track B (Global): Translate -> Refine
-          // ================================================================
-          setCurrentPhase("translating");
-          const translateResponse = await fetch(
-            `/api/resumes/${resumeId}/translate`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refinedData: extractedData }),
-            }
-          );
+        // ================================================================
+        // Phase 3: Refinement (source language)
+        // ================================================================
+        setCurrentPhase("refining");
 
-          if (!translateResponse.ok) {
-            const errorData = await translateResponse.json();
-            throw new Error(errorData.error || "Translation failed");
-          }
+        const refineResponse = await fetch(`/api/resumes/${resumeId}/refine`, {
+          method: "POST",
+        });
 
-          const { data: translatedData } = await translateResponse.json();
-          if (isCancelled) return;
-
-          setCurrentPhase("refining");
-          const refineResponse = await fetch(
-            `/api/resumes/${resumeId}/refine`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                extractedData: translatedData,
-                saveToDb: true,
-              }),
-            }
-          );
-
-          if (!refineResponse.ok) {
-            const errorData = await refineResponse.json();
-            throw new Error(errorData.error || "Refinement failed");
-          }
-        } else {
-          // ================================================================
-          // Track A (Standard): Refine -> Translate
-          // ================================================================
-          setCurrentPhase("refining");
-          const refineResponse = await fetch(
-            `/api/resumes/${resumeId}/refine`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ extractedData }),
-            }
-          );
-
-          if (!refineResponse.ok) {
-            const errorData = await refineResponse.json();
-            throw new Error(errorData.error || "Refinement failed");
-          }
-
-          const { data: refinedData } = await refineResponse.json();
-          if (isCancelled) return;
-
-          setCurrentPhase("translating");
-          const translateResponse = await fetch(
-            `/api/resumes/${resumeId}/translate`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refinedData }),
-            }
-          );
-
-          if (!translateResponse.ok) {
-            const errorData = await translateResponse.json();
-            throw new Error(errorData.error || "Translation failed");
-          }
+        if (!refineResponse.ok) {
+          const errorData = await refineResponse.json();
+          throw new Error(errorData.error || "Error Occurred");
         }
 
         if (isCancelled) return;
 
         // ================================================================
-        // Final Phase: Done
+        // Phase 4: Translation
+        // ================================================================
+        setCurrentPhase("translating");
+
+        const translateResponse = await fetch(
+          `/api/resumes/${resumeId}/translate`,
+          { method: "POST" }
+        );
+
+        if (!translateResponse.ok) {
+          const errorData = await translateResponse.json();
+          throw new Error(errorData.error || "Error Occurred");
+        }
+
+        if (isCancelled) return;
+
+        // ================================================================
+        // Complete
         // ================================================================
         setCurrentPhase("done");
 
+        // Wait a moment before transitioning
         setTimeout(() => {
-          if (!isCancelled) {
-            if (onComplete) {
-              onComplete();
-            } else if (resumeId) {
-              router.replace(`/resumes/${resumeId}/edit`);
-            }
+          if (!isCancelled && onComplete) {
+            onComplete();
           }
         }, 1500);
       } catch (err: any) {
         if (!isCancelled) {
-          setError(err.message || t("error_title"));
+          console.error("Processing error:", err);
+          setError(err.message || "Error Occurred");
         }
       }
     };
@@ -205,7 +150,7 @@ export function ProcessingPage({
     return () => {
       isCancelled = true;
     };
-  }, [resumeId, onComplete, router, t]);
+  }, [resumeId, onComplete, router]);
 
   // Dynamic UI steps based on sourceLang
   const isEnSource = sourceLang === "en";
@@ -213,265 +158,222 @@ export function ProcessingPage({
   const processingSteps = [
     {
       id: "uploading",
-      label: t("steps.uploading.label"),
+      label: "Upload Complete",
       icon: Upload,
-      description: t("steps.uploading.description"),
+      description: "Resume PDF upload finished",
     },
     {
       id: "extracting",
-      label: t("steps.extracting.label"),
+      label: "Phase 1: Extraction",
       icon: FileText,
-      description: t("steps.extracting.description"),
-      detail: t("steps.extracting.detail"),
+      description: "Extracting the original text accurately from PDF...",
+      detail:
+        "Extracting proper nouns like company and school names exactly as they appear",
     },
     isEnSource
       ? {
           id: "translating",
-          label: t("steps.translating_en_ko.label"),
+          label: "Phase 2: Translation",
           icon: Languages,
-          description: t("steps.translating_en_ko.description"),
-          detail: t("steps.translating_en_ko.detail"),
+          description:
+            "Translating English into Korean for the local market...",
+          detail: "Localized translation suitable for the Korean job market",
         }
       : {
           id: "refining",
-          label: t("steps.refining.label"),
+          label: "Phase 2: Refinement",
           icon: Filter,
-          description: t("steps.refining.description"),
-          detail: t("steps.refining.detail"),
+          description:
+            "Selecting key achievements based on the source language...",
+          detail: "Selecting the 3-5 most impactful achievements",
         },
     isEnSource
       ? {
           id: "refining",
-          label: t("steps.refining_target.label"),
+          label: "Phase 3: Refinement",
           icon: Filter,
-          description: t("steps.refining_target.description"),
-          detail: t("steps.refining_target.detail"),
+          description: "Refining for the Korean market...",
+          detail: "Optimizing expressions for Korean recruitment standards",
         }
       : {
           id: "translating",
-          label: t("steps.translating.label"),
+          label: "Phase 3: Translation",
           icon: Languages,
-          description: t("steps.translating.description"),
-          detail: t("steps.translating.detail"),
+          description: "Translating the selected text...",
+          detail: "Translating into professional English using Action Verbs",
         },
     {
       id: "done",
-      label: t("steps.done.label"),
+      label: "Complete",
       icon: CheckCircle,
-      description: t("steps.done.description"),
+      description: "AI analysis is complete!",
     },
   ];
 
-  const getStepStatus = (stepId: string) => {
-    // Note: status check order should technically follow the flow,
-    // but Phase IDs are enough here as long as we track the currentPhase accurately.
-    const stepOrder: ProcessingPhase[] = isEnSource
-      ? ["uploading", "extracting", "translating", "refining", "done"]
-      : ["uploading", "extracting", "refining", "translating", "done"];
+  const currentStepIndex = processingSteps.findIndex(
+    (step) => step.id === currentPhase
+  );
 
-    const currentStepIndex = stepOrder.indexOf(currentPhase);
-    const thisStepIndex = stepOrder.indexOf(stepId as ProcessingPhase);
-
-    if (currentPhase === "done") return "completed";
-    if (thisStepIndex < currentStepIndex) return "completed";
-    if (thisStepIndex === currentStepIndex) return "processing";
-    return "pending";
-  };
-
-  return (
-    <div className="max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl mb-2">{t("title")}</h1>
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground whitespace-pre-line">
-            {t("description")}
-          </p>
-          <div className="flex items-center gap-2 text-sm text-amber-600/90 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md border border-amber-200/50 dark:border-amber-900/50">
-            <span className="text-lg">⚠️</span>
-            <p className="whitespace-pre-line">{t("warning")}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-card border border-border rounded-lg p-8">
-        <div className="space-y-6">
-          {processingSteps.map((step) => {
-            const status = getStepStatus(step.id);
-            const Icon = step.icon;
-
-            return (
-              <div key={step.id} className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  {status === "completed" ? (
-                    <div className="size-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                      <CheckCircle className="size-5 text-green-600 dark:text-green-400" />
-                    </div>
-                  ) : status === "processing" ? (
-                    <div className="size-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <Loader2 className="size-5 text-blue-600 dark:text-blue-400 animate-spin" />
-                    </div>
-                  ) : (
-                    <div className="size-10 rounded-full bg-muted flex items-center justify-center">
-                      <Icon className="size-5 text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 pt-1">
-                  <p
-                    className={`font-medium mb-1 ${
-                      status === "pending"
-                        ? "text-muted-foreground"
-                        : "text-foreground"
-                    }`}
-                  >
-                    {step.label}
-                  </p>
-                  {status === "processing" && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        {step.description}
-                      </p>
-                      {step.detail && (
-                        <p className="text-xs text-muted-foreground/70 mt-1">
-                          💡 {step.detail}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {status === "completed" && (
-                  <span className="text-xs text-green-600 dark:text-green-400 pt-1">
-                    {locale === "ko" ? "완료" : "Done"}
-                  </span>
-                )}
-                {status === "processing" && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400 pt-1">
-                    {locale === "ko" ? "진행중" : "Processing"}
-                  </span>
-                )}
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="max-w-md w-full mx-auto p-8">
+          <div className="bg-card border border-destructive/50 rounded-lg p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <Sparkles className="size-5 text-destructive" />
               </div>
-            );
-          })}
-        </div>
-
-        {error && (
-          <div className="mt-8 pt-6 border-t border-border">
-            {error.includes("크레딧") ||
-            error.toLowerCase().includes("credit") ? (
-              <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-                <div className="p-6">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full shrink-0">
-                      <Sparkles className="size-6 text-amber-600 dark:text-amber-500" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-1">
-                        {t("error_title")}
-                      </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {locale === "ko"
-                          ? "AI 이력서 분석을 진행하기 위해 필요한 크레딧이 부족합니다.\n결제를 통해 크레딧을 충전하고 분석을 완료해보세요."
-                          : "You don't have enough credits to proceed with AI analysis.\nPlease recharge your credits to complete the process."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {plan === "FREE" ? (
-                    <div className="space-y-3">
-                      <Button
-                        onClick={() => router.push("/settings#payment-section")}
-                        className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md border-0"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Sparkles className="size-4" />
-                          {locale === "ko"
-                            ? "이용권 구매하고 무제한 이용하기"
-                            : "Buy a Pass for Unlimited Access"}
-                        </span>
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <Button
-                        onClick={() => router.push("/settings#payment-section")}
-                        className="w-full h-11"
-                      >
-                        {locale === "ko" ? "크레딧 충전하기" : "Buy Credits"}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                <div className="bg-muted/50 p-4 flex justify-between items-center border-t border-border">
-                  <p className="text-xs text-muted-foreground">
-                    {locale === "ko"
-                      ? "결제 후 작업을 다시 시도할 수 있습니다."
-                      : "You can retry after purchase."}
-                  </p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.replace("/resumes")}
-                    className="text-muted-foreground hover:text-foreground h-8"
-                  >
-                    {locale === "ko" ? "목록으로 돌아가기" : "Back to List"}
-                  </Button>
-                </div>
+              <div>
+                <h2 className="text-lg font-semibold text-destructive">
+                  Error Occurred
+                </h2>
+                <p className="text-sm text-muted-foreground">{error}</p>
               </div>
-            ) : (
-              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <p className="text-sm text-destructive font-medium">
-                  {t("error_title")}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1 mb-3">
-                  {error}
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => router.replace("/resumes/new")}
-                  className="bg-background hover:bg-accent hover:text-accent-foreground"
-                >
-                  {t("retry")}
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {currentPhase === "done" && (
-          <div className="mt-8 pt-6 border-t border-border text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              {t("done_message")}
-            </p>
+            </div>
             <Button
-              onClick={() => {
-                if (onComplete) {
-                  onComplete();
-                } else if (resumeId) {
-                  router.replace(`/resumes/${resumeId}/edit`);
-                }
-              }}
-              disabled={isCompleting}
+              onClick={() => router.push("/resumes")}
+              variant="outline"
+              className="w-full"
             >
-              {isCompleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t("processing")}
-                </>
-              ) : (
-                t("view_summary")
-              )}
+              Upload Again
             </Button>
           </div>
-        )}
+        </div>
       </div>
+    );
+  }
 
-      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 {t("tip")}
-        </p>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="max-w-2xl w-full mx-auto p-8">
+        <div className="bg-card border border-border rounded-lg p-8 space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-bold">AI Processing</h1>
+            <p className="text-sm text-muted-foreground">
+              AI is meticulously analyzing your resume and reconstructing it
+              into a professional format optimized for the global/local market.
+              <br />
+              Please wait as we extract text, select key achievements, and
+              perform specialized translation.
+            </p>
+          </div>
+
+          {/* Warning */}
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg p-4">
+            <p className="text-sm text-amber-900 dark:text-amber-200">
+              ⚠️ Please keep this page open to ensure stable processing.
+              (Closing may interrupt the task)
+            </p>
+          </div>
+
+          {/* Processing Steps */}
+          <div className="space-y-4">
+            {processingSteps.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = index === currentStepIndex;
+              const isCompleted = index < currentStepIndex;
+              const isPending = index > currentStepIndex;
+
+              return (
+                <div
+                  key={step.id}
+                  className={`
+                    relative flex gap-4 p-4 rounded-lg border transition-all
+                    ${
+                      isActive
+                        ? "bg-primary/5 border-primary/30 shadow-sm"
+                        : isCompleted
+                        ? "bg-muted/30 border-border/50"
+                        : "bg-background border-border/30 opacity-50"
+                    }
+                  `}
+                >
+                  <div
+                    className={`
+                    size-12 rounded-full flex items-center justify-center shrink-0
+                    ${
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : isCompleted
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                        : "bg-muted text-muted-foreground"
+                    }
+                  `}
+                  >
+                    {isActive ? (
+                      <Loader2 className="size-6 animate-spin" />
+                    ) : isCompleted ? (
+                      <CheckCircle className="size-6" />
+                    ) : (
+                      <Icon className="size-6" />
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">{step.label}</h3>
+                      {isActive && (
+                        <span className="text-xs text-primary font-medium">
+                          Processing...
+                        </span>
+                      )}
+                      {isCompleted && (
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                          ✓ Done
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {step.description}
+                    </p>
+                    {step.detail && isActive && (
+                      <p className="text-xs text-muted-foreground/80 italic">
+                        {step.detail}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Tip */}
+          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
+            <p className="text-sm text-blue-900 dark:text-blue-200">
+              💡 <strong>Tip:</strong> 3-Phase AI Processing: Reflects actual
+              processing time for each stage. We select key achievements based
+              on the source language before translation for the most accurate
+              and efficient results.
+            </p>
+          </div>
+
+          {/* Done State */}
+          {currentPhase === "done" && (
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                <CheckCircle className="size-5" />
+                <span className="font-medium">
+                  Analysis is complete! Moving to the next step...
+                </span>
+              </div>
+              <Button
+                onClick={onComplete}
+                disabled={isCompleting}
+                className="w-full"
+              >
+                {isCompleting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin mr-2" />
+                    Loading...
+                  </>
+                ) : (
+                  "View Summary"
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

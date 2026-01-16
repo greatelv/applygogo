@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LandingPage } from "../../components/landing-page";
+import { LandingPage } from "./components/landing-page";
 
 import { useSession } from "next-auth/react";
 
@@ -28,7 +28,7 @@ export default function Page() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "지원고고",
+            name: "ApplyGogo",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: {
@@ -37,7 +37,7 @@ export default function Page() {
               priceCurrency: "USD",
             },
             description:
-              "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 첨삭받으세요.",
+              "AI-powered Korean resume builder for global talents. Convert your English resume to professional Korean optimized for the Korean job market.",
           }),
         }}
       />

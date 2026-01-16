@@ -4,11 +4,7 @@ interface SiteFooterProps {
   simple?: boolean;
 }
 
-import { useTranslations } from "next-intl";
-
 export function SiteFooter({ simple }: SiteFooterProps) {
-  const t = useTranslations("Footer");
-
   if (simple) {
     return (
       <footer className="border-t border-border p-4 bg-muted/20">
@@ -20,19 +16,19 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                   href="/terms"
                   className="hover:text-foreground transition-colors"
                 >
-                  {t("terms")}
+                  Terms of Service
                 </Link>
                 <Link
                   href="/privacy"
                   className="font-bold hover:text-foreground transition-colors"
                 >
-                  {t("privacy")}
+                  Privacy Policy
                 </Link>
                 <a
                   href="mailto:patakeique@gmail.com"
                   className="hover:text-foreground transition-colors"
                 >
-                  {t("contact")}
+                  Contact Us
                 </a>
               </div>
               <div className="hidden md:block text-[10px] text-muted-foreground/60">
@@ -43,16 +39,14 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             <div className="text-[10px] text-muted-foreground/60 leading-normal text-center md:text-left">
               <span>케익코퍼레이션</span>
               <span className="mx-1.5">|</span>
-              <span>{t("ceo")}: 전태경</span>
+              <span>CEO: 전태경</span>
               <span className="mx-1.5">|</span>
-              <span>{t("businessNumber")}: 639-34-01724</span>
+              <span>Business Number: 639-34-01724</span>
               <span className="mx-1.5 hidden sm:inline">|</span>
               <br className="sm:hidden" />
-              <span>
-                {t("address")}: 서울시 성북구 동소문로 60 동방빌딩 4층
-              </span>
+              <span>Address: 서울시 성북구 동소문로 60 동방빌딩 4층</span>
               <span className="mx-1.5">|</span>
-              <span>{t("email")}: patakeique@gmail.com</span>
+              <span>Email: patakeique@gmail.com</span>
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
@@ -75,37 +69,37 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 href="/terms"
                 className="hover:text-foreground transition-colors"
               >
-                {t("terms")}
+                Terms of Service
               </Link>
               <Link
                 href="/privacy"
                 className="font-bold hover:text-foreground transition-colors"
               >
-                {t("privacy")}
+                Privacy Policy
               </Link>
               <a
                 href="mailto:patakeique@gmail.com"
                 className="hover:text-foreground transition-colors"
               >
-                {t("contact")}
+                Contact Us
               </a>
               <Link
                 href="/company"
                 className="hover:text-foreground transition-colors"
               >
-                {t("company")}
+                Company
               </Link>
               <Link
                 href="/introduction"
                 className="hover:text-foreground transition-colors"
               >
-                {t("serviceIntro")}
+                Service Info
               </Link>
               <Link
                 href="/blog"
                 className="hover:text-foreground transition-colors"
               >
-                {t("blog")}
+                Blog
               </Link>
             </div>
 
@@ -114,14 +108,14 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               <p>
                 <span className="font-medium">케익코퍼레이션</span>
                 <span className="mx-2">|</span>
-                {t("ceo")}: 전태경
+                CEO: 전태경
                 <span className="mx-2">|</span>
-                {t("businessNumber")}: 639-34-01724
+                Business Number: 639-34-01724
               </p>
               <p>
-                {t("address")}: 서울시 성북구 동소문로 60 동방빌딩 4층
+                Address: 서울시 성북구 동소문로 60 동방빌딩 4층
                 <span className="mx-2">|</span>
-                {t("email")}: patakeique@gmail.com
+                Email: patakeique@gmail.com
               </p>
             </div>
           </div>

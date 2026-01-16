@@ -31,8 +31,6 @@ interface ResumesPageProps {
   showBetaBanner?: boolean;
 }
 
-import { useTranslations, useLocale } from "next-intl";
-
 export function ResumesPage({
   resumes,
   onCreateNew,
@@ -42,22 +40,19 @@ export function ResumesPage({
   onUpgrade,
   showBetaBanner,
 }: ResumesPageProps) {
-  const t = useTranslations("App.resumes");
-  const locale = useLocale();
-
   const stepConfig = {
-    UPLOAD: { label: t("steps.uploading"), variant: "secondary" as const },
-    PROCESSING: { label: t("steps.processing"), variant: "secondary" as const },
-    EDIT: { label: t("steps.edit"), variant: "outline" as const },
-    TEMPLATE: { label: t("steps.template"), variant: "outline" as const },
-    COMPLETED: { label: t("steps.completed"), variant: "success" as const },
+    UPLOAD: { label: "Uploading", variant: "secondary" as const },
+    PROCESSING: { label: "Analyzing", variant: "secondary" as const },
+    EDIT: { label: "Editing", variant: "outline" as const },
+    TEMPLATE: { label: "Choosing Template", variant: "outline" as const },
+    COMPLETED: { label: "Completed", variant: "success" as const },
   };
 
   const statusConfig = {
-    IDLE: { label: t("steps.uploading"), variant: "outline" as const },
-    SUMMARIZED: { label: t("steps.processing"), variant: "secondary" as const },
-    TRANSLATED: { label: t("steps.processing"), variant: "secondary" as const },
-    COMPLETED: { label: t("steps.completed"), variant: "success" as const },
+    IDLE: { label: "Uploading", variant: "outline" as const },
+    SUMMARIZED: { label: "Analyzing", variant: "secondary" as const },
+    TRANSLATED: { label: "Analyzing", variant: "secondary" as const },
+    COMPLETED: { label: "Completed", variant: "success" as const },
     FAILED: { label: "Failed", variant: "warning" as const },
   };
 
@@ -100,30 +95,29 @@ export function ResumesPage({
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold mb-3">{t("emptyTitle")}</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed">
-            {t("emptyDesc")}
+          <h2 className="text-2xl font-bold mb-3">
+            Complete your first English resume
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+            Upload your Korean resume and AI will finish analysis, translation,
+            and formatting in 5 minutes.
           </p>
 
           {hasNoCredits ? (
-            <div className="space-y-3">
-              <p className="text-sm text-amber-600 font-medium">
-                {t("creditsNeeded")}
+            <div className="space-y-4">
+              <p className="text-sm text-destructive font-medium">
+                Not enough credits to create a new resume
               </p>
               {onUpgrade && (
-                <Button onClick={onUpgrade} size="lg" className="rounded-full">
-                  {t("upgrade")}
+                <Button onClick={onUpgrade} variant="default">
+                  Upgrade Plan
                 </Button>
               )}
             </div>
           ) : (
-            <Button
-              onClick={onCreateNew}
-              size="lg"
-              className="rounded-full px-8 h-12 text-base shadow-lg hover:shadow-primary/25 transition-all"
-            >
-              <Plus className="size-5 mr-2" />
-              {t("startFree")}
+            <Button onClick={onCreateNew} size="lg">
+              <Plus className="size-4 mr-2" />
+              Start for Free
             </Button>
           )}
         </div>
@@ -131,130 +125,117 @@ export function ResumesPage({
     );
   }
 
+  const handleDelete = async (id: string) => {
+    if (!onDelete) return;
+    setDeletingId(id);
+    try {
+      await onDelete(id);
+    } finally {
+      setDeletingId(null);
+      setDeleteId(null);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl mb-1">{t("title")}</h1>
+          <h1 className="text-2xl mb-1">Manage Resumes</h1>
           <p className="text-sm text-muted-foreground">
-            {t("count", { count: resumes.length })}
+            {resumes.length} Resumes
           </p>
         </div>
-        {hasNoCredits ? (
-          onUpgrade && <Button onClick={onUpgrade}>{t("upgrade")}</Button>
-        ) : (
-          <Button onClick={onCreateNew}>
-            <Plus className="size-4" />
-            {t("createNew")}
-          </Button>
-        )}
+        <Button onClick={onCreateNew} disabled={hasNoCredits} className="gap-2">
+          <Plus className="size-4" />
+          Create New Resume
+        </Button>
       </div>
 
       {hasNoCredits && (
-        <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-lg">
-          <p className="text-sm text-amber-800 dark:text-amber-400">
-            ⚠️ {t("creditsNeeded")}
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
+          <p className="text-sm text-amber-900 dark:text-amber-200">
+            ⚠️ Not enough credits to create a new resume.{" "}
+            {onUpgrade && (
+              <button
+                onClick={onUpgrade}
+                className="underline font-medium hover:no-underline"
+              >
+                Upgrade Plan
+              </button>
+            )}
           </p>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="grid gap-4">
         {resumes.map((resume) => {
-          // Use step config if available, fallback to status
-          const config =
-            (stepConfig as any)[resume.currentStep] ||
-            (statusConfig as any)[resume.status];
-
-          const isItemDeleting = deletingId === resume.id;
+          const config = stepConfig[resume.currentStep] || stepConfig.UPLOAD;
+          const isDeleting = deletingId === resume.id;
 
           return (
             <div
               key={resume.id}
-              onClick={() => !isItemDeleting && onSelectResume(resume.id)}
-              className={`relative w-full bg-card border border-border rounded-lg p-4 transition-all text-left ${
-                isItemDeleting
-                  ? "opacity-80"
-                  : "hover:border-foreground/20 hover:shadow-sm cursor-pointer group"
-              }`}
+              className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => !isDeleting && onSelectResume(resume.id)}
             >
-              {isItemDeleting && (
-                <div className="absolute inset-0 bg-background/50 rounded-lg flex items-center justify-center z-10 transition-opacity">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
-              )}
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="mt-1 shrink-0">
-                    <FileText className="size-5 text-muted-foreground" />
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex gap-4 flex-1 min-w-0">
+                  <div className="p-3 bg-primary/10 rounded-lg shrink-0">
+                    <FileText className="size-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium mb-1 truncate">
-                      {resume.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      {t("lastModified")}:{" "}
-                      {new Date(resume.updatedAt).toLocaleDateString(
-                        locale === "ko" ? "ko-KR" : "en-US"
-                      )}
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold truncate">{resume.title}</h3>
+                      <Badge variant={config.variant}>{config.label}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Last modified{" "}
+                      {new Date(resume.updatedAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Badge variant={config.variant}>{config.label}</Badge>
-                  {onDelete && !isItemDeleting && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8 text-muted-foreground hover:text-destructive shrink-0 -mr-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDeleteId(resume.id);
-                      }}
-                    >
+
+                {onDelete && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteId(resume.id);
+                    }}
+                    disabled={isDeleting}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    {isDeleting ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
                       <Trash2 className="size-4" />
-                    </Button>
-                  )}
-                </div>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      <AlertDialog
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-      >
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
+            <AlertDialogTitle>Delete Resume</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("delete.description")}
+              Are you sure you want to delete this resume? This cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("delete.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive hover:bg-destructive/90"
-              onClick={async (e) => {
-                e.preventDefault();
-                if (deleteId && onDelete) {
-                  // Close modal immediately and show loading on item
-                  const idToDelete = deleteId;
-                  setDeleteId(null);
-                  setDeletingId(idToDelete);
-
-                  try {
-                    await onDelete(idToDelete);
-                  } catch (error) {
-                    console.error(error);
-                  } finally {
-                    setDeletingId(null);
-                  }
-                }
-              }}
+              onClick={() => deleteId && handleDelete(deleteId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {t("delete.confirm")}
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -21,21 +21,19 @@ interface NewResumePageProps {
 }
 
 const workflowSteps = [
-  { id: "upload", label: "PDF 업로드", description: "이력서 파일 선택" },
-  { id: "processing", label: "AI 처리", description: "요약 & 번역" },
-  { id: "edit", label: "편집", description: "내용 수정" },
-  { id: "preview", label: "미리보기", description: "템플릿 선택" },
+  { id: "upload", label: "Upload PDF", description: "Select Resume" },
+  { id: "processing", label: "AI Process", description: "Summary & Translate" },
+  { id: "edit", label: "Edit", description: "Modify Content" },
+  { id: "preview", label: "Preview", description: "Choose Template" },
 ];
 
-import { useTranslations } from "next-intl";
-
 export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
-  const t = useTranslations("App.newResume");
-  const tw = useTranslations("App.workflow");
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(t("error.pdfOnly"));
+  const [errorMessage, setErrorMessage] = useState(
+    "Only PDF files can be uploaded. Please try again."
+  );
 
   const router = useRouter();
   const { quota, plan } = useApp();
@@ -59,14 +57,14 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMessage(t("error.tooLarge"));
+        setErrorMessage("File exceeds 5MB. Please upload a smaller file.");
         setShowErrorDialog(true);
         return;
       }
       onUpload(file);
       setSelectedFile(file);
     } else {
-      setErrorMessage(t("error.pdfOnly"));
+      setErrorMessage("Only PDF files can be uploaded. Please try again.");
       setShowErrorDialog(true);
     }
   };
@@ -76,7 +74,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMessage(t("error.tooLarge"));
+        setErrorMessage("File exceeds 5MB. Please upload a smaller file.");
         setShowErrorDialog(true);
         e.target.value = ""; // Reset input
         return;
@@ -89,8 +87,10 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-2xl mb-2">Upload</h1>
+        <p className="text-sm text-muted-foreground">
+          AI automatically summarizes and translates your PDF resume
+        </p>
       </div>
 
       {!hasSufficientCredits ? (
@@ -102,10 +102,11 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">
-                  {t("creditsNeeded")}
+                  Insufficient Credits
                 </h3>
                 <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                  {t("creditsNeededDesc")}
+                  You don't have enough credits for AI analysis. Please recharge
+                  or upgrade your plan.
                 </p>
               </div>
             </div>
@@ -118,7 +119,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                 >
                   <span className="flex items-center gap-2">
                     <Sparkles className="size-4" />
-                    {t("buyPass")}
+                    Buy Pass for Unlimited Access
                   </span>
                 </Button>
               ) : (
@@ -126,7 +127,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
                   onClick={() => router.push("/settings#payment-section")}
                   className="w-full h-11"
                 >
-                  {t("recharge")}
+                  Recharge Credits
                 </Button>
               )}
             </div>
@@ -148,46 +149,74 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
           {isUploading ? (
             <div className="flex flex-col items-center">
               <Loader2 className="size-12 animate-spin text-primary mb-4" />
-              <h3 className="text-lg font-medium">{t("uploading")}</h3>
+              <h3 className="text-lg font-semibold mb-2">Uploading...</h3>
               <p className="text-sm text-muted-foreground">
-                {t("uploadingDesc")}
+                Securely saving your file.
               </p>
             </div>
           ) : (
             <>
-              <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-4">
-                <Upload className="size-8 text-muted-foreground" />
+              <div className="flex justify-center mb-4">
+                <div className="p-4 bg-primary/10 rounded-full">
+                  <Upload className="size-8 text-primary" />
+                </div>
               </div>
-
-              <h3 className="text-lg mb-2">{t("dropHint")}</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Drag & Drop PDF to Upload
+              </h3>
               <p className="text-sm text-muted-foreground mb-6">
-                {t("selectHint")}
+                Or click the button below to select a file
               </p>
-
+              <label htmlFor="file-upload">
+                <Button asChild>
+                  <span className="cursor-pointer">
+                    <FileText className="size-4 mr-2" />
+                    Select File
+                  </span>
+                </Button>
+              </label>
               <input
+                id="file-upload"
                 type="file"
-                accept="application/pdf"
+                accept=".pdf"
                 onChange={handleFileSelect}
                 className="hidden"
-                id="file-upload"
-                disabled={isUploading}
               />
-              <Button
-                isLoading={isUploading}
-                onClick={() => document.getElementById("file-upload")?.click()}
-              >
-                <FileText className="size-4" />
-                {t("selectButton")}
-              </Button>
             </>
           )}
         </div>
       )}
 
+      {/* Tips Section */}
+      <div className="mt-8 bg-muted/50 rounded-lg p-6">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <Sparkles className="size-4 text-primary" />
+          Tips
+        </h4>
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex items-start gap-2">
+            <ArrowRight className="size-4 mt-0.5 shrink-0 text-primary" />
+            <span>Resumes with clearly separated sections work best</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <ArrowRight className="size-4 mt-0.5 shrink-0 text-primary" />
+            <span>We recommend PDF files under 5MB</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <ArrowRight className="size-4 mt-0.5 shrink-0 text-primary" />
+            <span>
+              Get your final PDF through summary and translation steps after
+              uploading
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      {/* Error Dialog */}
       <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("error.title")}</AlertDialogTitle>
+            <AlertDialogTitle>Invalid File Format</AlertDialogTitle>
             <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -197,17 +226,6 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <h4 className="text-sm font-semibold mb-2 text-blue-900 dark:text-blue-300">
-          💡 {t("tips.title")}
-        </h4>
-        <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
-          <li>• {t("tips.content1")}</li>
-          <li>• {t("tips.content2")}</li>
-          <li>• {t("tips.content3")}</li>
-        </ul>
-      </div>
     </div>
   );
 }
