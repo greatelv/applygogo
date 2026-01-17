@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { prefixPath } from "@/lib/base-path";
 import {
   Card,
   CardContent,
@@ -21,7 +22,7 @@ export function PostCard({ post }: PostCardProps) {
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg border-border hover:border-border bg-card group-hover:translate-y-[-2px]">
         <div className="relative aspect-[16/9] overflow-hidden bg-muted/30">
           <Image
-            src={post.thumbnail || "/placeholder.svg"}
+            src={prefixPath(post.thumbnail || "/placeholder.svg")}
             alt={post.title || "Blog post thumbnail"}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

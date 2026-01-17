@@ -6,22 +6,22 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function authenticate() {
-  await signIn("google", { redirectTo: "/resumes" });
+  await signIn("google", { redirectTo: "/en/resumes" });
 }
 
 export async function logOut() {
-  await signOut({ redirectTo: "/" });
+  await signOut({ redirectTo: "/en" });
 }
 
 export async function authenticateNaver() {
-  await signIn("naver", { redirectTo: "/resumes" });
+  await signIn("naver", { redirectTo: "/en/resumes" });
 }
 
 export async function authenticateWithCredentials(formData: FormData) {
   await signIn("credentials", {
     email: formData.get("email"),
     password: formData.get("password"),
-    redirectTo: "/resumes",
+    redirectTo: "/en/resumes",
   });
 }
 
@@ -125,7 +125,7 @@ export async function uploadResumeAction(formData: FormData) {
   // 1. Upload to Supabase Storage
   const bucketName = process.env.NEXT_PUBLIC_STORAGE_BUCKET || "applygogo";
   console.log(
-    `[Action] Uploading file to bucket: ${bucketName} path: ${filePath}`
+    `[Action] Uploading file to bucket: ${bucketName} path: ${filePath}`,
   );
 
   const adminClient = getSupabaseAdmin();
@@ -138,11 +138,11 @@ export async function uploadResumeAction(formData: FormData) {
   if (uploadError) {
     console.error(
       "[Action] Storage upload error details:",
-      JSON.stringify(uploadError, null, 2)
+      JSON.stringify(uploadError, null, 2),
     );
     console.error(`[Action] URL used: ${process.env.NEXT_PUBLIC_SUPABASE_URL}`);
     console.error(
-      `[Action] Key len: ${process.env.SUPABASE_SERVICE_ROLE_KEY?.length}`
+      `[Action] Key len: ${process.env.SUPABASE_SERVICE_ROLE_KEY?.length}`,
     );
     throw new Error("파일 업로드 중 오류가 발생했습니다.");
   }
@@ -175,7 +175,7 @@ export async function uploadResumeAction(formData: FormData) {
 export async function updateResumeTemplateAction(
   resumeId: string,
 
-  template: "modern" | "classic" | "minimal" | "professional" | "executive"
+  template: "modern" | "classic" | "minimal" | "professional" | "executive",
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -225,7 +225,7 @@ export async function updateResumeAction(
     certifications?: any[];
     awards?: any[];
     languages?: any[];
-  }
+  },
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -386,6 +386,6 @@ export async function deleteAccount() {
   }
 
   // Signout should be outside the try-catch block if it redirects
-  await signOut({ redirectTo: "/" });
+  await signOut({ redirectTo: "/en" });
   return { success: true };
 }

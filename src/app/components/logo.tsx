@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import Image from "next/image";
+import { prefixPath } from "@/lib/base-path";
 
 interface LogoProps {
   className?: string;
@@ -10,11 +11,6 @@ interface LogoProps {
 }
 
 export function Logo({ className, href = "/", alt = "ApplyGogo" }: LogoProps) {
-  const basePath =
-    process.env.NEXT_PUBLIC_BASE_URL?.replace("http://localhost:3000", "")
-      .replace("https://applygogo.com", "")
-      .replace(/\/$/, "") || "";
-
   return (
     <Link
       href={href}
@@ -25,14 +21,14 @@ export function Logo({ className, href = "/", alt = "ApplyGogo" }: LogoProps) {
     >
       <div className="relative h-8 w-32">
         <Image
-          src={`${basePath}/logo-for-light.svg`}
+          src={prefixPath("/logo-for-light.svg")}
           alt={alt}
           fill
           className="object-contain dark:hidden"
           priority
         />
         <Image
-          src={`${basePath}/logo-for-dark.svg`}
+          src={prefixPath("/logo-for-dark.svg")}
           alt={alt}
           fill
           className="object-contain hidden dark:block"

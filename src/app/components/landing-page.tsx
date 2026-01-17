@@ -5,6 +5,7 @@ import {
   FileText,
   Globe,
   Download,
+  Languages,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -15,6 +16,7 @@ import { TemplatePreviewDialog } from "./template-preview-dialog";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 import { BetaBanner } from "./beta-banner";
 import { Logo } from "./logo";
+import { prefixPath } from "@/lib/base-path";
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -40,7 +42,18 @@ export function LandingPage({
               >
                 Blog
               </Link>
-              <div className="hidden sm:block">
+              <div className="hidden sm:flex items-center">
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="mr-2 text-muted-foreground hover:text-foreground"
+                >
+                  <a href="https://applygogo.com">
+                    <Languages className="w-4 h-4 mr-2" />
+                    한국어
+                  </a>
+                </Button>
                 <ThemeToggle />
               </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>

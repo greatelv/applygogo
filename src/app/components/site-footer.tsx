@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { prefixPath } from "@/lib/base-path";
 
 interface SiteFooterProps {
   simple?: boolean;
@@ -13,13 +14,13 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             <div className="flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 text-[11px] text-muted-foreground">
               <div className="flex gap-4">
                 <Link
-                  href="/terms"
+                  href={prefixPath("/terms")}
                   className="hover:text-foreground transition-colors"
                 >
                   Terms of Service
                 </Link>
                 <Link
-                  href="/privacy"
+                  href={prefixPath("/privacy")}
                   className="font-bold hover:text-foreground transition-colors"
                 >
                   Privacy Policy
@@ -69,13 +70,13 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             {/* Links */}
             <div className="flex gap-6 text-sm text-foreground/80">
               <Link
-                href="/terms"
+                href={prefixPath("/terms")}
                 className="hover:text-foreground transition-colors"
               >
                 Terms of Service
               </Link>
               <Link
-                href="/privacy"
+                href={prefixPath("/privacy")}
                 className="font-bold hover:text-foreground transition-colors"
               >
                 Privacy Policy
@@ -87,19 +88,19 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 Contact Us
               </a>
               <Link
-                href="/company"
+                href={prefixPath("/company")}
                 className="hover:text-foreground transition-colors"
               >
                 Company
               </Link>
               <Link
-                href="/introduction"
+                href={prefixPath("/introduction")}
                 className="hover:text-foreground transition-colors"
               >
                 Service Info
               </Link>
               <Link
-                href="/blog"
+                href={prefixPath("/blog")}
                 className="hover:text-foreground transition-colors"
               >
                 Blog

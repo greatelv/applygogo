@@ -8,13 +8,19 @@ export async function markdownToHtml(markdown: string): Promise<string> {
   // We insert a zero-width space (\u200B) before the closing ** to allow correct parsing by remark
   const preProcessed = markdown.replace(
     /\*\*([^*]+?)\*\*([가-힣\w])/g,
-    "**$1\u200B**$2"
+    "**$1\u200B**$2",
+  );
+
+  // Prefix images with /en for basePath
+  const withPrefix = preProcessed.replace(
+    /!\[(.*?)\]\(\/(.*?)\)/g,
+    "![$1](/en/$2)",
   );
 
   const result = await remark()
     .use(remarkGfm)
     .use(html, { sanitize: false })
-    .process(preProcessed);
+    .process(withPrefix);
 
   return result.toString();
 }

@@ -3,9 +3,11 @@ import { BlogHeader } from "@/app/components/blog/blog-header";
 import { SiteFooter as Footer } from "@/app/components/site-footer";
 import { PostCard } from "@/app/components/blog/post-card";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import { prefixPath } from "@/lib/base-path";
 
 export const metadata: Metadata = {
   title: "지원고고 블로그 - 글로벌 커리어를 위한 인사이트",
@@ -19,9 +21,9 @@ export const metadata: Metadata = {
     description:
       "영문 이력서 작성 팁부터 해외 취업 성공 사례까지, 당신의 글로벌 성장을 돕는 정보를 확인하세요.",
     type: "website",
-    locale: "ko_KR",
+    locale: "en_US",
     url: "/blog",
-    siteName: "지원고고",
+    siteName: "ApplyGogo",
   },
 };
 
@@ -48,12 +50,14 @@ export default function HomePage() {
                   className="group block rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="aspect-[16/10] relative overflow-hidden bg-muted">
-                    <img
-                      src={
-                        latestPost.frontmatter.thumbnail || "/placeholder.svg"
-                      }
+                    <Image
+                      src={prefixPath(
+                        latestPost.frontmatter.thumbnail || "/placeholder.svg",
+                      )}
                       alt={latestPost.frontmatter.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                     {latestPost.frontmatter.categories &&
                       latestPost.frontmatter.categories.length > 0 && (
@@ -81,7 +85,7 @@ export default function HomePage() {
                                   latestPost.frontmatter.categories.length -
                                     1 && " · "}
                               </span>
-                            )
+                            ),
                           )}
                         </div>
                       )}
@@ -99,7 +103,7 @@ export default function HomePage() {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )}
                     </div>
                   </div>

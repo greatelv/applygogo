@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Chrome } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
+import { Logo } from "./logo";
 
 import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 
@@ -25,10 +26,10 @@ export function LoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl tracking-tight mb-3">지원고고</h1>
+        <div className="flex flex-col items-center mb-12">
+          <Logo className="mb-4" />
           <p className="text-muted-foreground text-sm">
-            한국어 Resume를 글로벌 스탠다드 영문 Resume로
+            AI-Powered English to Korean Resume Conversion
           </p>
         </div>
 
@@ -43,15 +44,15 @@ export function LoginPage({
               disabled={pending}
             >
               <Chrome className="size-5 mr-2" />
-              Google로 시작하기
+              Continue with Google
             </Button>
           ) : (
             <div className="p-3 text-sm text-center text-amber-600 bg-amber-50 rounded-md border border-amber-200 mb-2">
               <span className="block mb-1 break-keep">
-                ⚠️ 인앱 브라우저에서는 구글 로그인을 지원하지 않습니다.
+                ⚠️ Google login is not supported in in-app browsers.
               </span>
               <span className="text-xs text-muted-foreground block break-keep">
-                (원활한 사용을 위해 네이버 로그인을 이용해주세요)
+                (Please use Naver login or an external browser)
               </span>
             </div>
           )}
@@ -64,7 +65,7 @@ export function LoginPage({
             disabled={pending}
           >
             <span className="font-bold mr-2 text-lg">N</span>
-            네이버로 시작하기
+            Continue with Naver
           </Button>
 
           {/* Test Login Form (Only visible with ?mode=test) */}
@@ -97,22 +98,21 @@ export function LoginPage({
                   className="w-full h-10 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700"
                   disabled={pending}
                 >
-                  테스트 계정 로그인
+                  Login with Test Account
                 </Button>
               </div>
             </form>
           )}
 
           <p className="text-xs text-center text-muted-foreground mt-6">
-            로그인하면{" "}
+            By continuing, you agree to our{" "}
             <a href="#" className="underline hover:text-foreground">
-              서비스 약관
-            </a>
-            과{" "}
+              Terms of Service
+            </a>{" "}
+            and{" "}
             <a href="#" className="underline hover:text-foreground">
-              개인정보 Processing방침
+              Privacy Policy
             </a>
-            에 동의하게 됩니다
           </p>
         </div>
 
@@ -120,15 +120,21 @@ export function LoginPage({
           <div className="grid grid-cols-3 gap-4 sm:gap-8 text-center text-sm">
             <div>
               <div className="text-2xl mb-1">✨</div>
-              <div className="text-muted-foreground text-xs">AI 기반 요약</div>
+              <div className="text-muted-foreground text-[10px] uppercase font-semibold">
+                AI Summary
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">🌐</div>
-              <div className="text-muted-foreground text-xs">전문 번역</div>
+              <div className="text-muted-foreground text-[10px] uppercase font-semibold">
+                Expert Translation
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">📄</div>
-              <div className="text-muted-foreground text-xs">PDF 내보내기</div>
+              <div className="text-muted-foreground text-[10px] uppercase font-semibold">
+                Export to PDF
+              </div>
             </div>
           </div>
         </div>

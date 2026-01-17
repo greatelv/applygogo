@@ -15,6 +15,7 @@ import { ArticleContent } from "@/app/components/blog/article-content";
 import { Breadcrumb } from "@/app/components/blog/breadcrumb";
 import { Badge } from "@/app/components/ui/badge";
 import type { Metadata } from "next";
+import { prefixPath } from "@/lib/base-path";
 
 interface PostPageProps {
   params: Promise<{
@@ -102,7 +103,7 @@ export default async function PostPage({ params }: PostPageProps) {
         {/* Hero Image */}
         <div className="relative w-full aspect-[21/9] max-h-[500px] overflow-hidden bg-muted/30">
           <Image
-            src={post.frontmatter.thumbnail || "/placeholder.svg"}
+            src={prefixPath(post.frontmatter.thumbnail || "/placeholder.svg")}
             alt={post.frontmatter.title}
             fill
             priority
@@ -118,7 +119,10 @@ export default async function PostPage({ params }: PostPageProps) {
             <Breadcrumb
               items={[
                 { label: "전체 아티클", href: "/blog" },
-                { label: post.frontmatter.title, href: `/blog/${slug}` },
+                {
+                  label: post.frontmatter.title,
+                  href: `/blog/${slug}`,
+                },
               ]}
             />
             <div className="flex flex-row items-center gap-4 text-sm text-muted-foreground mb-6">
@@ -151,7 +155,7 @@ export default async function PostPage({ params }: PostPageProps) {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      }
+                      },
                     )}
                   </time>
                 </div>

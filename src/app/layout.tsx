@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "ApplyGogo",
     images: [
       {
-        url: "/en/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "ApplyGogo - AI Korean Resume Builder",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: title,
     description: description,
-    images: ["/en/og-image.png"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

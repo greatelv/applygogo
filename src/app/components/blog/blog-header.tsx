@@ -8,6 +8,8 @@ import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 import { Logo } from "../logo";
+import { prefixPath } from "@/lib/base-path";
+import { Languages } from "lucide-react";
 
 export function BlogHeader() {
   const { data: session, status } = useSession();
@@ -52,6 +54,19 @@ export function BlogHeader() {
           >
             블로그
           </Link>
+          <div className="hidden sm:block">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="mr-2 text-muted-foreground hover:text-foreground"
+            >
+              <a href="https://applygogo.com">
+                <Languages className="w-4 h-4 mr-2" />
+                한국어
+              </a>
+            </Button>
+          </div>
           <ThemeToggle />
           <Button onClick={() => signIn()} size="sm">
             로그인
