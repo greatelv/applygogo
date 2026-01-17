@@ -147,10 +147,11 @@ export function ResumeEditPage({
           <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
             {t("guide.title")}
           </h3>
-          <p
-            className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: t("guide.description") }}
-          />
+          <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
+            {t.rich("guide.description", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
+          </p>
         </div>
       </div>
 
@@ -591,12 +592,11 @@ export function ResumeEditPage({
             <div className="space-y-6">
               {educations.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                  <p
-                    className="text-sm text-muted-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: t("sections.education.empty"),
-                    }}
-                  />
+                  <p className="text-sm text-muted-foreground">
+                    {t.rich("sections.education.empty", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
                 </div>
               )}
               {educations.map((edu, index) => (
@@ -692,12 +692,11 @@ export function ResumeEditPage({
             <div className="space-y-8">
               {additionalItems.length === 0 && (
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                  <p
-                    className="text-sm text-muted-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: t("sections.additional.empty"),
-                    }}
-                  />
+                  <p className="text-sm text-muted-foreground">
+                    {t.rich("sections.additional.empty", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
                 </div>
               )}
               {additionalItems.map((item, index) => (

@@ -105,10 +105,12 @@ export function UpgradeModal({
               <Sparkles className="size-5 text-primary" />
               {t("title")}
             </DialogTitle>
-            <DialogDescription
-              className="text-base mt-2"
-              dangerouslySetInnerHTML={{ __html: t("description") }}
-            />
+            <DialogDescription className="text-base mt-2">
+              {t.rich("description", {
+                br: () => <br />,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogDescription>
           </DialogHeader>
         </div>
 

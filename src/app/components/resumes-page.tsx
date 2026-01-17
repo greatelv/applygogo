@@ -121,10 +121,11 @@ export function ResumesPage({
           </div>
 
           <h2 className="text-2xl font-bold mb-3">{t("empty.title")}</h2>
-          <p
-            className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: t("empty.description") }}
-          />
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed">
+            {t.rich("empty.description", {
+              br: () => <br />,
+            })}
+          </p>
 
           {hasNoCredits ? (
             <div className="space-y-3">

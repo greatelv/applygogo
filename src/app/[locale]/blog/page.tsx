@@ -2,7 +2,7 @@ import { getAllPosts } from "@/lib/markdown";
 import { BlogHeader } from "@/app/components/blog/blog-header";
 import { SiteFooter as Footer } from "@/app/components/site-footer";
 import { PostCard } from "@/app/components/blog/post-card";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
@@ -81,7 +81,7 @@ export default function HomePage() {
                                   latestPost.frontmatter.categories.length -
                                     1 && " · "}
                               </span>
-                            )
+                            ),
                           )}
                         </div>
                       )}
@@ -99,7 +99,7 @@ export default function HomePage() {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )}
                     </div>
                   </div>

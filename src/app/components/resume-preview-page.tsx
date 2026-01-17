@@ -321,10 +321,11 @@ export function ResumePreviewPage({
           </div>
 
           <div className="hidden lg:block mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-            <div
-              className="text-sm text-blue-800 dark:text-blue-400"
-              dangerouslySetInnerHTML={{ __html: t("tip") }}
-            />
+            <div className="text-sm text-blue-800 dark:text-blue-400">
+              {t.rich("tip", {
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </div>
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/app/components/ui/button";
 
 interface CTAButtonProps {
@@ -26,11 +27,19 @@ export function CTAButton({
         ${variant === "sticky" ? "text-base py-6" : ""}
       `}
     >
-      <a href={targetLink} target="_blank" rel={relAttribute}>
-        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-        <span className="relative">{buttonText}</span>
-        <ExternalLink className="h-4 w-4 relative" />
-      </a>
+      {targetLink.startsWith("/") ? (
+        <Link href={targetLink} target="_blank" rel={relAttribute}>
+          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+          <span className="relative">{buttonText}</span>
+          <ExternalLink className="h-4 w-4 relative" />
+        </Link>
+      ) : (
+        <a href={targetLink} target="_blank" rel={relAttribute}>
+          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+          <span className="relative">{buttonText}</span>
+          <ExternalLink className="h-4 w-4 relative" />
+        </a>
+      )}
     </Button>
   );
 }

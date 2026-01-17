@@ -16,11 +16,11 @@ import { Button } from "./ui/button";
 import { useApp } from "../context/app-context";
 
 const stepsList = [
-  { id: "upload", labelKey: "common.workflow.upload" },
-  { id: "processing", labelKey: "common.workflow.processing" },
-  { id: "edit", labelKey: "common.workflow.edit" },
-  { id: "preview", labelKey: "common.workflow.template" },
-  { id: "complete", labelKey: "common.workflow.complete" },
+  { id: "upload", labelKey: "workflow.upload" },
+  { id: "processing", labelKey: "workflow.processing" },
+  { id: "edit", labelKey: "workflow.edit" },
+  { id: "preview", labelKey: "workflow.template" },
+  { id: "complete", labelKey: "workflow.complete" },
 ];
 
 interface ProcessingPageProps {
@@ -45,7 +45,7 @@ export function ProcessingPage({
 }: ProcessingPageProps) {
   const router = useRouter();
   const t = useTranslations("processingPage");
-  const tc = useTranslations("common");
+  const tRoot = useTranslations();
   const { setWorkflowState, plan } = useApp();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
@@ -54,11 +54,11 @@ export function ProcessingPage({
   useEffect(() => {
     const steps = stepsList.map((s) => ({
       id: s.id,
-      label: tc(s.labelKey as any),
+      label: tRoot(s.labelKey as any),
     }));
     setWorkflowState(steps, "processing");
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState, tc]);
+  }, [setWorkflowState, tRoot]);
 
   useEffect(() => {
     if (!resumeId) {
@@ -208,13 +208,18 @@ export function ProcessingPage({
       <div className="mb-8">
         <h1 className="text-2xl mb-2">{t("title")}</h1>
         <div className="space-y-4">
-          <p
-            className="text-sm text-muted-foreground"
-            dangerouslySetInnerHTML={{ __html: t("description") }}
-          />
+          <p className="text-sm text-muted-foreground">
+            {t.rich("description", {
+              br: () => <br />,
+            })}
+          </p>
           <div className="flex items-center gap-2 text-sm text-amber-600/90 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md border border-amber-200/50 dark:border-amber-900/50">
             <span className="text-lg">⚠️</span>
-            <p dangerouslySetInnerHTML={{ __html: t("warning") }} />
+            <p>
+              {t.rich("warning", {
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </p>
           </div>
         </div>
       </div>
@@ -296,12 +301,11 @@ export function ProcessingPage({
                       <h3 className="text-lg font-semibold mb-1">
                         {t("error.credits.title")}
                       </h3>
-                      <p
-                        className="text-sm text-muted-foreground leading-relaxed"
-                        dangerouslySetInnerHTML={{
-                          __html: t("error.credits.description"),
-                        }}
-                      />
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {t.rich("error.credits.description", {
+                          br: () => <br />,
+                        })}
+                      </p>
                     </div>
                   </div>
 
@@ -392,10 +396,11 @@ export function ProcessingPage({
       </div>
 
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <p
-          className="text-sm text-blue-800 dark:text-blue-400"
-          dangerouslySetInnerHTML={{ __html: t("footerTip") }}
-        />
+        <p className="text-sm text-blue-800 dark:text-blue-400">
+          {t.rich("footerTip", {
+            strong: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </p>
       </div>
     </div>
   );

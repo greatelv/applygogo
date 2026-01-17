@@ -380,7 +380,7 @@
   },
   "upgradeModal": {
     "title": "Purchase a Pass and Unlock Templates",
-    "description": "A pass is required to use premium templates. <br />Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
+    "description": "A pass is required to use premium templates. <br/>Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
     "plans": {
       "pass7": {
         "title": "7-Day Pass",
@@ -529,9 +529,9 @@
     },
     "notices": {
       "passPromotion": "🎉 Special Launch Offer",
-      "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br />Check back later for more plans after official launch!",
+      "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br/>Check back later for more plans after official launch!",
       "freeTip": "💡 Purchase a pass to unlock all templates and unlimited retranslation benefits",
-      "refundPolicyFree": "Please check ApplyGogo's <a href='/terms' class='underline hover:text-primary transition-colors'>Cancellation and Refund Policy</a> before purchasing.",
+      "refundPolicyFree": "Please check ApplyGogo's <link>Cancellation and Refund Policy</link> before purchasing.",
       "refundPolicyPaid": {
         "title": "Cancellation and Refund Policy",
         "items": [
@@ -568,7 +568,7 @@
     "alerts": {
       "passWarning": {
         "title": "You have an active pass!",
-        "description": "You still have a valid paid pass.<br />If you leave now, <strong>all remaining days and benefits will be lost</strong> and cannot be refunded.",
+        "description": "You still have a valid paid pass.<br/>If you leave now, <strong>all remaining days and benefits will be lost</strong> and cannot be refunded.",
         "cancel": "Cancel and keep using",
         "confirm": "Give up and proceed to delete"
       },
@@ -603,7 +603,7 @@
   },
   "processingPage": {
     "title": "AI Processing",
-    "description": "AI is analyzing your resume and reconstructing it into an English resume that meets global standards.<br />Please wait a moment as sophisticated work from text extraction to core achievement selection and professional translation is in progress.",
+    "description": "AI is analyzing your resume and reconstructing it into an English resume that meets global standards.<br/>Please wait a moment as sophisticated work from text extraction to core achievement selection and professional translation is in progress.",
     "warning": "For stable analysis, please <strong>keep this screen open.</strong> (Work may be interrupted if you leave the page)",
     "steps": {
       "uploading": {
@@ -645,7 +645,7 @@
       "retry": "Upload Again",
       "credits": {
         "title": "Insufficient Credits",
-        "description": "You do not have enough credits to proceed with AI resume analysis.<br />Please refill credits through payment to complete the analysis.",
+        "description": "You do not have enough credits to proceed with AI resume analysis.<br/>Please refill credits through payment to complete the analysis.",
         "buyPass": "Purchase Pass for Unlimited Use",
         "refill": "Refill Credits",
         "footer": "You can retry the task after payment.",

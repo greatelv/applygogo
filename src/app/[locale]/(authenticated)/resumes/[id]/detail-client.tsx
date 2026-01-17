@@ -40,11 +40,11 @@ export function DetailClient({
   // Show stepper as "Complete" when viewing detail page
   useEffect(() => {
     const steps = [
-      { id: "upload", label: t("common.workflow.upload") },
-      { id: "processing", label: t("common.workflow.processing") },
-      { id: "edit", label: t("common.workflow.edit") },
-      { id: "preview", label: t("common.workflow.template") },
-      { id: "complete", label: t("common.workflow.complete") },
+      { id: "upload", label: t("workflow.upload") },
+      { id: "processing", label: t("workflow.processing") },
+      { id: "edit", label: t("workflow.edit") },
+      { id: "preview", label: t("workflow.template") },
+      { id: "complete", label: t("workflow.complete") },
     ];
     setWorkflowState(steps, "complete");
 

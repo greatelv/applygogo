@@ -148,6 +148,16 @@ export function SettingsPage({
     );
   };
 
+  const formatPrice = (price?: number) => {
+    if (typeof price !== "number") return "";
+    // Korean uses currency symbol (Won) after the number
+    if (locale === "ko") {
+      return `${price.toLocaleString()}${tc("currency")}`;
+    }
+    // Default (including English) puts symbol before
+    return `${tc("currency")}${price.toLocaleString()}`;
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-12 pb-12">
       <div>
@@ -323,13 +333,11 @@ export function SettingsPage({
             </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                {tc("currency")}
-                {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                {formatPrice(PLAN_PRODUCTS.PASS_30DAY.originalPrice)}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-primary">
-                  {tc("currency")}
-                  {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                  {formatPrice(PLAN_PRODUCTS.PASS_30DAY.price)}
                 </span>
                 <Badge
                   variant="outline"
@@ -396,13 +404,11 @@ export function SettingsPage({
             </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                {tc("currency")}
-                {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                {formatPrice(PLAN_PRODUCTS.PASS_7DAY.originalPrice)}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-foreground">
-                  {tc("currency")}
-                  {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                  {formatPrice(PLAN_PRODUCTS.PASS_7DAY.price)}
                 </span>
                 <Badge
                   variant="outline"
@@ -466,8 +472,7 @@ export function SettingsPage({
               </span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-bold">
-                  {tc("currency")}
-                  {PLAN_PRODUCTS.CREDIT_50.price.toLocaleString()}
+                  {formatPrice(PLAN_PRODUCTS.CREDIT_50.price)}
                 </span>
               </div>
             </div>
@@ -508,18 +513,28 @@ export function SettingsPage({
 
         {/* Beta Period Notice */}
         <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-6">
-          <p
-            className="text-sm text-blue-900 dark:text-blue-100 text-center"
-            dangerouslySetInnerHTML={{ __html: t("notices.beta") }}
-          />
+          <p className="text-sm text-blue-900 dark:text-blue-100 text-center">
+            {t.rich("notices.beta", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+              br: () => <br />,
+            })}
+          </p>
         </div>
 
         {/* Subtle Refund Policy Note for Free Users */}
         {!hasActivePass && (
-          <p
-            className="text-[11px] text-muted-foreground/60 text-center mt-4"
-            dangerouslySetInnerHTML={{ __html: t("notices.refundPolicyFree") }}
-          />
+          <p className="text-[11px] text-muted-foreground/60 text-center mt-4">
+            {t.rich("notices.refundPolicyFree", {
+              link: (chunks) => (
+                <a
+                  href="/terms"
+                  className="underline hover:text-primary transition-colors"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
         )}
 
         {/* Refund Policy Summary & Request (Only for Paid Users) */}
@@ -702,11 +717,12 @@ export function SettingsPage({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("alerts.passWarning.title")}</AlertDialogTitle>
-            <AlertDialogDescription
-              dangerouslySetInnerHTML={{
-                __html: t("alerts.passWarning.description"),
-              }}
-            />
+            <AlertDialogDescription>
+              {t.rich("alerts.passWarning.description", {
+                br: () => <br />,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>
@@ -730,11 +746,11 @@ export function SettingsPage({
               {t("alerts.deleteAccount.title")}
             </AlertDialogTitle>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: t("alerts.deleteAccount.description"),
-                }}
-              />
+              <p>
+                {t.rich("alerts.deleteAccount.description", {
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
+              </p>
               <ul className="list-disc list-inside text-xs bg-muted/50 p-2 rounded">
                 {t
                   .raw("alerts.deleteAccount.items")
