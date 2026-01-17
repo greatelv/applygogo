@@ -10,11 +10,11 @@ const nextConfig = {
     return [
       {
         source: "/en/:path*",
-        destination: "https://project-global.vercel.app/en/:path*", // TODO: Update this to the actual global Vercel URL
+        destination: "https://applygogo-global.vercel.app/en/:path*",
       },
       {
         source: "/en",
-        destination: "https://project-global.vercel.app/en", // TODO: Update this to the actual global Vercel URL
+        destination: "https://applygogo-global.vercel.app/en",
       },
     ];
   },
