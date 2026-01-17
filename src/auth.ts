@@ -12,6 +12,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DynamicPrismaAdapter(),
   session: { strategy: "jwt" },
   trustHost: true,
+  cookies: {
+    sessionToken: {
+      name: process.env.AUTH_COOKIE_NAME || "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
