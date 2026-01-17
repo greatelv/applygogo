@@ -65,9 +65,9 @@ export function LandingPage({
                   size="sm"
                   className="mr-2 text-muted-foreground hover:text-foreground"
                 >
-                  <a href="/en/resumes">
+                  <a href="/en">
                     <Languages className="w-4 h-4 mr-2" />
-                    English
+                    Global
                   </a>
                 </Button>
                 <ThemeToggle />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Chrome } from "lucide-react";
+import { Chrome, Languages } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 
@@ -30,6 +30,20 @@ export function LoginPage({
           <p className="text-muted-foreground text-sm">
             한국어 이력서를 글로벌 스탠다드 영문 이력서로
           </p>
+        </div>
+
+        <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <a href="/en/login">
+              <Languages className="w-4 h-4 mr-2" />
+              Global
+            </a>
+          </Button>
         </div>
 
         <div className="space-y-4">

@@ -157,17 +157,6 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
           <div className="hidden sm:block">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="mr-2 text-muted-foreground hover:text-foreground"
-            >
-              <a href="/en/resumes">
-                <Languages className="w-4 h-4 mr-2" />
-                English
-              </a>
-            </Button>
             <ThemeToggle />
           </div>
 
@@ -237,13 +226,6 @@ export function Header({
                 <span className="ml-2 font-semibold">{quota}</span>
               </DropdownMenuItem>
 
-              <DropdownMenuSeparator className="sm:hidden" />
-              <DropdownMenuItem asChild>
-                <a href="/en/resumes" className="cursor-pointer">
-                  <Languages className="size-4 mr-2" />
-                  English
-                </a>
-              </DropdownMenuItem>
               <DropdownMenuSeparator className="sm:hidden" />
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">
