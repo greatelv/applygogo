@@ -122,6 +122,7 @@ model PaymentHistory {
   initialCredits   Int      @default(0) @map("initial_credits")
   remainingCredits Int      @default(0) @map("remaining_credits")
   details          Json?
+  purchaseLocale   String?  @default("ko") @map("purchase_locale") // 🆕 구매 당시 언어
   
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -147,6 +148,7 @@ model User {
   
   accounts         Account[]
   resumes          Resume[]
+  globalResumes    GlobalResume[]  // 🆕 다국어 이력서
   sessions         Session[]
   usage_logs       UsageLog[]
   paymentHistories PaymentHistory[]
@@ -240,3 +242,166 @@ model Feedback {
 
   @@map("feedbacks")
 }
+
+// ============================================
+// 🆕 다국어 전용 테이블 (Global Resume Tables)
+// ============================================
+
+model GlobalResume {
+  id                String              @id @default(cuid())
+  userId            String              @map("user_id")
+
+  // 언어 정보
+  sourceLocale      String              // 'en', 'ja' (원본 언어)
+  detectedLocale    String?             @map("detected_locale") // AI가 자동 감지한 언어 (검증용)
+  targetLocale      String              @default("ko") @map("target_locale") // 목표 언어 (항상 한국어)
+
+  // 메타데이터
+  title             String
+  original_file_url String              @map("original_file_url")
+  target_role       String?             @map("target_role")
+
+  // 워크플로우 상태
+  status            GlobalResumeStatus  @default(IDLE)
+  failure_message   String?             @map("failure_message")
+  current_step      GlobalResumeStep    @default(UPLOAD) @map("current_step")
+  selected_template GlobalResumeTemplate? @map("selected_template")
+
+  // 타임스탬프
+  created_at        DateTime            @default(now()) @map("created_at")
+  updated_at        DateTime            @updatedAt @map("updated_at")
+
+  // 개인 정보
+  email             String?
+  phone             String?
+  links             Json?               // { linkedin, github, portfolio }
+
+  // 이름 (원본 언어 + 한국어 번역)
+  name_original     String              @map("name_original")
+  name_translated   String?             @map("name_translated") // AI 번역된 한국어 이름
+
+  // 요약 (원본 언어 + 한국어 번역)
+  summary_original  String?             @default("") @map("summary_original")
+  summary_translated String?            @default("") @map("summary_translated")
+
+  // Relations
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work_experiences  GlobalWorkExperience[]
+  educations        GlobalEducation[]
+  skills            GlobalSkill[]
+  additionalItems   GlobalAdditionalItem[]
+
+  @@index([userId, sourceLocale])
+  @@map("global_resumes")
+}
+
+model GlobalWorkExperience {
+  id              String        @id @default(cuid())
+  resumeId        String        @map("resume_id")
+
+  // 회사명 (원본 + 번역)
+  company_name_original    String  @map("company_name_original")
+  company_name_translated  String? @map("company_name_translated")
+
+  // 역할 (원본 + 번역)
+  role_original     String  @map("role_original")
+  role_translated   String? @map("role_translated")
+
+  // 기간
+  start_date        String  @map("start_date")
+  end_date          String  @map("end_date")
+
+  // 업무 내용 (원본 + 번역)
+  bullets_original     Json  @map("bullets_original")     // ["Developed...", "Led..."]
+  bullets_translated   Json? @map("bullets_translated")   // ["개발했습니다...", "리드했습니다..."]
+
+  order             Int     @default(0)
+  resume            GlobalResume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("global_work_experiences")
+}
+
+model GlobalEducation {
+  id             String        @id @default(cuid())
+  resumeId       String        @map("resume_id")
+
+  // 학교명 (원본 + 번역)
+  school_name_original    String  @map("school_name_original")
+  school_name_translated  String? @map("school_name_translated")
+
+  // 전공 (원본 + 번역)
+  major_original     String  @map("major_original")
+  major_translated   String? @map("major_translated")
+
+  // 학위 (원본 + 번역)
+  degree_original    String  @map("degree_original")
+  degree_translated  String? @map("degree_translated")
+
+  // 기간
+  start_date         String  @map("start_date")
+  end_date           String  @map("end_date")
+
+  order              Int     @default(0)
+  resume             GlobalResume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("global_educations")
+}
+
+model GlobalSkill {
+  id       String        @id @default(cuid())
+  resumeId String        @map("resume_id")
+
+  // 스킬명 (원본, 번역 불필요 - 기술 용어는 그대로)
+  name     String
+  level    String?       // 'BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'
+
+  order    Int           @default(0)
+  resume   GlobalResume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("global_skills")
+}
+
+model GlobalAdditionalItem {
+  id             String        @id @default(cuid())
+  resumeId       String        @map("resume_id")
+  type           ItemType      @default(OTHER) // 기존 enum 재사용
+
+  // 이름 (원본 + 번역)
+  name_original     String   @map("name_original")
+  name_translated   String?  @map("name_translated")
+
+  // 설명 (원본 + 번역)
+  description_original    String?  @default("") @map("description_original")
+  description_translated  String?  @default("") @map("description_translated")
+
+  date           String?
+  order          Int        @default(0)
+  resume         GlobalResume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("global_additional_items")
+}
+
+// 다국어 전용 Enum
+enum GlobalResumeStatus {
+  IDLE
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum GlobalResumeStep {
+  UPLOAD
+  PROCESSING
+  EDIT_TRANSLATION // 번역 확인/수정
+  TEMPLATE
+  COMPLETED
+}
+
+enum GlobalResumeTemplate {
+  MODERN
+  CLASSIC
+  MINIMAL
+  PROFESSIONAL
+  EXECUTIVE
+}
+

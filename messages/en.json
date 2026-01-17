@@ -1,0 +1,157 @@
+{
+  "Landing": {
+    "nav": {
+      "blog": "Blog",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "badge": "AI-Powered Resume Translation",
+      "title": "Transform Your Resume",
+      "titleHighlight": "for Korean Companies",
+      "description": "Upload your English resume and AI will automatically translate and format it to Korean corporate standards in minutes.",
+      "cta": "Get Started Free",
+      "ctaSecondary": "View Sample",
+      "noCreditCard": "No credit card required • Free trial available"
+    },
+    "costHook": {
+      "badge": "Unbeatable Value",
+      "title": "Faster than humans,",
+      "titleHighlight": "at 1/10th of the cost",
+      "description": "Traditional translation services charge $50-$100 per page and take days. Get professional results instantly at a fraction of the cost.",
+      "comparison": {
+        "existing": "Traditional",
+        "existingValue": "$100.00",
+        "existingLabel": "Avg. Cost",
+        "now": "ApplyGoGo",
+        "nowValue": "$9.00",
+        "nowLabel": "Limited Offer",
+        "save": "91% SAVE"
+      }
+    },
+    "features": {
+      "title": "Why ApplyGoGo?",
+      "subtitle": "More than just translation - optimized for the Korean job market",
+      "aiSummary": {
+        "title": "AI-Powered",
+        "description": "Gemini Pro analyzes your experience and restructures it into achievement-focused bullet points."
+      },
+      "translation": {
+        "title": "Cultural Adaptation",
+        "description": "Adapts your resume to Korean corporate culture with appropriate tone and professional language."
+      },
+      "templates": {
+        "title": "Professional Templates",
+        "description": "Choose from various templates and download as PDF instantly. Ready to submit to any Korean company."
+      }
+    },
+    "howItWorks": {
+      "title": "3 Simple Steps",
+      "subtitle": "Fast and easy process",
+      "step1": {
+        "title": "Upload PDF",
+        "description": "Drag and drop your English resume PDF"
+      },
+      "step2": {
+        "title": "AI Processing",
+        "description": "AI extracts, translates, and adapts your resume content"
+      },
+      "step3": {
+        "title": "Download PDF",
+        "description": "Export your new Korean resume in your favorite style"
+      }
+    },
+    "recommendedFor": {
+      "title": "Empowering Your Career in Korea",
+      "item1": {
+        "title": "For Global Job Seekers",
+        "description": "Get the perfect format and language for Korean corporate recruiters who expect specific CV standards."
+      },
+      "item2": {
+        "title": "Fast Turnaround",
+        "description": "Need a Korean resume by tomorrow? Upload your English one now and finish in less than 5 minutes."
+      },
+      "item3": {
+        "title": "Expert AI Polishing",
+        "description": "Not just word-for-word translation, but 'hiring-optimized' phrasing that highlights your impact."
+      }
+    },
+    "pricing": {
+      "title": "Simple Pricing",
+      "badge": "Limited Time Offer",
+      "subtitle": "Start today with our special launch price",
+      "free": {
+        "title": "Free Trial",
+        "description": "Experience our service",
+        "credits": "10 Credits included"
+      },
+      "pass7": {
+        "title": "7-Day Pass",
+        "price": "$6.00",
+        "originalPrice": "$12.00",
+        "off": "50% OFF",
+        "description": "Full access for one week",
+        "credits": "50 Credits included"
+      },
+      "pass30": {
+        "title": "30-Day Pass",
+        "price": "$9.00",
+        "originalPrice": "$20.00",
+        "off": "55% OFF",
+        "description": "Full access for one month",
+        "credits": "300 Credits included",
+        "recommended": "Recommended"
+      },
+      "common": {
+        "credits": "Credits included",
+        "tempates": "Full Template Access",
+        "unlimited": "Unlimited Re-translation",
+        "duration7": "Valid for 7 days",
+        "duration30": "Valid for 30 days",
+        "button": "Get Started",
+        "footer": "* 5 credits per resume creation, free or 1 credit for re-translation depending on your plan."
+      }
+    },
+    "faq": {
+      "title": "FAQ",
+      "subtitle": "Everything you need to know",
+      "q1": {
+        "q": "Does it matter what my English resume format is?",
+        "a": "No, our AI can extract text from most PDF formats, including LinkedIn exports or custom designs."
+      },
+      "q2": {
+        "q": "Can I edit the translation?",
+        "a": "Absolutely. You can edit every single point of your translated resume using our Split View editor."
+      },
+      "q3": {
+        "q": "Is the free trial enough?",
+        "a": "Yes, our trial credits allow you to generate a resume to see the quality before you decide to buy a pass."
+      }
+    },
+    "cta": {
+      "title": "Start Your Korean Career Journey Today",
+      "subtitle": "No more worrying about resume translation"
+    }
+  },
+  "Login": {
+    "title": "ApplyGoGo",
+    "subtitle": "Your Path to Global Standard Resumes",
+    "google": "Continue with Google",
+    "naver": "Continue with Naver",
+    "inAppWarning": {
+      "title": "⚠️ Google Login is not supported in In-App Browsers.",
+      "description": "(Please use Naver Login or open in a system browser)"
+    },
+    "tos": {
+      "prefix": "By signing in, you agree to our ",
+      "terms": "Terms of Service",
+      "and": " and ",
+      "privacy": "Privacy Policy",
+      "suffix": ""
+    },
+    "features": {
+      "ai": "AI-Powered",
+      "translation": "Translation",
+      "pdf": "PDF Export"
+    }
+  }
+}

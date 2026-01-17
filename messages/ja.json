@@ -1,0 +1,157 @@
+{
+  "Landing": {
+    "nav": {
+      "blog": "ブログ",
+      "getStarted": "始める"
+    },
+    "hero": {
+      "badge": "AI履歴書翻訳サービス",
+      "title": "履歴書を変換",
+      "titleHighlight": "韓国企業向けに",
+      "description": "英語の履歴書をアップロードすると、AIが自動的に韓国企業の基準に合わせて翻訳・フォーマットします。",
+      "cta": "無料で始める",
+      "ctaSecondary": "サンプルを見る",
+      "noCreditCard": "クレジットカード不要 • 무료トライアル"
+    },
+    "costHook": {
+      "badge": "圧倒的なコストパフォーマンス",
+      "title": "外注より早く、",
+      "titleHighlight": "費用は1/10レベルで",
+      "description": "通常の外注翻訳サービスでは数万円の費用と数日の待機時間が必要です。ApplyGoGoなら合理的な価格でプロレベルの結果を即座に受け取れます。",
+      "comparison": {
+        "existing": "従来の外注",
+        "existingValue": "¥10,000",
+        "existingLabel": "平均費用",
+        "now": "ApplyGoGo",
+        "nowValue": "¥1,200",
+        "nowLabel": "オープン特価",
+        "save": "87% SAVE"
+      }
+    },
+    "features": {
+      "title": "ApplyGoGoを選ぶ理由",
+      "subtitle": "単なる翻訳ではなく、韓国の就職市場に最適化",
+      "aiSummary": {
+        "title": "AI駆動",
+        "description": "Gemini Proがあなたの経験を分析し、成果重視の箇条書きに再構成します。"
+      },
+      "translation": {
+        "title": "文化適応",
+        "description": "謙虚なトーンとチーム重視の言葉で韓国企業文化に適応します。"
+      },
+      "templates": {
+        "title": "プロフェッショナルテンプレート",
+        "description": "各種テンプレートから選択し、即座にPDFダウンロード。韓国企業への提出準備が整います。"
+      }
+    },
+    "howItWorks": {
+      "title": "3つの簡単なステップ",
+      "subtitle": "迅速で簡単なプロセス",
+      "step1": {
+        "title": "PDFアップロード",
+        "description": "英語の履歴書PDFをドラッグ＆ドロップ"
+      },
+      "step2": {
+        "title": "AI処理",
+        "description": "AIが抽出、翻訳、適応を行います"
+      },
+      "step3": {
+        "title": "PDFダウンロード",
+        "description": "お気に入りのスタイルで韓国語の履歴書をエクスポート"
+      }
+    },
+    "recommendedFor": {
+      "title": "韓国でのキャリアを夢見るすべての方へ",
+      "item1": {
+        "title": "グローバル人材向け",
+        "description": "韓国企業の採用担当者が好む特定のCV基準とフォーマットを提供します。"
+      },
+      "item2": {
+        "title": "スピード完成",
+        "description": "急ぎで韓国語の履歴書が必要ですか？5分以内に完成させることができます。"
+      },
+      "item3": {
+        "title": "AIによる洗練された表現",
+        "description": "単なる直訳ではなく、自己PRがより効果的に伝わる韓国語表現に磨き上げます。"
+      }
+    },
+    "pricing": {
+      "title": "シンプルな料金プラン",
+      "badge": "オープン記念・期間限定特価",
+      "subtitle": "今だけの限定価格、合理的なプランで始めましょう",
+      "free": {
+        "title": "無料トライアル",
+        "description": "サービスを体験してみてください",
+        "credits": "10クレジット提供"
+      },
+      "pass7": {
+        "title": "7日間パス",
+        "price": "¥800",
+        "originalPrice": "¥1,600",
+        "off": "50% OFF",
+        "description": "1週間全機能利用可能",
+        "credits": "50クレジット込み"
+      },
+      "pass30": {
+        "title": "30日間パス",
+        "price": "¥1,200",
+        "originalPrice": "¥2,800",
+        "off": "57% OFF",
+        "description": "1ヶ月间全機能利用可能",
+        "credits": "300クレジット込み",
+        "recommended": "おすすめ"
+      },
+      "common": {
+        "credits": "クレジット提供",
+        "tempates": "すべてのテンプレート利用可能",
+        "unlimited": "再翻訳無制限",
+        "duration7": "7日間利用可能",
+        "duration30": "30日間利用可能",
+        "button": "始める",
+        "footer": "* 履歴書作成時に5クレジット、再翻訳時はプランにより無料または1クレジットが差し引かれます。"
+      }
+    },
+    "faq": {
+      "title": "よくある質問",
+      "subtitle": "疑問点をこちらで確認してください",
+      "q1": {
+        "q": "英語の履歴書の形式は決まっていますか？",
+        "a": "いいえ。AIがテキストを抽出するため、一般的なPDF形式であればどのようなデザインでも可能です。"
+      },
+      "q2": {
+        "q": "翻訳された内容は修正できますか？",
+        "a": "はい。AI変換後に提供されるエディタで、すべての項目を自由に編集・修正いただけます。"
+      },
+      "q3": {
+        "q": "無料プランでも試せますか？",
+        "a": "はい。無料クレジットで品質を確認いただけます。納得いただいてからパスを購入することをおすすめします。"
+      }
+    },
+    "cta": {
+      "title": "今日から韓国でのキャリアを始めましょう",
+      "subtitle": "履歴書翻訳の心配은 이제 그만"
+    }
+  },
+  "Login": {
+    "title": "ApplyGoGo",
+    "subtitle": "韓国語の履歴書をグローバル基準の英語履歴書に",
+    "google": "Googleで始める",
+    "naver": "Naverで始める",
+    "inAppWarning": {
+      "title": "⚠️ インアプリブラウザではGoogleログインをご利用いただけません。",
+      "description": "(Naverログインをご利用いただくか、通常のブラウザで開いてください)"
+    },
+    "tos": {
+      "prefix": "ログインすることで、",
+      "terms": "利用規約",
+      "and": "および",
+      "privacy": "個人情報保護方針",
+      "suffix": "に同意したものとみなされます"
+    },
+    "features": {
+      "ai": "AI要約",
+      "translation": "専門翻訳",
+      "pdf": "PDF書き出し"
+    }
+  }
+}

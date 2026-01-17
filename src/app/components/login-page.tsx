@@ -5,17 +5,23 @@ import { Chrome, Languages } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 import { useInAppBrowser } from "../../hooks/use-in-app-browser";
+import { LanguageSwitcher } from "./language-switcher";
+import { t, Locale } from "@/lib/i18n-utils";
 
 interface LoginPageProps {
   onGoogleLogin: () => void;
   onNaverLogin: () => void;
+  onNaverLoginInSafari?: () => void; // 네이버 앱 실행용
+  onNaverLoginInAppBrowser?: () => void; // 네이버 앱 실행용
   onCredentialLogin?: (formData: FormData) => void;
+  locale?: Locale;
 }
 
 export function LoginPage({
   onGoogleLogin,
   onNaverLogin,
   onCredentialLogin,
+  locale = "ko",
 }: LoginPageProps) {
   const { pending } = useFormStatus();
   const searchParams = useSearchParams();
@@ -23,11 +29,18 @@ export function LoginPage({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      {/* Language Switcher - 우측 상단 */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
+
       <div className="w-full max-w-md px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl tracking-tight mb-3">지원고고</h1>
+          <h1 className="text-4xl tracking-tight mb-3">
+            {t(locale, "Login.title")}
+          </h1>
           <p className="text-muted-foreground text-sm">
-            한국어 이력서를 글로벌 스탠다드 영문 이력서로
+            {t(locale, "Login.subtitle")}
           </p>
         </div>
 
@@ -42,15 +55,15 @@ export function LoginPage({
               disabled={pending}
             >
               <Chrome className="size-5 mr-2" />
-              Google로 시작하기
+              {t(locale, "Login.google")}
             </Button>
           ) : (
             <div className="p-3 text-sm text-center text-amber-600 bg-amber-50 rounded-md border border-amber-200 mb-2">
               <span className="block mb-1 break-keep">
-                ⚠️ 인앱 브라우저에서는 구글 로그인을 지원하지 않습니다.
+                {t(locale, "Login.inAppWarning.title")}
               </span>
               <span className="text-xs text-muted-foreground block break-keep">
-                (원활한 사용을 위해 네이버 로그인을 이용해주세요)
+                {t(locale, "Login.inAppWarning.description")}
               </span>
             </div>
           )}
@@ -63,13 +76,17 @@ export function LoginPage({
             disabled={pending}
           >
             <span className="font-bold mr-2 text-lg">N</span>
-            네이버로 시작하기
+            {t(locale, "Login.naver")}
           </Button>
 
           {/* Test Login Form (Only visible with ?mode=test) */}
-          {searchParams.get("mode") === "test" && onCredentialLogin && (
+          {searchParams.get("mode") === "test" && onNaverLogin && (
             <form
-              action={onCredentialLogin}
+              action={async (formData) => {
+                // Testing Naver credentials if naver is clicked in test mode
+                // but actually we use credential login for testing
+                if (onCredentialLogin) onCredentialLogin(formData);
+              }}
               className="mt-4 p-4 border border-dashed border-neutral-700/50 rounded-lg bg-neutral-900/50"
             >
               <div className="text-xs text-muted-foreground mb-3 text-center font-mono">
@@ -103,15 +120,15 @@ export function LoginPage({
           )}
 
           <p className="text-xs text-center text-muted-foreground mt-6">
-            로그인하면{" "}
+            {t(locale, "Login.tos.prefix")}
             <a href="#" className="underline hover:text-foreground">
-              서비스 약관
+              {t(locale, "Login.tos.terms")}
             </a>
-            과{" "}
+            {t(locale, "Login.tos.and")}
             <a href="#" className="underline hover:text-foreground">
-              개인정보 처리방침
+              {t(locale, "Login.tos.privacy")}
             </a>
-            에 동의하게 됩니다
+            {t(locale, "Login.tos.suffix")}
           </p>
         </div>
 
@@ -119,15 +136,21 @@ export function LoginPage({
           <div className="grid grid-cols-3 gap-4 sm:gap-8 text-center text-sm">
             <div>
               <div className="text-2xl mb-1">✨</div>
-              <div className="text-muted-foreground text-xs">AI 기반 요약</div>
+              <div className="text-muted-foreground text-xs">
+                {t(locale, "Login.features.ai")}
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">🌐</div>
-              <div className="text-muted-foreground text-xs">전문 번역</div>
+              <div className="text-muted-foreground text-xs">
+                {t(locale, "Login.features.translation")}
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">📄</div>
-              <div className="text-muted-foreground text-xs">PDF 내보내기</div>
+              <div className="text-muted-foreground text-xs">
+                {t(locale, "Login.features.pdf")}
+              </div>
             </div>
           </div>
         </div>
