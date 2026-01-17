@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { Chrome, Languages } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
-
 import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 
 interface LoginPageProps {
