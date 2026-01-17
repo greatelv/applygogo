@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload, FileText, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useApp } from "../context/app-context";
 
 import {
@@ -32,7 +32,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(
-    "PDF 파일만 업로드 가능합니다. 다시 시도해주세요."
+    "PDF 파일만 업로드 가능합니다. 다시 시도해주세요.",
   );
 
   const router = useRouter();
@@ -58,7 +58,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     if (file && file.type === "application/pdf") {
       if (file.size > 5 * 1024 * 1024) {
         setErrorMessage(
-          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
+          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요.",
         );
         setShowErrorDialog(true);
         return;
@@ -77,7 +77,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         setErrorMessage(
-          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요."
+          "파일 용량이 5MB를 초과합니다. 더 작은 파일을 업로드해주세요.",
         );
         setShowErrorDialog(true);
         e.target.value = ""; // Reset input
@@ -148,7 +148,7 @@ export function NewResumePage({ onUpload, isUploading }: NewResumePageProps) {
             isDragging
               ? "border-foreground/40 bg-accent"
               : "border-border hover:border-foreground/30",
-            isUploading && "opacity-50 pointer-events-none"
+            isUploading && "opacity-50 pointer-events-none",
           )}
         >
           {isUploading ? (

@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ResumesClient } from "./resumes-client";
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 

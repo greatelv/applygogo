@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ResumeDetailPage } from "@/app/components/resume-detail-page";
 import { useApp } from "@/app/context/app-context";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface DetailClientProps {
   resumeId: string;
@@ -16,6 +17,7 @@ interface DetailClientProps {
   template: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
+  locale?: string;
 }
 
 export function DetailClient({
@@ -29,23 +31,25 @@ export function DetailClient({
   template,
   updatedAt,
   isWorkflowComplete,
+  locale,
 }: DetailClientProps) {
   const router = useRouter();
   const { setWorkflowState } = useApp();
+  const t = useTranslations();
 
   // Show stepper as "Complete" when viewing detail page
   useEffect(() => {
     const steps = [
-      { id: "upload", label: "업로드" },
-      { id: "processing", label: "AI 처리" },
-      { id: "edit", label: "편집" },
-      { id: "preview", label: "템플릿 선택" },
-      { id: "complete", label: "완료" },
+      { id: "upload", label: t("common.workflow.upload") },
+      { id: "processing", label: t("common.workflow.processing") },
+      { id: "edit", label: t("common.workflow.edit") },
+      { id: "preview", label: t("common.workflow.template") },
+      { id: "complete", label: t("common.workflow.complete") },
     ];
     setWorkflowState(steps, "complete");
 
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState]);
+  }, [setWorkflowState, t]);
 
   return (
     <ResumeDetailPage
@@ -59,6 +63,7 @@ export function DetailClient({
       template={template}
       updatedAt={updatedAt}
       isWorkflowComplete={isWorkflowComplete}
+      locale={locale}
       onBack={() => {
         router.push("/resumes");
       }}
@@ -72,7 +77,9 @@ export function DetailClient({
 
           if (!res.ok) {
             const data = await res.json();
-            throw new Error(data.error || "이력서 삭제에 실패했습니다.");
+            throw new Error(
+              data.error || t("resumeDetail.notifications.deleteError"),
+            );
           }
 
           router.push("/resumes");

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
 import dynamic from "next/dynamic";
 import { useApp } from "../context/app-context";
 import { useEffect } from "react";
@@ -8,7 +8,7 @@ import { useEffect } from "react";
 const DynamicDashboardLayout = dynamic(
   () =>
     import("../components/dashboard-layout").then((mod) => mod.DashboardLayout),
-  { ssr: false } // Keeping SSR disabled as requested
+  { ssr: false }, // Keeping SSR disabled as requested
 );
 
 interface ClientDashboardWrapperProps {

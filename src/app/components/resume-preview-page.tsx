@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Eye, CheckCircle, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { cn } from "../lib/utils";
@@ -67,8 +68,9 @@ export function ResumePreviewPage({
   initialTemplate = "modern",
   isCompleting = false,
 }: ResumePreviewPageProps) {
+  const t = useTranslations("templatesPage");
   const [selectedTemplate, setSelectedTemplate] = useState(
-    initialTemplate.toLowerCase()
+    initialTemplate.toLowerCase(),
   );
   // Calculate initial scale based on window width
   const [scale, setScale] = useState(1);
@@ -99,7 +101,6 @@ export function ResumePreviewPage({
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  // ... (type Template and templates array remain same)
   type Template = {
     id: string;
     name: string;
@@ -110,32 +111,32 @@ export function ResumePreviewPage({
   const templates: Template[] = [
     {
       id: "modern",
-      name: "Modern",
-      description: "깔끔하고 현대적인 디자인. IT/스타트업 추천",
+      name: t("templateNames.modern"),
+      description: t("templateDescriptions.modern"),
       isPro: false,
     },
     {
       id: "professional",
-      name: "Professional",
-      description: "2단 레이아웃으로 전문적인 느낌. 경력직 추천",
+      name: t("templateNames.professional"),
+      description: t("templateDescriptions.professional"),
       isPro: true,
     },
     {
       id: "executive",
-      name: "Executive",
-      description: "강렬한 헤더와 고급스러운 디자인. 리더/임원급 추천",
+      name: t("templateNames.executive"),
+      description: t("templateDescriptions.executive"),
       isPro: true,
     },
     {
       id: "classic",
-      name: "Classic",
-      description: "전통적이고 격식있는 스타일. 대기업/금융 추천",
+      name: t("templateNames.classic"),
+      description: t("templateDescriptions.classic"),
       isPro: true,
     },
     {
       id: "minimal",
-      name: "Minimal",
-      description: "미니멀하고 세련된 느낌. 디자인/크리에이티브 추천",
+      name: t("templateNames.minimal"),
+      description: t("templateDescriptions.minimal"),
       isPro: true,
     },
   ];
@@ -199,6 +200,7 @@ export function ResumePreviewPage({
           minHeight: "297mm",
           transform: `scale(${scale})`,
           transformOrigin: "top center",
+          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
         }}
       >
         {renderTemplate()}
@@ -209,10 +211,8 @@ export function ResumePreviewPage({
   return (
     <div className="max-w-6xl mx-auto pb-24">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">템플릿 선택</h1>
-        <p className="text-sm text-muted-foreground">
-          원하는 템플릿을 선택하세요
-        </p>
+        <h1 className="text-2xl mb-2">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 mb-8">
@@ -227,7 +227,7 @@ export function ResumePreviewPage({
                   "flex flex-col items-center justify-center py-2 px-0.5 rounded-md text-[10px] sm:text-xs font-medium transition-all relative overflow-hidden",
                   selectedTemplate === template.id
                     ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-background/50 hover:text-foreground",
                 )}
               >
                 {/* Shortened Names for Mobile */}
@@ -235,8 +235,8 @@ export function ResumePreviewPage({
                   {template.id === "professional"
                     ? "Pro"
                     : template.id === "executive"
-                    ? "Exec"
-                    : template.name}
+                      ? "Exec"
+                      : template.name}
                 </span>
                 {selectedTemplate === template.id && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary/50" />
@@ -265,7 +265,7 @@ export function ResumePreviewPage({
                   "w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer relative",
                   selectedTemplate === template.id
                     ? "border-primary bg-primary/5"
-                    : "border-border hover:border-foreground/30 bg-card"
+                    : "border-border hover:border-foreground/30 bg-card",
                 )}
               >
                 <div className="flex items-start justify-between mb-2 gap-2">
@@ -292,14 +292,14 @@ export function ResumePreviewPage({
           {isProTemplateSelected && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-400">
-                ⭐ 이 템플릿은 이용권 전용입니다.
+                {t("proNotice")}
               </p>
             </div>
           )}
 
           <div className="pt-4 space-y-2 hidden lg:block">
             <Button variant="outline" onClick={onBack} className="w-full">
-              이전
+              {t("actions.previous")}
             </Button>
             <Button
               onClick={handleNext}
@@ -310,22 +310,21 @@ export function ResumePreviewPage({
               {isCompleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  처리 중...
+                  {t("actions.processing")}
                 </>
               ) : isProTemplateSelected ? (
-                "이용권 구매하기"
+                t("actions.buy")
               ) : (
-                "완료"
+                t("actions.complete")
               )}
             </Button>
           </div>
 
           <div className="hidden lg:block mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-400">
-              💡 <strong>팁:</strong> 템플릿은 각각 다른 느낌과 용도에
-              최적화되어 있습니다. 지원하려는 회사와 포지션에 맞는 템플릿을
-              선택하세요.
-            </p>
+            <div
+              className="text-sm text-blue-800 dark:text-blue-400"
+              dangerouslySetInnerHTML={{ __html: t("tip") }}
+            />
           </div>
         </div>
 
@@ -355,7 +354,7 @@ export function ResumePreviewPage({
           onClick={onBack}
           className="flex-1 h-12 text-base"
         >
-          이전
+          {t("actions.previous")}
         </Button>
         <Button
           onClick={handleNext}
@@ -366,12 +365,12 @@ export function ResumePreviewPage({
           {isCompleting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              처리 중
+              {t("actions.processing")}
             </>
           ) : isProTemplateSelected ? (
-            "구매하기"
+            t("actions.buy")
           ) : (
-            "완료"
+            t("actions.complete")
           )}
         </Button>
       </div>

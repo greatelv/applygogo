@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge"; // Badge 추가
+import { Badge } from "./ui/badge";
 import { Loader2, Zap, Calendar, CreditCard, Sparkles } from "lucide-react";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 import { cn } from "@/lib/utils";
@@ -38,8 +39,9 @@ export function UpgradeModal({
   portoneConfig,
 }: UpgradeModalProps) {
   const router = useRouter();
+  const t = useTranslations("upgradeModal");
   const [purchasingProduct, setPurchasingProduct] = useState<string | null>(
-    null
+    null,
   );
 
   const handlePurchase = async (productType: "PASS_7DAY" | "PASS_30DAY") => {
@@ -80,15 +82,15 @@ export function UpgradeModal({
       });
 
       if (!verifyRes.ok) {
-        throw new Error("결제 검증에 실패했습니다.");
+        throw new Error(t("verifyError"));
       }
 
-      toast.success(`${config.name} 구매가 완료되었습니다!`);
+      toast.success(t("success", { name: config.name }));
       onOpenChange(false);
       router.refresh();
     } catch (error: any) {
       console.error(error);
-      toast.error(`오류: ${error.message}`);
+      toast.error(t("error", { message: error.message }));
     } finally {
       setPurchasingProduct(null);
     }
@@ -101,17 +103,12 @@ export function UpgradeModal({
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
               <Sparkles className="size-5 text-primary" />
-              이용권 구매하고 템플릿 잠금 해제
+              {t("title")}
             </DialogTitle>
-            <DialogDescription className="text-base mt-2">
-              프리미엄 템플릿을 사용하려면 이용권이 필요합니다. <br />
-              <span className="text-foreground font-medium">
-                Split View 편집
-              </span>
-              과{" "}
-              <span className="text-foreground font-medium">재번역 무제한</span>{" "}
-              혜택도 함께 누리세요!
-            </DialogDescription>
+            <DialogDescription
+              className="text-base mt-2"
+              dangerouslySetInnerHTML={{ __html: t("description") }}
+            />
           </DialogHeader>
         </div>
 
@@ -121,10 +118,10 @@ export function UpgradeModal({
             <div className="relative rounded-xl border bg-card p-6 shadow-sm transition-all hover:border-primary/50 flex flex-col">
               <div className="mb-4">
                 <h3 className="font-semibold text-lg text-foreground">
-                  7일 이용권
+                  {t("plans.pass7.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  단기 집중 준비에 적합
+                  {t("plans.pass7.subtitle")}
                 </p>
               </div>
 
@@ -133,14 +130,15 @@ export function UpgradeModal({
                   <span className="text-3xl font-bold">
                     {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                   </span>
-                  <span className="text-lg font-medium">원</span>
+                  <span className="text-lg font-medium">{t("currency")}</span>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}원
+                    {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                    {t("currency")}
                   </span>
                   <Badge variant="secondary" className="text-xs font-medium">
-                    50% OFF
+                    50% {t("off")}
                   </Badge>
                 </div>
               </div>
@@ -149,21 +147,24 @@ export function UpgradeModal({
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground">
-                    {PLAN_PRODUCTS.PASS_7DAY.credits}
-                  </span>{" "}
-                  크레딧
+                    {t("plans.pass7.features.0", {
+                      credits: PLAN_PRODUCTS.PASS_7DAY.credits,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary shrink-0" />
-                  모든 고급 템플릿 사용
+                  {t("plans.pass7.features.1")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
-                  재번역 무제한
+                  {t("plans.pass7.features.2")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary shrink-0" />
-                  {PLAN_PRODUCTS.PASS_7DAY.days}일간 이용
+                  {t("plans.pass7.features.3", {
+                    days: PLAN_PRODUCTS.PASS_7DAY.days,
+                  })}
                 </li>
               </ul>
 
@@ -177,7 +178,7 @@ export function UpgradeModal({
                 {purchasingProduct === "PASS_7DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "구매하기"
+                  t("cta")
                 )}
               </Button>
             </div>
@@ -186,16 +187,16 @@ export function UpgradeModal({
             <div className="relative rounded-xl border border-primary bg-primary/5 p-6 shadow-md transition-all flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-primary text-primary-foreground hover:bg-primary px-4 py-1">
-                  추천
+                  {t("plans.pass30.badge")}
                 </Badge>
               </div>
 
               <div className="mb-4 mt-2">
                 <h3 className="font-semibold text-lg text-primary">
-                  30일 이용권
+                  {t("plans.pass30.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  여유로운 이직 준비
+                  {t("plans.pass30.subtitle")}
                 </p>
               </div>
 
@@ -204,14 +205,17 @@ export function UpgradeModal({
                   <span className="text-3xl font-bold text-primary">
                     {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
-                  <span className="text-lg font-medium text-primary">원</span>
+                  <span className="text-lg font-medium text-primary">
+                    {t("currency")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}원
+                    {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                    {t("currency")}
                   </span>
                   <Badge variant="destructive" className="text-xs font-medium">
-                    57% OFF
+                    57% {t("off")}
                   </Badge>
                 </div>
               </div>
@@ -220,21 +224,24 @@ export function UpgradeModal({
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground font-medium">
-                    {PLAN_PRODUCTS.PASS_30DAY.credits}
-                  </span>{" "}
-                  크레딧
+                    {t("plans.pass30.features.0", {
+                      credits: PLAN_PRODUCTS.PASS_30DAY.credits,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary shrink-0" />
-                  모든 고급 템플릿 사용
+                  {t("plans.pass30.features.1")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
-                  재번역 무제한
+                  {t("plans.pass30.features.2")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary shrink-0" />
-                  {PLAN_PRODUCTS.PASS_30DAY.days}일간 이용
+                  {t("plans.pass30.features.3", {
+                    days: PLAN_PRODUCTS.PASS_30DAY.days,
+                  })}
                 </li>
               </ul>
 
@@ -247,7 +254,7 @@ export function UpgradeModal({
                 {purchasingProduct === "PASS_30DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "구매하기"
+                  t("cta")
                 )}
               </Button>
             </div>
@@ -255,8 +262,7 @@ export function UpgradeModal({
 
           <div className="mt-6 p-4 bg-muted/50 border border-border rounded-lg">
             <p className="text-xs text-muted-foreground text-center break-keep">
-              💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 무료
-              플랜으로 전환되니 안심하고 구매하세요.
+              {t("notice")}
             </p>
           </div>
         </div>

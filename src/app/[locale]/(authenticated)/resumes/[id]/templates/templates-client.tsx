@@ -6,14 +6,7 @@ import { UpgradeModal } from "@/app/components/upgrade-modal";
 import { useApp } from "@/app/context/app-context";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-
-const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
-];
+import { useTranslations } from "next-intl";
 
 interface TemplatesClientProps {
   resumeId: string;
@@ -44,8 +37,17 @@ export function TemplatesClient({
   portoneConfig,
 }: TemplatesClientProps) {
   const router = useRouter();
+  const t = useTranslations();
   const { setWorkflowState } = useApp();
   const { data: session } = useSession();
+
+  const steps = [
+    { id: "upload", label: t("common.workflow.upload") },
+    { id: "processing", label: t("common.workflow.processing") },
+    { id: "edit", label: t("common.workflow.edit") },
+    { id: "preview", label: t("common.workflow.template") },
+    { id: "complete", label: t("common.workflow.complete") },
+  ];
 
   useEffect(() => {
     setWorkflowState(steps, "preview");
@@ -85,9 +87,7 @@ export function TemplatesClient({
       router.push(`/resumes/${resumeId}`);
     } catch (error) {
       console.error("Error saving template:", error);
-      // Fallback navigation even on error? Or show alert?
-      // router.push(`/resumes/${resumeId}`);
-      alert("템플릿 저장 중 오류가 발생했습니다.");
+      alert(t("templatesPage.saveError"));
       setIsCompleting(false);
     }
   };

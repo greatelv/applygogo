@@ -3,7 +3,7 @@ import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { SiteFooter } from "./site-footer";
 import { BetaBanner } from "./beta-banner";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

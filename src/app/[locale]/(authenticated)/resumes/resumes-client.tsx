@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ResumesPage } from "../../components/resumes-page";
+import { ResumesPage } from "@/app/components/resumes-page";
+import { useTranslations } from "next-intl";
 
 interface Resume {
   id: string;
@@ -23,6 +24,7 @@ export function ResumesClient({
   showBetaBanner,
 }: ResumesClientProps) {
   const router = useRouter();
+  const t = useTranslations("resumes");
 
   return (
     <ResumesPage
@@ -37,7 +39,7 @@ export function ResumesClient({
 
           if (!res.ok) {
             const data = await res.json();
-            throw new Error(data.error || "이력서 삭제에 실패했습니다.");
+            throw new Error(data.error || t("error"));
           }
 
           router.refresh();

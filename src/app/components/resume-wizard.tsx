@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { NewResumePage } from "./new-resume-page";
 import { ProcessingPage } from "./processing-page";
 import { ResumeEditPage } from "./resume-edit-page";
@@ -81,25 +81,25 @@ export function ResumeWizard({
 
   const [resumeTitle, setResumeTitle] = useState(initialData?.title || "");
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
-    initialData?.experiences || []
+    initialData?.experiences || [],
   );
   const [educations, setEducations] = useState<any[]>(
-    initialData?.educations || []
+    initialData?.educations || [],
   );
   const [skills, setSkills] = useState<any[]>(initialData?.skills || []);
   const [certifications, setCertifications] = useState<any[]>(
-    initialData?.certifications || []
+    initialData?.certifications || [],
   );
   const [awards, setAwards] = useState<any[]>(initialData?.awards || []);
   const [languages, setLanguages] = useState<any[]>(
-    initialData?.languages || []
+    initialData?.languages || [],
   );
   const [personalInfo, setPersonalInfo] = useState<any>(
-    initialData?.personalInfo || null
+    initialData?.personalInfo || null,
   );
   const [template, setTemplate] = useState(initialData?.template || "modern");
   const [resumeId, setResumeId] = useState<string | null>(
-    initialData?.id || null
+    initialData?.id || null,
   );
 
   // Always use the full 5 steps for consistency
@@ -166,7 +166,7 @@ export function ResumeWizard({
               period: `${exp.start_date} ~ ${exp.end_date}`,
               bullets: exp.bullets_kr,
               bulletsEn: exp.bullets_en,
-            })
+            }),
           );
 
           setExperiences(transformedExperiences);
@@ -214,11 +214,11 @@ export function ResumeWizard({
     const { additionalItems, ...rest } = data;
 
     const certifications = additionalItems.filter(
-      (item) => item.type === "CERTIFICATION"
+      (item) => item.type === "CERTIFICATION",
     );
     const awards = additionalItems.filter((item) => item.type === "AWARD");
     const languages = additionalItems.filter(
-      (item) => item.type === "LANGUAGE"
+      (item) => item.type === "LANGUAGE",
     );
 
     setExperiences(data.experiences as any);
@@ -263,7 +263,7 @@ export function ResumeWizard({
     if (resumeId) {
       const response = await updateResumeTemplateAction(
         resumeId,
-        templateId as "modern" | "classic" | "minimal"
+        templateId as "modern" | "classic" | "minimal",
       );
       if (!response.success) {
         console.error("Failed to save template selection");

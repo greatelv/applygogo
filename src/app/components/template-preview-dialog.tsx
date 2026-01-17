@@ -15,12 +15,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
-import { registerFonts } from "./pdf-templates/modern-pdf";
-import { ModernPdf } from "./pdf-templates/modern-pdf";
-import { ClassicPdf } from "./pdf-templates/classic-pdf";
-import { MinimalPdf } from "./pdf-templates/minimal-pdf";
-import { ProfessionalPdf } from "./pdf-templates/professional-pdf";
-import { ExecutivePdf } from "./pdf-templates/executive-pdf";
+
+const ModernPdf = dynamic(
+  () => import("./pdf-templates/modern-pdf").then((mod) => mod.ModernPdf),
+  { ssr: false },
+);
+const ClassicPdf = dynamic(
+  () => import("./pdf-templates/classic-pdf").then((mod) => mod.ClassicPdf),
+  { ssr: false },
+);
+const MinimalPdf = dynamic(
+  () => import("./pdf-templates/minimal-pdf").then((mod) => mod.MinimalPdf),
+  { ssr: false },
+);
+const ProfessionalPdf = dynamic(
+  () =>
+    import("./pdf-templates/professional-pdf").then(
+      (mod) => mod.ProfessionalPdf,
+    ),
+  { ssr: false },
+);
+const ExecutivePdf = dynamic(
+  () => import("./pdf-templates/executive-pdf").then((mod) => mod.ExecutivePdf),
+  { ssr: false },
+);
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -31,7 +49,7 @@ const PDFViewer = dynamic(
         Generating Preview...
       </div>
     ),
-  }
+  },
 );
 
 interface TemplatePreviewDialogProps {
@@ -122,7 +140,7 @@ export function TemplatePreviewDialog({
 
   useEffect(() => {
     setIsClient(true);
-    registerFonts();
+    import("./pdf-templates/modern-pdf").then((mod) => mod.registerFonts());
   }, []);
 
   const handleStart = () => {
@@ -219,14 +237,16 @@ export function TemplatePreviewDialog({
                   <style jsx global>{`
                     iframe {
                       border: none !important;
-                      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+                      box-shadow:
+                        0 4px 6px -1px rgb(0 0 0 / 0.1),
                         0 2px 4px -2px rgb(0 0 0 / 0.1);
                       border-radius: 8px;
                       background: white;
                     }
                     @media (min-width: 640px) {
                       iframe {
-                        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+                        box-shadow:
+                          0 20px 25px -5px rgb(0 0 0 / 0.1),
                           0 8px 10px -6px rgb(0 0 0 / 0.1);
                       }
                     }

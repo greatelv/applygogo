@@ -1,11 +1,11 @@
 "use client";
 
-import { LoginPage } from "../../components/login-page";
+import { LoginPage } from "@/app/components/login-page";
 import {
   authenticate,
   authenticateNaver,
   authenticateWithCredentials,
-} from "../../lib/actions";
+} from "@/app/lib/actions";
 
 import { Suspense } from "react";
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   AdditionalItem,
   Education,
@@ -28,6 +29,7 @@ export const useResumeEditor = ({
   resumeId,
   onDeductCredit,
 }: UseResumeEditorProps) => {
+  const t = useTranslations();
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     initialPersonalInfo || {
       name_kr: "",
@@ -37,17 +39,17 @@ export const useResumeEditor = ({
       links: [],
       summary: "",
       summary_kr: "",
-    }
+    },
   );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
-    initialExperiences || []
+    initialExperiences || [],
   );
   const [educations, setEducations] = useState<Education[]>(
-    initialEducations || []
+    initialEducations || [],
   );
   const [skills, setSkills] = useState<Skill[]>(initialSkills || []);
   const [additionalItems, setAdditionalItems] = useState<AdditionalItem[]>(
-    initialAdditionalItems || []
+    initialAdditionalItems || [],
   );
 
   // Baseline states for change detection (reset after successful translation)
@@ -61,14 +63,14 @@ export const useResumeEditor = ({
         links: [],
         summary: "",
         summary_kr: "",
-      }
+      },
     );
   const [baselineExperiences, setBaselineExperiences] = useState<
     TranslatedExperience[]
   >(initialExperiences || []);
 
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
   const [highlightedBullets, setHighlightedBullets] = useState<
     Record<string, number[]>
@@ -93,10 +95,10 @@ export const useResumeEditor = ({
   const handleAdditionalItemChange = (
     id: string,
     field: keyof AdditionalItem,
-    value: any
+    value: any,
   ) => {
     setAdditionalItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
@@ -121,10 +123,10 @@ export const useResumeEditor = ({
   const handleExperienceChange = (
     id: string,
     field: keyof TranslatedExperience,
-    value: string
+    value: string,
   ) => {
     setExperiences((prev) =>
-      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
+      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp)),
     );
   };
 
@@ -132,7 +134,7 @@ export const useResumeEditor = ({
     expId: string,
     index: number,
     value: string,
-    isEnglish: boolean
+    isEnglish: boolean,
   ) => {
     setExperiences((prev) =>
       prev.map((exp) => {
@@ -146,7 +148,7 @@ export const useResumeEditor = ({
           newBullets[index] = value;
           return { ...exp, bullets: newBullets };
         }
-      })
+      }),
     );
   };
 
@@ -159,7 +161,7 @@ export const useResumeEditor = ({
           bullets: [...exp.bullets, ""],
           bulletsEn: [...exp.bulletsEn, ""],
         };
-      })
+      }),
     );
   };
 
@@ -172,7 +174,7 @@ export const useResumeEditor = ({
           bullets: exp.bullets.filter((_, i) => i !== index),
           bulletsEn: exp.bulletsEn.filter((_, i) => i !== index),
         };
-      })
+      }),
     );
   };
 
@@ -281,8 +283,8 @@ export const useResumeEditor = ({
               bullets: newBullets,
               bulletsEn: newBulletsEn,
             }
-          : exp
-      )
+          : exp,
+      ),
     );
 
     const baselineExp = baselineExperiences.find((e) => e.id === expId);
@@ -309,9 +311,8 @@ export const useResumeEditor = ({
     ) {
       setAlertConfig({
         open: true,
-        title: "변경 사항 없음",
-        description:
-          "변경된 내용이 감지되지 않았습니다. 한글 내용을 수정한 후 다시 시도해 주세요.",
+        title: t("editorAlerts.noChanges.title"),
+        description: t("editorAlerts.noChanges.description"),
       });
       return;
     }
@@ -348,7 +349,7 @@ export const useResumeEditor = ({
               throw new Error(errorData.error || "Metadata translation failed");
             }
             return res.json();
-          })
+          }),
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -377,7 +378,7 @@ export const useResumeEditor = ({
               throw new Error(errorData.error || "Bullets translation failed");
             }
             return res.json();
-          })
+          }),
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -450,8 +451,10 @@ export const useResumeEditor = ({
       const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: isCreditError ? "크레딧 부족" : "오류 발생",
-        description: error.message || "번역 중 오류가 발생했습니다.",
+        title: isCreditError
+          ? t("editorAlerts.credit.title")
+          : t("editorAlerts.error.title"),
+        description: error.message || t("editorAlerts.error.general"),
         showCheckout: isCreditError,
       });
     } finally {
@@ -482,9 +485,8 @@ export const useResumeEditor = ({
     if (!isNameChanged && !isSummaryChanged && !isLinksChanged) {
       setAlertConfig({
         open: true,
-        title: "변경 사항 없음",
-        description:
-          "변경된 내용이 감지되지 않았습니다. 한글 내용을 수정한 후 다시 시도해 주세요.",
+        title: t("editorAlerts.noChanges.title"),
+        description: t("editorAlerts.noChanges.description"),
       });
       return;
     }
@@ -569,8 +571,10 @@ export const useResumeEditor = ({
       const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: isCreditError ? "크레딧 부족" : "오류 발생",
-        description: error.message || "기본 정보 번역 중 오류가 발생했습니다.",
+        title: isCreditError
+          ? t("editorAlerts.credit.title")
+          : t("editorAlerts.error.title"),
+        description: error.message || t("editorAlerts.error.personal"),
         showCheckout: isCreditError,
       });
     } finally {
@@ -582,10 +586,10 @@ export const useResumeEditor = ({
   const handleEducationChange = (
     id: string,
     field: keyof Education,
-    value: string
+    value: string,
   ) => {
     setEducations((prev) =>
-      prev.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu))
+      prev.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu)),
     );
   };
 
@@ -614,15 +618,15 @@ export const useResumeEditor = ({
               description_kr: trimmedDesc,
               date: trimmedDate,
             }
-          : i
-      )
+          : i,
+      ),
     );
 
     setIsTranslating((prev) => ({ ...prev, [id]: true }));
 
     try {
       const textsToTranslate = [item.name_kr, item.description_kr].filter(
-        Boolean
+        Boolean,
       );
 
       const response = await fetch("/api/translate", {
@@ -655,15 +659,17 @@ export const useResumeEditor = ({
             name_en: translatedTexts[0] || i.name_en,
             description_en: translatedTexts[1] || i.description_en,
           };
-        })
+        }),
       );
     } catch (error: any) {
       console.error("handleRetranslateAdditionalItem Error:", error);
       const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: isCreditError ? "크레딧 부족" : "오류 발생",
-        description: error.message || "번역 중 오류가 발생했습니다.",
+        title: isCreditError
+          ? t("editorAlerts.credit.title")
+          : t("editorAlerts.error.title"),
+        description: error.message || t("editorAlerts.error.general"),
         showCheckout: isCreditError,
       });
     } finally {
@@ -708,8 +714,8 @@ export const useResumeEditor = ({
               start_date: trimmedStart,
               end_date: trimmedEnd,
             }
-          : e
-      )
+          : e,
+      ),
     );
 
     setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: true }));
@@ -717,7 +723,7 @@ export const useResumeEditor = ({
     try {
       // Translate School, Major, Degree
       const textsToTranslate = [edu.school_name, edu.major, edu.degree].filter(
-        Boolean
+        Boolean,
       );
 
       const response = await fetch("/api/translate", {
@@ -750,15 +756,17 @@ export const useResumeEditor = ({
             major_en: translatedTexts[1] || e.major_en,
             degree_en: translatedTexts[2] || e.degree_en,
           };
-        })
+        }),
       );
     } catch (error: any) {
       console.error("handleTranslateEducation Error:", error);
       const isCreditError = error.message?.includes("크레딧");
       setAlertConfig({
         open: true,
-        title: isCreditError ? "크레딧 부족" : "오류 발생",
-        description: error.message || "학력 번역 중 오류가 발생했습니다.",
+        title: isCreditError
+          ? t("editorAlerts.credit.title")
+          : t("editorAlerts.error.title"),
+        description: error.message || t("editorAlerts.error.education"),
         showCheckout: isCreditError,
       });
     } finally {

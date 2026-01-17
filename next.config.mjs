@@ -1,3 +1,7 @@
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -6,18 +10,7 @@ const nextConfig = {
       bodySizeLimit: "6mb",
     },
   },
-  async rewrites() {
-    return [
-      {
-        source: "/en/:path*",
-        destination: "https://applygogo-global.vercel.app/en/:path*",
-      },
-      {
-        source: "/en",
-        destination: "https://applygogo-global.vercel.app/en",
-      },
-    ];
-  },
+  transpilePackages: ["@react-pdf/renderer"],
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

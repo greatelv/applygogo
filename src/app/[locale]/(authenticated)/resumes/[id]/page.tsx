@@ -6,12 +6,10 @@ import { DetailClient } from "./detail-client";
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
+  const { id, locale } = await params;
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
-
-  const { id } = await params;
 
   const resume = (await prisma.resume.findUnique({
     where: { id, userId: session.user.id },
@@ -97,6 +95,7 @@ export default async function Page({
       template={resume.selected_template?.toLowerCase() || "modern"}
       updatedAt={resume.updated_at.toISOString()}
       isWorkflowComplete={resume.current_step === "COMPLETED"}
+      locale={locale}
     />
   );
 }

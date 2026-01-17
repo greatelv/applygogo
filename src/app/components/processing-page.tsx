@@ -10,16 +10,17 @@ import {
   Filter,
   Sparkles,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "./ui/button";
 import { useApp } from "../context/app-context";
 
-const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
+const stepsList = [
+  { id: "upload", labelKey: "common.workflow.upload" },
+  { id: "processing", labelKey: "common.workflow.processing" },
+  { id: "edit", labelKey: "common.workflow.edit" },
+  { id: "preview", labelKey: "common.workflow.template" },
+  { id: "complete", labelKey: "common.workflow.complete" },
 ];
 
 interface ProcessingPageProps {
@@ -29,7 +30,6 @@ interface ProcessingPageProps {
   isCompleting?: boolean;
 }
 
-// 3단계 AI 프로세싱 단계 (추출 → 정제 → 번역)
 type ProcessingPhase =
   | "uploading"
   | "extracting"
@@ -44,15 +44,21 @@ export function ProcessingPage({
   isCompleting = false,
 }: ProcessingPageProps) {
   const router = useRouter();
+  const t = useTranslations("processingPage");
+  const tc = useTranslations("common");
   const { setWorkflowState, plan } = useApp();
   const [currentPhase, setCurrentPhase] =
     useState<ProcessingPhase>("uploading");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const steps = stepsList.map((s) => ({
+      id: s.id,
+      label: tc(s.labelKey as any),
+    }));
     setWorkflowState(steps, "processing");
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState]);
+  }, [setWorkflowState, tc]);
 
   useEffect(() => {
     if (!resumeId) {
@@ -64,20 +70,16 @@ export function ProcessingPage({
 
     const analyzeResume = async () => {
       try {
-        // Phase 1: Upload complete (already done)
         setCurrentPhase("uploading");
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (isCancelled) return;
 
-        // ================================================================
-        // Phase 2: Extraction (1단계 API 호출)
-        // ================================================================
+        // Phase 2: Extraction
         setCurrentPhase("extracting");
-
         const extractResponse = await fetch(
           `/api/resumes/${resumeId}/extract`,
-          { method: "POST" }
+          { method: "POST" },
         );
 
         if (!extractResponse.ok) {
@@ -86,14 +88,10 @@ export function ProcessingPage({
         }
 
         const { data: extractedData } = await extractResponse.json();
-
         if (isCancelled) return;
 
-        // ================================================================
-        // Phase 3: Refinement (2단계 API 호출)
-        // ================================================================
+        // Phase 3: Refinement
         setCurrentPhase("refining");
-
         const refineResponse = await fetch(`/api/resumes/${resumeId}/refine`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -106,21 +104,17 @@ export function ProcessingPage({
         }
 
         const { data: refinedData } = await refineResponse.json();
-
         if (isCancelled) return;
 
-        // ================================================================
-        // Phase 4: Translation (3단계 API 호출)
-        // ================================================================
+        // Phase 4: Translation
         setCurrentPhase("translating");
-
         const translateResponse = await fetch(
           `/api/resumes/${resumeId}/translate`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refinedData }),
-          }
+          },
         );
 
         if (!translateResponse.ok) {
@@ -130,12 +124,9 @@ export function ProcessingPage({
 
         if (isCancelled) return;
 
-        // ================================================================
         // Phase 5: Done
-        // ================================================================
         setCurrentPhase("done");
 
-        // Auto-proceed after showing completion
         setTimeout(() => {
           if (!isCancelled) {
             if (onComplete) {
@@ -147,7 +138,7 @@ export function ProcessingPage({
         }, 1500);
       } catch (err: any) {
         if (!isCancelled) {
-          setError(err.message || "분석 중 오류가 발생했습니다.");
+          setError(err.message || "An error occurred during analysis.");
         }
       }
     };
@@ -159,40 +150,39 @@ export function ProcessingPage({
     };
   }, [resumeId, onComplete, router]);
 
-  // 3단계 AI 프로세싱 UI (추출 → 정제 → 번역)
   const processingSteps = [
     {
       id: "uploading",
-      label: "업로드 완료",
+      label: t("steps.uploading.label"),
       icon: Upload,
-      description: "이력서 PDF 업로드 완료",
+      description: t("steps.uploading.description"),
     },
     {
       id: "extracting",
-      label: "1단계: 추출",
+      label: t("steps.extracting.label"),
       icon: FileText,
-      description: "PDF에서 한글 원문을 정확하게 추출 중...",
-      detail: "회사명, 학교명 등 고유명사를 그대로 추출합니다",
+      description: t("steps.extracting.description"),
+      detail: t("steps.extracting.tip"),
     },
     {
       id: "refining",
-      label: "2단계: 정제",
+      label: t("steps.refining.label"),
       icon: Filter,
-      description: "한글 기준으로 핵심 경력 선별 중...",
-      detail: "가장 임팩트 있는 성과를 3~5개로 선별합니다",
+      description: t("steps.refining.description"),
+      detail: t("steps.refining.tip"),
     },
     {
       id: "translating",
-      label: "3단계: 번역",
+      label: t("steps.translating.label"),
       icon: Languages,
-      description: "선별된 한글을 영문으로 번역 중...",
-      detail: "Action Verb를 사용하여 성과 중심으로 번역합니다",
+      description: t("steps.translating.description"),
+      detail: t("steps.translating.tip"),
     },
     {
       id: "done",
-      label: "완료",
+      label: t("steps.done.label"),
       icon: CheckCircle,
-      description: "AI 분석이 완료되었습니다!",
+      description: t("steps.done.description"),
     },
   ];
 
@@ -216,21 +206,15 @@ export function ProcessingPage({
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">AI 처리</h1>
+        <h1 className="text-2xl mb-2">{t("title")}</h1>
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            AI가 회원님의 이력서를 정밀 분석하여 글로벌 스탠다드에 맞는 영문
-            이력서로 재구성하고 있습니다.
-            <br />
-            텍스트 추출부터 핵심 성과 선별, 전문 번역까지 정교한 작업이 진행되니
-            잠시만 기다려 주세요.
-          </p>
+          <p
+            className="text-sm text-muted-foreground"
+            dangerouslySetInnerHTML={{ __html: t("description") }}
+          />
           <div className="flex items-center gap-2 text-sm text-amber-600/90 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md border border-amber-200/50 dark:border-amber-900/50">
             <span className="text-lg">⚠️</span>
-            <p>
-              안정적인 분석 처리를 위해 <strong>화면을 유지해 주세요.</strong>{" "}
-              (페이지 이탈 시 작업이 중단될 수 있습니다)
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: t("warning") }} />
           </div>
         </div>
       </div>
@@ -285,12 +269,12 @@ export function ProcessingPage({
 
                 {status === "completed" && (
                   <span className="text-xs text-green-600 dark:text-green-400 pt-1">
-                    완료
+                    {t("status.completed")}
                   </span>
                 )}
                 {status === "processing" && (
                   <span className="text-xs text-blue-600 dark:text-blue-400 pt-1">
-                    진행중
+                    {t("status.processing")}
                   </span>
                 )}
               </div>
@@ -310,14 +294,14 @@ export function ProcessingPage({
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold mb-1">
-                        크레딧이 부족합니다
+                        {t("error.credits.title")}
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        AI 이력서 분석을 진행하기 위해 필요한 크레딧이
-                        부족합니다.
-                        <br />
-                        결제를 통해 크레딧을 충전하고 분석을 완료해보세요.
-                      </p>
+                      <p
+                        className="text-sm text-muted-foreground leading-relaxed"
+                        dangerouslySetInnerHTML={{
+                          __html: t("error.credits.description"),
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -329,7 +313,7 @@ export function ProcessingPage({
                       >
                         <span className="flex items-center gap-2">
                           <Sparkles className="size-4" />
-                          이용권 구매하고 무제한 이용하기
+                          {t("error.credits.buyPass")}
                         </span>
                       </Button>
                     </div>
@@ -339,14 +323,14 @@ export function ProcessingPage({
                         onClick={() => router.push("/settings#payment-section")}
                         className="w-full h-11"
                       >
-                        크레딧 충전하기
+                        {t("error.credits.refill")}
                       </Button>
                     </div>
                   )}
                 </div>
                 <div className="bg-muted/50 p-4 flex justify-between items-center border-t border-border">
                   <p className="text-xs text-muted-foreground">
-                    결제 후 작업을 다시 시도할 수 있습니다.
+                    {t("error.credits.footer")}
                   </p>
                   <Button
                     variant="ghost"
@@ -354,14 +338,14 @@ export function ProcessingPage({
                     onClick={() => router.replace("/resumes")}
                     className="text-muted-foreground hover:text-foreground h-8"
                   >
-                    목록으로 돌아가기
+                    {t("error.credits.backToList")}
                   </Button>
                 </div>
               </div>
             ) : (
               <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
                 <p className="text-sm text-destructive font-medium">
-                  오류 발생
+                  {t("error.title")}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1 mb-3">
                   {error}
@@ -372,7 +356,7 @@ export function ProcessingPage({
                   onClick={() => router.replace("/resumes/new")}
                   className="bg-background hover:bg-accent hover:text-accent-foreground"
                 >
-                  다시 업로드하기
+                  {t("error.retry")}
                 </Button>
               </div>
             )}
@@ -382,7 +366,7 @@ export function ProcessingPage({
         {currentPhase === "done" && (
           <div className="mt-8 pt-6 border-t border-border text-center">
             <p className="text-sm text-muted-foreground mb-4">
-              분석이 완료되었습니다! 다음 단계로 이동합니다...
+              {t("doneSection.message")}
             </p>
             <Button
               onClick={() => {
@@ -397,10 +381,10 @@ export function ProcessingPage({
               {isCompleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  처리 중...
+                  {t("doneSection.processing")}
                 </>
               ) : (
-                "요약 확인하기"
+                t("doneSection.button")
               )}
             </Button>
           </div>
@@ -408,11 +392,10 @@ export function ProcessingPage({
       </div>
 
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-lg">
-        <p className="text-sm text-blue-800 dark:text-blue-400">
-          💡 <strong>3단계 AI 프로세싱</strong>: 각 단계별로 실제 처리 시간이
-          반영됩니다. 한글 기준으로 먼저 핵심 경력을 선별한 후 번역하여 더
-          정확하고 효율적인 결과를 제공합니다.
-        </p>
+        <p
+          className="text-sm text-blue-800 dark:text-blue-400"
+          dangerouslySetInnerHTML={{ __html: t("footerTip") }}
+        />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { Education } from "./types";
 import { ItemTypes } from "./constants";
@@ -25,6 +26,7 @@ export const DraggableEducationItem = ({
   onRemove,
   onChange,
 }: DraggableEducationItemProps) => {
+  const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.EDUCATION,
@@ -82,7 +84,7 @@ export const DraggableEducationItem = ({
       <div
         ref={drag as any}
         className="hidden lg:flex w-6 items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
-        title="드래그하여 순서 변경"
+        title={t("editorItems.dragToReorder")}
       >
         <GripVertical className="size-5" />
       </div>
@@ -96,12 +98,12 @@ export const DraggableEducationItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                한글 (원본)
+                {t("editorItems.korean")}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                English (번역)
+                {t("editorItems.english")}
               </p>
             </div>
           </div>
@@ -119,7 +121,9 @@ export const DraggableEducationItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="ml-2 hidden lg:inline text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating
+                  ? t("editPage.actions.processing")
+                  : t("editPage.actions.retranslate")}
               </span>
             </Button>
             <button
@@ -127,7 +131,9 @@ export const DraggableEducationItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">
+                {t("editorItems.delete")}
+              </span>
             </button>
           </div>
         </div>
@@ -137,7 +143,7 @@ export const DraggableEducationItem = ({
             {/* Korean Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {t("editorItems.korean")}
               </p>
               <div
                 contentEditable
@@ -146,10 +152,10 @@ export const DraggableEducationItem = ({
                   onChange(
                     edu.id,
                     "school_name",
-                    e.currentTarget.textContent || ""
+                    e.currentTarget.textContent || "",
                   )
                 }
-                data-placeholder="학교명 (예: 한국대학교)"
+                data-placeholder={t("editorItems.placeholders.school")}
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
                 {edu.school_name}
@@ -161,7 +167,7 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(edu.id, "major", e.currentTarget.textContent || "")
                   }
-                  data-placeholder="전공 (예: 경영학)"
+                  data-placeholder={t("editorItems.placeholders.major")}
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.major}
@@ -174,10 +180,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "degree",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="학위 (예: 학사)"
+                  data-placeholder={t("editorItems.placeholders.degree")}
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.degree}
@@ -191,10 +197,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "start_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="입학일 (예: 2016.03)"
+                  data-placeholder="Start Date"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.start_date}
@@ -207,10 +213,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "end_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="졸업일 (예: 2020.02)"
+                  data-placeholder="End Date"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.end_date}
@@ -221,7 +227,7 @@ export const DraggableEducationItem = ({
             {/* English Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {t("editorItems.english")}
               </p>
               <div
                 contentEditable
@@ -230,10 +236,10 @@ export const DraggableEducationItem = ({
                   onChange(
                     edu.id,
                     "school_name_en",
-                    e.currentTarget.textContent || ""
+                    e.currentTarget.textContent || "",
                   )
                 }
-                data-placeholder="School Name (EN)"
+                data-placeholder="School Name"
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
                 {edu.school_name_en || edu.school_name}
@@ -246,10 +252,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "major_en",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="Major (EN)"
+                  data-placeholder="Major"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.major_en || edu.major}
@@ -262,10 +268,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "degree_en",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="Degree (EN)"
+                  data-placeholder="Degree"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.degree_en || edu.degree}
@@ -279,10 +285,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "start_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="Start Date (EN)"
+                  data-placeholder="Start Date"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.start_date}
@@ -295,10 +301,10 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "end_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="End Date (EN)"
+                  data-placeholder="End Date"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
                   {edu.end_date}

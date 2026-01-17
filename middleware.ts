@@ -1,9 +1,21 @@
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./src/i18n/routing";
 import NextAuth from "next-auth";
 import { authConfig } from "./src/auth.config";
 
-export default NextAuth(authConfig).auth;
+const i18nMiddleware = createMiddleware(routing);
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
+  // i18n 처리를 먼저 수행
+  return i18nMiddleware(req);
+});
 
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/",
+    "/(ko|en|ja)/:path*",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };

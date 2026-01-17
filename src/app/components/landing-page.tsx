@@ -8,7 +8,7 @@ import {
   Languages,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ThemeToggle } from "./theme-toggle";
@@ -22,10 +22,17 @@ interface LandingPageProps {
   isLoading?: boolean;
 }
 
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./language-switcher";
+
 export function LandingPage({
   onGetStarted,
   isLoading = false,
 }: LandingPageProps) {
+  const t = useTranslations("landing");
+  const tc = useTranslations("common");
+  const th = useTranslations("common.header");
+
   return (
     <div className="min-h-screen bg-background">
       <BetaBanner />
@@ -37,14 +44,14 @@ export function LandingPage({
               <div className="relative h-6 w-24">
                 <Image
                   src="/logo-for-light.svg"
-                  alt="지원고고"
+                  alt="ApplyGogo"
                   fill
                   className="object-contain dark:hidden"
                   priority
                 />
                 <Image
                   src="/logo-for-dark.svg"
-                  alt="지원고고"
+                  alt="ApplyGogo"
                   fill
                   className="object-contain hidden dark:block"
                   priority
@@ -56,13 +63,14 @@ export function LandingPage({
                 href="/blog"
                 className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                블로그
+                {th("blog")}
               </Link>
+              <LanguageSwitcher />
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
-                시작하기
+                {t("header.getStarted")}
               </Button>
             </div>
           </div>
@@ -70,31 +78,26 @@ export function LandingPage({
       </header>
 
       {/* Hero Section */}
-      {/* Hero Section */}
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted mb-6">
               <Sparkles className="size-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                AI 기반 이력서 변환 서비스
+                {t("hero.badge")}
               </span>
             </div>
 
             <h1 className="text-4xl lg:text-6xl font-bold tracking-tight mb-6">
-              한국어 이력서를
+              {t("hero.title1")}
               <br />
-              <span className="text-muted-foreground">
-                글로벌 스탠다드 영문으로
-              </span>
+              <span className="text-muted-foreground">{t("hero.title2")}</span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              AI가 자동으로 <strong>국문 이력서 영문 변환</strong>을 수행하여,
-              채용 담당자가 주목하는
-              <br />
-              프로페셔널한 <strong>영문 이력서(CV)</strong>를 몇 분 안에
-              완성해드립니다.
+              {t.rich("hero.description", {
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -104,7 +107,7 @@ export function LandingPage({
                 isLoading={isLoading}
                 className="w-full sm:w-auto"
               >
-                무료로 시작하기
+                {t("hero.cta")}
                 <ArrowRight className="size-4" />
               </Button>
               <TemplatePreviewDialog
@@ -115,14 +118,14 @@ export function LandingPage({
                     size="lg"
                     className="w-full sm:w-auto"
                   >
-                    샘플 보기
+                    {t("hero.viewSample")}
                   </Button>
                 }
               />
             </div>
 
             <p className="text-sm text-muted-foreground mt-4">
-              신용카드 없이 무료로 시작 • 최초 2회 무료 변환
+              {t("hero.subText")}
             </p>
           </div>
         </div>
@@ -140,35 +143,30 @@ export function LandingPage({
                   variant="outline"
                   className="bg-background text-primary border-primary/30 px-3 py-1"
                 >
-                  압도적인 가성비
+                  {t("cost.badge")}
                 </Badge>
                 <h2 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
-                  외주보다 빠르고,
+                  {t("cost.title1")}
                   <br />
-                  비용은 <span className="text-primary">1/10</span> 수준으로
+                  <span className="text-primary">{t("cost.title2")}</span>
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  "외주 마켓에서 영문 이력서 한 장에 <strong>5~10만원</strong>
-                  ..."
-                  <br className="hidden lg:block" />
-                  이제 비싼 비용과 긴 대기시간 없이, 합리적인 가격으로
-                  <br className="hidden lg:block" />
-                  <strong>전문가 수준의 결과물</strong>을 즉시 받아보세요.
+                  {t("cost.description")}
                 </p>
 
                 <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <div className="flex items-center gap-3 bg-background/50 rounded-lg p-3 shadow-sm border border-border">
                     <div className="size-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
                       <span className="text-red-600 dark:text-red-400 font-bold text-sm">
-                        기존
+                        {t("cost.oldLabel")}
                       </span>
                     </div>
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground">
-                        평균 비용
+                        {t("cost.oldLabel")} Cost
                       </div>
                       <div className="font-semibold text-sm line-through text-muted-foreground decoration-red-500/50">
-                        100,000원
+                        {t("cost.oldPrice")}
                       </div>
                     </div>
                   </div>
@@ -176,15 +174,16 @@ export function LandingPage({
                   <div className="flex items-center gap-3 bg-background rounded-lg p-3 shadow-sm border border-primary/20 ring-1 ring-primary/10">
                     <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <span className="text-primary font-bold text-sm">
-                        Now
+                        {t("cost.nowLabel")}
                       </span>
                     </div>
                     <div className="text-left">
                       <div className="text-xs text-muted-foreground">
-                        지원고고
+                        {t("cost.ourName")}
                       </div>
                       <div className="font-bold text-lg text-primary">
-                        {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
+                        {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                        {tc("currency")}
                       </div>
                     </div>
                   </div>
@@ -196,7 +195,7 @@ export function LandingPage({
                 <div className="bg-background rounded-2xl shadow-xl border border-border overflow-hidden transform hover:scale-105 transition-transform duration-500">
                   <div className="p-6 border-b border-border bg-muted/30">
                     <div className="text-sm font-medium text-center text-muted-foreground">
-                      제작 비용 비교
+                      {t("cost.compareTitle")}
                     </div>
                   </div>
                   <div className="p-8 space-y-8">
@@ -204,9 +203,11 @@ export function LandingPage({
                     <div className="space-y-2 opacity-60">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">
-                          기타 외주 서비스
+                          {t("cost.otherService")}
                         </span>
-                        <span className="font-medium">100,000원+</span>
+                        <span className="font-medium">
+                          {t("cost.oldPrice")}+
+                        </span>
                       </div>
                       <div className="h-3 bg-muted rounded-full overflow-hidden">
                         <div className="h-full bg-gray-400 w-full" />
@@ -215,9 +216,12 @@ export function LandingPage({
                     {/* Bar 2 */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-base">
-                        <span className="font-bold text-primary">지원고고</span>
                         <span className="font-bold text-primary">
-                          {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}원
+                          {t("cost.ourName")}
+                        </span>
+                        <span className="font-bold text-primary">
+                          {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                          {tc("currency")}
                         </span>
                       </div>
                       <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
@@ -225,7 +229,7 @@ export function LandingPage({
                           <div className="absolute -right-1 top-0 bottom-0 w-2 bg-white/50 blur-[2px] animate-pulse" />
                         </div>
                         <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] text-primary font-bold pr-3">
-                          87% SAVE
+                          {t("cost.saveBadge", { percent: 87 })}
                         </span>
                       </div>
                     </div>
@@ -241,45 +245,31 @@ export function LandingPage({
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-3xl tracking-tight mb-4">왜 지원고고인가요?</h3>
-            <p className="text-muted-foreground">
-              단순 번역이 아닌, 채용 시장에 최적화된 이력서를 만듭니다
-            </p>
+            <h3 className="text-3xl tracking-tight mb-4">
+              {t("features.title")}
+            </h3>
+            <p className="text-muted-foreground">{t("features.subtitle")}</p>
           </div>
 
           <ul className="grid md:grid-cols-3 gap-8">
-            <li className="bg-card border border-border rounded-lg p-6">
-              <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
-                <Sparkles className="size-6 text-primary" />
-              </div>
-              <h4 className="text-lg font-semibold mb-2">AI 기반 요약</h4>
-              <p className="text-muted-foreground text-sm">
-                Gemini Pro가 경력사항을 분석하여 핵심 성과 중심의 3~4줄 불릿
-                포인트로 재구성합니다. 채용 담당자가 원하는 형식 그대로.
-              </p>
-            </li>
-
-            <li className="bg-card border border-border rounded-lg p-6">
-              <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
-                <Globe className="size-6 text-primary" />
-              </div>
-              <h4 className="text-lg font-semibold mb-2">전문 번역</h4>
-              <p className="text-muted-foreground text-sm">
-                Split View로 한글/영문을 동시에 비교하며 수정 가능. 직접
-                편집으로 완벽한 커스터마이징까지.
-              </p>
-            </li>
-
-            <li className="bg-card border border-border rounded-lg p-6">
-              <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
-                <Download className="size-6 text-primary" />
-              </div>
-              <h4 className="text-lg font-semibold mb-2">고급 템플릿</h4>
-              <p className="text-muted-foreground text-sm">
-                Modern, Professional, Executive 등 다양한 템플릿 중 선택하여
-                즉시 PDF로 다운로드. 지원 기업에 바로 제출하세요.
-              </p>
-            </li>
+            {[0, 1, 2].map((i) => (
+              <li
+                key={i}
+                className="bg-card border border-border rounded-lg p-6"
+              >
+                <div className="inline-flex items-center justify-center size-12 rounded-lg bg-primary/10 mb-4">
+                  {i === 0 && <Sparkles className="size-6 text-primary" />}
+                  {i === 1 && <Globe className="size-6 text-primary" />}
+                  {i === 2 && <Download className="size-6 text-primary" />}
+                </div>
+                <h4 className="text-lg font-semibold mb-2">
+                  {t(`features.items.${i}.title`)}
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  {t(`features.items.${i}.description`)}
+                </p>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
@@ -288,55 +278,37 @@ export function LandingPage({
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h3 className="text-3xl tracking-tight mb-4">3단계로 완성</h3>
-            <p className="text-muted-foreground">
-              복잡한 과정 없이 빠르고 간편하게
-            </p>
+            <h3 className="text-3xl tracking-tight mb-4">{t("steps.title")}</h3>
+            <p className="text-muted-foreground">{t("steps.subtitle")}</p>
           </div>
 
           <ol className="grid md:grid-cols-3 gap-8">
-            <li className="text-center">
-              <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
-                1
-              </div>
-              <h4 className="text-lg font-semibold mb-2">PDF 업로드</h4>
-              <p className="text-muted-foreground text-sm">
-                한국어 이력서 PDF를 드래그 앤 드롭으로 업로드
-              </p>
-            </li>
-
-            <li className="text-center">
-              <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
-                2
-              </div>
-              <h4 className="text-lg font-semibold mb-2">AI 변환</h4>
-              <p className="text-muted-foreground text-sm">
-                요약과 번역을 AI가 자동으로 처리. 직접 수정도 가능
-              </p>
-            </li>
-
-            <li className="text-center">
-              <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
-                3
-              </div>
-              <h4 className="text-lg font-semibold mb-2">PDF 다운로드</h4>
-              <p className="text-muted-foreground text-sm">
-                마음에 드는 템플릿으로 PDF 내보내기 완료
-              </p>
-            </li>
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="text-center">
+                <div className="inline-flex items-center justify-center size-16 rounded-full bg-primary text-primary-foreground mb-4 text-xl font-bold">
+                  {i + 1}
+                </div>
+                <h4 className="text-lg font-semibold mb-2">
+                  {t(`steps.items.${i}.title`)}
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  {t(`steps.items.${i}.description`)}
+                </p>
+              </li>
+            ))}
           </ol>
         </div>
       </section>
 
-      {/* Recommended For (New Section 1) */}
+      {/* Recommended For */}
       <section className="py-20 border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-3xl tracking-tight mb-6 leading-tight">
-                글로벌 커리어를 꿈꾸는
+                {t("recommended.title1")}
                 <br />
-                모든 분들을 위해 준비했습니다
+                {t("recommended.title2")}
               </h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
@@ -345,12 +317,12 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      외국계 기업 이력서 & CV 작성
+                      {t("recommended.item1Title")}
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      <strong>외국계 이력서 양식</strong>과{" "}
-                      <strong>CV 번역</strong>에 익숙하지 않아 막막하신 분들께
-                      글로벌 스탠다드 포맷을 제공합니다.
+                      {t.rich("recommended.item1Description", {
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -360,12 +332,12 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      빠른 국문 이력서 영문 변환
+                      {t("recommended.item2Title")}
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      이직 기회는 왔는데 <strong>영어 이력서 변환</strong>할
-                      시간이 부족하신가요? 기존 <strong>한국 이력서</strong>만
-                      올리면 5분 안에 완성됩니다.
+                      {t.rich("recommended.item2Description", {
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -375,12 +347,12 @@ export function LandingPage({
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold mb-1">
-                      전문적인 AI 영문 이력서 첨삭
+                      {t("recommended.item3Title")}
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      단순 <strong>이력서 번역</strong>이 아닌, '채용 문법'에
-                      맞는 세련된 영어 표현으로 당신의{" "}
-                      <strong>영문 경력기술서</strong>를 완성해드립니다.
+                      {t.rich("recommended.item3Description", {
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -422,47 +394,51 @@ export function LandingPage({
       <section className="py-20 bg-muted/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-4">
-            <h3 className="text-3xl tracking-tight font-bold">심플한 이용권</h3>
+            <h3 className="text-3xl tracking-tight font-bold">
+              {t("pricing.title")}
+            </h3>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-foreground text-sm font-medium">
               <span>🎉</span>
-              <span>오픈 기념 한정 특가 진행 중</span>
+              <span>{t("pricing.offer")}</span>
             </div>
-            <p className="text-muted-foreground">
-              지금 아니면 만날 수 없는 가격, 합리적인 이용권으로 시작하세요
-            </p>
+            <p className="text-muted-foreground">{t("pricing.subtitle")}</p>
           </div>
 
           <ul className="grid md:grid-cols-3 gap-6">
             {/* 무료 체험 */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
-              <h4 className="text-lg font-semibold mb-2">무료 체험</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                {t("pricing.free.title")}
+              </h4>
               <div className="flex flex-col items-center justify-center mb-4">
-                {/* Empty placeholder to match height of original price in other cards */}
                 <span className="text-lg font-medium text-transparent mb-1 min-h-[28px]">
                   Placeholder
                 </span>
                 <div className="text-4xl font-bold">₩0</div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                서비스를 체험해보세요
+                {t("pricing.free.subtitle")}
               </p>
               <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">10</span>{" "}
-                  크레딧 제공
+                  <span>
+                    {t.rich("pricing.free.credits", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  기본 템플릿 사용
+                  {t("pricing.free.template")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  재번역 1 크레딧
+                  {t("pricing.free.retranslate")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  무제한 기간
+                  {t("pricing.free.period")}
                 </li>
               </ul>
               <Button
@@ -471,13 +447,15 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                무료로 시작하기
+                {t("hero.cta")}
               </Button>
             </li>
 
             {/* 7일 이용권 */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
-              <h4 className="text-lg font-semibold mb-2">7일 이용권</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                {tc("plan.PASS_7DAY")}
+              </h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
                   ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
@@ -495,27 +473,29 @@ export function LandingPage({
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                일주일 동안 모든 기능 사용
+                {t("pricing.free.subtitle")}
               </p>
               <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    {PLAN_PRODUCTS.PASS_7DAY.credits}
-                  </span>{" "}
-                  크레딧 포함
+                  <span>
+                    {t.rich("pricing.features.credits", {
+                      count: PLAN_PRODUCTS.PASS_7DAY.credits,
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  모든 템플릿 사용
+                  {t("pricing.features.template")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  재번역 무제한
+                  {t("pricing.features.retranslate")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  7일간 이용
+                  {t("pricing.features.period7")}
                 </li>
               </ul>
               <Button
@@ -524,16 +504,18 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                시작하기
+                {t("header.getStarted")}
               </Button>
             </li>
 
             {/* 30일 이용권 (추천) */}
             <li className="bg-card border border-primary rounded-lg p-6 text-center shadow-lg relative ring-1 ring-primary/20 flex flex-col h-full">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs rounded-full font-medium">
-                추천
+                {t("pricing.recommend")}
               </div>
-              <h4 className="text-lg font-semibold mb-2">30일 이용권</h4>
+              <h4 className="text-lg font-semibold mb-2">
+                {tc("plan.PASS_30DAY")}
+              </h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
                   ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
@@ -551,27 +533,29 @@ export function LandingPage({
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                한 달 동안 모든 기능 사용
+                {t("pricing.free.subtitle")}
               </p>
               <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  <span className="font-semibold text-foreground">
-                    {PLAN_PRODUCTS.PASS_30DAY.credits}
-                  </span>{" "}
-                  크레딧 포함
+                  <span>
+                    {t.rich("pricing.features.credits", {
+                      count: PLAN_PRODUCTS.PASS_30DAY.credits,
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  모든 템플릿 사용
+                  {t("pricing.features.template")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  재번역 무제한
+                  {t("pricing.features.retranslate")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-green-600 shrink-0" />
-                  30일간 이용
+                  {t("pricing.features.period30")}
                 </li>
               </ul>
               <Button
@@ -579,56 +563,36 @@ export function LandingPage({
                 onClick={onGetStarted}
                 isLoading={isLoading}
               >
-                시작하기
+                {t("header.getStarted")}
               </Button>
             </li>
           </ul>
           <p className="text-center text-sm text-muted-foreground mt-8">
-            * 이력서 생성 시 5 크레딧, 재번역 시 무료(이용권 보유자) 또는 1
-            크레딧(무료 사용자)이 차감됩니다.
+            {t("pricing.footer")}
           </p>
         </div>
       </section>
 
-      {/* FAQ (New Section 2) */}
+      {/* FAQ */}
       <section className="py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl tracking-tight mb-4">자주 묻는 질문</h3>
-            <p className="text-muted-foreground">궁금한 점을 확인하세요</p>
+            <h3 className="text-3xl tracking-tight mb-4">{t("faq.title")}</h3>
+            <p className="text-muted-foreground">{t("faq.subtitle")}</p>
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">
-                Q. 한글 이력서 양식은 상관없나요?
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                네, PDF 형식의 이력서라면 자유 양식, 잡코리아/사람인 다운로드
-                양식 등 대부분 지원합니다. AI가 텍스트를 추출하여 내용을
-                분석하므로 형식이 복잡해도 괜찮습니다.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">
-                Q. 번역된 내용은 제가 수정할 수 있나요?
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                물론입니다. AI 변환 후 제공되는 편집기에서 요약된 내용과 영문
-                번역을 자유롭게 수정하실 수 있습니다. Split View를 통해 원문과
-                비교하며 섬세하게 다듬어보세요.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border p-6 bg-card">
-              <h4 className="font-semibold mb-2">
-                Q. 무료 플랜으로도 충분한가요?
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                체험을 위해 월 10 크레딧을 제공합니다. 이력서를 완성하고
-                다운로드하기에 충분하지만, 다양한 템플릿과 무제한 수정을
-                원하시면 이용권을 추천드립니다.
-              </p>
-            </div>
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="rounded-lg border border-border p-6 bg-card"
+              >
+                <h4 className="font-semibold mb-2">{t(`faq.items.${i}.q`)}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {t(`faq.items.${i}.a`)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -636,14 +600,10 @@ export function LandingPage({
       {/* CTA */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-3xl tracking-tight mb-4">
-            지금 바로 글로벌 커리어를 시작하세요
-          </h3>
-          <p className="text-muted-foreground mb-8">
-            지원고고와 함께라면 영문 이력서 걱정은 이제 그만
-          </p>
+          <h3 className="text-3xl tracking-tight mb-4">{t("cta.title")}</h3>
+          <p className="text-muted-foreground mb-8">{t("cta.subtitle")}</p>
           <Button onClick={onGetStarted} size="lg" isLoading={isLoading}>
-            무료로 시작하기
+            {t("cta.button")}
             <ArrowRight className="size-4" />
           </Button>
         </div>

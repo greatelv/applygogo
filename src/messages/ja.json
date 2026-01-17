@@ -1,0 +1,688 @@
+{
+  "common": {
+    "title": "ApplyGogo - AIベースの外国人専門採用プラットフォーム",
+    "header": {
+      "login": "ログイン",
+      "signUp": "会員登録",
+      "logout": "ログアウト",
+      "myResumes": "マイ履歴書",
+      "blog": "ブログ",
+      "settings": "設定",
+      "introduction": "サービス紹介",
+      "buyTicket": "利用券購入",
+      "credits": "残りクレジット",
+      "creditLabel": "クレジット",
+      "sidebarShow": "サイドバー表示",
+      "sidebarHide": "サイドバー非表示"
+    },
+    "footer": {
+      "terms": "利用規約",
+      "privacy": "個人情報保護方針",
+      "company": "会社紹介",
+      "contact": "お問い合わせ",
+      "introduction": "サービス紹介",
+      "blog": "ブログ",
+      "address": "ソウル特別市城北区東小門路60東方ビル4階",
+      "ceo": "全泰景",
+      "businessNumber": "639-34-01724"
+    },
+    "plan": {
+      "FREE": "無料",
+      "PASS_7DAY": "7日利用券",
+      "PASS_30DAY": "30日利用券",
+      "PASS_BETA_3DAY": "ベータ無制限"
+    },
+    "currency": "円"
+  },
+  "landing": {
+    "header": {
+      "getStarted": "始める"
+    },
+    "hero": {
+      "badge": "AIベースの履歴書変換サービス",
+      "title1": "韓国語の履歴書을",
+      "title2": "グローバル基準の英文に",
+      "description": "AIが自動的に <strong>韓国語から英語への履歴書変換</strong>を行い、採用担当者が注目するプロフェッショナルな <strong>英文履歴書(CV)</strong>を数分で完成させます。",
+      "cta": "無料で始める",
+      "viewSample": "サンプルを見る",
+      "subText": "クレジットカード不要で開始 • 最初の2回変換無料"
+    },
+    "cost": {
+      "badge": "圧倒的なコストパフォーマンス",
+      "title1": "外注より早く、",
+      "title2": "費用は1/10水準で",
+      "description": "高額な費用と長い待ち時間なしに、合理적인価格で専門家レベルの成果物を直ちに受け取ってください。",
+      "oldLabel": "従来",
+      "oldPrice": "100,000ウォン",
+      "nowLabel": "Now",
+      "ourName": "ApplyGogo",
+      "compareTitle": "製作費用の比較",
+      "otherService": "他の外注サービス",
+      "saveBadge": "{percent}% SAVE"
+    },
+    "features": {
+      "title": "なぜApplyGogoなのですか？",
+      "subtitle": "単なる翻訳ではなく、採用市場に最適化された履歴書を作ります",
+      "items": [
+        {
+          "title": "AIベースの要約",
+          "description": "Gemini Proが経歴事項を分析し、核心成果中心の3〜4行のブレットポイントで再構成します。採用担当者が望む形式そのままに。"
+        },
+        {
+          "title": "専門翻訳",
+          "description": "Split Viewで韓国語/英語を同時に比較しながら修正可能。直接編集で完璧なカスタマイズまで。"
+        },
+        {
+          "title": "高級テンプレート",
+          "description": "Modern, Professional, Executiveなど多様なテンプレートの中から選択し、即座にPDFでダウンロード。志望企業にすぐに提出してください。"
+        }
+      ]
+    },
+    "steps": {
+      "title": "3ステップで完成",
+      "subtitle": "複雑な過程なしに迅速かつ簡便に",
+      "items": [
+        {
+          "title": "PDFアップロード",
+          "description": "韓国語の履歴書PDFをドラッグ&ドロップでアップロード"
+        },
+        {
+          "title": "AI変換",
+          "description": "要約と翻訳をAI가自動的に処理。直接修正も可能"
+        },
+        {
+          "title": "PDFダウンロード",
+          "description": "お気に入りのテンプレートでPDFエクスポート完了"
+        }
+      ]
+    },
+    "recommended": {
+      "title1": "グローバルキャリアを夢見る",
+      "title2": "すべての方のために準備しました",
+      "item1Title": "外資系企業の履歴書 & CV作成",
+      "item1Description": "<strong>外資系履歴書の様式</strong>と<strong>CV翻訳</strong>に慣れておらず、途方に暮れている方にグローバル基準のフォーマットを提供します。",
+      "item2Title": "迅速な韓国語履歴書の英文変換",
+      "item2Description": "転職の機会は来たが、<strong>英語履歴書への変換</strong>時間が不足していますか？既存の<strong>韓国語履歴書</strong>をアップロードするだけで5分以内に完成します。",
+      "item3Title": "専門的なAI英文履歴書の添削",
+      "item3Description": "単なる<strong>履歴書翻訳</strong>ではなく、'採用の文法'に合わせた洗練された英語表現であなたの<strong>英文職務経歴書</strong>を完成させます。"
+    },
+    "pricing": {
+      "title": "シンプルな利用券",
+      "offer": "🎉 オープン記念限定特価進行中",
+      "subtitle": "今でなければ会えない価格、合理的な利用券で始めてください",
+      "free": {
+        "title": "無料体験",
+        "subtitle": "サービスを体験してみてください",
+        "credits": "<strong>10</strong> クレジット提供",
+        "template": "基本テンプレート使用",
+        "retranslate": "再翻訳 1 クレジット",
+        "period": "無制限期間"
+      },
+      "recommend": "おすすめ",
+      "features": {
+        "credits": "<strong>{count}</strong> クレジット含む",
+        "template": "すべてのテンプレート使用",
+        "retranslate": "再翻訳無制限",
+        "period7": "7日間利用",
+        "period30": "30日間利用"
+      },
+      "footer": "* 履歴書作成時に5クレジット、再翻訳時に無料(利用券保有者)または1クレジット(無料ユーザー)が差し引かれます。"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "subtitle": "気になる点を確認してください",
+      "items": [
+        {
+          "q": "Q. 韓国語の履歴書の様式は関係ありませんか？",
+          "a": "はい、PDF形式の履歴書であれば自由様式、JobKorea/Saraminダウンロード様式など大部分に対応しています。AIがテキストを抽出して内容を分析するため、形式が複雑でも大丈夫です。"
+        },
+        {
+          "q": "Q. 翻訳された内容は私が修正できますか？",
+          "a": "もちろんです。AI変換後に提供されるエディタで要約された内容と英文翻訳を自由に修正いただけます。Split Viewを通じて原文と比較しながら繊細に整えてみてください。"
+        },
+        {
+          "q": "Q. 無料プランでも十分ですか？",
+          "a": "体験のために月10クレジットを提供しています。履歴書を完成させてダウンロードするには十分ですが、多様なテンプレートと無制限の修正を希望される場合は、利用券をおすすめします。"
+        }
+      ]
+    },
+    "cta": {
+      "title": "今すぐグローバルキャリアを始めてください",
+      "subtitle": "ApplyGogoと一緒なら英文履歴書の心配はもうおしまい",
+      "button": "無料で始める"
+    }
+  },
+  "login": {
+    "title": "ApplyGogo",
+    "subtitle": "韓国語の履歴書をグローバル基準の英文履歴書に",
+    "google": "Googleで始める",
+    "naver": "NAVERで始める",
+    "inAppWarning": "⚠️ インappブラウザではGoogleログインをサポートしていません。",
+    "inAppAdvice": "(円滑な使用のためにNAVERログインをご利用ください)",
+    "developerAccess": "開発者アクセス",
+    "testLogin": "テストログイン",
+    "termsAgreement": "ログインすると、<terms>サービス利用規約</terms>と<privacy>個人情報処理方針</privacy>に同意したことになります",
+    "terms": "サービス利用規約",
+    "privacy": "個人情報処理方針",
+    "features": {
+      "aiSummary": "AI要約",
+      "proTranslation": "専門翻訳",
+      "pdfExport": "PDFエクスポート"
+    }
+  },
+  "resumes": {
+    "title": "履歴書管理",
+    "count": "合計 {count}個の履歴書",
+    "createNew": "新しい履歴書を作成",
+    "upgrade": "プランをアップグレード",
+    "noCredits": "⚠️ クレジット가不足しているため、新しい履歴書を作成できません。プランをアップグレードするか、次回の更新日をお待ちください。",
+    "lastModified": "最終修正: {date}",
+    "empty": {
+      "title": "最初の英文履歴書を完成させてください",
+      "description": "韓国語の履歴書をアップロードするだけで、AIが分析から英文翻訳、<br />そしてフォーマットまで5分以内に完了します。",
+      "noCredits": "クレジットが不足しているため、新しい履歴書を作成できません",
+      "cta": "無料で始める"
+    },
+    "delete": {
+      "title": "履歴書を削除",
+      "description": "本当にこの履歴書を削除しますか？削除されたデータは復旧できません。",
+      "confirm": "削除",
+      "cancel": "キャンセル",
+      "error": "履歴書の削除に失敗しました。"
+    },
+    "steps": {
+      "UPLOAD": "アップロード中",
+      "PROCESSING": "AI分析中",
+      "EDIT": "編集中",
+      "TEMPLATE": "テンプレート選択",
+      "COMPLETED": "完了"
+    },
+    "status": {
+      "IDLE": "待機中",
+      "SUMMARIZED": "要約済み",
+      "TRANSLATED": "翻訳済み",
+      "COMPLETED": "完了",
+      "FAILED": "失敗"
+    }
+  },
+  "workflow": {
+    "upload": "アップロード",
+    "processing": "AI処理",
+    "edit": "編集",
+    "template": "テンプレート選択",
+    "complete": "完了"
+  },
+  "editor": {
+    "saveError": "履歴書の内容を保存中にエラーが発生しました。",
+    "saving": "保存中..."
+  },
+  "editPage": {
+    "title": "編集",
+    "subtitle": "AIが分析した内容を検討し、修正してください。",
+    "guide": {
+      "title": "内容をクリックして直接修正できます",
+      "description": "韓国語の内容を修正し、<strong>[同期後に再翻訳]</strong>ボタンを押すと、AIが変更内容に合わせて再度翻訳します。不要な項目はゴミ箱アイコンを押して削除してください。"
+    },
+    "sections": {
+      "personal": {
+        "title": "基本情報",
+        "description": "氏名、連絡先、プロフェッショナル要約などの必須の個人情報を管理します。",
+        "korean": "韓国語（原文）",
+        "english": "英語（翻訳）",
+        "name": "氏名",
+        "email": "メール",
+        "phone": "電話番号",
+        "links": "リンク",
+        "addLink": "リンク追加 (Add Link)",
+        "summary": "Professional Summary"
+      },
+      "experience": {
+        "title": "職歴",
+        "description": "主要な経歴事項と業務成果を最新順に作成してください。",
+        "addItem": "項目追加"
+      },
+      "education": {
+        "title": "学歴事項",
+        "description": "最終学歴から学位および専攻情報を入力してください。",
+        "addItem": "項目追加",
+        "empty": "上記の<strong>+ 項目追加</strong>ボタンを押して学歴を追加してください。"
+      },
+      "skills": {
+        "title": "スキルスタック",
+        "description": "保有する核心技術およびツールをタグで管理してみてください。",
+        "placeholder": "新しいスキル"
+      },
+      "additional": {
+        "title": "追加情報",
+        "description": "資格、受賞歴、言語、活動、その他の情報を追加できます。",
+        "addItem": "項目追加",
+        "empty": "上記の<strong>+ 項目追加</strong>ボタンを押して資格、受賞、活動などを追加してください。"
+      }
+    },
+    "actions": {
+      "retranslate": "同期後に再翻訳",
+      "processing": "処理中...",
+      "previous": "以前",
+      "createNew": "新規作成",
+      "next": "次へ"
+    }
+  },
+  "editorAlerts": {
+    "noChanges": {
+      "title": "変更事項なし",
+      "description": "変更された内容が感知されませんでした。内容を修正した後、もう一度お試しください."
+    },
+    "error": {
+      "title": "エラーが発生しました",
+      "personal": "基本情報の翻訳中にエラーが発生しました。",
+      "general": "翻訳中にエラーが発生しました。",
+      "education": "学歴の翻訳中にエラーが発生しました。"
+    },
+    "credit": {
+      "title": "クレジット不足"
+    }
+  },
+  "editorItems": {
+    "korean": "韓国語（原文）",
+    "english": "英語（翻訳）",
+    "delete": "削除",
+    "addBullet": "項目追加",
+    "dragToReorder": "ドラッグして順序変更",
+    "placeholders": {
+      "company": "会社/組織名",
+      "position": "職務",
+      "period": "期間",
+      "bullet": "業務成果および活動内容",
+      "school": "学校名",
+      "major": "専攻",
+      "degree": "学位",
+      "desc": "説明",
+      "date": "日付"
+    }
+  },
+  "introduction": {
+    "header": {
+      "company": "会社紹介",
+      "blog": "ブログ",
+      "cta": "今すぐ始める"
+    },
+    "hero": {
+      "badge": "Global Career Starter",
+      "title": "世界への扉、\n最も速く確実に",
+      "description": "**支援ゴーゴー**は、言語의 벽이나形式の複雑さのために\nグローバルキャリアの機会を逃している人材のために誕生しました。\n最高のAI技術であなたの経歴を世界に証明してください。",
+      "cta": "無料で履歴書を変換する",
+      "companyCta": "会社紹介を見る"
+    },
+    "values": {
+      "title": "なぜApplyGogoなのですか？",
+      "subtitle": "単なる翻訳を超え、採用市場で通用する価値を作ります",
+      "items": [
+        {
+          "title": "グローバルスタンダード",
+          "description": "国別、業界別に好まれる履歴書の様式と表現方式は異なります。ApplyGogo AIはグローバルな採用トレンドを学習し、最も効果的なフォーマットを提供します。"
+        },
+        {
+          "title": "文脈を理解する翻訳",
+          "description": "単なる1:1の直訳ではなく、業務成果と能力が際立つ'Business English'で再構成します。専門用語やニュアンスまで細かく扱います。"
+        },
+        {
+          "title": "圧倒的な時間短縮",
+          "description": "数日かかっていた韓国語履歴書の英文変換作業をわずか5分に短縮します。より重要な'面接準備'や'職務分析'に時間を投資してください。"
+        }
+      ]
+    },
+    "process": {
+      "badge": "Seamless Process",
+      "title": "複雑な過程を省き、\n核心だけに集中しました",
+      "description": "既存の韓国語履歴書PDFファイルを1つだけ用意してください。\n残りは支援ゴーゴーのAIエンジンが自動的に処理します。",
+      "items": [
+        "別途の会員登録なしでPDFアップロードだけで開始",
+        "AIが自動的にセクション区分および内容要約",
+        "リアルタイムプレビューと直感的な修正エディタ",
+        "ATS（採用担当者システム）フレンドリーなフォーマッティング"
+      ],
+      "pdfLabel": "韓国語PDF",
+      "resumeLabel": "Pro Resume"
+    },
+    "cta": {
+      "title": "あなたのキャリアは\nより広い舞台で輝くべきです",
+      "description": "今すぐ支援ゴーゴーと共にグローバルな挑戦を始めてください。",
+      "start": "今すぐ無料で始める",
+      "company": "会社紹介を見る"
+    }
+  },
+  "templatesPage": {
+    "title": "テンプレート選択",
+    "description": "お好みのテンプレートを選択してください",
+    "templateNames": {
+      "modern": "Modern",
+      "professional": "Professional",
+      "executive": "Executive",
+      "classic": "Classic",
+      "minimal": "Minimal"
+    },
+    "templateDescriptions": {
+      "modern": "清潔で現代的なデザイン。IT/スタートアップにおすすめ",
+      "professional": "2段レイアウトでプロフェッショナルな印象。経験豊富な方におすすめ",
+      "executive": "力強いヘッダーとプレミアムなデザイン。リーダー/役員クラスにおすすめ",
+      "classic": "伝統的でフォーマルなスタイル. 大企業/金融におすすめ",
+      "minimal": "ミニマルで洗練された印象。デザイン/クリエイティブにおすすめ"
+    },
+    "proNotice": "⭐ このテンプレートは利用券をお持ちの方専用です。",
+    "tip": "💡 <strong>ヒント:</strong> テンプレートはそれぞれ異なる印象と用途に最適化されています。応募する企業やポジションに合ったテンプレートを選択してください。",
+    "actions": {
+      "buy": "利用券を購入する",
+      "complete": "完了",
+      "previous": "以前",
+      "processing": "処理中..."
+    },
+    "saveError": "テンプレートの保存中にエラーが発生しました。"
+  },
+  "upgradeModal": {
+    "title": "利用券を購入してテンプレートをアンロック",
+    "description": "プレミアムテンプレートを使用するには利用券が必要です。 <br /><strong>Split View編集</strong>や<strong>再翻訳無制限</strong>などの特典も一緒にご利用ください！",
+    "plans": {
+      "pass7": {
+        "title": "7日間利用券",
+        "subtitle": "短期集中での準備に最適",
+        "features": [
+          "{credits} クレジット",
+          "すべての高級テンプレートを使用可能",
+          "再翻訳無制限",
+          "{days}日間利用可能"
+        ]
+      },
+      "pass30": {
+        "title": "30日間利用券",
+        "subtitle": "余裕を持った転職準備に",
+        "badge": "おすすめ",
+        "features": [
+          "{credits} クレジット",
+          "すべての高級テンプレートを使用可能",
+          "再翻訳無制限",
+          "{days}日間利用可能"
+        ]
+      }
+    },
+    "cta": "購入する",
+    "currency": "円",
+    "off": "OFF",
+    "notice": "💡 利用券は自動更新されません。期間が終了すると自動的に無料プランに切り替わりますので、安心してお買い求めください。",
+    "success": "{name} の購入が完了しました！",
+    "verifyError": "決済の検証に失敗しました。",
+    "error": "エラー: {message}"
+  },
+  "resumeDetail": {
+    "success": {
+      "title": "履歴書が正常に作成されました！",
+      "description": "以下で最終結果を確認し、PDFとしてダウンロードしてください。"
+    },
+    "toolbar": {
+      "back": "戻る",
+      "backList": "一覧",
+      "delete": "削除",
+      "edit": "編集",
+      "template": "テンプレート変更",
+      "download": "PDFダウンロード"
+    },
+    "originalView": {
+      "title": "韓国語の原文を表示",
+      "expandTip": "（クリックして展開）",
+      "basicInfo": "基本情報",
+      "experience": "職歴",
+      "education": "学歴",
+      "skills": "スキル",
+      "additional": "追加情報",
+      "labels": {
+        "name": "名前",
+        "email": "メール",
+        "phone": "連絡先",
+        "links": "リンク"
+      },
+      "additionalTypes": {
+        "CERTIFICATION": "資格",
+        "AWARD": "受賞歴",
+        "LANGUAGE": "言語",
+        "ACTIVITY": "活動",
+        "OTHER": "その他"
+      }
+    },
+    "deleteAlert": {
+      "title": "履歴書の削除",
+      "description": "本当にこの履歴書を削除しますか？削除されたデータは復旧できません。",
+      "cancel": "キャンセル",
+      "confirm": "削除",
+      "processing": "削除中..."
+    },
+    "notifications": {
+      "deleteSuccess": "履歴書が削除されました",
+      "deleteError": "履歴書の削除に失敗しました。",
+      "downloadSuccess": "PDFのダウンロードが完了しました",
+      "downloadError": "PDF生成中にエラーが発生しました"
+    },
+    "deleting": "履歴書を削除しています..."
+  },
+  "settings": {
+    "title": "設定",
+    "description": "アカウント情報と決済管理を一箇所で設定できます",
+    "sections": {
+      "account": "アカウントと利用券",
+      "purchase": "利用券購入",
+      "danger": "危険区域"
+    },
+    "labels": {
+      "username": "ユーザー名",
+      "email": "メールアドレス",
+      "joinedAt": "加入日",
+      "passStatus": "利用券の状態",
+      "credits": "残りクレジット",
+      "expiration": "有効期限",
+      "usagePeriod": "利用期間",
+      "paymentMethod": "最近の決済手段",
+      "tossPay": "Toss Pay",
+      "creditCard": "クレジットカード",
+      "unknown": "情報なし",
+      "unlimited": "無制限",
+      "expiringSoon": "間もなく期限切れ"
+    },
+    "passLabels": {
+      "PASS_7DAY": "7日間利用券",
+      "PASS_30DAY": "30日間利用券",
+      "PASS_BETA_3DAY": "ベータローンチ記念3日間無制限",
+      "FREE": "無料",
+      "active": "利用券有効",
+      "inactive": "無料"
+    },
+    "plans": {
+      "pass30": {
+        "title": "30日間利用券",
+        "recommended": "おすすめ",
+        "current": "利用中",
+        "unavailable": "切り替え不可",
+        "beta": "ベータ期間準備中",
+        "test": "利用券購入（テスト）",
+        "features": [
+          "{credits} クレジット",
+          "すべてのテンプレート＆再翻訳無制限",
+          "30日間自由利用"
+        ]
+      },
+      "pass7": {
+        "title": "7日間利用券",
+        "current": "利用中",
+        "unavailable": "切り替え不可",
+        "beta": "ベータ期間準備中",
+        "test": "利用券購入（テスト）",
+        "features": [
+          "{credits} クレジット",
+          "すべてのテンプレート＆再翻訳無制限",
+          "7日間お試し利用"
+        ]
+      },
+      "refill": {
+        "title": "クレジットチャージ",
+        "required": "利用券が必要",
+        "beta": "ベータ期間準備中",
+        "test": "クレジットチャージ（テスト）",
+        "features": ["{credits} クレジットをチャージ", "有効期限なし"]
+      }
+    },
+    "notices": {
+      "passPromotion": "🎉 オープン記念超特価",
+      "beta": "🎉 <strong>ベ타ローンチ期間</strong>には加入後に提供される<strong>3日間無制限利用券</strong>のみ使用可能です。<br />正式リリース後、様々な利用券をご利用いただけます！",
+      "freeTip": "💡 利用券を購入すると、すべてのテンプレートと再翻訳無制限の特典を受けられます",
+      "refundPolicyFree": "購入前に支援ゴーゴーの<a href='/terms' class='underline hover:text-primary transition-colors'>キャンセルおよび払い戻し規定</a>を確認してください。",
+      "refundPolicyPaid": {
+        "title": "キャンセルおよび払い戻し規定",
+        "items": [
+          "決済後7日以内、サービス未利用時に全額払い戻し可能",
+          "クレジット使用またはAI処理履歴がある場合は払い戻し不可",
+          "本サービスは部分払い戻しポリシーを運用していません"
+        ],
+        "details": "詳細条件を見る"
+      }
+    },
+    "history": {
+      "title": "決済履歴",
+      "empty": "決済履歴がありません",
+      "table": {
+        "date": "決済日",
+        "orderId": "注文番号",
+        "product": "商品名",
+        "method": "決済手段",
+        "amount": "金額",
+        "status": "状態",
+        "manage": "管理"
+      },
+      "status": {
+        "paid": "決済完了",
+        "refunded": "払い戻し完了"
+      },
+      "refund": "払い戻し"
+    },
+    "dangerZone": {
+      "title": "アカウント削除",
+      "description": "アカウントを削除すると、すべてのデータ가永久に削除されます",
+      "button": "アカウント削除"
+    },
+    "alerts": {
+      "passWarning": {
+        "title": "利用中の利用券があります！",
+        "description": "まだ有効期限内の有料利用券が残っています。<br />今退会されると、<strong>残りの利用期間と特典がすべて消滅</strong>し、払い戻しはできません。",
+        "cancel": "キャンセルして利用を続ける",
+        "confirm": "放棄して削除を続行"
+      },
+      "deleteAccount": {
+        "title": "本当にアカウントを削除しますか？（復元不可）",
+        "description": "アカウントを削除すると、以下のデータが<strong>すべて永久に削除</strong>され、復元はできません。",
+        "items": [
+          "作成したすべての履歴書および自己紹介書データ",
+          "決済履歴および領収書情報",
+          "保有しているすべての利用券およびクレジット"
+        ],
+        "confirmText": "それでも削除しますか？",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "refund": {
+        "title": "払い戻しを進行しますか？",
+        "description": "払い戻し時、該当する利用券のすべての特典（クレジットおよび機能）が直ちに回収されます。この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "払い戻す"
+      }
+    },
+    "toast": {
+      "purchaseSuccess": "{name} の購入が完了しました！ありがとうございます。",
+      "purchaseError": "購入エラー: {message}",
+      "refundSuccess": "払い戻しが完了しました。利用券の権限が回収されました。",
+      "refundError": "払い戻しエラー: {message}",
+      "deleting": "アカウントを削除しています...",
+      "deleteSuccess": "アカウントが安全に削除されました。さようなら。",
+      "deleteError": "アカウント削除中にエラーが発生しました。"
+    }
+  },
+  "processingPage": {
+    "title": "AI 処理",
+    "description": "AIがお客様の履歴書を精密分析し、グローバルスタンダードに合った英文履歴書に再構成しています。<br />テキスト抽出から核心成果の選別、専門的な翻訳まで、精巧な作業が進行中ですので、しばらくお待ちください。",
+    "warning": "安定した分析処理のために、<strong>画面を維持してください。</strong>（ページを離れると作業が中断される場合があります）",
+    "steps": {
+      "uploading": {
+        "label": "アップロード完了",
+        "description": "履歴書PDFのアップロードが完了しました"
+      },
+      "extracting": {
+        "label": "ステップ 1: 抽出",
+        "description": "PDFから韓国語の原文を正確に抽出中...",
+        "tip": "会社名、学校名などの固有名詞をそのまま抽出します"
+      },
+      "refining": {
+        "label": "ステップ 2: 精製",
+        "description": "韓国語を基準に核心キャリアを選別中...",
+        "tip": "最もインパクトのある成果を3〜5個選別します"
+      },
+      "translating": {
+        "label": "ステップ 3: 翻訳",
+        "description": "選別された韓国語を英文に翻訳中...",
+        "tip": "Action Verbを使用して成果中心に翻訳します"
+      },
+      "done": {
+        "label": "完了",
+        "description": "AI分析が完了しました！"
+      }
+    },
+    "status": {
+      "completed": "完了",
+      "processing": "進行中"
+    },
+    "doneSection": {
+      "message": "分析が完了しました！次のステップに移動します...",
+      "button": "要約を確認する",
+      "processing": "処理中..."
+    },
+    "footerTip": "💡 <strong>3段階AIプロセッシング</strong>: 各ステップごとに実際の処理時間が反映されます。韓国語を基準にまず核心キャリアを選別した後、翻訳することで、より正確で効率적인結果を提供します。",
+    "error": {
+      "title": "エラーが発生しました",
+      "retry": "再度アップロードする",
+      "credits": {
+        "title": "クレジットが不足しています",
+        "description": "AI履歴書分析を進行するために必要なクレジットが不足しています。<br />決済を通じてクレジットをチャージし、分析を完了させてください。",
+        "buyPass": "利用券を購入して無制限に利用する",
+        "refill": "クレジットをチャージする",
+        "footer": "決済後に作業を再試行できます。",
+        "backToList": "リストに戻る"
+      }
+    }
+  },
+  "sidebar": {
+    "menu": "メニュー",
+    "createNew": "新しい履歴書を作成",
+    "feedback": "フィードバック",
+    "nav": {
+      "resumes": "履歴書管理",
+      "settings": "設定",
+      "help": "ヘルプ",
+      "home": "サービス紹介"
+    }
+  },
+  "feedbackModal": {
+    "title": "機能リクエストとフィードバックの送信",
+    "description": "サービス利用中の不便な点や必要な機能を自由に残してください。",
+    "labels": {
+      "rating": "サービス満足度",
+      "content": "内容"
+    },
+    "placeholders": {
+      "content": "ここにフィードバックを記入してください。（例：履歴書テンプレートをもっと増やしてほしい、翻訳速度をもっと早くしてほしいなど）"
+    },
+    "buttons": {
+      "cancel": "キャンセル",
+      "submit": "送信する",
+      "submitting": "送信中..."
+    },
+    "notifications": {
+      "emptyContent": "フィードバックを入力してください。",
+      "success": "貴重なご意見ありがとうございます！",
+      "error": "エラーが発生しました。"
+    }
+  }
+}

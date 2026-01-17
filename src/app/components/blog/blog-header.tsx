@@ -2,10 +2,10 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Header } from "@/app/components/header";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 import { Languages } from "lucide-react";
 

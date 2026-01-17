@@ -4,14 +4,7 @@ import { useRouter } from "next/navigation";
 import { ResumeEditPage } from "@/app/components/resume-edit-page";
 import { useState, useEffect } from "react";
 import { useApp } from "@/app/context/app-context";
-
-const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
-];
+import { useTranslations } from "next-intl";
 
 interface EditClientProps {
   resumeId: string;
@@ -19,7 +12,7 @@ interface EditClientProps {
   initialExperiences: any[];
   initialEducations: any[];
   initialSkills: any[];
-  initialCertifications?: any[]; // Keep for compatibility if needed, but unused
+  initialCertifications?: any[];
   initialAwards?: any[];
   initialLanguages?: any[];
   initialAdditionalItems?: any[];
@@ -39,8 +32,17 @@ export function EditClient({
   initialPersonalInfo,
 }: EditClientProps) {
   const router = useRouter();
+  const t = useTranslations();
   const { setWorkflowState, quota, setQuota } = useApp();
   const [isSaving, setIsSaving] = useState(false);
+
+  const steps = [
+    { id: "upload", label: t("workflow.upload") },
+    { id: "processing", label: t("workflow.processing") },
+    { id: "edit", label: t("workflow.edit") },
+    { id: "preview", label: t("workflow.template") },
+    { id: "complete", label: t("workflow.complete") },
+  ];
 
   useEffect(() => {
     setWorkflowState(steps, "edit");
@@ -80,14 +82,16 @@ export function EditClient({
 
       // Filter out empty items before save
       const filteredExperiences = data.experiences.filter(
-        (exp) => exp.company?.trim() || exp.position?.trim()
+        (exp: any) => exp.company?.trim() || exp.position?.trim(),
       );
-      const filteredEducations = data.educations.filter((edu) =>
-        edu.school_name?.trim()
+      const filteredEducations = data.educations.filter((edu: any) =>
+        edu.school_name?.trim(),
       );
-      const filteredSkills = data.skills.filter((skill) => skill.name?.trim());
+      const filteredSkills = data.skills.filter((skill: any) =>
+        skill.name?.trim(),
+      );
       const filteredAdditionalItems = (data.additionalItems || []).filter(
-        (item) => item.name_kr?.trim() || item.description_kr?.trim()
+        (item: any) => item.name_kr?.trim() || item.description_kr?.trim(),
       );
 
       // Map frontend data structure back to DB structure
@@ -99,7 +103,7 @@ export function EditClient({
         links: data.personalInfo.links,
         summary: data.personalInfo.summary,
         summary_kr: data.personalInfo.summary_kr,
-        work_experiences: filteredExperiences.map((exp) => ({
+        work_experiences: filteredExperiences.map((exp: any) => ({
           company_name_kr: exp.company,
           company_name_en: exp.companyEn,
           role_kr: exp.position,
@@ -127,7 +131,7 @@ export function EditClient({
       router.push(`/resumes/${resumeId}/templates`);
     } catch (error) {
       console.error(error);
-      alert("이력서 내용을 저장하는 중 오류가 발생했습니다.");
+      alert(t("editor.saveError"));
     } finally {
       setIsSaving(false);
     }

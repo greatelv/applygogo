@@ -8,11 +8,11 @@ import {
   Edit,
   Layout,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ModernTemplate } from "./resume-templates/modern-template";
 import { ClassicTemplate } from "./resume-templates/classic-template";
-
 import { MinimalTemplate } from "./resume-templates/minimal-template";
 import { ProfessionalTemplate } from "./resume-templates/professional-template";
 import { ExecutiveTemplate } from "./resume-templates/executive-template";
@@ -46,14 +46,6 @@ interface TranslatedExperience {
   bulletsEn: string[];
 }
 
-const statusConfig = {
-  IDLE: { label: "업로드됨", variant: "outline" as const },
-  SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
-  TRANSLATED: { label: "번역됨", variant: "secondary" as const },
-  COMPLETED: { label: "완료", variant: "default" as const },
-  FAILED: { label: "실패", variant: "warning" as const },
-};
-
 interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
@@ -71,6 +63,7 @@ interface ResumeDetailPageProps {
   template?: string;
   updatedAt?: string;
   isWorkflowComplete?: boolean;
+  locale?: string;
   onBack: () => void;
   onDelete?: (id: string) => void;
   onDownload?: () => void;
@@ -94,10 +87,12 @@ export function ResumeDetailPage({
   onEdit,
   onChangeTemplate,
   updatedAt,
+  locale = "ko",
 }: ResumeDetailPageProps) {
+  const t = useTranslations("resumeDetail");
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [scale, setScale] = useState(0.8); // Initial scale for safety
+  const [scale, setScale] = useState(0.8);
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -105,10 +100,9 @@ export function ResumeDetailPage({
       if (!previewContainerRef.current) return;
 
       const containerWidth = previewContainerRef.current.offsetWidth;
-      const a4WidthPx = 794; // approx 210mm at 96dpi
+      const a4WidthPx = 794;
 
       let newScale = (containerWidth * 0.95) / a4WidthPx;
-      // Enforce minimum scale for mobile readability (similar to ResumePreviewPage)
       if (window.innerWidth < 1024 && newScale < 0.55) {
         newScale = 0.55;
       }
@@ -120,12 +114,10 @@ export function ResumeDetailPage({
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  // Use props data
   const resume = {
     id: resumeId || "",
-    title: resumeTitle || "이력서",
+    title: resumeTitle || "Resume",
     personalInfo,
-    status: (isWorkflowComplete ? "COMPLETED" : "COMPLETED") as "COMPLETED",
     updatedAt: updatedAt || new Date().toISOString(),
     template,
     experiences: experiences || [],
@@ -135,11 +127,6 @@ export function ResumeDetailPage({
     isWorkflowComplete,
   };
 
-  const config = statusConfig[resume.status];
-
-  // Ref is kept for Preview display (though not used for PDF generation anymore)
-  const componentRef = useRef<HTMLDivElement>(null);
-
   const handleDownload = async () => {
     if (onDownload) {
       onDownload();
@@ -148,14 +135,11 @@ export function ResumeDetailPage({
 
     try {
       const { pdf } = await import("@react-pdf/renderer");
-      // Dynamic import to avoid SSR issues with React-PDF
-      const { ModernPdf, registerFonts } = await import(
-        "./pdf-templates/modern-pdf"
-      );
+      const { ModernPdf, registerFonts } =
+        await import("./pdf-templates/modern-pdf");
       const { ClassicPdf } = await import("./pdf-templates/classic-pdf");
       const { MinimalPdf } = await import("./pdf-templates/minimal-pdf");
 
-      // Register fonts with correct URL
       registerFonts();
 
       let doc;
@@ -177,20 +161,15 @@ export function ResumeDetailPage({
           // @ts-ignore
           doc = <MinimalPdf {...commonProps} />;
           break;
-
         case "professional":
-          // Dynamic import for Professional PDF
-          const { ProfessionalPdf } = await import(
-            "./pdf-templates/professional-pdf"
-          );
+          const { ProfessionalPdf } =
+            await import("./pdf-templates/professional-pdf");
           // @ts-ignore
           doc = <ProfessionalPdf {...commonProps} />;
           break;
         case "executive":
-          // Dynamic import for Executive PDF
-          const { ExecutivePdf } = await import(
-            "./pdf-templates/executive-pdf"
-          );
+          const { ExecutivePdf } =
+            await import("./pdf-templates/executive-pdf");
           // @ts-ignore
           doc = <ExecutivePdf {...commonProps} />;
           break;
@@ -211,10 +190,10 @@ export function ResumeDetailPage({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success("PDF 다운로드가 완료되었습니다");
+      toast.success(t("notifications.downloadSuccess"));
     } catch (error) {
       console.error("PDF generation error:", error);
-      toast.error("PDF 생성 중 오류가 발생했습니다");
+      toast.error(t("notifications.downloadError"));
     }
   };
 
@@ -256,10 +235,10 @@ export function ResumeDetailPage({
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-green-900 dark:text-green-300">
-              이력서가 성공적으로 생성되었습니다!
+              {t("success.title")}
             </h3>
             <p className="text-xs text-green-700 dark:text-green-400 mt-1 leading-relaxed">
-              아래에서 최종 결과물을 확인하고 PDF로 다운로드하세요.
+              {t("success.description")}
             </p>
           </div>
         </div>
@@ -276,7 +255,13 @@ export function ResumeDetailPage({
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5 shrink-0">
                   <Clock className="size-3.5" />
-                  {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
+                  {new Date(resume.updatedAt).toLocaleDateString(
+                    locale === "ko"
+                      ? "ko-KR"
+                      : locale === "ja"
+                        ? "ja-JP"
+                        : "en-US",
+                  )}
                 </span>
                 <span className="flex items-center gap-1.5 shrink-0">
                   <Layout className="size-3.5" />
@@ -291,69 +276,72 @@ export function ResumeDetailPage({
               </div>
             </div>
 
-            {/* Desktop Actions (Hidden on Mobile) */}
+            {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-2 shrink-0">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" onClick={onBack}>
+                    <button
+                      onClick={onBack}
+                      className="p-2 border border-border rounded-md hover:bg-muted transition-colors"
+                    >
                       <ArrowLeft className="size-4" />
-                    </Button>
+                    </button>
                   </TooltipTrigger>
-                  <TooltipContent>뒤로가기</TooltipContent>
+                  <TooltipContent>{t("toolbar.back")}</TooltipContent>
                 </Tooltip>
 
                 {onDelete && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
+                      <button
                         onClick={handleDeleteConfirm}
-                        className="text-muted-foreground hover:text-destructive"
+                        className="p-2 border border-border rounded-md hover:bg-muted text-muted-foreground hover:text-destructive transition-colors"
                       >
                         <Trash2 className="size-4" />
-                      </Button>
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent>삭제</TooltipContent>
+                    <TooltipContent>{t("toolbar.delete")}</TooltipContent>
                   </Tooltip>
                 )}
 
                 {onEdit && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="outline" size="icon" onClick={onEdit}>
+                      <button
+                        onClick={onEdit}
+                        className="p-2 border border-border rounded-md hover:bg-muted transition-colors"
+                      >
                         <Edit className="size-4" />
-                      </Button>
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent>편집</TooltipContent>
+                    <TooltipContent>{t("toolbar.edit")}</TooltipContent>
                   </Tooltip>
                 )}
 
                 {onChangeTemplate && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
+                      <button
                         onClick={onChangeTemplate}
+                        className="p-2 border border-border rounded-md hover:bg-muted transition-colors"
                       >
                         <Layout className="size-4" />
-                      </Button>
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent>템플릿 변경</TooltipContent>
+                    <TooltipContent>{t("toolbar.template")}</TooltipContent>
                   </Tooltip>
                 )}
               </TooltipProvider>
 
               <Button onClick={handleDownload} className="shadow-sm ml-2">
                 <Download className="size-4 mr-1.5" />
-                PDF 다운로드
+                {t("toolbar.download")}
               </Button>
             </div>
           </div>
 
-          {/* Mobile Toolbar (Visible only on Mobile) */}
+          {/* Mobile Toolbar */}
           <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
             <Button
               variant="outline"
@@ -362,7 +350,7 @@ export function ResumeDetailPage({
               className="shrink-0 h-9"
             >
               <ArrowLeft className="size-4 mr-1.5" />
-              목록
+              {t("toolbar.backList")}
             </Button>
             <div className="w-px h-4 bg-border shrink-0 mx-1" />
             {onEdit && (
@@ -373,7 +361,7 @@ export function ResumeDetailPage({
                 className="shrink-0 h-9"
               >
                 <Edit className="size-4 mr-1.5" />
-                편집
+                {t("toolbar.edit")}
               </Button>
             )}
             {onChangeTemplate && (
@@ -384,7 +372,7 @@ export function ResumeDetailPage({
                 className="shrink-0 h-9"
               >
                 <Layout className="size-4 mr-1.5" />
-                템플릿
+                {t("toolbar.template")}
               </Button>
             )}
             {onDelete && (
@@ -433,26 +421,28 @@ export function ResumeDetailPage({
       {/* Original Korean Version */}
       <details className="bg-card border border-border rounded-lg p-6">
         <summary className="cursor-pointer font-semibold mb-4 flex items-center gap-2">
-          <span>한글 원본 보기</span>
+          <span>{t("originalView.title")}</span>
           <span className="text-xs text-muted-foreground">
-            (클릭하여 펼치기)
+            {t("originalView.expandTip")}
           </span>
         </summary>
         <div className="space-y-6 pt-4 border-t border-border">
           {/* Basic Info */}
           <section>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              기본 정보
+              {t("originalView.basicInfo")}
             </h4>
             <div className="space-y-2 text-sm">
               <div className="grid grid-cols-[100px_1fr] gap-2">
-                <span className="font-medium text-muted-foreground">이름</span>
+                <span className="font-medium text-muted-foreground">
+                  {t("originalView.labels.name")}
+                </span>
                 <span>{resume.personalInfo?.name_kr || "-"}</span>
               </div>
               {resume.personalInfo?.email && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
                   <span className="font-medium text-muted-foreground">
-                    이메일
+                    {t("originalView.labels.email")}
                   </span>
                   <span>{resume.personalInfo.email}</span>
                 </div>
@@ -460,7 +450,7 @@ export function ResumeDetailPage({
               {resume.personalInfo?.phone && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
                   <span className="font-medium text-muted-foreground">
-                    연락처
+                    {t("originalView.labels.phone")}
                   </span>
                   <span>{resume.personalInfo.phone}</span>
                 </div>
@@ -469,7 +459,7 @@ export function ResumeDetailPage({
                 resume.personalInfo.links.length > 0 && (
                   <div className="grid grid-cols-[100px_1fr] gap-2">
                     <span className="font-medium text-muted-foreground">
-                      링크
+                      {t("originalView.labels.links")}
                     </span>
                     <div className="flex flex-col gap-1">
                       {resume.personalInfo.links.map((link: any, i: number) => (
@@ -492,7 +482,7 @@ export function ResumeDetailPage({
           {/* Experiences */}
           <section>
             <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-              경력 사항
+              {t("originalView.experience")}
             </h4>
             <div className="space-y-6">
               {(resume.experiences || []).map((exp: any) => (
@@ -528,7 +518,7 @@ export function ResumeDetailPage({
           {resume.educations && resume.educations.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                학력 사항
+                {t("originalView.education")}
               </h4>
               <div className="space-y-4">
                 {resume.educations.map((edu: any) => (
@@ -560,7 +550,7 @@ export function ResumeDetailPage({
           {resume.skills && resume.skills.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                보유 기술
+                {t("originalView.skills")}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {resume.skills.map((skill: any) => (
@@ -572,11 +562,11 @@ export function ResumeDetailPage({
             </section>
           )}
 
-          {/* Additional Items regrouped for KR View */}
+          {/* Additional Items */}
           {resume.additionalItems && resume.additionalItems.length > 0 && (
             <section className="pt-6 border-t border-border/50">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase mb-4">
-                추가 정보
+                {t("originalView.additional")}
               </h4>
               <div className="space-y-4">
                 {[
@@ -587,22 +577,14 @@ export function ResumeDetailPage({
                   "OTHER",
                 ].map((type) => {
                   const items = resume.additionalItems.filter(
-                    (i) => i.type === type
+                    (i) => i.type === type,
                   );
                   if (items.length === 0) return null;
-
-                  const typeLabels: Record<string, string> = {
-                    CERTIFICATION: "자격증",
-                    AWARD: "수상 경력",
-                    LANGUAGE: "언어",
-                    ACTIVITY: "활동",
-                    OTHER: "기타",
-                  };
 
                   return (
                     <div key={type}>
                       <h5 className="text-xs font-medium text-muted-foreground mb-2">
-                        {typeLabels[type]}
+                        {t(`originalView.additionalTypes.${type}`)}
                       </h5>
                       <div className="space-y-2">
                         {items.map((item) => (
@@ -635,7 +617,7 @@ export function ResumeDetailPage({
         </div>
       </details>
 
-      {isDeleting && <LoadingOverlay message="이력서를 삭제하고 있습니다..." />}
+      {isDeleting && <LoadingOverlay message={t("deleting")} />}
 
       {/* Mobile Sticky Footer */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50">
@@ -644,7 +626,7 @@ export function ResumeDetailPage({
           className="w-full h-12 text-base shadow-lg"
         >
           <Download className="size-5 mr-2" />
-          PDF 다운로드
+          {t("toolbar.download")}
         </Button>
       </div>
 
@@ -657,14 +639,15 @@ export function ResumeDetailPage({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteAlert.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
-              없습니다.
+              {t("deleteAlert.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>
+              {t("deleteAlert.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               disabled={isDeleting}
@@ -674,7 +657,7 @@ export function ResumeDetailPage({
                   try {
                     setIsDeleting(true);
                     await onDelete(resumeId);
-                    toast.success("이력서가 삭제되었습니다");
+                    toast.success(t("notifications.deleteSuccess"));
                     onBack();
                     setIsDeleteAlertOpen(false);
                   } catch (error) {
@@ -685,7 +668,9 @@ export function ResumeDetailPage({
                 }
               }}
             >
-              {isDeleting ? "삭제 중..." : "삭제"}
+              {isDeleting
+                ? t("deleteAlert.processing")
+                : t("deleteAlert.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
