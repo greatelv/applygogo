@@ -3,11 +3,15 @@ import { routing } from "./src/i18n/routing";
 import NextAuth from "next-auth";
 import { authConfig } from "./src/auth.config";
 
+import { NextResponse } from "next/server";
+
 const i18nMiddleware = createMiddleware(routing);
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  // i18n 처리를 먼저 수행
+  // i18n 처리를 먼저 수행하기 전에 현재 경로를 헤더에 추가
+  req.headers.set("x-pathname", req.nextUrl.pathname);
+
   return i18nMiddleware(req);
 });
 

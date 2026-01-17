@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "@/styles/index.css";
 import { Providers } from "./providers";
 import NextTopLoader from "nextjs-toploader";
@@ -13,6 +14,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const headerList = await headers();
+  const pathname = headerList.get("x-pathname") || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://applygogo.com";
+
   const getTitle = () => {
     switch (locale) {
       case "ko":
@@ -44,10 +49,24 @@ export async function generateMetadata({
         ? "支援ゴーゴー"
         : "ApplyGogo";
 
+  // 현재 경로에서 로케일 부분을 제외한 경로 추출
+  let pathWithoutLocale = pathname;
+  if (pathname.startsWith(`/${locale}`)) {
+    pathWithoutLocale = pathname.replace(`/${locale}`, "");
+  } else if (pathname === `/${locale}`) {
+    pathWithoutLocale = "";
+  }
+
+  const languages = locales.reduce(
+    (acc, lang) => {
+      acc[lang] = `${baseUrl}/${lang}${pathWithoutLocale}`;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-    ),
+    metadataBase: new URL(baseUrl),
     title: {
       default: title,
       template: `%s | ${siteName}`,
@@ -86,7 +105,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       locale: locale === "ko" ? "ko_KR" : locale === "ja" ? "ja_JP" : "en_US",
-      url: "/",
+      url: `${baseUrl}${pathname}`,
       title: title,
       description: description,
       siteName: siteName,
@@ -106,12 +125,8 @@ export async function generateMetadata({
       images: ["/og-image.png"],
     },
     alternates: {
-      canonical: "/",
-      languages: {
-        ko: "https://applygogo.com/ko",
-        en: "https://applygogo.com/en",
-        ja: "https://applygogo.com/ja",
-      },
+      canonical: `${baseUrl}${pathname}`,
+      languages: languages,
     },
     robots: {
       index: true,
