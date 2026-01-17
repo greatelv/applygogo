@@ -5,6 +5,7 @@ import {
   FileText,
   Globe,
   Download,
+  Languages,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,6 +59,17 @@ export function LandingPage({
                 블로그
               </Link>
               <div className="hidden sm:block">
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="mr-2 text-muted-foreground hover:text-foreground"
+                >
+                  <a href="/en/resumes">
+                    <Languages className="w-4 h-4 mr-2" />
+                    English
+                  </a>
+                </Button>
                 <ThemeToggle />
               </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
