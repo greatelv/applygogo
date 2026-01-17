@@ -7,24 +7,6 @@ const nextConfig = {
     },
   },
   async rewrites() {
-    // Check if the current environment is global site
-    const isGlobal = process.env.AUTH_URL?.endsWith("/en");
-
-    if (isGlobal) {
-      // Global Site: Handle /en internally
-      return [
-        {
-          source: "/en/:path*",
-          destination: "/:path*",
-        },
-        {
-          source: "/en",
-          destination: "/",
-        },
-      ];
-    }
-
-    // KR Site: Proxy to Global Site
     return [
       {
         source: "/en/:path*",

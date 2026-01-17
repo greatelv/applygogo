@@ -59,17 +59,6 @@ export function LandingPage({
                 블로그
               </Link>
               <div className="hidden sm:block">
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="mr-2 text-muted-foreground hover:text-foreground"
-                >
-                  <a href="/en">
-                    <Languages className="w-4 h-4 mr-2" />
-                    Global
-                  </a>
-                </Button>
                 <ThemeToggle />
               </div>
               <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>

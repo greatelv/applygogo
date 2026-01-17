@@ -31,20 +31,6 @@ export function LoginPage({
           </p>
         </div>
 
-        <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <a href="/en/login">
-              <Languages className="w-4 h-4 mr-2" />
-              Global
-            </a>
-          </Button>
-        </div>
-
         <div className="space-y-4">
           {!isInAppBrowser ? (
             <Button
