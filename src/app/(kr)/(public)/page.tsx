@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { LandingPage } from "@/app/components/landing-page";
 
-// 간단한 래퍼 - locale context 제공
-export default function EnLandingPage() {
+import { useSession } from "next-auth/react";
+
+export default function Page() {
   const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
   const { status } = useSession();
@@ -14,9 +14,9 @@ export default function EnLandingPage() {
   const handleGetStarted = () => {
     setIsNavigating(true);
     if (status === "authenticated") {
-      router.push("/en/dashboard");
+      router.push("/resumes");
     } else {
-      router.push("/en/login");
+      router.push("/login");
     }
   };
 
@@ -28,25 +28,20 @@ export default function EnLandingPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "ApplyGoGo - Korea Job Resume AI",
+            name: "지원고고",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",
-              price: "9",
+              price: "0",
               priceCurrency: "USD",
             },
-            description: "AI-powered resume translation for Korean job market",
-            inLanguage: ["en", "ko"],
+            description:
+              "AI 기반 영문 이력서 변환 서비스로 국문 이력서를 글로벌 스탠다드 CV/Resume로 손쉽게 번역하고 첨삭받으세요.",
           }),
         }}
       />
-      {/* TODO 제거 - locale prop 추가 완료 */}
-      <LandingPage
-        onGetStarted={handleGetStarted}
-        isLoading={isNavigating}
-        locale="en"
-      />
+      <LandingPage onGetStarted={handleGetStarted} isLoading={isNavigating} />
     </>
   );
 }

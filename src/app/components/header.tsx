@@ -18,10 +18,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { cn } from "../lib/utils";
+import { cn } from "@/app/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import { WorkflowStepper } from "./workflow-stepper";
+import { t, type Locale } from "@/lib/i18n-utils";
 
 interface HeaderProps {
   plan: string;
@@ -35,33 +36,8 @@ interface HeaderProps {
   isSidebarOpen?: boolean;
   workflowSteps?: Array<{ id: string; label: string; description?: string }>;
   currentStep?: string;
+  locale?: string;
 }
-
-const planConfig: Record<
-  string,
-  { label: string; variant: "outline" | "secondary" | "default"; color: string }
-> = {
-  FREE: {
-    label: "무료",
-    variant: "outline" as const,
-    color: "text-neutral-600",
-  },
-  PASS_7DAY: {
-    label: "7일 이용권",
-    variant: "secondary" as const,
-    color: "text-blue-600",
-  },
-  PASS_30DAY: {
-    label: "30일 이용권",
-    variant: "default" as const,
-    color: "text-purple-600",
-  },
-  PASS_BETA_3DAY: {
-    label: "베타 무제한",
-    variant: "default" as const,
-    color: "text-indigo-600",
-  },
-};
 
 export function Header({
   plan,
@@ -75,8 +51,44 @@ export function Header({
   isSidebarOpen = true,
   workflowSteps,
   currentStep,
+  locale = "ko",
 }: HeaderProps) {
-  const config = planConfig[plan] || planConfig.FREE;
+  const currentLocale = locale as Locale;
+
+  const getPlanConfig = (planType: string) => {
+    const configs: Record<
+      string,
+      {
+        label: string;
+        variant: "outline" | "secondary" | "default";
+        color: string;
+      }
+    > = {
+      FREE: {
+        label: t(currentLocale, "Header.free"),
+        variant: "outline",
+        color: "text-neutral-600",
+      },
+      PASS_7DAY: {
+        label: t(currentLocale, "Landing.pricing.pass7.title"), // 재사용
+        variant: "secondary",
+        color: "text-blue-600",
+      },
+      PASS_30DAY: {
+        label: t(currentLocale, "Landing.pricing.pass30.title"), // 재사용
+        variant: "default",
+        color: "text-purple-600",
+      },
+      PASS_BETA_3DAY: {
+        label: "Beta Unlimited",
+        variant: "default",
+        color: "text-indigo-600",
+      },
+    };
+    return configs[planType] || configs.FREE;
+  };
+
+  const config = getPlanConfig(plan);
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -99,7 +111,7 @@ export function Header({
           {/* Desktop Logo Area + Toggle */}
           <div className="hidden lg:flex items-center justify-between pl-6 h-full w-60 border-r border-border/40 shrink-0">
             <Link
-              href="/resumes"
+              href={locale === "ko" ? "/resumes" : `/${locale}/resumes`}
               className="flex items-center hover:opacity-80 transition-opacity"
             >
               <img
@@ -118,7 +130,7 @@ export function Header({
               <button
                 onClick={onToggleSidebar}
                 className="mr-3 p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
-                title={isSidebarOpen ? "사이드바 숨기기" : "사이드바 보이기"}
+                title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
               >
                 <PanelLeft className="size-4" />
               </button>
@@ -127,7 +139,7 @@ export function Header({
 
           {/* Mobile Logo Only */}
           <Link
-            href="/resumes"
+            href={locale === "ko" ? "/resumes" : `/${locale}/resumes`}
             className="lg:hidden flex items-center mr-4 hover:opacity-80 transition-opacity"
           >
             <img
@@ -166,15 +178,28 @@ export function Header({
               size="sm"
               className="hidden sm:inline-flex bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm border-0 font-semibold"
             >
-              <Link href="/settings#payment-section">
+              <Link
+                href={
+                  locale === "ko"
+                    ? "/settings#payment-section"
+                    : `/${locale}/settings`
+                }
+              >
                 <Sparkles className="w-3.5 h-3.5 mr-2" />
-                이용권 구매
+                {t(currentLocale, "Header.buyPass")}
               </Link>
             </Button>
           )}
 
           {/* Plan badge - Clickable */}
-          <a href="/settings#payment-section" className="hidden sm:inline-flex">
+          <a
+            href={
+              locale === "ko"
+                ? "/settings#payment-section"
+                : `/${locale}/settings`
+            }
+            className="hidden sm:inline-flex"
+          >
             <Badge
               variant={config.variant}
               className="hover:opacity-80 transition-opacity cursor-pointer"
@@ -185,13 +210,17 @@ export function Header({
 
           {/* Quota display - Desktop */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-muted rounded-md">
-            <span className="text-xs text-muted-foreground">남은 크레딧</span>
+            <span className="text-xs text-muted-foreground">
+              {t(currentLocale, "Header.creditsLeft")
+                .replace("{count}", "")
+                .trim()}
+            </span>
             <span className="font-semibold text-sm">{quota}</span>
           </div>
 
           {/* Quota display - Mobile (compact) */}
           <div className="sm:hidden flex items-center gap-1.5 px-2 py-1 bg-muted rounded-md">
-            <span className="text-xs text-muted-foreground">크레딧</span>
+            <span className="text-xs text-muted-foreground">C</span>
             <span className="font-semibold text-xs">{quota}</span>
           </div>
 
@@ -217,38 +246,44 @@ export function Header({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="sm:hidden">
-                <span className="text-xs text-muted-foreground">이용권:</span>
+                <span className="text-xs text-muted-foreground">Plan:</span>
                 <span className="ml-2 font-semibold">{config.label}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="sm:hidden">
-                <span className="text-xs text-muted-foreground">크레딧:</span>
+                <span className="text-xs text-muted-foreground">Credits:</span>
                 <span className="ml-2 font-semibold">{quota}</span>
               </DropdownMenuItem>
 
               <DropdownMenuSeparator className="sm:hidden" />
               <DropdownMenuItem asChild>
-                <Link href="/settings" className="cursor-pointer">
+                <Link
+                  href={locale === "ko" ? "/settings" : `/${locale}/settings`}
+                  className="cursor-pointer"
+                >
                   <Settings className="size-4 mr-2" />
-                  설정
+                  {t(currentLocale, "Sidebar.settings")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/" className="cursor-pointer">
                   <Info className="size-4 mr-2" />
-                  서비스 소개
+                  {t(currentLocale, "Sidebar.intro")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/blog" className="cursor-pointer">
+                <Link
+                  href={locale === "ko" ? "/blog" : "/blog"}
+                  className="cursor-pointer"
+                >
                   <FileText className="size-4 mr-2" />
-                  블로그
+                  {t(currentLocale, "Landing.nav.blog")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onLogout}>
                 <LogOut className="size-4 mr-2" />
-                로그아웃
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

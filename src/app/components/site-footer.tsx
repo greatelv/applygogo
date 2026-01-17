@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { t, type Locale } from "@/lib/i18n-utils";
 
 interface SiteFooterProps {
   simple?: boolean;
+  locale?: string;
 }
 
-export function SiteFooter({ simple }: SiteFooterProps) {
+export function SiteFooter({ simple, locale = "ko" }: SiteFooterProps) {
+  const currentLocale = locale as Locale;
+
   if (simple) {
     return (
       <footer className="border-t border-border p-4 bg-muted/20">
@@ -16,23 +20,23 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                   href="/terms"
                   className="hover:text-foreground transition-colors"
                 >
-                  이용약관
+                  {t(currentLocale, "Footer.terms")}
                 </Link>
                 <Link
                   href="/privacy"
                   className="font-bold hover:text-foreground transition-colors"
                 >
-                  개인정보처리방침
+                  {t(currentLocale, "Footer.privacy")}
                 </Link>
                 <a
                   href="mailto:patakeique@gmail.com"
                   className="hover:text-foreground transition-colors"
                 >
-                  고객문의
+                  {t(currentLocale, "Footer.contact")}
                 </a>
               </div>
               <div className="hidden md:block text-[10px] text-muted-foreground/60">
-                © 2026 지원고고 (K-Corporation). All rights reserved.
+                {t(currentLocale, "Footer.rights")}
               </div>
             </div>
 
@@ -50,7 +54,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
-              © 2026 지원고고 (K-Corporation). All rights reserved.
+              {t(currentLocale, "Footer.rights")}
             </div>
           </div>
         </div>
@@ -69,19 +73,19 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 href="/terms"
                 className="hover:text-foreground transition-colors"
               >
-                이용약관
+                {t(currentLocale, "Footer.terms")}
               </Link>
               <Link
                 href="/privacy"
                 className="font-bold hover:text-foreground transition-colors"
               >
-                개인정보처리방침
+                {t(currentLocale, "Footer.privacy")}
               </Link>
               <a
                 href="mailto:patakeique@gmail.com"
                 className="hover:text-foreground transition-colors"
               >
-                고객문의
+                {t(currentLocale, "Footer.contact")}
               </a>
               <Link
                 href="/company"
@@ -93,13 +97,13 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 href="/introduction"
                 className="hover:text-foreground transition-colors"
               >
-                서비스 소개
+                {t(currentLocale, "Sidebar.intro")}
               </Link>
               <Link
                 href="/blog"
                 className="hover:text-foreground transition-colors"
               >
-                블로그
+                {t(currentLocale, "Landing.nav.blog")}
               </Link>
             </div>
 
@@ -122,7 +126,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
 
           {/* Copyright */}
           <div className="text-xs text-muted-foreground">
-            © 2026 지원고고 (K-Corporation). All rights reserved.
+            {t(currentLocale, "Footer.rights")}
           </div>
         </div>
       </div>

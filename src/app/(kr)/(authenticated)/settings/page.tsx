@@ -1,7 +1,7 @@
-import { auth } from "../../../auth";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { SettingsClientPage } from "./client-page";
-import { getUserSettings } from "../../lib/actions";
+import { getUserSettings } from "@/app/lib/actions";
 
 export default async function Page() {
   const session = await auth();

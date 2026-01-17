@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Eye, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { cn } from "../lib/utils";
+import { cn } from "@/app/lib/utils";
 import { ModernTemplate } from "./resume-templates/modern-template";
 import { ClassicTemplate } from "./resume-templates/classic-template";
 import { MinimalTemplate } from "./resume-templates/minimal-template";

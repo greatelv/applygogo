@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ResumesPage } from "../../components/resumes-page";
+import { ResumesPage } from "@/app/components/resumes-page";
 
 interface Resume {
   id: string;

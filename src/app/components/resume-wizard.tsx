@@ -7,12 +7,12 @@ import { ProcessingPage } from "./processing-page";
 import { ResumeEditPage } from "./resume-edit-page";
 import { ResumePreviewPage } from "./resume-preview-page";
 import { ResumeDetailPage } from "./resume-detail-page";
-import { useApp } from "../context/app-context";
+import { useApp } from "@/app/context/app-context";
 import {
   uploadResumeAction,
   updateResumeTemplateAction,
   updateResumeAction,
-} from "../lib/actions";
+} from "@/app/lib/actions";
 import {
   AlertDialog,
   AlertDialogAction,

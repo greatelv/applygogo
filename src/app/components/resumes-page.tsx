@@ -1,3 +1,5 @@
+"use client";
+
 import { FileText, Plus, Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -12,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
+import { t, Locale } from "@/lib/i18n-utils";
 
 interface Resume {
   id: string;
@@ -29,24 +32,9 @@ interface ResumesPageProps {
   quota?: number;
   onUpgrade?: () => void;
   showBetaBanner?: boolean;
+  locale?: Locale;
 }
 
-const stepConfig = {
-  UPLOAD: { label: "업로드 중", variant: "secondary" as const },
-  PROCESSING: { label: "AI 분석 중", variant: "secondary" as const },
-  EDIT: { label: "편집 중", variant: "outline" as const },
-  TEMPLATE: { label: "템플릿 선택", variant: "outline" as const },
-  COMPLETED: { label: "완료됨", variant: "success" as const },
-};
-
-// Fallback for status if needed, though step is preferred now
-const statusConfig = {
-  IDLE: { label: "대기 중", variant: "outline" as const },
-  SUMMARIZED: { label: "요약됨", variant: "secondary" as const },
-  TRANSLATED: { label: "번역됨", variant: "secondary" as const },
-  COMPLETED: { label: "완료", variant: "success" as const },
-  FAILED: { label: "실패", variant: "warning" as const },
-};
 export function ResumesPage({
   resumes,
   onCreateNew,
@@ -55,10 +43,58 @@ export function ResumesPage({
   quota = 0,
   onUpgrade,
   showBetaBanner,
+  locale = "ko",
 }: ResumesPageProps) {
   const hasNoCredits = quota === 0;
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Status/Step config with localization
+  const stepConfig = {
+    UPLOAD: {
+      label: t(locale, "Dashboard.status.upload"),
+      variant: "secondary" as const,
+    },
+    PROCESSING: {
+      label: t(locale, "Dashboard.status.processing"),
+      variant: "secondary" as const,
+    },
+    EDIT: {
+      label: t(locale, "Dashboard.status.edit"),
+      variant: "outline" as const,
+    },
+    TEMPLATE: {
+      label: t(locale, "Dashboard.status.template"),
+      variant: "outline" as const,
+    },
+    COMPLETED: {
+      label: t(locale, "Dashboard.status.completed"),
+      variant: "success" as const,
+    },
+  };
+
+  const statusConfig = {
+    IDLE: {
+      label: t(locale, "Dashboard.status.upload"),
+      variant: "outline" as const,
+    },
+    SUMMARIZED: {
+      label: t(locale, "Dashboard.status.processing"),
+      variant: "secondary" as const,
+    },
+    TRANSLATED: {
+      label: t(locale, "Dashboard.status.processing"),
+      variant: "secondary" as const,
+    },
+    COMPLETED: {
+      label: t(locale, "Dashboard.status.completed"),
+      variant: "success" as const,
+    },
+    FAILED: {
+      label: t(locale, "Dashboard.status.failed"),
+      variant: "warning" as const,
+    },
+  };
 
   if (resumes.length === 0) {
     return (
@@ -96,21 +132,20 @@ export function ResumesPage({
           </div>
 
           <h2 className="text-2xl font-bold mb-3">
-            첫 번째 영문 이력서를 완성해보세요
+            {t(locale, "Dashboard.emptyState.title")}
           </h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed">
-            한글 이력서만 올리면 AI가 분석부터 영문 번역, <br />
-            그리고 포맷팅까지 5분 안에 끝내드립니다.
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-sm leading-relaxed whitespace-pre-wrap">
+            {t(locale, "Dashboard.emptyState.description")}
           </p>
 
           {hasNoCredits ? (
             <div className="space-y-3">
               <p className="text-sm text-amber-600 font-medium">
-                크레딧이 부족하여 새 이력서를 만들 수 없습니다
+                {t(locale, "Dashboard.emptyState.noCredits")}
               </p>
               {onUpgrade && (
                 <Button onClick={onUpgrade} size="lg" className="rounded-full">
-                  플랜 업그레이드하기
+                  Upgrade Plan
                 </Button>
               )}
             </div>
@@ -121,7 +156,7 @@ export function ResumesPage({
               className="rounded-full px-8 h-12 text-base shadow-lg hover:shadow-primary/25 transition-all"
             >
               <Plus className="size-5 mr-2" />
-              무료로 시작하기
+              {t(locale, "Dashboard.emptyState.button")}
             </Button>
           )}
         </div>
@@ -133,16 +168,20 @@ export function ResumesPage({
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl mb-1">이력서 관리</h1>
+          <h1 className="text-2xl mb-1">{t(locale, "Dashboard.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            총 {resumes.length}개의 이력서
+            {t(locale, "Dashboard.totalResumes").replace(
+              "{count}",
+              resumes.length.toString(),
+            )}
           </p>
         </div>
         {hasNoCredits ? (
-          onUpgrade && <Button onClick={onUpgrade}>플랜 업그레이드</Button>
+          onUpgrade && <Button onClick={onUpgrade}>Upgrade</Button>
         ) : (
           <Button onClick={onCreateNew}>
-            <Plus className="size-4" />새 이력서 만들기
+            <Plus className="size-4" />
+            {t(locale, "Dashboard.newResume")}
           </Button>
         )}
       </div>
@@ -150,8 +189,7 @@ export function ResumesPage({
       {hasNoCredits && (
         <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-lg">
           <p className="text-sm text-amber-800 dark:text-amber-400">
-            ⚠️ 크레딧이 부족하여 새 이력서를 만들 수 없습니다. 플랜을
-            업그레이드하거나 다음 갱신일을 기다려주세요.
+            ⚠️ {t(locale, "Dashboard.emptyState.noCredits")}
           </p>
         </div>
       )}
@@ -189,8 +227,9 @@ export function ResumesPage({
                       {resume.title}
                     </h3>
                     <p className="text-xs text-muted-foreground">
-                      마지막 수정:{" "}
-                      {new Date(resume.updatedAt).toLocaleDateString("ko-KR")}
+                      {new Date(resume.updatedAt).toLocaleDateString(
+                        locale === "ko" ? "ko-KR" : locale,
+                      )}
                     </p>
                   </div>
                 </div>
@@ -222,20 +261,22 @@ export function ResumesPage({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>이력서 삭제</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t(locale, "Dashboard.delete.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              정말 이 이력서를 삭제하시겠습니까? 삭제된 데이터는 복구할 수
-              없습니다.
+              {t(locale, "Dashboard.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t(locale, "Dashboard.delete.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive hover:bg-destructive/90"
               onClick={async (e) => {
                 e.preventDefault();
                 if (deleteId && onDelete) {
-                  // Close modal immediately and show loading on item
                   const idToDelete = deleteId;
                   setDeleteId(null);
                   setDeletingId(idToDelete);
@@ -250,7 +291,7 @@ export function ResumesPage({
                 }
               }}
             >
-              삭제
+              {t(locale, "Dashboard.delete.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -2,13 +2,13 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { useApp } from "../context/app-context";
+import { useApp } from "@/app/context/app-context";
 import { useEffect } from "react";
 
 const DynamicDashboardLayout = dynamic(
   () =>
     import("../components/dashboard-layout").then((mod) => mod.DashboardLayout),
-  { ssr: false } // Keeping SSR disabled as requested
+  { ssr: false }, // Keeping SSR disabled as requested
 );
 
 interface ClientDashboardWrapperProps {
@@ -21,6 +21,7 @@ interface ClientDashboardWrapperProps {
   logOutAction: () => Promise<void>;
   initialPlan: string;
   initialQuota: number;
+  locale?: string;
 }
 
 export function ClientDashboardWrapper({
@@ -29,15 +30,27 @@ export function ClientDashboardWrapper({
   logOutAction,
   initialPlan,
   initialQuota,
+  locale,
 }: ClientDashboardWrapperProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Extract active item from pathname
-  const activeItem = pathname?.split("/").filter(Boolean)[0] || "resumes";
+  // Extract active item from pathname handling locale
+  const segments = pathname?.split("/").filter(Boolean) || [];
+  let activeItem = "resumes";
+
+  // If first segment is locale (en, ja), take the second segment
+  if (locale && segments[0] === locale) {
+    activeItem = segments[1] || "resumes";
+  } else {
+    // Korean version or direct path
+    activeItem = segments[0] || "resumes";
+  }
+
+  const prefix = locale ? `/${locale}` : "";
 
   const handleNavigate = (page: string) => {
-    router.push(`/${page}`);
+    router.push(`${prefix}/${page}`);
   };
 
   const { workflowSteps, currentStep, plan, quota, setPlan, setQuota } =
@@ -64,9 +77,10 @@ export function ClientDashboardWrapper({
       onLogout={async () => {
         await logOutAction();
       }}
-      onCreateNew={() => router.push("/resumes/new")}
+      onCreateNew={() => router.push(`${prefix}/resumes/new`)}
       workflowSteps={workflowSteps}
       currentStep={currentStep}
+      locale={locale}
     >
       {children}
     </DynamicDashboardLayout>

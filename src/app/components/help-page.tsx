@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CircleHelp, ChevronDown, Mail } from "lucide-react";
-import { cn } from "../lib/utils";
+import { cn } from "@/app/lib/utils";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 
 interface FAQItem {

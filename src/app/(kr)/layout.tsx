@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import "../styles/index.css";
-import { Providers } from "./providers";
+import "../../styles/index.css";
+import { Providers } from "@/app/providers";
 import NextTopLoader from "nextjs-toploader";
-import { GoogleAnalytics, MicrosoftClarity } from "./components/analytics";
+import { GoogleAnalytics, MicrosoftClarity } from "@/app/components/analytics";
 
 const title = "AI로 완성하는 고품질의 영문 이력서 - 지원고고";
 const description =
@@ -10,7 +10,7 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
   ),
   title: {
     default: title,

@@ -1,8 +1,8 @@
 "use client";
 
-import { useApp } from "../../context/app-context";
-import { SettingsPage } from "../../components/settings-page";
-import { deleteAccount } from "../../lib/actions";
+import { useApp } from "@/app/context/app-context";
+import { SettingsPage } from "@/app/components/settings-page";
+import { deleteAccount } from "@/app/lib/actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";

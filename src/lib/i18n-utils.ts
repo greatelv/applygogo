@@ -4,7 +4,7 @@ import jaMessages from "../../messages/ja.json";
 
 export type Locale = "ko" | "en" | "ja";
 
-const messages = {
+const messages: Record<Locale, any> = {
   ko: koMessages,
   en: enMessages,
   ja: jaMessages,
@@ -14,15 +14,18 @@ export function getMessages(locale: Locale) {
   return messages[locale] || messages.ko;
 }
 
-export function t(locale: Locale, key: string): string {
-  const msgs = getMessages(locale);
+export function t(locale: string | undefined, key: string): string {
+  const currentLocale = (locale as Locale) || "ko";
+  const msgs = getMessages(currentLocale);
   const keys = key.split(".");
   let value: any = msgs;
 
   for (const k of keys) {
     value = value?.[k];
     if (value === undefined) {
-      console.warn(`Translation key not found: ${key} for locale: ${locale}`);
+      console.warn(
+        `Translation key not found: ${key} for locale: ${currentLocale}`,
+      );
       return key;
     }
   }

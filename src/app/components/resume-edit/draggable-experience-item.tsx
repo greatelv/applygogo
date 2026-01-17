@@ -16,17 +16,18 @@ interface DraggableExperienceItemProps {
   onChange: (
     id: string,
     field: keyof TranslatedExperience,
-    value: string
+    value: string,
   ) => void;
   onBulletEdit: (
     id: string,
     index: number,
     value: string,
-    isEnglish: boolean
+    isEnglish: boolean,
   ) => void;
   onAddBullet: (id: string) => void;
   onRemoveBullet: (id: string, index: number) => void;
   highlightedBullets?: number[];
+  hideOriginal?: boolean; // New Prop
 }
 
 export const DraggableExperienceItem = ({
@@ -41,6 +42,7 @@ export const DraggableExperienceItem = ({
   onAddBullet,
   onRemoveBullet,
   highlightedBullets,
+  hideOriginal = false,
 }: DraggableExperienceItemProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
@@ -115,12 +117,18 @@ export const DraggableExperienceItem = ({
         }`}
       >
         <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <p className="text-xs text-muted-foreground font-semibold mb-1">
-                한글 (원본)
-              </p>
-            </div>
+          <div
+            className={`hidden lg:grid grid-cols-1 ${
+              hideOriginal ? "" : "lg:grid-cols-2"
+            } gap-8`}
+          >
+            {!hideOriginal && (
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold mb-1">
+                  한글 (원본)
+                </p>
+              </div>
+            )}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
                 English (번역)
@@ -128,22 +136,24 @@ export const DraggableExperienceItem = ({
             </div>
           </div>
           <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onRetranslate(exp.id)}
-              disabled={isTranslating}
-              className="text-muted-foreground hover:text-foreground h-8 px-2"
-            >
-              {isTranslating ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <RefreshCw className="size-4" />
-              )}
-              <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
-              </span>
-            </Button>
+            {!hideOriginal && ( // Hide retranslate button in global mode if needed, or keep it
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onRetranslate(exp.id)}
+                disabled={isTranslating}
+                className="text-muted-foreground hover:text-foreground h-8 px-2"
+              >
+                {isTranslating ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="size-4" />
+                )}
+                <span className="hidden lg:inline ml-2 text-xs">
+                  {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                </span>
+              </Button>
+            )}
             <button
               onClick={() => onRemove(exp.id)}
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
@@ -155,95 +165,101 @@ export const DraggableExperienceItem = ({
         </div>
 
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Left: Original (KR) */}
-            <div>
-              <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
-              </p>
-              <div className="mb-4 space-y-1">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      exp.id,
-                      "company",
-                      e.currentTarget.textContent || ""
-                    )
-                  }
-                  data-placeholder="회사/조직명 (예: 삼성전자)"
-                  className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {exp.company}
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div
+            className={`grid grid-cols-1 ${
+              hideOriginal ? "" : "lg:grid-cols-2"
+            } gap-10`}
+          >
+            {/* Left: Original (KR) - Hidden if hideOriginal is true */}
+            {!hideOriginal && (
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
+                  한글 (원본)
+                </p>
+                <div className="mb-4 space-y-1">
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "position",
-                        e.currentTarget.textContent || ""
+                        "company",
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="직무"
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    data-placeholder="회사/조직명 (예: 삼성전자)"
+                    className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.position}
+                    {exp.company}
                   </div>
-                  <span className="text-muted-foreground select-none">•</span>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "period",
-                        e.currentTarget.textContent || ""
-                      )
-                    }
-                    data-placeholder="기간 (예: 2020.01 - 2023.12)"
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.period}
-                  </div>
-                </div>
-              </div>
-
-              <ul className="space-y-3">
-                {exp.bullets.map((bullet, index) => (
-                  <li key={index} className="flex gap-4 text-sm group">
-                    <span className="text-muted-foreground flex-shrink-0">
-                      •
-                    </span>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
                     <div
                       contentEditable
                       suppressContentEditableWarning
                       onBlur={(e) =>
-                        onBulletEdit(
+                        onChange(
                           exp.id,
-                          index,
+                          "position",
                           e.currentTarget.textContent || "",
-                          false
                         )
                       }
-                      data-placeholder="업무 성과 및 활동 내용"
-                      className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      data-placeholder="직무"
+                      className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
-                      {bullet}
+                      {exp.position}
                     </div>
-                    <button
-                      onClick={() => onRemoveBullet(exp.id, index)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
+                    <span className="text-muted-foreground select-none">•</span>
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        onChange(
+                          exp.id,
+                          "period",
+                          e.currentTarget.textContent || "",
+                        )
+                      }
+                      data-placeholder="기간 (예: 2020.01 - 2023.12)"
+                      className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
-                      <Trash2 className="size-3.5 text-destructive" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                      {exp.period}
+                    </div>
+                  </div>
+                </div>
+
+                <ul className="space-y-3">
+                  {exp.bullets.map((bullet, index) => (
+                    <li key={index} className="flex gap-4 text-sm group">
+                      <span className="text-muted-foreground flex-shrink-0">
+                        •
+                      </span>
+                      <div
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                          onBulletEdit(
+                            exp.id,
+                            index,
+                            e.currentTarget.textContent || "",
+                            false,
+                          )
+                        }
+                        data-placeholder="업무 성과 및 활동 내용"
+                        className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                      >
+                        {bullet}
+                      </div>
+                      <button
+                        onClick={() => onRemoveBullet(exp.id, index)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
+                      >
+                        <Trash2 className="size-3.5 text-destructive" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Right: Translated (EN) */}
             <div>
@@ -258,7 +274,7 @@ export const DraggableExperienceItem = ({
                     onChange(
                       exp.id,
                       "companyEn",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Company Name (EN)"
@@ -274,7 +290,7 @@ export const DraggableExperienceItem = ({
                       onChange(
                         exp.id,
                         "positionEn",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Position (EN)"
@@ -290,7 +306,7 @@ export const DraggableExperienceItem = ({
                       onChange(
                         exp.id,
                         "period",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Period (EN)"
@@ -315,7 +331,7 @@ export const DraggableExperienceItem = ({
                           exp.id,
                           index,
                           e.currentTarget.textContent || "",
-                          true
+                          true,
                         )
                       }
                       data-placeholder="Achievements and activities (EN)"

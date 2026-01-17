@@ -18,6 +18,7 @@ interface DashboardLayoutProps {
   onCreateNew?: () => void;
   workflowSteps?: Array<{ id: string; label: string; description?: string }>;
   currentStep?: string;
+  locale?: string;
 }
 
 export function DashboardLayout({
@@ -33,17 +34,14 @@ export function DashboardLayout({
   onCreateNew,
   workflowSteps,
   currentStep,
+  locale = "ko",
 }: DashboardLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const pathname = usePathname();
 
-  // Show BetaBanner only on the Resume Management page (list)
-  // Landing Page has its own layout, so we don't need to worry about it here,
-  // but if this layout were used there, we'd add '/' too.
-  // The user requested: "Resume Management" and "Landing Page".
-  // 'Resumes' path is likely '/resumes'.
-  const showBetaBanner = pathname === "/resumes";
+  const showBetaBanner =
+    pathname === "/resumes" || pathname === `/${locale}/resumes`;
 
   return (
     <div className="h-screen overflow-hidden bg-muted/30">
@@ -60,6 +58,7 @@ export function DashboardLayout({
           isSidebarOpen={isDesktopSidebarOpen}
           workflowSteps={workflowSteps}
           currentStep={currentStep}
+          locale={locale}
         />
 
         <div className="flex flex-1 overflow-hidden">
@@ -70,13 +69,14 @@ export function DashboardLayout({
             isDesktopOpen={isDesktopSidebarOpen}
             onCloseMobile={() => setIsMobileSidebarOpen(false)}
             onCreateNew={onCreateNew}
+            locale={locale}
           />
 
           <div className="flex flex-col flex-1 min-w-0 overflow-y-auto">
             {/* Beta Banner - Only visible on specific pages */}
             {showBetaBanner && <BetaBanner isConsole={true} />}
             <main className="flex-1 p-4 lg:p-8">{children}</main>
-            <SiteFooter simple={true} />
+            <SiteFooter simple={true} locale={locale} />
           </div>
         </div>
       </div>

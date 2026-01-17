@@ -2,25 +2,25 @@ import { auth } from "@/auth";
 import { logOut } from "@/app/lib/actions";
 import { ClientDashboardWrapper } from "@/app/components/client-dashboard-wrapper";
 import { redirect } from "next/navigation";
-import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
-export default async function AuthenticatedLayout({
-  children,
-}: {
+interface SharedDashboardLayoutProps {
   children: React.ReactNode;
-}) {
+  locale?: string;
+}
+
+export async function SharedDashboardLayout({
+  children,
+  locale = "ko",
+}: SharedDashboardLayoutProps) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect("/login");
+    if (locale === "ko") {
+      redirect("/login");
+    } else {
+      redirect(`/${locale}/login`);
+    }
   }
 
   const user = await prisma.user.findUnique({
@@ -59,6 +59,7 @@ export default async function AuthenticatedLayout({
       logOutAction={logOut}
       initialPlan={currentPlanType}
       initialQuota={currentCredits}
+      locale={locale === "ko" ? undefined : locale}
     >
       {children}
     </ClientDashboardWrapper>

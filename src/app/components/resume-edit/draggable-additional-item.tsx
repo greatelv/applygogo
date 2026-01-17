@@ -14,6 +14,7 @@ interface DraggableAdditionalItemProps {
   onRetranslate: (id: string) => void;
   onRemove: (id: string) => void;
   onChange: (id: string, field: keyof AdditionalItem, value: string) => void;
+  hideOriginal?: boolean; // New Prop
 }
 
 export const DraggableAdditionalItem = ({
@@ -24,6 +25,7 @@ export const DraggableAdditionalItem = ({
   onRetranslate,
   onRemove,
   onChange,
+  hideOriginal = false,
 }: DraggableAdditionalItemProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
@@ -93,12 +95,18 @@ export const DraggableAdditionalItem = ({
         }`}
       >
         <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
-          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <p className="text-xs text-muted-foreground font-semibold">
-                한글 (원본)
-              </p>
-            </div>
+          <div
+            className={`hidden lg:grid grid-cols-1 ${
+              hideOriginal ? "" : "lg:grid-cols-2"
+            } gap-8`}
+          >
+            {!hideOriginal && (
+              <div>
+                <p className="text-xs text-muted-foreground font-semibold">
+                  한글 (원본)
+                </p>
+              </div>
+            )}
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
                 English (번역)
@@ -106,22 +114,24 @@ export const DraggableAdditionalItem = ({
             </div>
           </div>
           <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onRetranslate(item.id)}
-              disabled={isTranslating}
-              className="text-muted-foreground hover:text-foreground h-8 px-2"
-            >
-              {isTranslating ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <RefreshCw className="size-4" />
-              )}
-              <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
-              </span>
-            </Button>
+            {!hideOriginal && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onRetranslate(item.id)}
+                disabled={isTranslating}
+                className="text-muted-foreground hover:text-foreground h-8 px-2"
+              >
+                {isTranslating ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="size-4" />
+                )}
+                <span className="hidden lg:inline ml-2 text-xs">
+                  {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                </span>
+              </Button>
+            )}
             <button
               onClick={() => onRemove(item.id)}
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
@@ -132,64 +142,70 @@ export const DraggableAdditionalItem = ({
           </div>
         </div>
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Left: Original (KR) */}
-            <div className="space-y-4">
-              <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
-              </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    item.id,
-                    "name_kr",
-                    e.currentTarget.textContent || ""
-                  )
-                }
-                data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
-                className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {item.name_kr}
-              </div>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="col-span-2">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "description_kr",
-                        e.currentTarget.textContent || ""
-                      )
-                    }
-                    data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
-                    className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {item.description_kr}
+          <div
+            className={`grid grid-cols-1 ${
+              hideOriginal ? "" : "lg:grid-cols-2"
+            } gap-10`}
+          >
+            {/* Left: Original (KR) - Hide if hideOriginal */}
+            {!hideOriginal && (
+              <div className="space-y-4">
+                <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
+                  한글 (원본)
+                </p>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) =>
+                    onChange(
+                      item.id,
+                      "name_kr",
+                      e.currentTarget.textContent || "",
+                    )
+                  }
+                  data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
+                  className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                >
+                  {item.name_kr}
+                </div>
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="col-span-2">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        onChange(
+                          item.id,
+                          "description_kr",
+                          e.currentTarget.textContent || "",
+                        )
+                      }
+                      data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
+                      className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                    >
+                      {item.description_kr}
+                    </div>
+                  </div>
+                  <div className="col-span-1">
+                    <div
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) =>
+                        onChange(
+                          item.id,
+                          "date",
+                          e.currentTarget.textContent || "",
+                        )
+                      }
+                      data-placeholder="날짜 (YYYY.MM)"
+                      className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
+                    >
+                      {item.date}
+                    </div>
                   </div>
                 </div>
-                <div className="col-span-1">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "date",
-                        e.currentTarget.textContent || ""
-                      )
-                    }
-                    data-placeholder="날짜 (YYYY.MM)"
-                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
-                  >
-                    {item.date}
-                  </div>
-                </div>
               </div>
-            </div>
+            )}
 
             {/* Right: Translated (EN) */}
             <div className="space-y-4">
@@ -203,7 +219,7 @@ export const DraggableAdditionalItem = ({
                   onChange(
                     item.id,
                     "name_en",
-                    e.currentTarget.textContent || ""
+                    e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="Item Name (EN)"
@@ -220,7 +236,7 @@ export const DraggableAdditionalItem = ({
                       onChange(
                         item.id,
                         "description_en",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Description/Issuer/Level (EN)"
@@ -237,7 +253,7 @@ export const DraggableAdditionalItem = ({
                       onChange(
                         item.id,
                         "date",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Date (YYYY.MM)"

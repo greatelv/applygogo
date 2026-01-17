@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-import { useApp } from "../context/app-context";
+import { useApp } from "@/app/context/app-context";
 
 const steps = [
   { id: "upload", label: "업로드" },
