@@ -1,17 +1,18 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { TemplatesClient } from "./templates-client";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  const { id, locale } = await params;
 
-  const { id } = await params;
+  if (!session?.user?.id) redirect({ href: "/login", locale });
 
   const resume: any = await prisma.resume.findUnique({
     where: { id, userId: session.user.id },
@@ -85,7 +86,7 @@ export default async function Page({
       description_kr: item.description_kr,
       description_en: item.description_en,
       date: item.date,
-    })
+    }),
   );
 
   return (

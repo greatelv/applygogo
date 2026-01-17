@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ResumePreviewPage } from "@/app/components/resume-preview-page";
 import { UpgradeModal } from "@/app/components/upgrade-modal";
 import { useApp } from "@/app/context/app-context";

@@ -1,17 +1,18 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { EditClient } from "./edit-client";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  const { id, locale } = await params;
 
-  const { id } = await params;
+  if (!session?.user?.id) redirect({ href: "/login", locale });
 
   const resume = (await prisma.resume.findUnique({
     where: { id, userId: session.user.id },

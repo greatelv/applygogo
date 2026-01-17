@@ -1,13 +1,18 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { SettingsClientPage } from "./client-page";
 import { getUserSettings } from "@/app/lib/actions";
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const session = await auth();
+  const { locale } = await params;
 
   if (!session?.user) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
   }
 
   const userSettings = await getUserSettings();

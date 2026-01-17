@@ -8,11 +8,13 @@ import { Button } from "@/app/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 import { Languages } from "lucide-react";
+import { useLocale } from "next-intl";
 
 export function BlogHeader() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const locale = useLocale();
 
   // If loading, show a skeleton or nothing
   if (status === "loading") {
@@ -28,7 +30,7 @@ export function BlogHeader() {
         userName={session.user.name || "사용자"}
         userEmail={session.user.email || ""}
         userImage={session.user.image || undefined}
-        onLogout={() => signOut({ callbackUrl: "/" })}
+        onLogout={() => signOut({ redirectTo: `/${locale}` })}
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
         // Blog doesn't have a sidebar, so these are no-ops or hidden
         isSidebarOpen={false}

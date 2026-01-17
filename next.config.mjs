@@ -11,6 +11,7 @@ const nextConfig = {
     },
   },
   transpilePackages: ["@react-pdf/renderer"],
+  turbo: {},
 };
 
 export default withNextIntl(nextConfig);

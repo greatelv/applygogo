@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { logOut } from "@/app/lib/actions";
 import { ClientDashboardWrapper } from "@/app/components/client-dashboard-wrapper";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
@@ -14,13 +14,16 @@ export const metadata: Metadata = {
 
 export default async function AuthenticatedLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
   const session = await auth();
+  const { locale } = await params;
 
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
   }
 
   const user = await prisma.user.findUnique({

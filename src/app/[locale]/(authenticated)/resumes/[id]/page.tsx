@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { DetailClient } from "./detail-client";
 
 export default async function Page({
@@ -25,13 +26,13 @@ export default async function Page({
 
   // Redirect based on workflow step
   if (resume.current_step === "EDIT") {
-    redirect(`/resumes/${resume.id}/edit`);
+    redirect({ href: `/resumes/${resume.id}/edit`, locale });
   } else if (resume.current_step === "TEMPLATE") {
-    redirect(`/resumes/${resume.id}/templates`);
+    redirect({ href: `/resumes/${resume.id}/templates`, locale });
   } else if (resume.current_step === "PROCESSING") {
-    redirect(`/resumes/${resume.id}/processing`);
+    redirect({ href: `/resumes/${resume.id}/processing`, locale });
   } else if (resume.current_step === "UPLOAD") {
-    redirect(`/resumes/new`);
+    redirect({ href: `/resumes/new`, locale });
   }
 
   const mappedExperiences = resume.work_experiences.map((exp) => ({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ResumeDetailPage } from "@/app/components/resume-detail-page";
 import { useApp } from "@/app/context/app-context";
 import { useEffect } from "react";

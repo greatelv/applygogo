@@ -9,13 +9,17 @@ import {
 
 import { Suspense } from "react";
 
+import { useLocale } from "next-intl";
+
 export default function Page() {
+  const locale = useLocale();
+
   return (
     <Suspense fallback={null}>
       <LoginPage
-        onGoogleLogin={authenticate}
-        onNaverLogin={authenticateNaver}
-        onCredentialLogin={authenticateWithCredentials}
+        onGoogleLogin={() => authenticate(locale)}
+        onNaverLogin={() => authenticateNaver(locale)}
+        onCredentialLogin={authenticateWithCredentials.bind(null, locale)}
       />
     </Suspense>
   );

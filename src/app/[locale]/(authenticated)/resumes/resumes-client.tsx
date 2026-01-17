@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ResumesPage } from "@/app/components/resumes-page";
 import { useTranslations } from "next-intl";
 

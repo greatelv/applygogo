@@ -3,7 +3,7 @@
 import { useApp } from "@/app/context/app-context";
 import { SettingsPage } from "@/app/components/settings-page";
 import { deleteAccount } from "@/app/lib/actions";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { toast } from "sonner";
@@ -207,7 +207,7 @@ export function SettingsClientPage({
   }
 
   const handleDeleteAccount = async () => {
-    const promise = deleteAccount();
+    const promise = deleteAccount(`/${locale}`);
 
     toast.promise(promise, {
       loading: t("toast.deleting"),

@@ -187,14 +187,17 @@ export function Header({
           )}
 
           {/* Plan badge - Clickable */}
-          <a href="/settings#payment-section" className="hidden sm:inline-flex">
+          <Link
+            href="/settings#payment-section"
+            className="hidden sm:inline-flex"
+          >
             <Badge
               variant={config.variant}
               className="hover:opacity-80 transition-opacity cursor-pointer"
             >
               {config.label}
             </Badge>
-          </a>
+          </Link>
 
           {/* Quota display - Desktop */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-muted rounded-md">
@@ -255,7 +258,7 @@ export function Header({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/" className="cursor-pointer">
+                <Link href="/introduction" className="cursor-pointer">
                   <Info className="size-4 mr-2" />
                   {t("introduction")}
                 </Link>

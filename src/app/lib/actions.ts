@@ -5,23 +5,26 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function authenticate() {
-  await signIn("google", { redirectTo: "/resumes" });
+export async function authenticate(locale?: string) {
+  await signIn("google", { redirectTo: `/${locale || "ko"}/resumes` });
 }
 
-export async function logOut() {
-  await signOut({ redirectTo: "/" });
+export async function logOut(redirectTo?: string) {
+  await signOut({ redirectTo: redirectTo || "/" });
 }
 
-export async function authenticateNaver() {
-  await signIn("naver", { redirectTo: "/resumes" });
+export async function authenticateNaver(locale?: string) {
+  await signIn("naver", { redirectTo: `/${locale || "ko"}/resumes` });
 }
 
-export async function authenticateWithCredentials(formData: FormData) {
+export async function authenticateWithCredentials(
+  locale: string,
+  formData: FormData,
+) {
   await signIn("credentials", {
     email: formData.get("email"),
     password: formData.get("password"),
-    redirectTo: "/resumes",
+    redirectTo: `/${locale || "ko"}/resumes`,
   });
 }
 
@@ -159,7 +162,7 @@ export async function uploadResumeAction(formData: FormData) {
 export async function updateResumeTemplateAction(
   resumeId: string,
 
-  template: "modern" | "classic" | "minimal" | "professional" | "executive"
+  template: "modern" | "classic" | "minimal" | "professional" | "executive",
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -209,7 +212,7 @@ export async function updateResumeAction(
     certifications?: any[];
     awards?: any[];
     languages?: any[];
-  }
+  },
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -350,7 +353,7 @@ export async function updateResumeAction(
   }
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(redirectTo?: string) {
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -369,6 +372,6 @@ export async function deleteAccount() {
   }
 
   // Signout should be outside the try-catch block if it redirects
-  await signOut({ redirectTo: "/" });
+  await signOut({ redirectTo: redirectTo || "/" });
   return { success: true };
 }

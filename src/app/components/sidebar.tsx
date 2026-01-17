@@ -12,6 +12,7 @@ import {
   MessageSquarePlus,
 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { FeedbackModal } from "./feedback-modal";
 import { cn } from "../lib/utils";
@@ -99,7 +100,7 @@ export function Sidebar({
                 return (
                   <li key={item.id}>
                     {item.href ? (
-                      <a
+                      <Link
                         href={item.href}
                         className={cn(
                           "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-accent/50",
@@ -113,7 +114,7 @@ export function Sidebar({
                       >
                         <Icon className="size-4 shrink-0" />
                         {item.label}
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={() => {

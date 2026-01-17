@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { LandingPage } from "@/app/components/landing-page";
 
 import { useSession } from "next-auth/react";

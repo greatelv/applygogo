@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import { ResumesClient } from "./resumes-client";
 
 export default async function Page({
@@ -10,7 +10,7 @@ export default async function Page({
 }) {
   const { locale } = await params;
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) redirect({ href: "/login", locale });
 
   const resumes = await prisma.resume.findMany({
     where: { userId: session.user.id },

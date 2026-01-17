@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useEffect } from "react";
 import { useApp } from "@/app/context/app-context";
 import { NewResumePage } from "@/app/components/new-resume-page";
