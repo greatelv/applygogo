@@ -5,22 +5,34 @@ export const authConfig = {
     signIn: "/login",
   },
   trustHost: true,
+  cookies: {
+    sessionToken: {
+      name: process.env.AUTH_COOKIE_NAME || "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard =
-        nextUrl.pathname.startsWith("/resumes") ||
-        nextUrl.pathname.startsWith("/billing") ||
-        nextUrl.pathname.startsWith("/profile");
+      const pathname = nextUrl.pathname;
 
-      if (isOnDashboard) {
+      // Check if the path is a dashboard path (including localized versions)
+      const isDashboardPath =
+        /^\/(?:en|ja|ko)?\/?(resumes|billing|profile)/.test(pathname);
+      // Check if the path is a login page (including localized versions)
+      const isLoginPage = /^\/(?:en|ja|ko)?\/?login$/.test(pathname);
+
+      if (isDashboardPath) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
+      } else if (isLoggedIn && isLoginPage) {
         // Prevent logged-in users from accessing login page again
-        if (nextUrl.pathname === "/login") {
-          return Response.redirect(new URL("/resumes", nextUrl));
-        }
+        return Response.redirect(new URL("/resumes", nextUrl));
       }
       return true;
     },
