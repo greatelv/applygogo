@@ -6,6 +6,7 @@ import { deleteAccount } from "@/app/lib/actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
+import { PayPalPayment } from "@/app/components/payment/paypal-payment";
 import { toast } from "sonner";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 import {
@@ -191,7 +192,7 @@ export function SettingsClientPage({
   // 이용권 활성화 여부 확인
   const now = new Date();
   const latestPayment: any = paymentHistory.find(
-    (h: any) => h.status === "PAID" && h.name.includes("이용권")
+    (h: any) => h.status === "PAID" && h.name.includes("Pass")
   );
 
   let hasActivePass = planExpiresAt ? planExpiresAt > now : false;
@@ -200,7 +201,7 @@ export function SettingsClientPage({
   // 최근 결제 내역을 통해 활성 여부 보강 체크
   if (!hasActivePass && latestPayment) {
     const paidAt = new Date(latestPayment.paidAt);
-    const durationDays = latestPayment.name.includes("30일") ? 30 : 7;
+    const durationDays = latestPayment.name.includes("30-Day") ? 30 : 7;
     const expiry = new Date(paidAt);
     expiry.setDate(expiry.getDate() + durationDays);
     if (expiry > now) {
@@ -314,70 +315,5 @@ export function SettingsClientPage({
         </DialogContent>
       </Dialog>
     </>
-  );
-}
-
-function PayPalPayment({
-  storeId,
-  channelKey,
-  orderName,
-  amount,
-  user,
-  onSuccess,
-  onError,
-}: {
-  storeId: string;
-  channelKey: string;
-  orderName: string;
-  amount: number;
-  user: any;
-  onSuccess: (paymentId: string) => void;
-  onError: (msg: string) => void;
-}) {
-  useEffect(() => {
-    async function load() {
-      try {
-        await PortOne.loadPaymentUI(
-          {
-            storeId,
-            channelKey,
-            paymentId: `payment-${Date.now()}-${Math.random()
-              .toString(36)
-              .substr(2, 9)}`,
-            orderName,
-            totalAmount: amount * 100, // USD cents
-            currency: "USD",
-            uiType: "PAYPAL_SPB", // Explicitly use PayPal SPB
-            customer: {
-              customerId: user.id,
-              fullName: user.name || undefined,
-              email: user.email || undefined,
-            },
-          },
-          {
-            onPaymentSuccess: (response: any) => {
-              onSuccess(response.paymentId);
-            },
-            onPaymentFail: (error: any) => {
-              onError(error.message || "Payment failed");
-            },
-          }
-        );
-      } catch (e) {
-        console.error(e);
-        onError("Failed to load payment UI");
-      }
-    }
-    load();
-  }, [storeId, channelKey, orderName, amount, user]); // Deps
-
-  // PortOne renders into .portone-ui-container automatically
-  return (
-    <div className="w-full flex justify-center">
-      <div
-        className="portone-ui-container w-full"
-        style={{ minHeight: "200px" }}
-      />
-    </div>
   );
 }

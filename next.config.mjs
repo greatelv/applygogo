@@ -10,6 +10,7 @@ console.log(
 
 const nextConfig = {
   reactStrictMode: true,
+  basePath: "/en",
   experimental: {
     serverActions: {
       bodySizeLimit: "6mb",

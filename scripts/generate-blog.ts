@@ -7,7 +7,7 @@ import * as cheerio from "cheerio";
 import { createWriteStream } from "fs";
 import { pipeline } from "stream";
 import { promisify } from "util";
-import { UnsplashScraper } from "./unsplash-scraper.mts";
+import { UnsplashScraper } from "./unsplash-scraper";
 
 // Load environment variables from .env file if it exists (for local development)
 // In GitHub Actions, environment variables are set directly

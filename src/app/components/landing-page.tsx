@@ -203,7 +203,7 @@ export function LandingPage({
                           <div className="absolute -right-1 top-0 bottom-0 w-2 bg-white/50 blur-[2px] animate-pulse" />
                         </div>
                         <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] text-primary font-bold pr-3">
-                          87% SAVE
+                          88% SAVE
                         </span>
                       </div>
                     </div>
@@ -470,7 +470,7 @@ export function LandingPage({
                     variant="outline"
                     className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
                   >
-                    50% OFF
+                    55% OFF
                   </Badge>
                 </div>
               </div>
@@ -526,7 +526,7 @@ export function LandingPage({
                     variant="outline"
                     className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
                   >
-                    57% OFF
+                    60% OFF
                   </Badge>
                 </div>
               </div>

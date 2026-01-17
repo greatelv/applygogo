@@ -340,7 +340,7 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  57% {"OFF"}
+                  60% {"OFF"}
                 </Badge>
               </div>
             </div>
@@ -408,7 +408,7 @@ export function SettingsPage({
                   variant="outline"
                   className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
                 >
-                  50% {"OFF"}
+                  55% {"OFF"}
                 </Badge>
               </div>
             </div>

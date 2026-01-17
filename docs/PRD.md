@@ -76,8 +76,8 @@
 | Product               | Price (USD) | Benefits                       | Validity    | Note        |
 | :-------------------- | :---------- | :----------------------------- | :---------- | :---------- |
 | **Free Plan**         | Free        | **10 Credits** provided        | Unlimited   | Trial       |
-| **7-Day Pass**        | **$9.90**   | **50 Credits** + Unlimited DB  | **7 Days**  | Short-term  |
-| **30-Day Pass**       | **$12.90**  | **300 Credits** + Unlimited DB | **30 Days** | Recommended |
+| **7-Day Pass**        | **$9.00**   | **50 Credits** + Unlimited DB  | **7 Days**  | Short-term  |
+| **30-Day Pass**       | **$12.00**  | **300 Credits** + Unlimited DB | **30 Days** | Recommended |
 | **50 Credits Top-up** | **$3.90**   | **50 Credits** added           | Permanent   | Top-up      |
 
 - **Credit 차감 정책:**

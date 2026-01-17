@@ -40,16 +40,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     };
 
-    // Default Locale (ko) - No prefix
-    sitemapEntries.push({
-      url: koUrl,
-      lastModified: new Date(),
-      changeFrequency: changeFreq,
-      priority: priority,
-      alternates: alternates,
-    });
-
     // English Locale (en) - /en prefix
+    // Only push English URL for the global site
     sitemapEntries.push({
       url: enUrl,
       lastModified: new Date(),

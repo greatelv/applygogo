@@ -81,6 +81,9 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest?v=2",
   alternates: {
     canonical: "/",
+    languages: {
+      ko: "https://applygogo.com",
+    },
   },
 };
 

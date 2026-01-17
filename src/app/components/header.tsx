@@ -6,6 +6,7 @@ import {
   Sparkles,
   PanelLeft,
   FileText,
+  Languages,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
@@ -129,6 +130,17 @@ export function Header({
         <div className="flex items-center gap-4">
           {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
           <div className="hidden sm:block">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="mr-2 text-muted-foreground hover:text-foreground"
+            >
+              <a href="https://applygogo.com">
+                <Languages className="w-4 h-4 mr-2" />
+                한국어
+              </a>
+            </Button>
             <ThemeToggle />
           </div>
 
@@ -196,6 +208,14 @@ export function Header({
               <DropdownMenuItem className="sm:hidden">
                 <span className="text-xs text-muted-foreground">Credits:</span>
                 <span className="ml-2 font-semibold">{quota}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="sm:hidden" />
+              <DropdownMenuItem asChild>
+                <a href="https://applygogo.com" className="cursor-pointer">
+                  <Languages className="size-4 mr-2" />
+                  한국어
+                </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="sm:hidden" />
               <DropdownMenuItem asChild>

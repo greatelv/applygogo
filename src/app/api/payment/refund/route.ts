@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reason: "사용자 요청 환불 (7일 이내 및 미사용)",
+          reason: "User requested refund (within 7 days & unused)",
         }),
       }
     );
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
       const currentInitial = Number(currentPayment.initialCredits);
 
       if (currentRemaining < currentInitial) {
-        throw new Error("환불 처리 중 크레딧 사용이 감지되었습니다.");
+        throw new Error("Credit usage detected during refund processing.");
       }
 
       // Check if already refunded (double safety)
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
         return; // Already processed
       }
 
-      const isPass = orderName.includes("이용권");
+      const isPass = orderName.includes("Pass");
       const creditsToRevoke = currentInitial;
 
       // Update User State

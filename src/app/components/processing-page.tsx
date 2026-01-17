@@ -171,6 +171,16 @@ export function ProcessingPage({
         if (!isCancelled) {
           console.error("Processing error:", err);
           setError(err.message || "Error Occurred");
+
+          // Cleanup: Delete the failed resume
+          try {
+            await fetch(`/api/resumes/${resumeId}`, {
+              method: "DELETE",
+            });
+            console.log("Cleaned up failed resume:", resumeId);
+          } catch (cleanupErr) {
+            console.error("Failed to cleanup resume:", cleanupErr);
+          }
         }
       }
     };
@@ -260,11 +270,11 @@ export function ProcessingPage({
             <p className="text-sm text-muted-foreground">{error}</p>
             <div className="flex gap-3 pt-2">
               <Button
-                onClick={() => window.location.reload()}
+                onClick={() => router.push("/resumes/new")}
                 variant="outline"
                 className="w-full"
               >
-                Retry
+                Upload Again
               </Button>
               <Button
                 onClick={() => router.push(`/resumes`)}
