@@ -8,15 +8,7 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-
-      // Strip locale from pathname to check protected routes
-      // Matches /en, /ko, /en/..., /ko/...
-      const publicPathname = nextUrl.pathname.replace(
-        /^\/(?:en|ko)(?:\/|$)/,
-        "/"
-      );
-      // Ensure path starts with / if it became empty (e.g. /en -> /)
-      const pathname = publicPathname === "" ? "/" : publicPathname;
+      const pathname = nextUrl.pathname;
 
       const isOnDashboard =
         pathname.startsWith("/resumes") ||

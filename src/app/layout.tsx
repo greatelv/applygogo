@@ -10,7 +10,7 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
   ),
   title: {
     default: title,
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "ApplyGogo",
     images: [
       {
-        url: "/og-image.png",
+        url: "/en/og-image.png",
         width: 1200,
         height: 630,
         alt: "ApplyGogo - AI Korean Resume Builder",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: title,
     description: description,
-    images: ["/og-image.png"],
+    images: ["/en/og-image.png"],
   },
   robots: {
     index: true,
@@ -72,13 +72,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2" },
-      { url: "/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
+      { url: "/en/favicon.ico?v=2" },
+      { url: "/en/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
+      { url: "/en/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png?v=2" }],
+    apple: [{ url: "/en/apple-touch-icon.png?v=2" }],
   },
-  manifest: "/site.webmanifest?v=2",
+  manifest: "/en/site.webmanifest?v=2",
   alternates: {
     canonical: "/",
     languages: {
