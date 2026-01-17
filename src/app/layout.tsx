@@ -97,6 +97,9 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest?v=2",
   alternates: {
     canonical: "/",
+    languages: {
+      en: "https://applygogo.com/en",
+    },
   },
 };
 

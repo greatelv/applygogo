@@ -7,58 +7,59 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Get all blog posts
   const postsDirectory = path.join(process.cwd(), "content/posts");
-  let blogPosts: MetadataRoute.Sitemap = [];
+  const routes = ["", "/blog", "/login", "/privacy", "/terms"];
 
+  const sitemapEntries: MetadataRoute.Sitemap = [];
+
+  // Helper to add entry with alternates
+  const addEntry = (path: string, changeFreq: any, priority: number) => {
+    // Only include Korean URLs in this sitemap
+    // But include reference to English alternate
+    sitemapEntries.push({
+      url: `${baseUrl}${path}`,
+      lastModified: new Date(),
+      changeFrequency: changeFreq,
+      priority: priority,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/en${path}`,
+        },
+      },
+    });
+  };
+
+  routes.forEach((route) => {
+    let priority = 0.5;
+    let changeFreq = "yearly";
+
+    if (route === "") {
+      priority = 1;
+      changeFreq = "daily";
+    } else if (route === "/blog") {
+      priority = 0.8;
+      changeFreq = "daily";
+    } else if (route === "/login") {
+      priority = 0.8;
+      changeFreq = "monthly";
+    }
+
+    addEntry(route, changeFreq, priority);
+  });
+
+  // Blog posts
   try {
     if (fs.existsSync(postsDirectory)) {
       const fileNames = fs.readdirSync(postsDirectory);
-      blogPosts = fileNames
+      fileNames
         .filter((fileName) => fileName.endsWith(".md"))
-        .map((fileName) => {
+        .forEach((fileName) => {
           const slug = fileName.replace(/\.md$/, "");
-          return {
-            url: `${baseUrl}/blog/${slug}`,
-            lastModified: new Date(),
-            changeFrequency: "weekly",
-            priority: 0.7,
-          };
+          addEntry(`/blog/${slug}`, "weekly", 0.7);
         });
     }
   } catch (error) {
     console.error("Error reading blog posts for sitemap:", error);
   }
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-    ...blogPosts,
-  ];
+  return sitemapEntries;
 }
