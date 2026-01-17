@@ -186,3 +186,42 @@ export async function processGlobalResumeAction(resumeId: string) {
     return { success: false, error: error.message };
   }
 }
+
+export async function deleteGlobalResumeAction(
+  resumeId: string,
+  locale: string,
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    // 1. Fetch Resume to get file path
+    const resume = await prisma.globalResume.findUnique({
+      where: { id: resumeId, userId: session.user.id },
+    });
+
+    if (!resume) throw new Error("Resume not found");
+
+    // 2. Delete from Supabase Storage (if path exists)
+    if (resume.original_file_url) {
+      const { error: storageError } = await supabaseAdmin.storage
+        .from("resumes")
+        .remove([resume.original_file_url]);
+
+      if (storageError) {
+        console.warn("Storage deletion failed, but proceeding:", storageError);
+      }
+    }
+
+    // 3. Delete from DB
+    await prisma.globalResume.delete({
+      where: { id: resumeId },
+    });
+
+    revalidatePath(`/${locale}/resumes`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Delete Error:", error);
+    return { success: false, error: error.message };
+  }
+}

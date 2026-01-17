@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 
+import { t, Locale } from "@/lib/i18n-utils";
 import {
   Experience,
   TranslatedExperience,
@@ -63,6 +64,7 @@ interface ResumeEditPageProps {
   onRetranslate?: () => void;
   onDeductCredit?: (amount: number) => void;
   isGlobalMode?: boolean;
+  locale?: Locale;
 }
 
 import { DraggableAdditionalItem } from "./resume-edit/draggable-additional-item";
@@ -87,8 +89,13 @@ export function ResumeEditPage({
   onRetranslate,
   onDeductCredit,
   isGlobalMode = false,
+  locale = "ko",
 }: ResumeEditPageProps) {
-  const label = (en: string, ko: string) => (isGlobalMode ? en : ko);
+  // Use translation for headers
+  const headerOriginal = t(locale, "Editor.original");
+  const headerTranslated = t(locale, "Editor.translated");
+
+  const label = (en: string, ko: string) => (locale === "ko" ? ko : en);
 
   const {
     // States
@@ -195,13 +202,13 @@ export function ResumeEditPage({
               {!isGlobalMode && (
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1">
-                    한글 (원본)
+                    {locale === "ko" ? "한글 (원본)" : "Original"}
                   </p>
                 </div>
               )}
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
-                  English (번역)
+                  {locale === "ko" ? "English (번역)" : "Translated"}
                 </p>
               </div>
             </div>
@@ -236,7 +243,7 @@ export function ResumeEditPage({
               {!isGlobalMode && (
                 <div className="space-y-4">
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    한글 (원본)
+                    {locale === "ko" ? "한글 (원본)" : "Original"}
                   </p>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
@@ -363,7 +370,7 @@ export function ResumeEditPage({
               {/* English Info */}
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                  English (번역)
+                  {locale === "ko" ? "English (번역)" : "Translated"}
                 </p>
                 {/* Name EN */}
                 <div>
@@ -553,7 +560,7 @@ export function ResumeEditPage({
                 {/* English Summary */}
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    English (번역)
+                    {locale === "ko" ? "English (번역)" : "Translated"}
                   </p>
                   <div
                     contentEditable

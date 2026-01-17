@@ -3,110 +3,92 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ResumeEditPage } from "@/app/components/resume-edit-page";
-import { GlobalResume } from "@prisma/client"; // Ensure type is available
 import { Upload, FileText, Filter, Languages, CheckCircle } from "lucide-react";
-import { Locale } from "@/lib/i18n-utils";
-
-// Define a type that includes relations if not already imported
-interface GlobalResumeWithRelations extends GlobalResume {
-  workExperience: any[];
-  education: any[];
-  skills: any[];
-  certificates?: any[]; // Assuming these might exist
-}
+import { Locale, t } from "@/lib/i18n-utils";
 
 interface Props {
-  resume: GlobalResumeWithRelations;
+  resumeId: string;
+  initialData: {
+    personalInfo: any;
+    experiences: any[];
+    educations: any[];
+    skills: any[];
+    additionalItems?: any[];
+  };
   locale: Locale;
 }
 
-export function GlobalResumeEditClient({ resume, locale }: Props) {
+export function ResumeEditClient({ resumeId, initialData, locale }: Props) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
 
-  // --- Data Mapping (GlobalResume -> ResumeEditPage Props) ---
-  const personalInfoData = resume.data as any; // Assuming 'data' JSON holds personal info if schema differs
-  // But wait, schema has separate tables ideally.
-  // Let's assume passed 'resume' object has populated relations or JSON fields.
-  // Based on previous context, we are using relational tables: GlobalWorkExperience, etc.
-
-  // Actually, 'GlobalResume' schema from previous file view showed 'data' Json field?
-  // No, 'processGlobalResumeAction' saved to relational tables.
-  // Let's assume 'resume' prop passed here includes these relations.
-
+  // --- Data Mapping (Original -> Left, Translated -> Right) ---
   const initialPersonalInfo = {
-    name_kr: "", // Not used in global
-    name_en: (resume as any).personalInfo?.name || "",
-    // Fallback to JSON if relation not direct on root.
-    // Wait, in `edit/page.tsx` we fetch: include: { workExperience: true, education: true, skills: true }
-    // And personal info was likely stored in columns or JSON.
-    // Let's assume flat structure or mapped before passing here?
-    // In `edit/page.tsx`, we saw `getUserGlobalResume` fetching relation.
-
-    // Let's map safely.
-    email: (resume as any).personalInfo?.email || "",
-    phone: (resume as any).personalInfo?.phone || "",
-    links: (resume as any).personalInfo?.links || [], // [{label, url}]
-    summary: (resume as any).personalInfo?.summary || "",
-    summary_kr: "",
+    ...initialData.personalInfo,
+    name_kr: initialData.personalInfo.nameOriginal || "", // Maps to Original (Left)
+    name_en: initialData.personalInfo.nameTranslated || "", // Maps to Translated (Right)
+    summary_kr: initialData.personalInfo.summaryOriginal || "",
+    summary: initialData.personalInfo.summaryTranslated || "",
   };
 
-  const initialExperiences = (resume.workExperience || []).map((exp: any) => ({
+  const initialExperiences = initialData.experiences.map((exp: any) => ({
     id: exp.id,
-    company: "",
-    companyEn: exp.company || "",
-    position: "",
-    positionEn: exp.position || "",
+    company: exp.companyOriginal || "",
+    companyEn: exp.companyTranslated || "",
+    position: exp.positionOriginal || "",
+    positionEn: exp.positionTranslated || "",
     period: (exp.startDate || "") + (exp.endDate ? ` - ${exp.endDate}` : ""),
-    bullets: [],
-    bulletsEn: Array.isArray(exp.highlights) ? exp.highlights : [],
+    bullets: Array.isArray(exp.bulletsOriginal) ? exp.bulletsOriginal : [],
+    bulletsEn: Array.isArray(exp.bulletsTranslated)
+      ? exp.bulletsTranslated
+      : [],
   }));
 
-  const initialEducations = (resume.education || []).map((edu: any) => ({
+  const initialEducations = initialData.educations.map((edu: any) => ({
     id: edu.id,
-    school_name: "",
-    school_name_en: edu.school || "",
-    major: "",
-    major_en: edu.degree || "", // Mapping degree/major might be combined
-    degree: "",
-    degree_en: "",
+    school_name: edu.schoolOriginal || "",
+    school_name_en: edu.schoolTranslated || "",
+    major: edu.majorOriginal || "",
+    major_en: edu.majorTranslated || "",
+    degree: edu.degreeOriginal || "",
+    degree_en: edu.degreeTranslated || "",
     start_date: edu.startDate || "",
     end_date: edu.endDate || "",
   }));
 
-  const initialSkills = (resume.skills || []).map((skill: any) => ({
+  const initialSkills = initialData.skills.map((skill: any) => ({
     id: skill.id,
     name: skill.name || "",
   }));
 
-  const initialAdditionalItems: any[] = []; // Map certificates if available
+  const initialAdditionalItems: any[] = initialData.additionalItems || [];
 
   // Only render Steps if locale is English (Global), to match KR style
   const steps = [
     {
       id: "upload",
-      label: locale === "ko" ? "업로드" : "Upload",
+      label: t(locale, "Dashboard.status.upload"),
       icon: Upload,
     },
     {
       id: "processing",
-      label: locale === "ko" ? "AI 처리" : "AI Processing",
+      label: t(locale, "Dashboard.status.processing"),
       icon: FileText,
     },
     {
       id: "edit",
-      label: locale === "ko" ? "편집" : "Edit",
+      label: t(locale, "Dashboard.status.edit"),
       icon: Filter,
       active: true,
     },
     {
       id: "preview",
-      label: locale === "ko" ? "템플릿 선택" : "Template",
+      label: t(locale, "Dashboard.status.template"),
       icon: Languages,
     },
     {
       id: "complete",
-      label: locale === "ko" ? "완료" : "Done",
+      label: t(locale, "Dashboard.status.completed"),
       icon: CheckCircle,
     },
   ];
@@ -117,11 +99,11 @@ export function GlobalResumeEditClient({ resume, locale }: Props) {
       console.log("Saving data:", data);
 
       // Here we should call a Server Action to update the DB
-      // await updateGlobalResumeAction(resume.id, data);
+      // await updateGlobalResumeAction(resumeId, data);
       // For now, simulated
       await new Promise((r) => setTimeout(r, 1000));
 
-      router.push(`/${locale}/resumes/${resume.id}/templates`);
+      router.push(`/${locale}/resumes/${resumeId}/templates`);
     } catch (e) {
       console.error(e);
       alert("Failed to save.");
@@ -171,14 +153,15 @@ export function GlobalResumeEditClient({ resume, locale }: Props) {
 
       {/* Reused ResumeEditor Component in Global Mode */}
       <ResumeEditPage
-        resumeId={resume.id}
+        resumeId={resumeId}
         resumeTitle="Global Resume"
         initialPersonalInfo={initialPersonalInfo}
         initialExperiences={initialExperiences}
         initialEducations={initialEducations}
         initialSkills={initialSkills}
         initialAdditionalItems={initialAdditionalItems}
-        isGlobalMode={true} // Enable Single Column & English Labels
+        isGlobalMode={false} // Always 2-column layout (Original vs Translated)
+        locale={locale}
         onNext={handleNext}
         onBack={() => router.back()}
         isLoading={isSaving}

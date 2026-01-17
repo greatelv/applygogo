@@ -5,13 +5,12 @@ import dynamic from "next/dynamic";
 import { useApp } from "@/app/context/app-context";
 import { useEffect } from "react";
 
-const DynamicDashboardLayout = dynamic(
-  () =>
-    import("../components/dashboard-layout").then((mod) => mod.DashboardLayout),
+const DynamicServiceLayout = dynamic(
+  () => import("../components/service-layout").then((mod) => mod.ServiceLayout),
   { ssr: false }, // Keeping SSR disabled as requested
 );
 
-interface ClientDashboardWrapperProps {
+interface ClientServiceWrapperProps {
   children: React.ReactNode;
   user: {
     name?: string | null;
@@ -24,14 +23,14 @@ interface ClientDashboardWrapperProps {
   locale?: string;
 }
 
-export function ClientDashboardWrapper({
+export function ClientServiceWrapper({
   children,
   user,
   logOutAction,
   initialPlan,
   initialQuota,
   locale,
-}: ClientDashboardWrapperProps) {
+}: ClientServiceWrapperProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -39,15 +38,16 @@ export function ClientDashboardWrapper({
   const segments = pathname?.split("/").filter(Boolean) || [];
   let activeItem = "resumes";
 
-  // If first segment is locale (en, ja), take the second segment
-  if (locale && segments[0] === locale) {
-    activeItem = segments[1] || "resumes";
+  // 경로에서 activeItem 추출 로직 단순화: 항상 locale 다음 segment가 item
+  if (segments.length > 1) {
+    activeItem = segments[1];
   } else {
-    // Korean version or direct path
     activeItem = segments[0] || "resumes";
   }
 
-  const prefix = locale ? `/${locale}` : "";
+  // 이제 모든 console 경로는 /ko/resumes 처럼 locale prefix를 가짐
+  const currentLocale = locale || "ko";
+  const prefix = `/${currentLocale}`;
 
   const handleNavigate = (page: string) => {
     router.push(`${prefix}/${page}`);
@@ -66,7 +66,7 @@ export function ClientDashboardWrapper({
   }, [initialPlan, initialQuota, setPlan, setQuota]);
 
   return (
-    <DynamicDashboardLayout
+    <DynamicServiceLayout
       plan={plan}
       quota={quota}
       userName={user.name || "User"}
@@ -80,9 +80,9 @@ export function ClientDashboardWrapper({
       onCreateNew={() => router.push(`${prefix}/resumes/new`)}
       workflowSteps={workflowSteps}
       currentStep={currentStep}
-      locale={locale}
+      locale={currentLocale}
     >
       {children}
-    </DynamicDashboardLayout>
+    </DynamicServiceLayout>
   );
 }

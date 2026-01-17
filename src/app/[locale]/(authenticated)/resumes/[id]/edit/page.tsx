@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import { GlobalResumeEditClient } from "@/app/components/global-resume-edit-client";
+import { ResumeEditClient } from "@/app/components/resume-edit-client";
 import { Locale } from "@/lib/i18n-utils";
 
 export default async function GlobalEditPage({
@@ -39,28 +39,36 @@ export default async function GlobalEditPage({
   // - Work/Edu: _original fields (company_name_original, etc.)
 
   const personalInfo = {
-    name: resume.name_translated || resume.name_original,
+    nameOriginal: resume.name_original || "",
+    nameTranslated: resume.name_translated || "",
     email: resume.email || "",
     phone: resume.phone || "",
-    links: (resume.links as any) || {},
-    summary: resume.summary_translated || "",
+    links: (resume.links as any) || [],
+    summaryOriginal: resume.summary_original || "",
+    summaryTranslated: resume.summary_translated || "",
     location: (resume.links as any)?.location || "",
   };
 
   const experiences = resume.work_experiences.map((exp) => ({
     id: exp.id,
-    company: exp.company_name_original,
-    position: exp.role_original,
+    companyOriginal: exp.company_name_original || "",
+    companyTranslated: exp.company_name_translated || "",
+    positionOriginal: exp.role_original || "",
+    positionTranslated: exp.role_translated || "",
     startDate: exp.start_date,
     endDate: exp.end_date,
-    bullets: (exp.bullets_original as string[]) || [],
+    bulletsOriginal: (exp.bullets_original as string[]) || [],
+    bulletsTranslated: (exp.bullets_translated as string[]) || [],
   }));
 
   const educations = resume.educations.map((edu) => ({
     id: edu.id,
-    school: edu.school_name_original,
-    degree: edu.degree_original,
-    major: edu.major_original,
+    schoolOriginal: edu.school_name_original || "",
+    schoolTranslated: edu.school_name_translated || "",
+    degreeOriginal: edu.degree_original || "",
+    degreeTranslated: edu.degree_translated || "",
+    majorOriginal: edu.major_original || "",
+    majorTranslated: edu.major_translated || "",
     startDate: edu.start_date,
     endDate: edu.end_date,
   }));
@@ -73,7 +81,7 @@ export default async function GlobalEditPage({
 
   return (
     <div className="container py-8 max-w-5xl">
-      <GlobalResumeEditClient
+      <ResumeEditClient
         resumeId={resume.id}
         initialData={{
           personalInfo,

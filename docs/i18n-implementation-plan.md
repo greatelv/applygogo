@@ -31,7 +31,7 @@
 #### 3. 🌐 언어 전환 제한 (Language Switching Rules)
 
 - ✅ **콘솔 밖(랜딩페이지, 로그인 페이지)에서만 언어 전환 가능**
-- ✅ **콘솔 안(대시보드, 이력서 편집 등)에서는 언어 전환 UI 숨김**
+- ✅ **콘솔 안(이력서 관리, 이력서 편집 등)에서는 언어 전환 UI 숨김**
 - ✅ 이유: 언어별 이력서 데이터가 격리되어 있어 혼란 방지
 
 #### 4. 💳 결제 시스템 (Payment Integration)
@@ -108,28 +108,20 @@ model GlobalResume {
 
 ## 🛣️ Phase 2: 라우팅 아키텍처
 
-### 2.1 폴더 구조 설계
+### 2.1 폴더 구조 설계 (Unified UI)
 
-**목표**: 기존 `/` 경로 보존, 다국어는 `/[locale]` 추가
+**목표**: 모든 로케일(`ko`, `en`, `ja`)이 `[locale]` 라우트 공유
 
 ```
 src/app/
-├── (marketing)/              # 콘솔 밖 (언어 전환 가능)
-│   ├── page.tsx             # / (한국어 기본)
+├── [locale]/                # 🆕 모든 언어 통합 (ko, en, ja)
+│   ├── page.tsx             # 랜딩페이지
 │   ├── login/
-│   └── [locale]/            # 🆕 /en, /ja
-│       ├── page.tsx
-│       └── login/
-│
-├── (console)/               # 콘솔 안 (언어 전환 불가)
-│   ├── dashboard/           # /dashboard (한국어)
-│   ├── resume/[id]/         # Resume 테이블 사용
-│   └── settings/
-│
-├── [locale]/                # 🆕 다국어 콘솔
-│   └── (console)/
-│       ├── dashboard/       # /en/dashboard, /ja/dashboard
-│       ├── global-resume/[id]/  # GlobalResume 테이블 사용
+│   └── (authenticated)/     # 로그인 필요 (언어 전환 불가)
+│       ├── layout.tsx
+│       ├── resumes/         # 🆕 /resumes (이력서 관리)
+│       │   ├── page.tsx     # 목록 (언어별 데이터 분기)
+│       │   └── [id]/        # 상세/수정 (언어별 데이터 분기)
 │       └── settings/
 │
 └── api/
@@ -255,7 +247,7 @@ export function LanguageSwitcher() {
 
 - ✅ 랜딩페이지 헤더
 - ✅ 로그인 페이지 헤더
-- ❌ 대시보드 (숨김)
+- ❌ 이력서 관리(resumes) (숨김)
 - ❌ 이력서 편집 (숨김)
 
 ---
@@ -286,11 +278,11 @@ export async function getUserGlobalResumes(locale: "en" | "ja") {
 }
 ```
 
-### 4.2 대시보드 페이지
+### 4.2 이력서 관리 페이지
 
 ```tsx
-// src/app/[locale]/dashboard/page.tsx
-export default async function DashboardPage({
+// src/app/[locale]/resumes/page.tsx
+export default async function ResumesPage({
   params,
 }: {
   params: Promise<{ locale: "en" | "ja" }>;
@@ -461,14 +453,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 **데이터 격리**:
 
-- [ ] 한국어 대시보드에서 GlobalResume 표시 안 됨
-- [ ] 영어 대시보드에서 Resume 표시 안 됨
+- [ ] 한국어 이력서 목록에서 GlobalResume 표시 안 됨
+- [ ] 영어 이력서 목록에서 Resume 표시 안 됨
 - [ ] URL 직접 접근 시 권한 검증
 
 **언어 전환**:
 
 - [ ] 랜딩페이지에서 언어 전환 가능
-- [ ] 대시보드에서 언어 전환 UI 숨김
+- [ ] 이력서 목록에서 언어 전환 UI 숨김
 
 **결제**:
 
@@ -485,7 +477,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ### 8.2 디자인 보존 검증
 
 - [ ] 랜딩페이지: 레이아웃, 여백, 폰트, 색상 동일
-- [ ] 대시보드: 카드 디자인, 그리드, 간격 동일
+- [ ] 이력서 목록: 카드 디자인, 그리드, 간격 동일
 - [ ] 다크모드: 모든 언어에서 정상 작동
 
 ---
@@ -511,7 +503,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 2. **메시지 파일 생성** (`ko.json`, `en.json`, `ja.json`)
 3. **`[locale]` 폴더 구조** 생성
 4. **랜딩페이지 다국어화** (디자인 보존)
-5. **대시보드 페이지** 구현
+5. **이력서 목록** 페이지 구현
 
 ---
 

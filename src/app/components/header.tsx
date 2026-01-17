@@ -96,6 +96,11 @@ export function Header({
     .toUpperCase()
     .slice(0, 2);
 
+  // Navigation Helpers
+  const getHomeLink = () => (locale === "ko" ? "/" : `/${locale}`);
+  const getBlogLink = () => (locale === "ko" ? "/blog" : `/${locale}/blog`);
+  const getAppLink = (path: string) => `/${locale}/${path}`; // App pages always explicit path
+
   return (
     <header className="sticky top-0 z-30 bg-background border-b border-border">
       <div className="flex items-center justify-between h-16 px-4 lg:pr-6 lg:pl-0">
@@ -111,7 +116,7 @@ export function Header({
           {/* Desktop Logo Area + Toggle */}
           <div className="hidden lg:flex items-center justify-between pl-6 h-full w-60 border-r border-border/40 shrink-0">
             <Link
-              href={locale === "ko" ? "/resumes" : `/${locale}/resumes`}
+              href={getHomeLink()}
               className="flex items-center hover:opacity-80 transition-opacity"
             >
               <img
@@ -139,7 +144,7 @@ export function Header({
 
           {/* Mobile Logo Only */}
           <Link
-            href={locale === "ko" ? "/resumes" : `/${locale}/resumes`}
+            href={getAppLink("resumes")}
             className="lg:hidden flex items-center mr-4 hover:opacity-80 transition-opacity"
           >
             <img
@@ -178,13 +183,7 @@ export function Header({
               size="sm"
               className="hidden sm:inline-flex bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm border-0 font-semibold"
             >
-              <Link
-                href={
-                  locale === "ko"
-                    ? "/settings#payment-section"
-                    : `/${locale}/settings`
-                }
-              >
+              <Link href={getAppLink("settings#payment-section")}>
                 <Sparkles className="w-3.5 h-3.5 mr-2" />
                 {t(currentLocale, "Header.buyPass")}
               </Link>
@@ -192,14 +191,7 @@ export function Header({
           )}
 
           {/* Plan badge - Clickable */}
-          <a
-            href={
-              locale === "ko"
-                ? "/settings#payment-section"
-                : `/${locale}/settings`
-            }
-            className="hidden sm:inline-flex"
-          >
+          <a href={getAppLink("settings")} className="hidden sm:inline-flex">
             <Badge
               variant={config.variant}
               className="hover:opacity-80 transition-opacity cursor-pointer"
@@ -256,10 +248,7 @@ export function Header({
 
               <DropdownMenuSeparator className="sm:hidden" />
               <DropdownMenuItem asChild>
-                <Link
-                  href={locale === "ko" ? "/settings" : `/${locale}/settings`}
-                  className="cursor-pointer"
-                >
+                <Link href={getAppLink("settings")} className="cursor-pointer">
                   <Settings className="size-4 mr-2" />
                   {t(currentLocale, "Sidebar.settings")}
                 </Link>
@@ -272,10 +261,7 @@ export function Header({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link
-                  href={locale === "ko" ? "/blog" : "/blog"}
-                  className="cursor-pointer"
-                >
+                <Link href={getBlogLink()} className="cursor-pointer">
                   <FileText className="size-4 mr-2" />
                   {t(currentLocale, "Landing.nav.blog")}
                 </Link>

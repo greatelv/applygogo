@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SharedDashboardLayout } from "@/app/components/shared-dashboard-layout";
+import { SharedServiceLayout } from "@/app/components/shared-service-layout";
 
 export const metadata: Metadata = {
   robots: {
@@ -13,5 +13,5 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <SharedDashboardLayout>{children}</SharedDashboardLayout>;
+  return <SharedServiceLayout>{children}</SharedServiceLayout>;
 }

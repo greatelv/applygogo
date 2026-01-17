@@ -1,9 +1,9 @@
 # 🌏 지원고고 다국어 지원 구현 계획서 v2 (별도 테이블 전략)
 
 > **Last Updated:** 2026-01-17  
-> **Status:** Planning Phase  
+> **Status:** Implementation Phase (Schema Applied)
 > **Epic:** Multi-language Support (Separate Tables)  
-> **전략**: 기존 테이블 보존 + 다국어 전용 테이블 신규 생성
+> **전략**: 기존 테이블 보존 + 다국어 전용 테이블 신규 생성 + UI 통합 (Unified [locale] Route)
 
 ---
 
@@ -466,32 +466,33 @@ export async function GET(request: Request) {
 
 ---
 
-### 2.2 라우팅 구조
+### 2.2 라우팅 구조 (Unified UI)
+
+모든 로케일(`ko`, `en`, `ja`)이 `[locale]` 동적 라우트를 공유하며, 내부 로직에서 테이블을 분기합니다.
 
 ```
 src/app/
-├── (korean)/                # 한국향 (기존)
+├── [locale]/               # 모든 언어 통합
 │   ├── page.tsx            # 랜딩페이지
-│   ├── dashboard/          # Resume 테이블 사용
-│   ├── resume/[id]/        # Resume 테이블 사용
-│   └── login/
-│
-├── [locale]/               # 다국어 (신규)
-│   ├── page.tsx            # /en, /ja 랜딩페이지
-│   ├── dashboard/          # GlobalResume 테이블 사용
-│   ├── global-resume/[id]/ # GlobalResume 테이블 사용
+│   ├── (authenticated)/
+│   │   ├── layout.tsx
+│   │   └── resumes/        # 이력서 관리 (구 대시보드)
+│   │       ├── page.tsx    # 목록 (언어별 테이블 분기 조회)
+│   │       └── [id]/       # 상세/수정
 │   └── login/
 │
 └── api/
-    ├── resume/             # Resume 테이블 API
-    └── global-resume/      # GlobalResume 테이블 API
+    ├── resume/             # Resume 테이블 API (한국어)
+    └── global-resume/      # GlobalResume 테이블 API (다국어)
 ```
 
 **핵심**:
 
-- 한국향: `/resume` 경로 사용
-- 다국어: `/global-resume` 경로 사용
-- 완전히 분리된 워크플로우
+- **단일 진입점**: `/resumes` 경로 하나로 통합
+- **데이터 분기**:
+  - `locale === 'ko'` → `resumes` (Resume 테이블) 조회
+  - `locale !== 'ko'` → `resumes` (GlobalResume 테이블) 조회
+- **UI 재사용**: 동일한 컴포넌트를 사용하되 데이터 소스만 다름
 
 ---
 
@@ -690,8 +691,8 @@ test("기존 한국향 서비스 정상 작동", async ({ page }) => {
   await page.goto("/login");
   // ... 로그인 로직
 
-  // 3. 대시보드 접근
-  await page.goto("/dashboard");
+  // 3. 이력서 관리 접근
+  await page.goto("/resumes");
   await expect(page.locator("h1")).toContainText("내 이력서");
 
   // 4. 기존 이력서 목록 표시 확인
@@ -718,8 +719,8 @@ test("다국어 서비스 독립 작동", async ({ page }) => {
   await page.goto("/en");
   await expect(page).toHaveTitle(/ApplyGoGo/);
 
-  // 2. 영어 대시보드
-  await page.goto("/en/dashboard");
+  // 2. 영어 이력서 관리
+  await page.goto("/en/resumes");
   await expect(page.locator("h1")).toContainText("My Resumes");
 
   // 3. 한국향 이력서는 표시 안 됨
@@ -847,6 +848,6 @@ NEXT_PUBLIC_ENABLE_GLOBAL_RESUME=true
 2. **마이그레이션 파일 생성** 및 Staging 테스트
 3. **API 엔드포인트 구현** (`/api/global-resume`)
 4. **AI 프롬프트 작성** (영어→한국어, 일본어→한국어)
-5. **UI 컴포넌트 구현** (`/en/dashboard` 등)
+5. **UI 컴포넌트 구현** (`/en/resumes` 등)
 
 준비되시면 첫 번째 단계부터 시작하겠습니다! 🚀

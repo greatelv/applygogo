@@ -83,10 +83,7 @@ export function NewResumePage({
   };
 
   // Settings path handling
-  const settingsPath =
-    locale === "ko"
-      ? "/settings#payment-section"
-      : `/${locale}/settings#payment-section`;
+  const settingsPath = `/${locale}/settings#payment-section`;
 
   return (
     <div className="max-w-3xl mx-auto">

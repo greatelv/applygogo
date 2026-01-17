@@ -4,7 +4,7 @@ import { getUserGlobalResumes } from "@/lib/global-resume-data";
 import { GlobalResumesClient } from "@/app/components/global-resumes-client";
 import { Locale } from "@/lib/i18n-utils";
 
-export default async function DashboardPage({
+export default async function ResumesPage({
   params,
 }: {
   params: Promise<{ locale: string }>;

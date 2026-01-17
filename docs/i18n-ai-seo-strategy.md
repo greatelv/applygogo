@@ -430,7 +430,7 @@ Allow: /
 Allow: /en
 Allow: /ja
 Disallow: /api/
-Disallow: /dashboard/
+Disallow: /resumes/
 Disallow: /global-resume/
 
 Sitemap: https://applygogo.com/sitemap.xml

@@ -5,7 +5,7 @@ import { SiteFooter } from "./site-footer";
 import { BetaBanner } from "./beta-banner";
 import { usePathname } from "next/navigation";
 
-interface DashboardLayoutProps {
+export interface ServiceLayoutProps {
   children: React.ReactNode;
   plan: string;
   quota: number;
@@ -21,7 +21,7 @@ interface DashboardLayoutProps {
   locale?: string;
 }
 
-export function DashboardLayout({
+export function ServiceLayout({
   children,
   plan,
   quota,
@@ -35,7 +35,7 @@ export function DashboardLayout({
   workflowSteps,
   currentStep,
   locale = "ko",
-}: DashboardLayoutProps) {
+}: ServiceLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const pathname = usePathname();
