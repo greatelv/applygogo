@@ -10,13 +10,11 @@ import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 
 interface LoginPageProps {
   onGoogleLogin: () => void;
-  onNaverLogin: () => void;
   onCredentialLogin?: (formData: FormData) => void;
 }
 
 export function LoginPage({
   onGoogleLogin,
-  onNaverLogin,
   onCredentialLogin,
 }: LoginPageProps) {
   const { pending } = useFormStatus();
@@ -52,21 +50,11 @@ export function LoginPage({
                 ⚠️ Google login is not supported in in-app browsers.
               </span>
               <span className="text-xs text-muted-foreground block break-keep">
-                (Please use Naver login or an external browser)
+                (Please open this page in Chrome, Safari, or another external
+                browser)
               </span>
             </div>
           )}
-
-          <Button
-            type="button"
-            size="lg"
-            className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
-            onClick={onNaverLogin}
-            disabled={pending}
-          >
-            <span className="font-bold mr-2 text-lg">N</span>
-            Continue with Naver
-          </Button>
 
           {/* Test Login Form (Only visible with ?mode=test) */}
           {searchParams.get("mode") === "test" && onCredentialLogin && (
