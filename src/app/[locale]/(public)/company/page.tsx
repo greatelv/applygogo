@@ -81,7 +81,7 @@ export default function CompanyPage() {
                 <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
                 <div className="text-center space-y-2 p-8 bg-background/80 backdrop-blur-sm rounded-xl border border-white/20 shadow-2xl">
                   <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
-                    Cake.
+                    Keique
                   </div>
                   <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
                     Corporation

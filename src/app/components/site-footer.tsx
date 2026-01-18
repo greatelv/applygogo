@@ -36,12 +36,12 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 </a>
               </div>
               <div className="hidden md:block text-[10px] text-muted-foreground/60">
-                © 2026 ApplyGogo (K-Corporation). All rights reserved.
+                © 2026 ApplyGogo (Keique Corporation). All rights reserved.
               </div>
             </div>
 
             <div className="text-[10px] text-muted-foreground/60 leading-normal text-center md:text-left">
-              <span>Cake Corporation</span>
+              <span>Keique Corporation</span>
               <span className="mx-1.5">|</span>
               <span>{t("ceo")}: Taekyung Jeon</span>
               <span className="mx-1.5">|</span>
@@ -54,7 +54,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
-              © 2026 ApplyGogo (K-Corporation). All rights reserved.
+              © 2026 ApplyGogo (Keique Corporation). All rights reserved.
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             {/* Business Info */}
             <div className="space-y-1 text-xs text-muted-foreground leading-relaxed">
               <p>
-                <span className="font-medium">Cake Corporation</span>
+                <span className="font-medium">Keique Corporation</span>
                 <span className="mx-2">|</span>
                 {t("ceo")}: Taekyung Jeon
                 <span className="mx-2">|</span>
@@ -126,7 +126,7 @@ export function SiteFooter({ simple }: SiteFooterProps) {
 
           {/* Copyright */}
           <div className="text-xs text-muted-foreground">
-            © 2026 ApplyGogo (K-Corporation). All rights reserved.
+            © 2026 ApplyGogo (Keique Corporation). All rights reserved.
           </div>
         </div>
       </div>
