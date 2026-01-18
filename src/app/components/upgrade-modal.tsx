@@ -48,6 +48,12 @@ export function UpgradeModal({
   );
 
   const handlePurchase = async (productType: "PASS_7DAY" | "PASS_30DAY") => {
+    toast.info(
+      locale === "ko"
+        ? "현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요."
+        : "Payment system is under review. Please try again after official launch.",
+    );
+    return;
     if (purchasingProduct) return;
     setPurchasingProduct(productType);
 
