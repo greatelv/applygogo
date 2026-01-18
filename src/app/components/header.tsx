@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Menu,
   LogOut,
@@ -7,7 +9,7 @@ import {
   PanelLeft,
   FileText,
 } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -297,6 +299,77 @@ export function Header({
           <WorkflowStepper steps={workflowSteps} currentStep={currentStep} />
         </div>
       )}
+    </header>
+  );
+}
+
+interface PublicHeaderProps {
+  onGetStarted?: () => void;
+  isLoading?: boolean;
+}
+
+export function PublicHeader({ onGetStarted, isLoading }: PublicHeaderProps) {
+  const locale = useLocale();
+  const t = useTranslations("landing");
+  const th = useTranslations("common.header");
+  const isGlobal = locale !== "ko";
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    if (onGetStarted) {
+      onGetStarted();
+    } else {
+      router.push("/login");
+    }
+  };
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center">
+            <div className="relative h-6 w-24">
+              <img
+                src={
+                  isGlobal
+                    ? "/global/logo-for-light.svg"
+                    : "/logo-for-light.svg"
+                }
+                alt="ApplyGogo"
+                className="object-contain h-6 dark:hidden"
+              />
+              <img
+                src={
+                  isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+                }
+                alt="ApplyGogo"
+                className="object-contain h-6 hidden dark:block"
+              />
+            </div>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/introduction"
+              className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {th("introduction")}
+            </Link>
+            <Link
+              href="/blog"
+              className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {th("blog")}
+            </Link>
+            <LanguageSwitcher />
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
+            <Button onClick={handleGetStarted} size="sm" isLoading={isLoading}>
+              {t("header.getStarted")}
+            </Button>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

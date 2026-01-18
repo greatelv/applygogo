@@ -10,11 +10,11 @@ import {
   Languages,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
-import { ThemeToggle } from "@/app/components/theme-toggle";
+import { PublicHeader } from "@/app/components/header";
 import { SiteFooter } from "@/app/components/site-footer";
 
 export default function IntroductionPage() {
@@ -22,52 +22,7 @@ export default function IntroductionPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center">
-              <div className="relative h-6 w-24">
-                <Image
-                  src="/logo-for-light.svg"
-                  alt="지원고고"
-                  fill
-                  className="object-contain dark:hidden"
-                  priority
-                />
-                <Image
-                  src="/logo-for-dark.svg"
-                  alt="지원고고"
-                  fill
-                  className="object-contain hidden dark:block"
-                  priority
-                />
-              </div>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/company"
-                className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                target="_blank"
-              >
-                {t("header.company")}
-              </Link>
-              <Link
-                href="/blog"
-                className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("header.blog")}
-              </Link>
-              <div className="hidden sm:block">
-                <ThemeToggle />
-              </div>
-              <Button asChild size="sm">
-                <Link href="/">{t("header.cta")}</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden">

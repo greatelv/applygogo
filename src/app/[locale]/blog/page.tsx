@@ -1,43 +1,60 @@
 import { getAllPosts } from "@/lib/markdown";
-import { BlogHeader } from "@/app/components/blog/blog-header";
+import { PublicHeader } from "@/app/components/header";
 import { SiteFooter as Footer } from "@/app/components/site-footer";
 import { PostCard } from "@/app/components/blog/post-card";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import { useTranslations, useFormatter, useLocale } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "지원고고 블로그 - 글로벌 커리어를 위한 인사이트",
-  description:
-    "영문 이력서 작성 팁부터 해외 취업 성공 사례까지, 당신의 글로벌 성장을 돕는 정보를 확인하세요.",
-  alternates: {
-    canonical: "/blog",
-  },
-  openGraph: {
-    title: "지원고고 블로그 - 글로벌 커리어를 위한 인사이트",
-    description:
-      "영문 이력서 작성 팁부터 해외 취업 성공 사례까지, 당신의 글로벌 성장을 돕는 정보를 확인하세요.",
-    type: "website",
-    locale: "ko_KR",
-    url: "/blog",
-    siteName: "지원고고",
-  },
+type Props = {
+  params: Promise<{ locale: string }>;
 };
 
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "blog" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: "/blog",
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      type: "website",
+      locale: locale,
+      url: "/blog",
+      siteName: "ApplyGogo",
+    },
+  };
+}
+
 export default function HomePage() {
+  const t = useTranslations("blog");
+  const format = useFormatter();
+  const locale = useLocale();
   const allPosts = getAllPosts();
+  // Filter posts based on locale if needed, or translate post content dynamically.
+  // For now, assuming posts are handled or we show all.
+  // Ideally, markdown posts should be locale-specific folders or frontmatter.
+  // But strictly adhering to UI localization here.
+
   const latestPost = allPosts[0];
   const listPosts = allPosts.slice(1);
 
   return (
     <>
-      <BlogHeader />
+      <PublicHeader />
       <main className="min-h-screen">
         <section className="relative py-16 md:py-24 overflow-hidden border-b border-border/40">
           <div className="container mx-auto px-6 relative">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-8 md:mb-12">
-              지금 봐야할 추천 컨텐츠
+              {t("recommended")}
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
@@ -92,15 +109,11 @@ export default function HomePage() {
                       {latestPost.frontmatter.description}
                     </p>
                     <div className="text-sm text-muted-foreground">
-                      {new Date(latestPost.frontmatter.date).toLocaleDateString(
-                        "ko-KR",
-                        {
-                          timeZone: "Asia/Seoul",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        },
-                      )}
+                      {format.dateTime(new Date(latestPost.frontmatter.date), {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </div>
                   </div>
                 </Link>
@@ -112,14 +125,15 @@ export default function HomePage() {
                   <div className="space-y-4">
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-balance">
                       <span className="text-foreground">
-                        당신의 커리어를 <br />
-                        글로벌로 연결합니다
+                        {t.rich("tagline.title", {
+                          br: () => <br />,
+                        })}
                       </span>
                     </h1>
                     <p className="text-lg text-muted-foreground leading-relaxed text-balance">
-                      지원고고의 AI 이력서 빌더로 누구나 쉽고 빠르게
-                      <br className="hidden md:block" />
-                      전문가 수준의 영문 이력서를 완성할 수 있습니다.
+                      {t.rich("tagline.description", {
+                        br: () => <br className="hidden md:block" />,
+                      })}
                     </p>
                   </div>
 
@@ -129,7 +143,7 @@ export default function HomePage() {
                     className="w-full rounded-xl py-8 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:-translate-y-0.5"
                   >
                     <Link href="/">
-                      무료로 영문 이력서 만들기
+                      {t("tagline.cta")}
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
@@ -144,10 +158,10 @@ export default function HomePage() {
             <div className="flex items-end justify-between mb-12">
               <div>
                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">
-                  전체 아티클
+                  {t("allPosts.title")}
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  지원고고의 최신 소식과 커리어 팁을 확인하세요
+                  {t("allPosts.subtitle")}
                 </p>
               </div>
             </div>
@@ -160,7 +174,7 @@ export default function HomePage() {
 
             {allPosts.length === 0 && (
               <div className="text-center py-20 text-muted-foreground">
-                아직 게시글이 없습니다.
+                {t("allPosts.empty")}
               </div>
             )}
           </div>

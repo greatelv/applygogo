@@ -97,7 +97,9 @@ export function SettingsPage({
     .map((n) => n[0])
     .join("")
     .toUpperCase()
+    .toUpperCase()
     .slice(0, 2);
+  const isGlobal = locale !== "ko";
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isPassWarningOpen, setIsPassWarningOpen] = useState(false);
@@ -333,11 +335,19 @@ export function SettingsPage({
             </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                {formatPrice(PLAN_PRODUCTS.PASS_30DAY.originalPrice)}
+                {formatPrice(
+                  isGlobal
+                    ? PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_30DAY.originalPrice,
+                )}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-primary">
-                  {formatPrice(PLAN_PRODUCTS.PASS_30DAY.price)}
+                  {formatPrice(
+                    isGlobal
+                      ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_30DAY.price,
+                  )}
                 </span>
                 <Badge
                   variant="outline"
@@ -404,11 +414,19 @@ export function SettingsPage({
             </h3>
             <div className="flex flex-col items-start mb-6">
               <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
-                {formatPrice(PLAN_PRODUCTS.PASS_7DAY.originalPrice)}
+                {formatPrice(
+                  isGlobal
+                    ? PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_7DAY.originalPrice,
+                )}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-foreground">
-                  {formatPrice(PLAN_PRODUCTS.PASS_7DAY.price)}
+                  {formatPrice(
+                    isGlobal
+                      ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_7DAY.price,
+                  )}
                 </span>
                 <Badge
                   variant="outline"
@@ -472,7 +490,11 @@ export function SettingsPage({
               </span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-bold">
-                  {formatPrice(PLAN_PRODUCTS.CREDIT_50.price)}
+                  {formatPrice(
+                    isGlobal
+                      ? PLAN_PRODUCTS.CREDIT_50.priceGlobal
+                      : PLAN_PRODUCTS.CREDIT_50.price,
+                  )}
                 </span>
               </div>
             </div>

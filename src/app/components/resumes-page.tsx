@@ -1,3 +1,5 @@
+"use client";
+
 import { FileText, Plus, Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";

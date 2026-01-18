@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Upload, FileText, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";

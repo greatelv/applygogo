@@ -11,7 +11,6 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { ThemeToggle } from "./theme-toggle";
 import { SiteFooter } from "./site-footer";
 import { TemplatePreviewDialog } from "./template-preview-dialog";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
@@ -23,7 +22,8 @@ interface LandingPageProps {
 }
 
 import { useTranslations, useLocale } from "next-intl";
-import { LanguageSwitcher } from "./language-switcher";
+
+import { PublicHeader } from "./header";
 
 export function LandingPage({
   onGetStarted,
@@ -31,7 +31,6 @@ export function LandingPage({
 }: LandingPageProps) {
   const t = useTranslations("landing");
   const tc = useTranslations("common");
-  const th = useTranslations("common.header");
 
   const locale = useLocale();
   const isGlobal = locale !== "ko";
@@ -39,54 +38,7 @@ export function LandingPage({
   return (
     <div className="min-h-screen bg-background">
       <BetaBanner />
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center">
-              <div className="relative h-6 w-24">
-                <Image
-                  src={
-                    isGlobal
-                      ? "/global/logo-for-light.svg"
-                      : "/logo-for-light.svg"
-                  }
-                  alt="ApplyGogo"
-                  fill
-                  className="object-contain dark:hidden"
-                  priority
-                />
-                <Image
-                  src={
-                    isGlobal
-                      ? "/global/logo-for-black.svg"
-                      : "/logo-for-dark.svg"
-                  }
-                  alt="ApplyGogo"
-                  fill
-                  className="object-contain hidden dark:block"
-                  priority
-                />
-              </div>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/blog"
-                className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {th("blog")}
-              </Link>
-              <LanguageSwitcher />
-              <div className="hidden sm:block">
-                <ThemeToggle />
-              </div>
-              <Button onClick={onGetStarted} size="sm" isLoading={isLoading}>
-                {t("header.getStarted")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PublicHeader onGetStarted={onGetStarted} isLoading={isLoading} />
 
       {/* Hero Section */}
       <section className="py-20 lg:py-32">
@@ -108,6 +60,7 @@ export function LandingPage({
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               {t.rich("hero.description", {
                 strong: (chunks) => <strong>{chunks}</strong>,
+                br: () => <br />,
               })}
             </p>
 
@@ -193,7 +146,9 @@ export function LandingPage({
                         {t("cost.ourName")}
                       </div>
                       <div className="font-bold text-lg text-primary">
-                        {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                        {isGlobal
+                          ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+                          : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                         {tc("currency")}
                       </div>
                     </div>
@@ -231,7 +186,9 @@ export function LandingPage({
                           {t("cost.ourName")}
                         </span>
                         <span className="font-bold text-primary">
-                          {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                          {isGlobal
+                            ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+                            : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                           {tc("currency")}
                         </span>
                       </div>
@@ -333,6 +290,7 @@ export function LandingPage({
                     <p className="text-muted-foreground text-sm">
                       {t.rich("recommended.item1Description", {
                         strong: (chunks) => <strong>{chunks}</strong>,
+                        br: () => <br />,
                       })}
                     </p>
                   </div>
@@ -348,6 +306,7 @@ export function LandingPage({
                     <p className="text-muted-foreground text-sm">
                       {t.rich("recommended.item2Description", {
                         strong: (chunks) => <strong>{chunks}</strong>,
+                        br: () => <br />,
                       })}
                     </p>
                   </div>
@@ -363,6 +322,7 @@ export function LandingPage({
                     <p className="text-muted-foreground text-sm">
                       {t.rich("recommended.item3Description", {
                         strong: (chunks) => <strong>{chunks}</strong>,
+                        br: () => <br />,
                       })}
                     </p>
                   </div>
@@ -425,7 +385,7 @@ export function LandingPage({
                 <span className="text-lg font-medium text-transparent mb-1 min-h-[28px]">
                   Placeholder
                 </span>
-                <div className="text-4xl font-bold">₩0</div>
+                <div className="text-4xl font-bold">{tc("currency")}0</div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
                 {t("pricing.free.subtitle")}
@@ -469,11 +429,17 @@ export function LandingPage({
               </h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
-                  ₩{PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                  {tc("currency")}
+                  {isGlobal
+                    ? PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
                 </span>
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-bold">
-                    ₩{PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                    {tc("currency")}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                   </span>
                   <Badge
                     variant="outline"
@@ -529,11 +495,17 @@ export function LandingPage({
               </h4>
               <div className="flex flex-col items-center justify-center mb-4">
                 <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
-                  ₩{PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                  {tc("currency")}
+                  {isGlobal
+                    ? PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
                 </span>
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-bold text-primary">
-                    ₩{PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                    {tc("currency")}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
                   <Badge
                     variant="outline"

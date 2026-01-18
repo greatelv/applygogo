@@ -33,6 +33,7 @@ export function SettingsClientPage({
   const { setPlan } = useApp();
   const t = useTranslations("settings");
   const locale = useLocale();
+  const isGlobal = locale !== "ko";
 
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [isRefunding, setIsRefunding] = useState(false);
@@ -75,20 +76,27 @@ export function SettingsClientPage({
     try {
       const productConfig: Record<string, { amount: number; name: string }> = {
         PASS_7DAY: {
-          amount: PLAN_PRODUCTS.PASS_7DAY.price,
+          amount: isGlobal
+            ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal
+            : PLAN_PRODUCTS.PASS_7DAY.price,
           name: PLAN_PRODUCTS.PASS_7DAY.name,
         },
         PASS_30DAY: {
-          amount: PLAN_PRODUCTS.PASS_30DAY.price,
+          amount: isGlobal
+            ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+            : PLAN_PRODUCTS.PASS_30DAY.price,
           name: PLAN_PRODUCTS.PASS_30DAY.name,
         },
         REFILL_50: {
-          amount: PLAN_PRODUCTS.CREDIT_50.price,
+          amount: isGlobal
+            ? PLAN_PRODUCTS.CREDIT_50.priceGlobal
+            : PLAN_PRODUCTS.CREDIT_50.price,
           name: PLAN_PRODUCTS.CREDIT_50.name,
         },
       };
 
       const product = productConfig[passType];
+      const currency = isGlobal ? "USD" : "KRW";
 
       const response = await PortOne.requestPayment({
         storeId: portoneConfig.storeId,
@@ -98,7 +106,7 @@ export function SettingsClientPage({
           .substr(2, 9)}`,
         orderName: product.name,
         totalAmount: product.amount,
-        currency: "KRW",
+        currency: currency,
         payMethod: "EASY_PAY",
         customer: {
           customerId: user.id,

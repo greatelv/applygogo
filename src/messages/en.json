@@ -32,7 +32,7 @@
       "PASS_30DAY": "30-Day Pass",
       "PASS_BETA_3DAY": "Beta Unlimited"
     },
-    "currency": "₩"
+    "currency": "$"
   },
   "landing": {
     "header": {
@@ -53,7 +53,7 @@
       "title2": "At 1/10th the cost",
       "description": "Receive expert-level results instantly at a reasonable price, without expensive fees and long waiting times.",
       "oldLabel": "Traditional",
-      "oldPrice": "₩100,000",
+      "oldPrice": "$100",
       "nowLabel": "Now",
       "ourName": "ApplyGogo",
       "compareTitle": "Production Cost Comparison",
@@ -380,7 +380,7 @@
   },
   "upgradeModal": {
     "title": "Purchase a Pass and Unlock Templates",
-    "description": "A pass is required to use premium templates. <br/>Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
+    "description": "A pass is required to use premium templates. <br></br>Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
     "plans": {
       "pass7": {
         "title": "7-Day Pass",
@@ -529,7 +529,7 @@
     },
     "notices": {
       "passPromotion": "🎉 Special Launch Offer",
-      "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br/>Check back later for more plans after official launch!",
+      "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br></br>Check back later for more plans after official launch!",
       "freeTip": "💡 Purchase a pass to unlock all templates and unlimited retranslation benefits",
       "refundPolicyFree": "Please check ApplyGogo's <link>Cancellation and Refund Policy</link> before purchasing.",
       "refundPolicyPaid": {
@@ -568,7 +568,7 @@
     "alerts": {
       "passWarning": {
         "title": "You have an active pass!",
-        "description": "You still have a valid paid pass.<br/>If you leave now, <strong>all remaining days and benefits will be lost</strong> and cannot be refunded.",
+        "description": "You still have a valid paid pass.<br></br>If you leave now, <strong>all remaining days and benefits will be lost</strong> and cannot be refunded.",
         "cancel": "Cancel and keep using",
         "confirm": "Give up and proceed to delete"
       },
@@ -645,7 +645,7 @@
       "retry": "Upload Again",
       "credits": {
         "title": "Insufficient Credits",
-        "description": "You do not have enough credits to proceed with AI resume analysis.<br/>Please refill credits through payment to complete the analysis.",
+        "description": "You do not have enough credits to proceed with AI resume analysis.<br></br>Please refill credits through payment to complete the analysis.",
         "buyPass": "Purchase Pass for Unlimited Use",
         "refill": "Refill Credits",
         "footer": "You can retry the task after payment.",
@@ -700,7 +700,7 @@
     },
     "creditError": {
       "title": "Insufficient Credits",
-      "description": "You do not have enough credits to proceed with AI resume analysis.<br/>Please refill credits to start the analysis.",
+      "description": "You do not have enough credits to proceed with AI resume analysis.<br></br>Please refill credits to start the analysis.",
       "buyPass": "Buy Pass for Unlimited Access",
       "refill": "Refill Credits"
     },
@@ -715,6 +715,175 @@
       "item1": "Resumes with clearly distinguished experience sections yield the best results.",
       "item2": "PDF files under 5MB are recommended.",
       "item3": "You can get the final PDF after the summary and translation steps."
+    }
+  },
+  "betaBanner": {
+    "badge": "BETA",
+    "mobilePrefix": "Beta Gift: ",
+    "desktopPrefix": "Beta Launch Special: ",
+    "value": "$15 Value ",
+    "benefit": "Free 3-Day Unlimited Pass!",
+    "consoleMessage": "Try it out freely and please report any bugs or feedback at the <link>bottom left</link>."
+  },
+  "company": {
+    "header": {
+      "introduction": "About Service",
+      "blog": "Blog"
+    },
+    "hero": {
+      "badge": "Cake Corporation",
+      "title": "The Sweetest Innovation\n<highlight>in the Hiring Market</highlight>",
+      "subtitle": "We are creating a new hiring ecosystem where both job seekers and companies can be satisfied."
+    },
+    "about": {
+      "title": "Cake Corporation",
+      "p1": "The hiring process doesn't have to be painful. <br/>It should be a sweet and satisfying experience, just like enjoying a piece of cake.",
+      "p2": "Through cutting-edge AI technology, Cake Corporation <br/>transforms job seekers' anxiety into confidence and companies' hiring difficulties into enjoyment.",
+      "p3": "Beyond a simple utility tool, <br/>we design and provide <strong>experiences that make you say \"Wow!\"</strong>"
+    },
+    "roadmap": {
+      "title": "Future Roadmap",
+      "subtitle": "10 projects to solve inefficiencies in the job market one by one",
+      "active": {
+        "badge": "LIVE",
+        "title": "ApplyGogo",
+        "description": "AI-powered English-to-Korean resume conversion and translation service. The starting point of your global career.",
+        "link": "Go to Service"
+      },
+      "comingSoon": {
+        "badge": "COMING SOON",
+        "title": "Undisclosed Project",
+        "description": "Innovative micro-service currently in preparation."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "Cake Corporation (hereinafter referred to as the \"Company\") establishes and discloses the following privacy policy to protect users' personal information and to promptly and smoothly handle grievances related thereto, in accordance with the Act on Promotion of Information and Communications Network Utilization and Information Protection, etc., and the Personal Information Protection Act.",
+    "sections": [
+      {
+        "title": "Article 1 (Purpose of Collection and Use of Personal Information)",
+        "content": "The Company processes personal information for the following purposes. The personal information being processed will not be used for purposes other than the following, and if the purpose of use is changed, necessary measures such as obtaining separate consent will be implemented.",
+        "items": [
+          "<strong>Membership Registration and Management:</strong> Identity verification, personal identification, prevention of illegal use by bad members and unauthorized use, confirmation of intent to join, age verification, handling of complaints, and delivery of notices.",
+          "<strong>Service Provision:</strong> AI resume generation, translation, summary, PDF conversion, content provision, and personalized service provision.",
+          "<strong>Marketing and Advertising:</strong> Development of new services (products) and personalized service provision, provision of event and advertising information and participation opportunities."
+        ]
+      },
+      {
+        "title": "Article 2 (Items of Personal Information Collected)",
+        "content": "The Company collects the following personal information for membership registration, consultation, and service application.",
+        "items": [
+          "Required items: Name, email address, profile image (for social login)",
+          "Information collected during service use: Access logs, cookies, access IP information, resume data (experience, education, tech stack, etc.)",
+          "Information collected during payment: Card company name, card number (partial), payment approval details (processed through PG company)"
+        ]
+      },
+      {
+        "title": "Article 3 (Retention and Use Period of Personal Information)",
+        "content": "The Company processes and retains personal information within the personal information retention and use period according to laws or the period agreed upon when collecting personal information from the information subject.",
+        "items": [
+          "Membership Registration and Management: Until membership withdrawal (However, if an investigation is underway due to violation of relevant laws, until the investigation is closed)",
+          "Provision of Goods or Services: Until the supply of goods/services is completed and payment/settlement is completed"
+        ]
+      },
+      {
+        "title": "Article 4 (Procedure and Method of Destruction of Personal Information)",
+        "content": "In principle, the Company destroys the information without delay after the purpose of collecting and using personal information is achieved. Information in the form of electronic files is deleted using technical methods that cannot reproduce the record."
+      },
+      {
+        "title": "Article 5 (Chief Privacy Officer)",
+        "content": "The Company designates a Chief Privacy Officer as follows to take overall responsibility for personal information processing and to handle complaints and damage relief of information subjects related to personal information processing.",
+        "manager": {
+          "name": "CPO: Taekyung Jeon",
+          "dept": "Department: Privacy Protection Team",
+          "email": "Email: patakeique@gmail.com"
+        }
+      }
+    ],
+    "footer": {
+      "date": "Announcement Date: January 9, 2026",
+      "enforceDate": "Enforcement Date: January 9, 2026"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "sections": [
+      {
+        "title": "Article 1 (Purpose)",
+        "content": "The purpose of these Terms is to regulate the rights, obligations, and responsibilities of the Company and members, and other necessary matters regarding the use of the ApplyGogo service (hereinafter referred to as \"Service\") operated by Cake Corporation (hereinafter referred to as \"Company\")."
+      },
+      {
+        "title": "Article 2 (Definition of Terms)",
+        "items": [
+          "\"Service\" refers to AI-based resume conversion and related general services provided by the Company.",
+          "\"Member\" refers to a person who has entered into a service use contract with the Company and uses the services provided by the Company.",
+          "\"Paid Service\" refers to various digital contents and general services provided by the Company for a fee."
+        ]
+      },
+      {
+        "title": "Article 3 (Effect and Change of Terms)",
+        "content": "The Company posts the contents of these Terms on the initial screen of the service so that members can easily understand them. The Company may revise these Terms within the scope that does not violate relevant laws, and in case of revision, the application date and reason for revision shall be specified and announced on the initial screen of the service along with the current Terms."
+      },
+      {
+        "title": "Article 4 (Membership Registration)",
+        "content": "Membership registration is concluded when a user agrees to the contents of the Terms and applies for registration, and the Company approves such application. The Company may withhold or reject approval in the following cases.",
+        "items": [
+          "If the applicant has previously lost membership qualifications under these Terms",
+          "If someone else's name is used",
+          "If false information is entered or contents presented by the Company are not entered"
+        ]
+      },
+      {
+        "title": "Article 5 (Provision and Change of Service)",
+        "content": "The Company provides services such as AI resume summary, translation, and PDF conversion to members. The Company may change the contents of the service provided according to changes in technical specifications or other operational needs, and in this case, the changed contents and application date will be specified and announced in advance."
+      },
+      {
+        "title": "Article 6 (Usage Fees and Payment)",
+        "content": "The service is provided in free and paid (passes, etc.) categories. Usage fees and payment methods for paid services follow what is specified on the relevant service page."
+      },
+      {
+        "title": "Article 7 (Cancellation and Refund Policy)",
+        "content": "The Company applies the following refund policy considering the characteristics of digital content and services.",
+        "items": [
+          "<strong>Full Refund:</strong> Within 7 days of purchasing a paid pass, provided that no credits provided through the pass have been used and no services such as AI processing have been used even once.",
+          "<strong>Non-refundable:</strong> If 7 days have passed since purchase, or if credits have been used at least once or AI processing has occurred, it is considered that the value of the digital content has significantly decreased, and refunds are not possible.",
+          "<strong>No Partial Refund:</strong> Since this service is provided as a term-based pass and credit recharge method, partial refunds for early termination are not provided."
+        ]
+      },
+      {
+        "title": "Article 8 (Privacy Protection)",
+        "content": "The Company strives to protect the personal information of members as prescribed by relevant laws. Regarding the protection and use of personal information, relevant laws and the Company's Privacy Policy apply."
+      },
+      {
+        "title": "Article 9 (Obligations of Members)",
+        "content": "Members shall not engage in the following acts.",
+        "items": [
+          "Registration of false information upon application or change",
+          "Theft of other people's information",
+          "Change of information posted by the Company",
+          "Acts that interfere with the legitimate operation of the service"
+        ]
+      }
+    ],
+    "footer": {
+      "date": "Announcement Date: January 9, 2026",
+      "enforceDate": "Enforcement Date: January 9, 2026"
+    }
+  },
+  "blog": {
+    "title": "ApplyGogo Blog - Insights for Your Global Career",
+    "description": "Check out tips for English resume writing to successful overseas employment cases to help your global growth.",
+    "recommended": "Recommended Content",
+    "tagline": {
+      "title": "Connecting Your Career <br/>to the World",
+      "description": "With ApplyGogo's AI resume builder, anyone can easily and quickly <br/>create a professional-level English resume.",
+      "cta": "Create English Resume for Free"
+    },
+    "allPosts": {
+      "title": "All Articles",
+      "subtitle": "Check out the latest news and career tips from ApplyGogo",
+      "empty": "No posts yet."
     }
   }
 }
