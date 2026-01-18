@@ -13,7 +13,7 @@ import { getRefinementPrompt } from "@/lib/prompts";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -38,7 +38,7 @@ export async function POST(
     if (!extractedData) {
       return NextResponse.json(
         { error: "Extracted data is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -64,13 +64,13 @@ export async function POST(
       extractedData.work_experiences.length > 0
     ) {
       console.log(
-        "[Refine API] Starting refinement (Korean-based selection)..."
+        "[Refine API] Starting refinement (Korean-based selection)...",
       );
 
       const refinementPrompt = getRefinementPrompt(extractedData);
       const refinementResult = await generateContentWithRetry(
         refinementModel,
-        refinementPrompt
+        refinementPrompt,
       );
 
       const refinedText = refinementResult.response.text();
@@ -78,14 +78,14 @@ export async function POST(
 
       const totalBullets =
         refinedData.work_experiences?.reduce(
-          (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-          0
+          (sum: number, exp: any) => sum + (exp.bullets_source?.length || 0),
+          0,
         ) || 0;
 
       console.log(
         `[Refine API] Complete. ${
           refinedData.work_experiences?.length || 0
-        } companies, ${totalBullets} bullets selected.`
+        } companies, ${totalBullets} bullets selected.`,
       );
     } else {
       console.log("[Refine API] Skipped (no work experiences to refine)");
@@ -114,7 +114,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: error.message || "Failed to refine resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -20,7 +20,7 @@ import {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -45,7 +45,7 @@ export async function POST(
           requiredCredits: cost,
           currentCredits: planStatus.credits,
         },
-        { status: 402 }
+        { status: 402 },
       );
     }
 
@@ -140,7 +140,7 @@ export async function POST(
           error:
             "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -150,10 +150,10 @@ export async function POST(
       } experiences, ` +
         `${
           extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
+            (sum: number, exp: any) => sum + (exp.bullets_source?.length || 0),
+            0,
           ) || 0
-        } total bullets.`
+        } total bullets.`,
     );
 
     return NextResponse.json({
@@ -179,7 +179,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: error.message || "Failed to extract resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

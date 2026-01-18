@@ -144,14 +144,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_kr",
-                    e.currentTarget.textContent || ""
+                    "name_source",
+                    e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_kr}
+                {item.name_source}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -161,14 +161,14 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_kr",
-                        e.currentTarget.textContent || ""
+                        "description_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_kr}
+                    {item.description_source}
                   </div>
                 </div>
                 <div className="col-span-1">
@@ -179,7 +179,7 @@ export const DraggableAdditionalItem = ({
                       onChange(
                         item.id,
                         "date",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="날짜 (YYYY.MM)"
@@ -202,14 +202,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_en",
-                    e.currentTarget.textContent || ""
+                    "name_target",
+                    e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="Item Name (EN)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_en}
+                {item.name_target}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -219,14 +219,14 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_en",
-                        e.currentTarget.textContent || ""
+                        "description_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Description/Issuer/Level (EN)"
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_en}
+                    {item.description_target}
                   </div>
                 </div>
                 <div className="col-span-1">
@@ -237,7 +237,7 @@ export const DraggableAdditionalItem = ({
                       onChange(
                         item.id,
                         "date",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Date (YYYY.MM)"

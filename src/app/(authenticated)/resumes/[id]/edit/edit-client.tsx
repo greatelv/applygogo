@@ -80,34 +80,35 @@ export function EditClient({
 
       // Filter out empty items before save
       const filteredExperiences = data.experiences.filter(
-        (exp) => exp.company?.trim() || exp.position?.trim()
+        (exp) => exp.company_source?.trim() || exp.position_source?.trim(),
       );
       const filteredEducations = data.educations.filter((edu) =>
-        edu.school_name?.trim()
+        edu.school_name_source?.trim(),
       );
       const filteredSkills = data.skills.filter((skill) => skill.name?.trim());
       const filteredAdditionalItems = (data.additionalItems || []).filter(
-        (item) => item.name_kr?.trim() || item.description_kr?.trim()
+        (item) => item.name_source?.trim() || item.description_source?.trim(),
       );
 
       // Map frontend data structure back to DB structure
       const payload = {
-        name_kr: data.personalInfo.name_kr,
-        name_en: data.personalInfo.name_en,
+        name_source: data.personalInfo.name_source,
+        name_target: data.personalInfo.name_target,
         email: data.personalInfo.email,
         phone: data.personalInfo.phone,
         links: data.personalInfo.links,
-        summary: data.personalInfo.summary,
-        summary_kr: data.personalInfo.summary_kr,
+        summary: data.personalInfo.summary_target, // Map to summary (target)
+        summary_source: data.personalInfo.summary_source,
         work_experiences: filteredExperiences.map((exp) => ({
-          company_name_kr: exp.company,
-          company_name_en: exp.companyEn,
-          role_kr: exp.position,
-          role_en: exp.positionEn,
+          company_name_source: exp.company_source,
+          company_name_target: exp.company_target,
+          role_source: exp.position_source,
+          role_target: exp.position_target,
           start_date: exp.period.split(" - ")[0] || "",
           end_date: exp.period.split(" - ")[1] || "",
-          bullets_kr: exp.bullets.filter((b: string) => b?.trim()),
-          bullets_en: exp.bulletsEn.filter((b: string) => b?.trim()),
+          bullets_source: exp.bullets_source.filter((b: string) => b?.trim()),
+          bullets_target:
+            exp.bullets_target?.filter((b: string) => b?.trim()) || [],
         })),
         educations: filteredEducations,
         skills: filteredSkills,

@@ -19,23 +19,23 @@ const formatDate = (dateStr?: string) => {
 
 interface Experience {
   id: string;
-  company: string;
-  position: string;
+  company_source: string;
+  position_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_target: string;
+  position_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -48,28 +48,28 @@ interface Skill {
 
 interface Certification {
   id: string;
-  name: string;
+  name_source: string;
   issuer?: string;
   date?: string;
 }
 
 interface Award {
   id: string;
-  name: string;
+  name_source: string;
   issuer?: string;
   date?: string;
 }
 
 interface Language {
   id: string;
-  name: string;
+  name_source: string;
   level?: string;
   score?: string;
 }
 
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_source?: string;
+  name_target?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
@@ -92,19 +92,21 @@ export function ClassicTemplate({
   additionalItems = [],
 }: ClassicTemplateProps) {
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
   const others = additionalItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <div className="bg-white text-black p-8 min-h-full font-serif">
       {/* Header */}
       <div className="text-center mb-8 pb-6 border-b-2 border-gray-800">
         <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide uppercase">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_target ||
+            personalInfo?.name_source ||
+            "이름 없음"}
         </h1>
         {/* <p className="text-lg text-gray-700 mb-2">Frontend Developer</p> */}
         <div className="text-sm text-gray-600 flex justify-center flex-wrap gap-2">
@@ -159,18 +161,20 @@ export function ClassicTemplate({
               <div key={exp.id}>
                 <div className="mb-1">
                   <div className="flex justify-between items-baseline">
-                    <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
+                    <h3 className="font-bold text-gray-900">
+                      {exp.company_target}
+                    </h3>
                     <span className="text-xs text-gray-600 italic">
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
                       {formatDate(exp.period.split(" - ")[1])}
                     </span>
                   </div>
                   <p className="text-sm text-gray-700 italic">
-                    {exp.positionEn}
+                    {exp.position_target}
                   </p>
                 </div>
                 <ul className="space-y-1">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bullets_target.map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-800 flex gap-2 leading-relaxed"
@@ -212,18 +216,18 @@ export function ClassicTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_target || edu.school_name_source}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
+                  {((edu.degree_target && edu.degree_target !== "-") ||
+                    (edu.degree_source && edu.degree_source !== "-") ||
+                    (edu.major_target && edu.major_target !== "-") ||
+                    (edu.major_source && edu.major_source !== "-")) && (
                     <p className="text-sm text-gray-700 italic">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
+                      {edu.degree_target || edu.degree_source}
+                      {(edu.degree_target || edu.degree_source) &&
+                        (edu.major_target || edu.major_source) &&
                         ", "}
-                      {edu.major_en || edu.major}
+                      {edu.major_target || edu.major_source}
                     </p>
                   )}
                 </div>
@@ -251,9 +255,9 @@ export function ClassicTemplate({
                 {certifications.map((cert, i) => (
                   <span key={cert.id}>
                     {i > 0 && ", "}
-                    {cert.name_en || cert.name}
-                    {(cert.description_en || cert.description) &&
-                      ` (${cert.description_en || cert.description})`}
+                    {cert.name_target || cert.name_source}
+                    {(cert.description_target || cert.description_source) &&
+                      ` (${cert.description_target || cert.description_source})`}
                     {cert.date && ` - ${formatDate(cert.date)}`}
                   </span>
                 ))}
@@ -265,9 +269,9 @@ export function ClassicTemplate({
                 {awards.map((award, i) => (
                   <span key={award.id}>
                     {i > 0 && ", "}
-                    {award.name_en || award.name}
-                    {(award.description_en || award.description) &&
-                      ` (${award.description_en || award.description})`}
+                    {award.name_target || award.name_source}
+                    {(award.description_target || award.description_source) &&
+                      ` (${award.description_target || award.description_source})`}
                     {award.date && ` - ${formatDate(award.date)}`}
                   </span>
                 ))}
@@ -279,9 +283,9 @@ export function ClassicTemplate({
                 {languages.map((lang, i) => (
                   <span key={lang.id}>
                     {i > 0 && ", "}
-                    {lang.name_en || lang.name}{" "}
-                    {(lang.description_en || lang.description) &&
-                      `(${lang.description_en || lang.description})`}
+                    {lang.name_source}{" "}
+                    {(lang.level || lang.score) &&
+                      `(${[lang.level, lang.score].filter(Boolean).join(", ")})`}
                   </span>
                 ))}
               </div>

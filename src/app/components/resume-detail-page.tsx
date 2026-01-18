@@ -37,13 +37,13 @@ import {
 
 interface TranslatedExperience {
   id: string;
-  company: string;
-  position: string;
+  company_source: string;
+  position_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_target: string;
+  position_target: string;
+  bullets_target: string[];
 }
 
 const statusConfig = {
@@ -58,8 +58,8 @@ interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
   personalInfo?: {
-    name_kr: string;
-    name_en: string;
+    name_source: string;
+    name_target: string;
     email: string;
     phone: string;
     links: any[];
@@ -149,9 +149,8 @@ export function ResumeDetailPage({
     try {
       const { pdf } = await import("@react-pdf/renderer");
       // Dynamic import to avoid SSR issues with React-PDF
-      const { ModernPdf, registerFonts } = await import(
-        "./pdf-templates/modern-pdf"
-      );
+      const { ModernPdf, registerFonts } =
+        await import("./pdf-templates/modern-pdf");
       const { ClassicPdf } = await import("./pdf-templates/classic-pdf");
       const { MinimalPdf } = await import("./pdf-templates/minimal-pdf");
 
@@ -180,17 +179,15 @@ export function ResumeDetailPage({
 
         case "professional":
           // Dynamic import for Professional PDF
-          const { ProfessionalPdf } = await import(
-            "./pdf-templates/professional-pdf"
-          );
+          const { ProfessionalPdf } =
+            await import("./pdf-templates/professional-pdf");
           // @ts-ignore
           doc = <ProfessionalPdf {...commonProps} />;
           break;
         case "executive":
           // Dynamic import for Executive PDF
-          const { ExecutivePdf } = await import(
-            "./pdf-templates/executive-pdf"
-          );
+          const { ExecutivePdf } =
+            await import("./pdf-templates/executive-pdf");
           // @ts-ignore
           doc = <ExecutivePdf {...commonProps} />;
           break;
@@ -447,7 +444,7 @@ export function ResumeDetailPage({
             <div className="space-y-2 text-sm">
               <div className="grid grid-cols-[100px_1fr] gap-2">
                 <span className="font-medium text-muted-foreground">이름</span>
-                <span>{resume.personalInfo?.name_kr || "-"}</span>
+                <span>{resume.personalInfo?.name_source || "-"}</span>
               </div>
               {resume.personalInfo?.email && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
@@ -499,9 +496,9 @@ export function ResumeDetailPage({
                 <div key={exp.id}>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-semibold">{exp.company}</h4>
+                      <h4 className="font-semibold">{exp.company_source}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {exp.position}
+                        {exp.position_source}
                       </p>
                     </div>
                     <span className="text-sm text-muted-foreground">
@@ -509,7 +506,7 @@ export function ResumeDetailPage({
                     </span>
                   </div>
                   <ul className="space-y-1">
-                    {exp.bullets.map((bullet: string, index: number) => (
+                    {exp.bullets_source.map((bullet: string, index: number) => (
                       <li
                         key={index}
                         className="text-sm flex gap-2 text-muted-foreground"
@@ -537,13 +534,15 @@ export function ResumeDetailPage({
                     className="flex justify-between items-start"
                   >
                     <div>
-                      <h4 className="font-semibold">{edu.school_name}</h4>
-                      {((edu.degree && edu.degree !== "-") ||
-                        (edu.major && edu.major !== "-")) && (
+                      <h4 className="font-semibold">
+                        {edu.school_name_source}
+                      </h4>
+                      {((edu.degree_source && edu.degree_source !== "-") ||
+                        (edu.major_source && edu.major_source !== "-")) && (
                         <p className="text-sm text-muted-foreground">
-                          {edu.degree}
-                          {edu.degree && edu.major && ", "}
-                          {edu.major}
+                          {edu.degree_source}
+                          {edu.degree_source && edu.major_source && ", "}
+                          {edu.major_source}
                         </p>
                       )}
                     </div>
@@ -587,7 +586,7 @@ export function ResumeDetailPage({
                   "OTHER",
                 ].map((type) => {
                   const items = resume.additionalItems.filter(
-                    (i) => i.type === type
+                    (i) => i.type === type,
                   );
                   if (items.length === 0) return null;
 
@@ -611,10 +610,12 @@ export function ResumeDetailPage({
                             className="text-sm flex justify-between"
                           >
                             <div>
-                              <span className="font-medium">{item.name}</span>
-                              {item.description && (
+                              <span className="font-medium">
+                                {item.name_source}
+                              </span>
+                              {item.description_source && (
                                 <span className="text-muted-foreground ml-2">
-                                  ({item.description})
+                                  ({item.description_source})
                                 </span>
                               )}
                             </div>

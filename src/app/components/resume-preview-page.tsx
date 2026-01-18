@@ -9,23 +9,23 @@ import { MinimalTemplate } from "./resume-templates/minimal-template";
 
 interface TranslatedExperience {
   id: string;
-  company: string;
-  position: string;
+  company_source: string;
+  position_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_target: string;
+  position_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -68,7 +68,7 @@ export function ResumePreviewPage({
   isCompleting = false,
 }: ResumePreviewPageProps) {
   const [selectedTemplate, setSelectedTemplate] = useState(
-    initialTemplate.toLowerCase()
+    initialTemplate.toLowerCase(),
   );
   // Calculate initial scale based on window width
   const [scale, setScale] = useState(1);
@@ -227,7 +227,7 @@ export function ResumePreviewPage({
                   "flex flex-col items-center justify-center py-2 px-0.5 rounded-md text-[10px] sm:text-xs font-medium transition-all relative overflow-hidden",
                   selectedTemplate === template.id
                     ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:bg-background/50 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-background/50 hover:text-foreground",
                 )}
               >
                 {/* Shortened Names for Mobile */}
@@ -235,8 +235,8 @@ export function ResumePreviewPage({
                   {template.id === "professional"
                     ? "Pro"
                     : template.id === "executive"
-                    ? "Exec"
-                    : template.name}
+                      ? "Exec"
+                      : template.name}
                 </span>
                 {selectedTemplate === template.id && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary/50" />
@@ -265,7 +265,7 @@ export function ResumePreviewPage({
                   "w-full text-left p-4 rounded-lg border-2 transition-all cursor-pointer relative",
                   selectedTemplate === template.id
                     ? "border-primary bg-primary/5"
-                    : "border-border hover:border-foreground/30 bg-card"
+                    : "border-border hover:border-foreground/30 bg-card",
                 )}
               >
                 <div className="flex items-start justify-between mb-2 gap-2">

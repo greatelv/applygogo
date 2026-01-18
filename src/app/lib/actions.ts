@@ -159,7 +159,7 @@ export async function uploadResumeAction(formData: FormData) {
 export async function updateResumeTemplateAction(
   resumeId: string,
 
-  template: "modern" | "classic" | "minimal" | "professional" | "executive"
+  template: "modern" | "classic" | "minimal" | "professional" | "executive",
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -209,7 +209,7 @@ export async function updateResumeAction(
     certifications?: any[];
     awards?: any[];
     languages?: any[];
-  }
+  },
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -241,14 +241,14 @@ export async function updateResumeAction(
         await tx.workExperience.createMany({
           data: experiences.map((exp: any, index: number) => ({
             resumeId,
-            company_name_kr: exp.company,
-            company_name_en: exp.companyEn,
-            role_kr: exp.position,
-            role_en: exp.positionEn,
+            company_name_source: exp.company_source || exp.company,
+            company_name_target: exp.company_target || exp.companyEn,
+            role_source: exp.position_source || exp.position,
+            role_target: exp.position_target || exp.positionEn,
             start_date: exp.period.split(" ~ ")[0] || "",
             end_date: exp.period.split(" ~ ")[1] || "",
-            bullets_kr: exp.bullets,
-            bullets_en: exp.bulletsEn,
+            bullets_source: exp.bullets_source || exp.bullets,
+            bullets_target: exp.bullets_target || exp.bulletsEn,
             order: index,
           })),
         });
@@ -259,12 +259,12 @@ export async function updateResumeAction(
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
             resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
+            school_name_source: edu.school_name_source || edu.school_name,
+            school_name_target: edu.school_name_target || edu.school_name_en,
+            major_source: edu.major_source || edu.major,
+            major_target: edu.major_target || edu.major_en,
+            degree_source: edu.degree_source || edu.degree,
+            degree_target: edu.degree_target || edu.degree_en,
             start_date: edu.start_date,
             end_date: edu.end_date,
             order: index,
@@ -285,42 +285,39 @@ export async function updateResumeAction(
       }
 
       // 5. Create Certifications
-      // 5. Create Certifications (as Additional Items)
       if (certifications?.length > 0) {
         await tx.additionalItem.createMany({
           data: certifications.map((cert: any) => ({
             resumeId,
             type: "CERTIFICATION",
-            name_kr: cert.name,
-            description_kr: cert.issuer,
+            name_source: cert.name_source || cert.name,
+            description_source: cert.description_source || cert.issuer,
             date: cert.date,
           })),
         });
       }
 
       // 6. Create Awards
-      // 6. Create Awards (as Additional Items)
       if (awards?.length > 0) {
         await tx.additionalItem.createMany({
           data: awards.map((award: any) => ({
             resumeId,
             type: "AWARD",
-            name_kr: award.name,
-            description_kr: award.issuer,
+            name_source: award.name_source || award.name,
+            description_source: award.description_source || award.issuer,
             date: award.date,
           })),
         });
       }
 
       // 7. Create Languages
-      // 7. Create Languages (as Additional Items)
       if (languages?.length > 0) {
         await tx.additionalItem.createMany({
           data: languages.map((lang: any) => ({
             resumeId,
             type: "LANGUAGE",
-            name_kr: lang.name,
-            description_kr: [lang.level, lang.score]
+            name_source: lang.name_source || lang.name,
+            description_source: [lang.level, lang.score]
               .filter(Boolean)
               .join(" / "),
           })),
@@ -331,12 +328,13 @@ export async function updateResumeAction(
       await tx.resume.update({
         where: { id: resumeId, userId },
         data: {
-          name_kr: personalInfo.name_kr,
-          name_en: personalInfo.name_en,
+          name_source: personalInfo.name_source || personalInfo.name_kr,
+          name_target: personalInfo.name_target || personalInfo.name_en,
           email: personalInfo.email,
           phone: personalInfo.phone,
           links: personalInfo.links,
-          summary: personalInfo.summary || "",
+          summary_source:
+            personalInfo.summary_source || personalInfo.summary || "",
           current_step: "TEMPLATE",
         },
       });

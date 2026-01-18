@@ -65,28 +65,28 @@ export const RESUME_EXTRACTION_PROMPT = `
 \`\`\`json
 {
   "personal_info": {
-    "name_kr": "...",
+    "name_source": "...",
     "email": "...",
     "phone": "...",
     "links": [
       { "label": "LinkedIn/GitHub/Blog/Portfolio... (URL보고 추론)", "url": "..." }
     ]
   },
-  "professional_summary_kr": "...",
+  "summary_source": "...",
   "work_experiences": [ ... ],
   "educations": [
     {
-      "school_name": "... (반드시 추출)",
-      "major": "...",
-      "degree": "...",
+      "school_name_source": "... (반드시 추출)",
+      "major_source": "...",
+      "degree_source": "...",
       "start_date": "YYYY-MM",
       "end_date": "YYYY-MM"
     }
   ],
   "skills": ["..."],
-  "certifications": [{ "name": "..." , "date": "..." }],
-  "awards": [{ "name": "..." , "date": "..." }],
-  "languages": [{ "name": "..." , "level": "..." }]
+  "certifications": [{ "name_source": "..." , "date": "..." }],
+  "awards": [{ "name_source": "..." , "date": "..." }],
+  "languages": [{ "name_source": "..." , "level": "..." }]
 }
 \`\`\`
 `;
@@ -135,14 +135,14 @@ ${JSON.stringify(extractedData, null, 2)}
 \`\`\`json
 {
   "personal_info": { ... },
-  "professional_summary_kr": "...",
+  "summary_source": "...",
   "work_experiences": [
     {
-      "company_name_kr": "통합된 공식 회사명",
-      "role_kr": "...",
+      "company_name_source": "통합된 공식 회사명",
+      "role_source": "...",
       "start_date": "YYYY-MM (전체 기간)",
       "end_date": "YYYY-MM (전체 기간)",
-      "bullets_kr": ["... (선별된 핵심 성과)"]
+      "bullets_source": ["... (선별된 핵심 성과)"]
     }
   ],
   ...
@@ -219,8 +219,8 @@ ${JSON.stringify(refinedData, null, 2)}
 \`\`\`json
 {
   "personal_info": {
-    "name_kr": "...",
-    "name_en": "Moon Ja Lee (Romanized English Name)",
+    "name_source": "...",
+    "name_target": "Moon Ja Lee (Romanized English Name)",
     "email": "...",
     "phone": "...",
     "links": [
@@ -230,28 +230,28 @@ ${JSON.stringify(refinedData, null, 2)}
       }
     ]
   },
-  "professional_summary_kr": "...",
-  "professional_summary": "... (영문 번역)",
+  "summary_source": "...",
+  "summary_target": "... (영문 번역)",
   "work_experiences": [
     {
-      "company_name_kr": "... (입력과 동일)",
-      "company_name_en": "... (로마자 표기)",
-      "role_kr": "...",
-      "role_en": "...",
+      "company_name_source": "... (입력과 동일)",
+      "company_name_target": "... (로마자 표기)",
+      "role_source": "...",
+      "role_target": "...",
       "start_date": "...",
       "end_date": "...",
-      "bullets_kr": ["..."],
-      "bullets_en": ["... (Action Verb로 번역)"]
+      "bullets_source": ["..."],
+      "bullets_target": ["... (Action Verb로 번역)"]
     }
   ],
   "educations": [
     {
-      "school_name": "... (입력과 동일, 한글 유지)",
-      "school_name_en": "... (영문 번역)",
-      "major": "... (입력과 동일, 한글 유지)",
-      "major_en": "... (영문 번역)",
-      "degree": "... (입력과 동일, 한글 유지)",
-      "degree_en": "... (영문 번역)",
+      "school_name_source": "... (입력과 동일, 한글 유지)",
+      "school_name_target": "... (영문 번역)",
+      "major_source": "... (입력과 동일, 한글 유지)",
+      "major_target": "... (영문 번역)",
+      "degree_source": "... (입력과 동일, 한글 유지)",
+      "degree_target": "... (영문 번역)",
       "start_date": "...",
       "end_date": "..."
     }
@@ -259,28 +259,28 @@ ${JSON.stringify(refinedData, null, 2)}
   "skills": ["..."],
   "certifications": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_source": "... (입력과 동일, 한글 유지)",
+      "name_target": "... (영문 번역)",
       "date": "...",
       "issuer": "...",
-      "issuer_en": "..."
+      "issuer_target": "..."
     }
   ],
   "awards": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_source": "... (입력과 동일, 한글 유지)",
+      "name_target": "... (영문 번역)",
       "date": "...",
       "issuer": "...",
-      "issuer_en": "..."
+      "issuer_target": "..."
     }
   ],
   "languages": [
     {
-      "name": "... (입력과 동일, 한글 유지)",
-      "name_en": "... (영문 번역)",
+      "name_source": "... (입력과 동일, 한글 유지)",
+      "name_target": "... (영문 번역)",
       "level": "...",
-      "level_en": "..."
+      "level_target": "..."
     }
   ]
 }
@@ -295,7 +295,7 @@ export const RESUME_ANALYSIS_PROMPT = RESUME_EXTRACTION_PROMPT;
 
 export const getTranslationPrompt = (
   texts: string[],
-  type: "bullets" | "general"
+  type: "bullets" | "general",
 ) => {
   let instruction = "";
   if (type === "bullets") {

@@ -5,7 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -45,14 +45,14 @@ export async function GET(
     console.error("Error fetching resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to fetch resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -63,13 +63,13 @@ export async function PUT(
     const { id: resumeId } = await params;
     const body = await request.json();
     const {
-      name_kr,
-      name_en,
+      name_source,
+      name_target,
       email,
       phone,
       links,
       summary,
-      summary_kr,
+      summary_source,
       work_experiences,
       educations,
       skills,
@@ -96,14 +96,14 @@ export async function PUT(
         await tx.workExperience.createMany({
           data: work_experiences.map((exp: any, index: number) => ({
             resumeId,
-            company_name_kr: exp.company_name_kr,
-            company_name_en: exp.company_name_en,
-            role_kr: exp.role_kr,
-            role_en: exp.role_en,
+            company_name_source: exp.company_name_source || exp.company_name_kr,
+            company_name_target: exp.company_name_target || exp.company_name_en,
+            role_source: exp.role_source || exp.role_kr,
+            role_target: exp.role_target || exp.role_en,
             start_date: exp.start_date,
             end_date: exp.end_date,
-            bullets_kr: exp.bullets_kr,
-            bullets_en: exp.bullets_en,
+            bullets_source: exp.bullets_source || exp.bullets_kr,
+            bullets_target: exp.bullets_target || exp.bullets_en,
             order: index,
           })),
         });
@@ -114,12 +114,12 @@ export async function PUT(
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
             resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
+            school_name_source: edu.school_name_source || edu.school_name,
+            school_name_target: edu.school_name_target || edu.school_name_en,
+            major_source: edu.major_source || edu.major,
+            major_target: edu.major_target || edu.major_en,
+            degree_source: edu.degree_source || edu.degree,
+            degree_target: edu.degree_target || edu.degree_en,
             start_date: edu.start_date,
             end_date: edu.end_date,
             order: index,
@@ -142,13 +142,13 @@ export async function PUT(
       await (tx as any).resume.update({
         where: { id: resumeId },
         data: {
-          name_kr,
-          name_en,
+          name_source,
+          name_target,
           email,
           phone,
           links,
           summary,
-          summary_kr,
+          summary_source,
           current_step: body.current_step || "TEMPLATE",
           updated_at: new Date(),
         },
@@ -161,10 +161,10 @@ export async function PUT(
           data: body.additional_items.map((item: any, index: number) => ({
             resumeId,
             type: item.type,
-            name_kr: item.name_kr,
-            name_en: item.name_en,
-            description_kr: item.description_kr,
-            description_en: item.description_en,
+            name_source: item.name_source || item.name_kr,
+            name_target: item.name_target || item.name_en,
+            description_source: item.description_source || item.description_kr,
+            description_target: item.description_target || item.description_en,
             date: item.date,
             order: index,
           })),
@@ -177,14 +177,14 @@ export async function PUT(
     console.error("Error updating resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -220,14 +220,14 @@ export async function PATCH(
     console.error("Error patching resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to patch resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -281,7 +281,7 @@ export async function DELETE(
     console.error("Error deleting resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to delete resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

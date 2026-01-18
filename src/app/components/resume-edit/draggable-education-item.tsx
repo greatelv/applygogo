@@ -145,26 +145,30 @@ export const DraggableEducationItem = ({
                 onBlur={(e) =>
                   onChange(
                     edu.id,
-                    "school_name",
-                    e.currentTarget.textContent || ""
+                    "school_name_source",
+                    e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="학교명 (예: 한국대학교)"
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {edu.school_name}
+                {edu.school_name_source}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div
                   contentEditable
                   suppressContentEditableWarning
                   onBlur={(e) =>
-                    onChange(edu.id, "major", e.currentTarget.textContent || "")
+                    onChange(
+                      edu.id,
+                      "major_source",
+                      e.currentTarget.textContent || "",
+                    )
                   }
                   data-placeholder="전공 (예: 경영학)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.major}
+                  {edu.major_source}
                 </div>
                 <span className="text-muted-foreground select-none">•</span>
                 <div
@@ -173,14 +177,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "degree",
-                      e.currentTarget.textContent || ""
+                      "degree_source",
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="학위 (예: 학사)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.degree}
+                  {edu.degree_source}
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
@@ -191,7 +195,7 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "start_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="입학일 (예: 2016.03)"
@@ -207,7 +211,7 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "end_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="졸업일 (예: 2020.02)"
@@ -229,14 +233,14 @@ export const DraggableEducationItem = ({
                 onBlur={(e) =>
                   onChange(
                     edu.id,
-                    "school_name_en",
-                    e.currentTarget.textContent || ""
+                    "school_name_target",
+                    e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="School Name (EN)"
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {edu.school_name_en || edu.school_name}
+                {edu.school_name_target || edu.school_name_source}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div
@@ -245,14 +249,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "major_en",
-                      e.currentTarget.textContent || ""
+                      "major_target",
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Major (EN)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.major_en || edu.major}
+                  {edu.major_target || edu.major_source}
                 </div>
                 <span className="text-muted-foreground select-none">•</span>
                 <div
@@ -261,14 +265,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "degree_en",
-                      e.currentTarget.textContent || ""
+                      "degree_target",
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Degree (EN)"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.degree_en || edu.degree}
+                  {edu.degree_target || edu.degree_source}
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
@@ -279,7 +283,7 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "start_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Start Date (EN)"
@@ -295,7 +299,7 @@ export const DraggableEducationItem = ({
                     onChange(
                       edu.id,
                       "end_date",
-                      e.currentTarget.textContent || ""
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="End Date (EN)"

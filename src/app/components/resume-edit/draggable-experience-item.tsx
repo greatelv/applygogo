@@ -16,13 +16,13 @@ interface DraggableExperienceItemProps {
   onChange: (
     id: string,
     field: keyof TranslatedExperience,
-    value: string
+    value: string,
   ) => void;
   onBulletEdit: (
     id: string,
     index: number,
     value: string,
-    isEnglish: boolean
+    isEnglish: boolean,
   ) => void;
   onAddBullet: (id: string) => void;
   onRemoveBullet: (id: string, index: number) => void;
@@ -168,14 +168,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "company",
-                      e.currentTarget.textContent || ""
+                      "company_source",
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="회사/조직명 (예: 삼성전자)"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.company}
+                  {exp.company_source}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -184,14 +184,14 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "position",
-                        e.currentTarget.textContent || ""
+                        "position_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="직무"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.position}
+                    {exp.position_source}
                   </div>
                   <span className="text-muted-foreground select-none">•</span>
                   <div
@@ -201,7 +201,7 @@ export const DraggableExperienceItem = ({
                       onChange(
                         exp.id,
                         "period",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="기간 (예: 2020.01 - 2023.12)"
@@ -213,7 +213,7 @@ export const DraggableExperienceItem = ({
               </div>
 
               <ul className="space-y-3">
-                {exp.bullets.map((bullet, index) => (
+                {exp.bullets_source.map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -226,7 +226,7 @@ export const DraggableExperienceItem = ({
                           exp.id,
                           index,
                           e.currentTarget.textContent || "",
-                          false
+                          false,
                         )
                       }
                       data-placeholder="업무 성과 및 활동 내용"
@@ -257,14 +257,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "companyEn",
-                      e.currentTarget.textContent || ""
+                      "company_target",
+                      e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Company Name (EN)"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.companyEn}
+                  {exp.company_target}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -273,14 +273,14 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "positionEn",
-                        e.currentTarget.textContent || ""
+                        "position_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Position (EN)"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.positionEn}
+                    {exp.position_target}
                   </div>
                   <span className="text-muted-foreground select-none">•</span>
                   <div
@@ -290,7 +290,7 @@ export const DraggableExperienceItem = ({
                       onChange(
                         exp.id,
                         "period",
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Period (EN)"
@@ -302,7 +302,7 @@ export const DraggableExperienceItem = ({
               </div>
 
               <ul className="space-y-3">
-                {exp.bulletsEn.map((bullet, index) => (
+                {(exp.bullets_target || []).map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -315,7 +315,7 @@ export const DraggableExperienceItem = ({
                           exp.id,
                           index,
                           e.currentTarget.textContent || "",
-                          true
+                          true,
                         )
                       }
                       data-placeholder="Achievements and activities (EN)"

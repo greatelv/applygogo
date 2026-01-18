@@ -34,23 +34,29 @@ async function checkResumeData() {
     }
 
     console.log(
-      "\n💼 경력사항 (" + latestResume.work_experiences.length + "개):"
+      "\n💼 경력사항 (" + latestResume.work_experiences.length + "개):",
     );
     latestResume.work_experiences.forEach((exp, idx) => {
       console.log(
-        `\n  [${idx + 1}] ${exp.company_name_kr} (${exp.company_name_en})`
+        `\n  [${idx + 1}] ${exp.company_name_source} (${exp.company_name_target})`,
       );
-      console.log(`      직무: ${exp.role_kr} / ${exp.role_en}`);
+      console.log(`      직무: ${exp.role_source} / ${exp.role_target}`);
       console.log(`      기간: ${exp.start_date} ~ ${exp.end_date}`);
-      console.log(`      업무(한글):`, exp.bullets_kr);
-      console.log(`      업무(영문):`, exp.bullets_en);
+      console.log(`      업무(Source):`, exp.bullets_source);
+      console.log(`      업무(Target):`, exp.bullets_target);
     });
 
     console.log("\n🎓 학력사항 (" + latestResume.educations.length + "개):");
     latestResume.educations.forEach((edu, idx) => {
-      console.log(`\n  [${idx + 1}] ${edu.school_name}`);
-      console.log(`      전공: ${edu.major}`);
-      console.log(`      학위: ${edu.degree}`);
+      console.log(
+        `\n  [${idx + 1}] ${edu.school_name_source} (${edu.school_name_target || ""})`,
+      );
+      console.log(
+        `      전공: ${edu.major_source} (${edu.major_target || ""})`,
+      );
+      console.log(
+        `      학위: ${edu.degree_source} (${edu.degree_target || ""})`,
+      );
       console.log(`      기간: ${edu.start_date} ~ ${edu.end_date}`);
     });
 

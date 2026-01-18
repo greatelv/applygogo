@@ -218,14 +218,14 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_kr",
-                        e.currentTarget.textContent || ""
+                        "name_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="이름 (한국어)"
                     className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.name_kr}
+                    {personalInfo.name_source}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -239,7 +239,7 @@ export function ResumeEditPage({
                       onBlur={(e) =>
                         handlePersonalInfoChange(
                           "email",
-                          e.currentTarget.textContent || ""
+                          e.currentTarget.textContent || "",
                         )
                       }
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
@@ -257,7 +257,7 @@ export function ResumeEditPage({
                       onBlur={(e) =>
                         handlePersonalInfoChange(
                           "phone",
-                          e.currentTarget.textContent || ""
+                          e.currentTarget.textContent || "",
                         )
                       }
                       data-placeholder="전화번호"
@@ -316,7 +316,7 @@ export function ResumeEditPage({
                         <button
                           onClick={() => {
                             const newLinks = personalInfo.links.filter(
-                              (_, i) => i !== index
+                              (_, i) => i !== index,
                             );
                             handlePersonalInfoChange("links", newLinks);
                           }}
@@ -345,8 +345,8 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_en",
-                        e.currentTarget.textContent || ""
+                        "name_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Name (English)"
@@ -356,7 +356,7 @@ export function ResumeEditPage({
                         : ""
                     }`}
                   >
-                    {personalInfo.name_en}
+                    {personalInfo.name_target}
                   </div>
                 </div>
 
@@ -372,7 +372,7 @@ export function ResumeEditPage({
                       onBlur={(e) =>
                         handlePersonalInfoChange(
                           "email",
-                          e.currentTarget.textContent || ""
+                          e.currentTarget.textContent || "",
                         )
                       }
                       data-placeholder="이메일 주소"
@@ -391,7 +391,7 @@ export function ResumeEditPage({
                       onBlur={(e) =>
                         handlePersonalInfoChange(
                           "phone",
-                          e.currentTarget.textContent || ""
+                          e.currentTarget.textContent || "",
                         )
                       }
                       className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text"
@@ -453,7 +453,7 @@ export function ResumeEditPage({
                         <button
                           onClick={() => {
                             const newLinks = personalInfo.links.filter(
-                              (_, i) => i !== index
+                              (_, i) => i !== index,
                             );
                             handlePersonalInfoChange("links", newLinks);
                           }}
@@ -502,14 +502,14 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "summary_kr",
-                        e.currentTarget.textContent || ""
+                        "summary_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Professional Summary (Korean) - 전문적인 요약을 입력하세요."
                     className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.summary_kr}
+                    {personalInfo.summary_source}
                   </div>
                 </div>
 
@@ -523,8 +523,8 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "summary",
-                        e.currentTarget.textContent || ""
+                        "summary_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Professional Summary (English) - Write a professional summary."
@@ -534,7 +534,7 @@ export function ResumeEditPage({
                         : ""
                     }`}
                   >
-                    {personalInfo.summary}
+                    {personalInfo.summary_target}
                   </div>
                 </div>
               </div>
@@ -738,30 +738,32 @@ export function ResumeEditPage({
             const compactedPersonalInfo = {
               ...personalInfo,
               links: personalInfo.links.filter(
-                (link) => link.url && link.url.trim() !== ""
+                (link) => link.url && link.url.trim() !== "",
               ),
             };
 
             const compactedExperiences = experiences.filter(
               (exp) =>
-                (exp.company && exp.company.trim() !== "") ||
-                (exp.companyEn && exp.companyEn.trim() !== "")
+                (exp.company_source && exp.company_source.trim() !== "") ||
+                (exp.company_target && exp.company_target.trim() !== ""),
             );
 
             const compactedEducations = educations.filter(
               (edu) =>
-                (edu.school_name && edu.school_name.trim() !== "") ||
-                (edu.school_name_en && edu.school_name_en.trim() !== "")
+                (edu.school_name_source &&
+                  edu.school_name_source.trim() !== "") ||
+                (edu.school_name_target &&
+                  edu.school_name_target.trim() !== ""),
             );
 
             const compactedSkills = skills.filter(
-              (skill) => skill.name && skill.name.trim() !== ""
+              (skill) => skill.name && skill.name.trim() !== "",
             );
 
             const compactedAdditionalItems = additionalItems.filter(
               (item) =>
-                (item.name_kr && item.name_kr.trim() !== "") ||
-                (item.name_en && item.name_en.trim() !== "")
+                (item.name_source && item.name_source.trim() !== "") ||
+                (item.name_target && item.name_target.trim() !== ""),
             );
 
             onNext({

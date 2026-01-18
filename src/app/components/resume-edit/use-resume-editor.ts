@@ -37,38 +37,38 @@ export const useResumeEditor = ({
       links: [],
       summary: "",
       summary_kr: "",
-    }
+    },
   );
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
-    initialExperiences || []
+    initialExperiences || [],
   );
   const [educations, setEducations] = useState<Education[]>(
-    initialEducations || []
+    initialEducations || [],
   );
   const [skills, setSkills] = useState<Skill[]>(initialSkills || []);
   const [additionalItems, setAdditionalItems] = useState<AdditionalItem[]>(
-    initialAdditionalItems || []
+    initialAdditionalItems || [],
   );
 
   // Baseline states for change detection (reset after successful translation)
   const [baselinePersonalInfo, setBaselinePersonalInfo] =
     useState<PersonalInfo>(
       initialPersonalInfo || {
-        name_kr: "",
-        name_en: "",
+        name_source: "",
+        name_target: "",
         email: "",
         phone: "",
         links: [],
-        summary: "",
-        summary_kr: "",
-      }
+        summary_source: "",
+        summary_target: "",
+      },
     );
   const [baselineExperiences, setBaselineExperiences] = useState<
     TranslatedExperience[]
   >(initialExperiences || []);
 
   const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
   const [highlightedBullets, setHighlightedBullets] = useState<
     Record<string, number[]>
@@ -93,10 +93,10 @@ export const useResumeEditor = ({
   const handleAdditionalItemChange = (
     id: string,
     field: keyof AdditionalItem,
-    value: any
+    value: any,
   ) => {
     setAdditionalItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
   };
 
@@ -104,10 +104,10 @@ export const useResumeEditor = ({
     const newItem: AdditionalItem = {
       id: `add-${Date.now()}`,
       type,
-      name_kr: "",
-      name_en: "",
-      description_kr: "",
-      description_en: "",
+      name_source: "",
+      name_target: "",
+      description_source: "",
+      description_target: "",
       date: "",
     };
     setAdditionalItems((prev) => [newItem, ...prev]);
@@ -121,10 +121,10 @@ export const useResumeEditor = ({
   const handleExperienceChange = (
     id: string,
     field: keyof TranslatedExperience,
-    value: string
+    value: string,
   ) => {
     setExperiences((prev) =>
-      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
+      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp)),
     );
   };
 
@@ -132,21 +132,20 @@ export const useResumeEditor = ({
     expId: string,
     index: number,
     value: string,
-    isEnglish: boolean
+    isEnglish: boolean,
   ) => {
     setExperiences((prev) =>
       prev.map((exp) => {
-        if (exp.id !== expId) return exp;
         if (isEnglish) {
-          const newBulletsEn = [...exp.bulletsEn];
-          newBulletsEn[index] = value;
-          return { ...exp, bulletsEn: newBulletsEn };
+          const newBulletsTarget = [...(exp.bullets_target || [])];
+          newBulletsTarget[index] = value;
+          return { ...exp, bullets_target: newBulletsTarget };
         } else {
-          const newBullets = [...exp.bullets];
-          newBullets[index] = value;
-          return { ...exp, bullets: newBullets };
+          const newBulletsSource = [...exp.bullets_source];
+          newBulletsSource[index] = value;
+          return { ...exp, bullets_source: newBulletsSource };
         }
-      })
+      }),
     );
   };
 
@@ -156,10 +155,10 @@ export const useResumeEditor = ({
         if (exp.id !== expId) return exp;
         return {
           ...exp,
-          bullets: [...exp.bullets, ""],
-          bulletsEn: [...exp.bulletsEn, ""],
+          bullets_source: [...exp.bullets_source, ""],
+          bullets_target: [...(exp.bullets_target || []), ""],
         };
-      })
+      }),
     );
   };
 
@@ -169,23 +168,25 @@ export const useResumeEditor = ({
         if (exp.id !== expId) return exp;
         return {
           ...exp,
-          bullets: exp.bullets.filter((_, i) => i !== index),
-          bulletsEn: exp.bulletsEn.filter((_, i) => i !== index),
+          bullets_source: exp.bullets_source.filter((_, i) => i !== index),
+          bullets_target: (exp.bullets_target || []).filter(
+            (_, i) => i !== index,
+          ),
         };
-      })
+      }),
     );
   };
 
   const handleAddExperience = () => {
     const newExp: TranslatedExperience = {
       id: `new-${Date.now()}`,
-      company: "",
-      companyEn: "",
-      position: "",
-      positionEn: "",
+      company_source: "",
+      company_target: "",
+      position_source: "",
+      position_target: "",
       period: "",
-      bullets: [""],
-      bulletsEn: [""],
+      bullets_source: [""],
+      bullets_target: [""],
     };
     setExperiences((prev) => [newExp, ...prev]);
     // Also add to baseline as empty so it doesn't trigger "changed" logic incorrectly if valid
@@ -195,9 +196,12 @@ export const useResumeEditor = ({
   const handleAddEducation = () => {
     const newEdu: Education = {
       id: `new-${Date.now()}`,
-      school_name: "",
-      major: "",
-      degree: "",
+      school_name_source: "",
+      school_name_target: "",
+      major_source: "",
+      major_target: "",
+      degree_source: "",
+      degree_target: "",
       start_date: "",
       end_date: "",
     };
@@ -245,10 +249,10 @@ export const useResumeEditor = ({
     if (!currentExp) return;
 
     // 1. Cleanup and Trim
-    const trimmedCompany = currentExp.company?.trim() || "";
-    const trimmedPosition = currentExp.position?.trim() || "";
+    const trimmedCompany = currentExp.company_source?.trim() || "";
+    const trimmedPosition = currentExp.position_source?.trim() || "";
     const trimmedPeriod = currentExp.period?.trim() || "";
-    const trimmedBullets = currentExp.bullets
+    const trimmedBullets = currentExp.bullets_source
       .map((b) => b?.trim() || "")
       .filter((b) => b.length > 0);
 
@@ -264,10 +268,10 @@ export const useResumeEditor = ({
     }
 
     // Update state with trimmed values
-    const newBullets = trimmedBullets.length > 0 ? trimmedBullets : [""];
-    const newBulletsEn =
+    const newBulletsSource = trimmedBullets.length > 0 ? trimmedBullets : [""];
+    const newBulletsTarget =
       trimmedBullets.length > 0
-        ? trimmedBullets.map((_, i) => currentExp.bulletsEn[i] || "")
+        ? trimmedBullets.map((_, i) => currentExp.bullets_target?.[i] || "")
         : [""];
 
     setExperiences((prev) =>
@@ -275,27 +279,27 @@ export const useResumeEditor = ({
         exp.id === expId
           ? {
               ...exp,
-              company: trimmedCompany,
-              position: trimmedPosition,
+              company_source: trimmedCompany,
+              position_source: trimmedPosition,
               period: trimmedPeriod,
-              bullets: newBullets,
-              bulletsEn: newBulletsEn,
+              bullets_source: newBulletsSource,
+              bullets_target: newBulletsTarget,
             }
-          : exp
-      )
+          : exp,
+      ),
     );
 
     const baselineExp = baselineExperiences.find((e) => e.id === expId);
 
     // Check for changes
-    const isCompanyChanged = trimmedCompany !== baselineExp?.company;
-    const isPositionChanged = trimmedPosition !== baselineExp?.position;
+    const isCompanyChanged = trimmedCompany !== baselineExp?.company_source;
+    const isPositionChanged = trimmedPosition !== baselineExp?.position_source;
     const isPeriodChanged = trimmedPeriod !== baselineExp?.period;
 
     // Find changed or added bullets
     const changedBullets: { index: number; text: string }[] = [];
-    newBullets.forEach((bullet, index) => {
-      const initialBullet = baselineExp?.bullets[index];
+    newBulletsSource.forEach((bullet, index) => {
+      const initialBullet = baselineExp?.bullets_source[index];
       if (bullet !== initialBullet && bullet.trim()) {
         changedBullets.push({ index, text: bullet });
       }
@@ -348,7 +352,7 @@ export const useResumeEditor = ({
               throw new Error(errorData.error || "Metadata translation failed");
             }
             return res.json();
-          })
+          }),
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -377,7 +381,7 @@ export const useResumeEditor = ({
               throw new Error(errorData.error || "Bullets translation failed");
             }
             return res.json();
-          })
+          }),
         );
       } else {
         promises.push(Promise.resolve(null));
@@ -387,30 +391,33 @@ export const useResumeEditor = ({
       const [metaResult, bulletsResult] = await Promise.all(promises);
 
       // Construct new item state locally
+      // Construct new item state locally
       let newItem = {
         ...currentExp,
-        company: trimmedCompany,
-        position: trimmedPosition,
+        company_source: trimmedCompany,
+        position_source: trimmedPosition,
         period: trimmedPeriod,
-        bullets: newBullets,
-        bulletsEn: newBulletsEn,
+        bullets_source: newBulletsSource,
+        bullets_target: newBulletsTarget,
       };
 
       if (metaResult) {
         const { translatedTexts } = metaResult;
         let tIndex = 0;
-        if (isCompanyChanged) newItem.companyEn = translatedTexts[tIndex++];
-        if (isPositionChanged) newItem.positionEn = translatedTexts[tIndex++];
-        if (isPeriodChanged) newItem.period = translatedTexts[tIndex++];
+        if (isCompanyChanged)
+          newItem.company_target = translatedTexts[tIndex++];
+        if (isPositionChanged)
+          newItem.position_target = translatedTexts[tIndex++];
+        if (isPeriodChanged) newItem.period = translatedTexts[tIndex++]; // period is shared or not? assuming shared or target is same
       }
 
       if (bulletsResult) {
         const { translatedTexts } = bulletsResult;
-        const updatedBulletsEn = [...newItem.bulletsEn];
+        const updatedBulletsTarget = [...(newItem.bullets_target || [])];
         changedBullets.forEach((item, i) => {
-          updatedBulletsEn[item.index] = translatedTexts[i];
+          updatedBulletsTarget[item.index] = translatedTexts[i];
         });
-        newItem.bulletsEn = updatedBulletsEn;
+        newItem.bullets_target = updatedBulletsTarget;
       }
 
       setExperiences((prev) => prev.map((e) => (e.id === expId ? newItem : e)));
@@ -465,9 +472,10 @@ export const useResumeEditor = ({
 
   const handleTranslatePersonalInfo = async () => {
     // Check for changes against baseline
-    const isNameChanged = personalInfo.name_kr !== baselinePersonalInfo.name_kr;
+    const isNameChanged =
+      personalInfo.name_source !== baselinePersonalInfo.name_source;
     const isSummaryChanged =
-      personalInfo.summary_kr !== baselinePersonalInfo.summary_kr;
+      personalInfo.summary_source !== baselinePersonalInfo.summary_source;
 
     // Check link changes
     let isLinksChanged =
@@ -493,11 +501,11 @@ export const useResumeEditor = ({
     try {
       // Collect name, summary, and all link labels that need translation
       const textsToTranslate = [];
-      textsToTranslate.push(personalInfo.name_kr);
+      textsToTranslate.push(personalInfo.name_source);
 
-      const hasSummary = !!personalInfo.summary_kr;
-      if (hasSummary && personalInfo.summary_kr) {
-        textsToTranslate.push(personalInfo.summary_kr);
+      const hasSummary = !!personalInfo.summary_source;
+      if (hasSummary && personalInfo.summary_source) {
+        textsToTranslate.push(personalInfo.summary_source);
       }
 
       personalInfo.links.forEach((link: any) => {
@@ -526,11 +534,11 @@ export const useResumeEditor = ({
 
       const { translatedTexts } = await response.json();
 
-      let summaryEn = personalInfo.summary;
+      let summaryTarget = personalInfo.summary_target;
       let linkStartIndex = 1;
 
       if (hasSummary) {
-        summaryEn = translatedTexts[1];
+        summaryTarget = translatedTexts[1];
         linkStartIndex = 2;
       }
 
@@ -543,8 +551,8 @@ export const useResumeEditor = ({
 
       const newPersonalInfo = {
         ...personalInfo,
-        name_en: translatedTexts[0],
-        summary: summaryEn,
+        name_target: translatedTexts[0],
+        summary_target: summaryTarget,
         links: newLinks,
       };
 
@@ -582,10 +590,10 @@ export const useResumeEditor = ({
   const handleEducationChange = (
     id: string,
     field: keyof Education,
-    value: string
+    value: string,
   ) => {
     setEducations((prev) =>
-      prev.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu))
+      prev.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu)),
     );
   };
 
@@ -594,8 +602,8 @@ export const useResumeEditor = ({
     if (!item) return;
 
     // 1. Cleanup and Trim
-    const trimmedName = item.name_kr?.trim() || "";
-    const trimmedDesc = item.description_kr?.trim() || "";
+    const trimmedName = item.name_source?.trim() || "";
+    const trimmedDesc = item.description_source?.trim() || "";
     const trimmedDate = item.date?.trim() || "";
 
     // Check if empty
@@ -610,20 +618,21 @@ export const useResumeEditor = ({
         i.id === id
           ? {
               ...i,
-              name_kr: trimmedName,
-              description_kr: trimmedDesc,
+              name_source: trimmedName,
+              description_source: trimmedDesc,
               date: trimmedDate,
             }
-          : i
-      )
+          : i,
+      ),
     );
 
     setIsTranslating((prev) => ({ ...prev, [id]: true }));
 
     try {
-      const textsToTranslate = [item.name_kr, item.description_kr].filter(
-        Boolean
-      );
+      const textsToTranslate = [
+        item.name_source,
+        item.description_source,
+      ].filter(Boolean);
 
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -652,10 +661,10 @@ export const useResumeEditor = ({
           if (i.id !== id) return i;
           return {
             ...i,
-            name_en: translatedTexts[0] || i.name_en,
-            description_en: translatedTexts[1] || i.description_en,
+            name_target: translatedTexts[0] || i.name_target,
+            description_target: translatedTexts[1] || i.description_target,
           };
-        })
+        }),
       );
     } catch (error: any) {
       console.error("handleRetranslateAdditionalItem Error:", error);
@@ -678,9 +687,9 @@ export const useResumeEditor = ({
     if (!edu) return;
 
     // 1. Cleanup and Trim
-    const trimmedSchool = edu.school_name?.trim() || "";
-    const trimmedMajor = edu.major?.trim() || "";
-    const trimmedDegree = edu.degree?.trim() || "";
+    const trimmedSchool = edu.school_name_source?.trim() || "";
+    const trimmedMajor = edu.major_source?.trim() || "";
+    const trimmedDegree = edu.degree_source?.trim() || "";
     const trimmedStart = edu.start_date?.trim() || "";
     const trimmedEnd = edu.end_date?.trim() || "";
 
@@ -702,23 +711,25 @@ export const useResumeEditor = ({
         e.id === eduId
           ? {
               ...e,
-              school_name: trimmedSchool,
-              major: trimmedMajor,
-              degree: trimmedDegree,
+              school_name_source: trimmedSchool,
+              major_source: trimmedMajor,
+              degree_source: trimmedDegree,
               start_date: trimmedStart,
               end_date: trimmedEnd,
             }
-          : e
-      )
+          : e,
+      ),
     );
 
     setIsTranslating((prev) => ({ ...prev, [`edu-${eduId}`]: true }));
 
     try {
       // Translate School, Major, Degree
-      const textsToTranslate = [edu.school_name, edu.major, edu.degree].filter(
-        Boolean
-      );
+      const textsToTranslate = [
+        edu.school_name_source,
+        edu.major_source,
+        edu.degree_source,
+      ].filter(Boolean);
 
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -746,11 +757,11 @@ export const useResumeEditor = ({
           if (e.id !== eduId) return e;
           return {
             ...e,
-            school_name_en: translatedTexts[0] || e.school_name_en,
-            major_en: translatedTexts[1] || e.major_en,
-            degree_en: translatedTexts[2] || e.degree_en,
+            school_name_target: translatedTexts[0] || e.school_name_target,
+            major_target: translatedTexts[1] || e.major_target,
+            degree_target: translatedTexts[2] || e.degree_target,
           };
-        })
+        }),
       );
     } catch (error: any) {
       console.error("handleTranslateEducation Error:", error);
