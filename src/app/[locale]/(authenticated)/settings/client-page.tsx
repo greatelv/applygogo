@@ -21,6 +21,7 @@ interface SettingsClientPageProps {
   portoneConfig: {
     storeId: string;
     channelKey: string;
+    paypalChannelKey: string;
   };
 }
 
@@ -74,6 +75,9 @@ export function SettingsClientPage({
     setIsUpgrading(true);
 
     try {
+      // Give some time for the overlay/container to be rendered in the DOM
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       const productConfig: Record<string, { amount: number; name: string }> = {
         PASS_7DAY: {
           amount: isGlobal
@@ -98,24 +102,55 @@ export function SettingsClientPage({
       const product = productConfig[passType];
       const currency = isGlobal ? "USD" : "KRW";
 
-      const response = await PortOne.requestPayment({
-        storeId: portoneConfig.storeId,
-        channelKey: portoneConfig.channelKey,
-        paymentId: `payment-${Date.now()}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-        orderName: product.name,
-        totalAmount: product.amount,
-        currency: currency,
-        payMethod: "EASY_PAY",
-        customer: {
-          customerId: user.id,
-          fullName: user.name || undefined,
-          email: user.email || undefined,
-        },
-      });
+      let response: any;
+      if (isGlobal) {
+        response = await new Promise<any>((resolve, reject) => {
+          PortOne.loadPaymentUI(
+            {
+              uiType: "PAYPAL_SPB",
+              storeId: portoneConfig.storeId,
+              channelKey: portoneConfig.paypalChannelKey,
+              paymentId: `payment-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`,
+              orderName: product.name,
+              totalAmount: product.amount * 100, // USD requires cents
+              currency: currency as any,
+              productType: "DIGITAL",
+              customer: {
+                customerId: user.id,
+                fullName: user.name || undefined,
+                email: user.email || undefined,
+              },
+            },
+            {
+              onPaymentSuccess: (res) => resolve(res),
+              onPaymentFail: (err) =>
+                reject(new Error(err.message || "Payment failed")),
+            },
+          );
+        });
+      } else {
+        // 한국향 일반 결제 방식 (requestPayment)
+        response = await PortOne.requestPayment({
+          storeId: portoneConfig.storeId,
+          channelKey: portoneConfig.channelKey,
+          paymentId: `payment-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`,
+          orderName: product.name,
+          totalAmount: product.amount,
+          currency: currency as any,
+          payMethod: "EASY_PAY",
+          customer: {
+            customerId: user.id,
+            fullName: user.name || undefined,
+            email: user.email || undefined,
+          },
+        });
+      }
 
-      if (response.code != null) {
+      if (response?.code != null) {
         setIsUpgrading(false);
         return;
       }

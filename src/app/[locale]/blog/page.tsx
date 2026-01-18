@@ -6,8 +6,7 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
-import { useTranslations, useFormatter, useLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getFormatter, getLocale } from "next-intl/server";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -34,10 +33,10 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default function HomePage() {
-  const t = useTranslations("blog");
-  const format = useFormatter();
-  const locale = useLocale();
+export default async function HomePage() {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: "blog" });
+  const format = await getFormatter();
   const allPosts = getAllPosts();
   // Filter posts based on locale if needed, or translate post content dynamically.
   // For now, assuming posts are handled or we show all.
@@ -126,13 +125,13 @@ export default function HomePage() {
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-balance">
                       <span className="text-foreground">
                         {t.rich("tagline.title", {
-                          br: () => <br />,
+                          lb: () => <br />,
                         })}
                       </span>
                     </h1>
                     <p className="text-lg text-muted-foreground leading-relaxed text-balance">
                       {t.rich("tagline.description", {
-                        br: () => <br className="hidden md:block" />,
+                        lb: () => <br className="hidden md:block" />,
                       })}
                     </p>
                   </div>

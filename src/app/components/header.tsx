@@ -37,6 +37,7 @@ interface HeaderProps {
   isSidebarOpen?: boolean;
   workflowSteps?: Array<{ id: string; label: string; description?: string }>;
   currentStep?: string;
+  hideLanguageSwitcher?: boolean;
 }
 
 import { useTranslations, useLocale } from "next-intl";
@@ -54,6 +55,7 @@ export function Header({
   isSidebarOpen = true,
   workflowSteps,
   currentStep,
+  hideLanguageSwitcher = false,
 }: HeaderProps) {
   const t = useTranslations("common.header");
   const tp = useTranslations("common.plan");
@@ -179,7 +181,7 @@ export function Header({
 
         <div className="flex items-center gap-4">
           {/* Language Switcher */}
-          <LanguageSwitcher />
+          {!hideLanguageSwitcher && <LanguageSwitcher />}
 
           {/* Theme toggle - Hidden on mobile to save space with quota/avatar */}
           <div className="hidden sm:block">

@@ -60,6 +60,7 @@ export function DashboardLayout({
           isSidebarOpen={isDesktopSidebarOpen}
           workflowSteps={workflowSteps}
           currentStep={currentStep}
+          hideLanguageSwitcher={true}
         />
 
         <div className="flex flex-1 overflow-hidden">

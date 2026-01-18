@@ -60,7 +60,7 @@ Use generic keys (without _kr/_en suffixes) for the raw extraction phase.
       "end_date": "YYYY-MM"
     }
   ],
-  "skills": ["..."],
+  "skills": ["Skill 1", "Skill 2"], // CRITICAL: Split comma-separated skills into individual array items
   "certifications": [{ "name": "...", "date": "..." }],
   "awards": [{ "name": "...", "date": "..." }],
   "languages": [{ "name": "...", "level": "..." }]
@@ -76,11 +76,13 @@ Analyze the RAW extracted data and refine it to be competitive in Korea.
 **GOALS:**
 1.  **Merge Duplicates**: Combine split sections for the same company.
 2.  **Clean Up**: Fix typos, standardize date formats (YYYY-MM).
-3.  **Core Value Curation (CRITICAL)**:
+3.  **Skill Normalization (CRITICAL)**:
+    - If a skill item contains commas (e.g. "React, Next.js, TypeScript"), **SPLIT** them into individual items.
+    - Result should be a flat list of short, punchy tech keywords.
+4.  **Core Value Curation**:
     - Korean companies prefer **Quantitative Results(Numbers)** and **Specific Tech Stacks**.
-    - If a bullet point is too vague or purely about "attitude/sincerity" (especially common in Japanese resumes), DROP it or MERGE it with a result-oriented bullet.
-    - Keep bullets that show **Leadership, Problem Solving, and Technical Expertise**.
-4.  **Zero Deletion**: Do NOT remove any company block. Minimize bullets only if they look weak or redundant.
+    - If a bullet point is too vague, DROP it or MERGE it with a result-oriented bullet.
+5.  **Zero Deletion**: Do NOT remove any company block.
 
 **INPUT DATA:**
 ${JSON.stringify(extractedData, null, 2)}
@@ -99,6 +101,7 @@ Return the same structure but refined.
       "bullets": ["Refined Bullet 1", "Refined Bullet 2"]
     }
   ],
+  "skills": ["Skill 1", "Skill 2", ...],
   ...
 }
 \`\`\`
@@ -118,44 +121,23 @@ Your goal is not just to translate, but to **Upgrade** the resume to be highly c
 **🏆 COMPITITIVE KOREAN RESUME STRATEGY (CRITICAL):**
 
 1.  **Style: High-Density "Gae-jo-sik" (개조식)**
-    - Korean recruiters hate wordy sentences. They love **Compressed, Noun-Ending Phrases**.
+    - Korean recruiters love **Compressed, Noun-Ending Phrases**.
     - Eliminate particles (을/를, 이/가) where possible.
-    - Use **Sino-Korean (한자어)** words to sound professional.
-        *   Help -> **기여 (Contribution)** or **제고 (Enhancement)**
-        *   Fix -> **개선 (Improvement)** or **해결 (Resolution)**
-        *   Manage -> **총괄 (General Management)** or **주도 (Lead)**
-    - **Ending Rule**: NEVER use "~함", "~했음" (Too casual/simple). Use **"~구축", "~달성", "~개발", "~최적화"**. (Ends with a Noun denoting the action).
+    - **Ending Rule**: Use **"~구축", "~달성", "~개발", "~최적화"**. (Ends with a Noun).
 
-2.  **Attitude: From Humble(Passive) to Assertive(Active)**
-    - **(Especially for Japanese Inputs)**: Japanese resumes tend to be humble ("I helped...", "participated in...").
-    - **TRANSFORM THIS**: Change passive participation into **Active Contribution**.
-        *   "Participated in the project" -> **"프로젝트 핵심 모듈 개발 및 주도"** (Lead dev of core module)
-        *   "Supported the team" -> **"팀 생산성 20% 향상에 기여"** (Contributed to 20% productivity boost)
-    - Do not lie, but **Maxmize the impact** of the user's role.
+2.  **Skills: Multi-Language Support**
+    - Translate skill names only if there is a common Korean equivalent. 
+    - Keep technical terms (e.g. React, Docker) in English.
+    - Ensure EACH skill is a separate string in the array.
 
-3.  **Structure: [Keyword/Role] + [Action] + [Result]**
-    - Start with a bracketed keyword if possible, or lead with the main technology/skill.
-    - Always include numbers if available.
-
-**❌ BAD vs ✅ GOOD Examples:**
-
-*   **Case 1 (Japanese -> Korean)**
-    *   (Original): チームの一員として、サーバーのバグ修正を担当しました。 (As a team member, handled server bug fixes.)
-    *   ❌ Bad (Direct): 팀의 일원으로서 서버 버그 수정을 담당함. (Too weak, basic)
-    *   ✅ **Competitive**: **"서버 안정화를 위한 핵심 버그 수정 및 시스템 신뢰도 제고"** (Focus on Stability & Reliability)
-
-*   **Case 2 (English -> Korean)**
-    *   (Original): Responsible for managing user data and improving DB performance by 20%.
-    *   ❌ Bad (Direct): 유저 데이터를 관리하고 DB 성능을 20% 향상시켰음. (Too narrative)
-    *   ✅ **Competitive**: **"대용량 유저 데이터 파이프라인 구축 및 DB 쿼리 최적화를 통한 성능 20% 개선"** (High-Level Vocab)
+3.  **Company/School Names**:
+    - Global Brands (Google, Amazon): Use Korean (구글, 아마존).
+    - Local Brands: Transliterate.
+    - **Keep Original Fields**: For all names, provide both translated(_kr) and original(_en or _ja) versions.
 
 **RULES:**
-1.  **Company Names**:
-    - Global Brands (Google, AWS): Use Korean (구글, AWS).
-    - Local Brands: Transliterate (pronunciation).
-    - Keep \`_en\`/\`_ja\` original.
-2.  **Roles**: Translate to standard Korean titles (e.g. "Software Engineer" -> "소프트웨어 엔지니어").
-3.  **No Omission**: Translate ALL items.
+1.  **Strict Field Matching**: Use suffixed keys precisely as shown in the output format.
+2.  **No Omission**: Translate ALL items.
 
 **INPUT DATA:**
 ${JSON.stringify(refinedData, null, 2)}
@@ -167,19 +149,42 @@ ${JSON.stringify(refinedData, null, 2)}
     "name_kr": "...",
     "name_en": "...",
     "name_ja": "...",
-    ...
     "summary_kr": "..." // Summarize into 3-4 lines of 'Core Competencies' style (핵심 역량 요약)
   },
   "work_experiences": [
     {
       "company_name_kr": "...",
       "company_name_en": "...",
+      "company_name_ja": "...",
       "role_kr": "...",
-      "bullets_kr": ["... (High-Density Business Korean)"]
-      ...
+      "role_en": "...",
+      "role_ja": "...",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM or Present",
+      "bullets_kr": ["... (High-Density Business Korean)"],
+      "bullets_en": ["..."],
+      "bullets_ja": ["..."]
     }
   ],
-  ...
+  "educations": [
+    {
+      "school_name_kr": "...",
+      "school_name_en": "...",
+      "school_name_ja": "...",
+      "major_kr": "...",
+      "major_en": "...",
+      "major_ja": "...",
+      "degree_kr": "...",
+      "degree_en": "...",
+      "degree_ja": "...",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM"
+    }
+  ],
+  "skills": ["Skill 1", "Skill 2", ...],
+  "certifications": [{ "name_kr": "...", "name_en": "...", "date": "..." }],
+  "awards": [{ "name_kr": "...", "name_en": "...", "date": "..." }],
+  "languages": [{ "name_kr": "...", "name_en": "...", "level_kr": "...", "level_en": "..." }]
 }
 \`\`\`
 `;

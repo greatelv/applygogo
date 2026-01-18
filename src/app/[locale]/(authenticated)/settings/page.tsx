@@ -35,6 +35,10 @@ export default async function Page({
           process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY ||
           process.env.PORTONE_CHANNEL_KEY ||
           "",
+        paypalChannelKey:
+          process.env.NEXT_PUBLIC_PORTONE_PAYPAL_CHANNEL_KEY ||
+          process.env.PORTONE_PAYPAL_CHANNEL_KEY ||
+          "",
       }}
     />
   );

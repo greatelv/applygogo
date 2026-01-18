@@ -9,6 +9,7 @@ import {
   Crown,
   CreditCard as PaymentIcon,
   Check,
+  Loader2,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
@@ -23,6 +24,18 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from "./ui/table";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
@@ -822,6 +835,51 @@ export function SettingsPage({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/* PayPal SPB Container Overlay */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300",
+          isUpgrading && isGlobal
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none",
+        )}
+      >
+        <div
+          className={cn(
+            "bg-white border border-gray-200 rounded-2xl p-8 max-w-sm w-full shadow-2xl space-y-6 transition-all duration-300",
+            isUpgrading && isGlobal ? "scale-100" : "scale-95",
+          )}
+        >
+          <div className="text-center space-y-2">
+            <h3 className="text-xl font-extrabold text-gray-900">
+              {t("labels.paypalPayment") || "PayPal Payment"}
+            </h3>
+            <p className="text-sm text-gray-500">
+              {t("notices.paypalInstructions") ||
+                "Please select your preferred payment method below."}
+            </p>
+          </div>
+          <div
+            className="portone-ui-container w-full bg-white overflow-hidden"
+            data-portone-ui-type="paypal-spb"
+          >
+            <div className="flex flex-col items-center justify-center min-h-[160px] gap-2 p-4">
+              <Loader2 className="size-6 animate-spin text-gray-400" />
+              <span className="text-xs text-gray-400">Loading PayPal...</span>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            {tc("cancel")}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

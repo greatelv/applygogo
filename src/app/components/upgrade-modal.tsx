@@ -40,6 +40,7 @@ export function UpgradeModal({
 }: UpgradeModalProps) {
   const router = useRouter();
   const t = useTranslations("upgradeModal");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const isGlobal = locale !== "ko";
   const [purchasingProduct, setPurchasingProduct] = useState<string | null>(
@@ -55,30 +56,57 @@ export function UpgradeModal({
       const price = isGlobal ? (config as any).priceGlobal : config.price;
       const currency = isGlobal ? "USD" : "KRW";
 
-      const response = await PortOne.requestPayment({
-        storeId: portoneConfig.storeId,
-        channelKey: portoneConfig.channelKey,
-        paymentId: `payment-${Date.now()}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-        orderName: config.name,
-        totalAmount: price,
-        currency: currency,
-        payMethod: "EASY_PAY",
-        customer: {
-          customerId: userId,
-          fullName: userName || undefined,
-          email: userEmail || undefined,
-        },
-      });
+      let response;
+
+      if (isGlobal) {
+        // Small delay to ensure the container is ready
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        response = await PortOne.loadPaymentUI({
+          uiType: "PAYPAL_SPB",
+          storeId: portoneConfig.storeId,
+          channelKey:
+            (portoneConfig as any).paypalChannelKey || portoneConfig.channelKey,
+          paymentId: `payment-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`,
+          orderName: config.name,
+          totalAmount: price * 100, // USD requires cents
+          currency: "USD",
+          productType: "DIGITAL",
+          customer: {
+            customerId: userId,
+            fullName: userName || undefined,
+            email: userEmail || undefined,
+          },
+        });
+      } else {
+        // Standard payment for KR users
+        response = await PortOne.requestPayment({
+          storeId: portoneConfig.storeId,
+          channelKey: portoneConfig.channelKey,
+          paymentId: `payment-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`,
+          orderName: config.name,
+          totalAmount: price,
+          currency: currency,
+          payMethod: "EASY_PAY",
+          customer: {
+            customerId: userId,
+            fullName: userName || undefined,
+            email: userEmail || undefined,
+          },
+        });
+      }
 
       if (response.code != null) {
-        // 사용자가 취소했거나 에러 발생
+        // User cancelled or error occurred
         setPurchasingProduct(null);
         return;
       }
 
-      // 서버 검증
+      // Server verification
       const verifyRes = await fetch("/api/payment/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -294,6 +322,44 @@ export function UpgradeModal({
             </p>
           </div>
         </div>
+
+        {/* PayPal SPB Container Overlay (for Modal) */}
+        {purchasingProduct && isGlobal && (
+          <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-sm w-full shadow-2xl space-y-6">
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-extrabold text-gray-900">
+                  {tc("labels.paypalPayment") || "PayPal Payment"}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {tc("notices.paypalInstructions") ||
+                    "Please select your preferred payment method below."}
+                </p>
+              </div>
+              <div
+                className="portone-ui-container w-full bg-white transition-all overflow-hidden"
+                data-portone-ui-type="paypal-spb"
+              >
+                <div className="flex flex-col items-center justify-center min-h-[160px] gap-2 p-4">
+                  <Loader2 className="size-6 animate-spin text-gray-400" />
+                  <span className="text-xs text-gray-400">
+                    Loading PayPal...
+                  </span>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                {tc("cancel")}
+              </Button>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

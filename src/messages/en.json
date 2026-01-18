@@ -32,6 +32,7 @@
       "PASS_30DAY": "30-Day Pass",
       "PASS_BETA_3DAY": "Beta Unlimited"
     },
+    "cancel": "Cancel",
     "currency": "$"
   },
   "landing": {
@@ -483,7 +484,8 @@
       "creditCard": "Credit Card",
       "unknown": "No Info",
       "unlimited": "Unlimited",
-      "expiringSoon": "Expiring Soon"
+      "expiringSoon": "Expiring Soon",
+      "paypalPayment": "PayPal Payment"
     },
     "passLabels": {
       "PASS_7DAY": "7-Day Pass",
@@ -531,6 +533,7 @@
       "passPromotion": "🎉 Special Launch Offer",
       "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br></br>Check back later for more plans after official launch!",
       "freeTip": "💡 Purchase a pass to unlock all templates and unlimited retranslation benefits",
+      "paypalInstructions": "Please select your preferred payment method below.",
       "refundPolicyFree": "Please check ApplyGogo's <link>Cancellation and Refund Policy</link> before purchasing.",
       "refundPolicyPaid": {
         "title": "Cancellation and Refund Policy",
@@ -737,9 +740,9 @@
     },
     "about": {
       "title": "Cake Corporation",
-      "p1": "The hiring process doesn't have to be painful. <br/>It should be a sweet and satisfying experience, just like enjoying a piece of cake.",
-      "p2": "Through cutting-edge AI technology, Cake Corporation <br/>transforms job seekers' anxiety into confidence and companies' hiring difficulties into enjoyment.",
-      "p3": "Beyond a simple utility tool, <br/>we design and provide <strong>experiences that make you say \"Wow!\"</strong>"
+      "p1": "The hiring process doesn't have to be painful. <br />It should be a sweet and satisfying experience, just like enjoying a piece of cake.",
+      "p2": "Through cutting-edge AI technology, Cake Corporation <br />transforms job seekers' anxiety into confidence and companies' hiring difficulties into enjoyment.",
+      "p3": "Beyond a simple utility tool, <br />we design and provide <strong>experiences that make you say \"Wow!\"</strong>"
     },
     "roadmap": {
       "title": "Future Roadmap",
@@ -755,6 +758,75 @@
         "title": "Undisclosed Project",
         "description": "Innovative micro-service currently in preparation."
       }
+    }
+  },
+  "helpPage": {
+    "title": "Need Help?",
+    "description": "Check frequently asked questions or contact us.",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "categories": {
+        "all": "All",
+        "gettingStarted": "Getting Started",
+        "features": "Features",
+        "payment": "Payment",
+        "security": "Security"
+      },
+      "items": [
+        {
+          "id": "1",
+          "category": "gettingStarted",
+          "question": "How do I use ApplyGogo?",
+          "answer": "1) Upload your PDF resume. 2) AI analyzes your resume to summarize and translate core content. 3) Review the summary and edit translations directly in a split-view window. 4) Apply your preferred design template and download it as a PDF."
+        },
+        {
+          "id": "2",
+          "category": "gettingStarted",
+          "question": "What file formats are supported?",
+          "answer": "Currently, only PDF files are supported. You can upload files up to 10MB in size. Please convert Word or other documents to PDF before uploading."
+        },
+        {
+          "id": "3",
+          "category": "features",
+          "question": "What's the difference between Free and Pro plans?",
+          "answer": "The Free plan provides 10 credits upon signup, basic templates, and allows you to save one resume. The Pro plan (Regular Price {normalPrice} → Launch Price {launchPrice}) includes {credits} credits per month, all templates, and unlimited resume storage."
+        },
+        {
+          "id": "4",
+          "category": "features",
+          "question": "How are credits deducted?",
+          "answer": "5 credits are deducted each time you generate a resume (AI processing). 'Retranslating' specific items costs 1 credit. Simply downloading a file does not consume any credits."
+        },
+        {
+          "id": "5",
+          "category": "features",
+          "question": "Can I download my resume as a Word file?",
+          "answer": "Currently, we only support PDF downloads to ensure the best design layout without any formatting issues."
+        },
+        {
+          "id": "6",
+          "category": "features",
+          "question": "Can I edit the translation results?",
+          "answer": "Yes, you can. During the editing stage, you can use the 'Split View' feature to see the original and translated text side-by-side and edit them freely by sentence."
+        },
+        {
+          "id": "7",
+          "category": "payment",
+          "question": "How do I change or cancel my plan?",
+          "answer": "You can upgrade or cancel your plan at any time through the Settings > Billing Management page. Even if you cancel, your Pro benefits will remain active for the remainder of the billing period."
+        },
+        {
+          "id": "8",
+          "category": "security",
+          "question": "Is my resume data safe?",
+          "answer": "Yes, all data is stored with strong encryption. Your information is kept safe until you choose to delete it and will never be shared with third parties."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Can't find the answer?",
+      "description": "Contact us via email and we'll reply within 24 hours.",
+      "button": "patakeique@gmail.com"
     }
   },
   "privacy": {
@@ -876,8 +948,8 @@
     "description": "Check out tips for English resume writing to successful overseas employment cases to help your global growth.",
     "recommended": "Recommended Content",
     "tagline": {
-      "title": "Connecting Your Career <br/>to the World",
-      "description": "With ApplyGogo's AI resume builder, anyone can easily and quickly <br/>create a professional-level English resume.",
+      "title": "Connecting Your Career <lb></lb>to the World",
+      "description": "With ApplyGogo's AI resume builder, anyone can easily and quickly <lb></lb>create a professional-level English resume.",
       "cta": "Create English Resume for Free"
     },
     "allPosts": {

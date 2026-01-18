@@ -15,7 +15,7 @@ export const PLAN_PRODUCTS = {
     price: 12900,
     priceGlobal: 12, // USD
     originalPrice: 29900, // Anchoring: ~57% (Global SaaS Value)
-    originalPriceGlobal: 24, // USD
+    originalPriceGlobal: 28, // USD
     credits: 300,
     days: 30,
   },

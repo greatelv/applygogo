@@ -12,7 +12,15 @@ import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { SiteFooter } from "./site-footer";
-import { TemplatePreviewDialog } from "./template-preview-dialog";
+import dynamic from "next/dynamic";
+
+const TemplatePreviewDialog = dynamic(
+  () =>
+    import("./template-preview-dialog").then(
+      (mod) => mod.TemplatePreviewDialog,
+    ),
+  { ssr: false },
+);
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 import { BetaBanner } from "./beta-banner";
 

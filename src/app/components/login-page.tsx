@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { Chrome, Languages } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 
@@ -12,7 +13,7 @@ interface LoginPageProps {
   onCredentialLogin?: (formData: FormData) => void;
 }
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export function LoginPage({
   onGoogleLogin,
@@ -20,6 +21,8 @@ export function LoginPage({
   onCredentialLogin,
 }: LoginPageProps) {
   const t = useTranslations("login");
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
   const { pending } = useFormStatus();
   const searchParams = useSearchParams();
   const { isInAppBrowser } = useInAppBrowser();
@@ -27,8 +30,24 @@ export function LoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl tracking-tight mb-3">{t("title")}</h1>
+        <div className="text-center mb-12 flex flex-col items-center">
+          <Link href="/" className="mb-6 hover:opacity-80 transition-opacity">
+            <h1 className="sr-only">{t("title")}</h1>
+            <img
+              src={
+                isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
+              }
+              alt="ApplyGogo"
+              className="h-10 w-auto dark:hidden"
+            />
+            <img
+              src={
+                isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+              }
+              alt="ApplyGogo"
+              className="h-10 w-auto hidden dark:block"
+            />
+          </Link>
           <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
         </div>
 
@@ -54,16 +73,18 @@ export function LoginPage({
             </div>
           )}
 
-          <Button
-            type="button"
-            size="lg"
-            className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
-            onClick={onNaverLogin}
-            disabled={pending}
-          >
-            <span className="font-bold mr-2 text-lg">N</span>
-            {t("naver")}
-          </Button>
+          {!isGlobal && (
+            <Button
+              type="button"
+              size="lg"
+              className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
+              onClick={onNaverLogin}
+              disabled={pending}
+            >
+              <span className="font-bold mr-2 text-lg">N</span>
+              {t("naver")}
+            </Button>
+          )}
 
           {/* Test Login Form (Only visible with ?mode=test) */}
           {searchParams.get("mode") === "test" && onCredentialLogin && (
