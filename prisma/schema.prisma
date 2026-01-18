@@ -36,8 +36,11 @@ model Education {
   end_date       String
   order          Int     @default(0)
   degree_en      String?
+  degree_ja      String?
   major_en       String?
+  major_ja       String?
   school_name_en String?
+  school_name_ja String?
   resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   @@map("educations")
@@ -61,9 +64,12 @@ model Resume {
   links             Json?
   name_en           String?
   name_kr           String             @default("")
+  name_ja           String?
+  locale            String             @default("ko")
   phone             String?
   summary           String?            @default("")
   summary_kr        String?            @default("")
+  summary_ja        String?            @default("")
   additionalItems   AdditionalItem[]
   educations        Education[]
   user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -169,12 +175,15 @@ model WorkExperience {
   resumeId        String  @map("resume_id")
   company_name_kr String
   company_name_en String?
+  company_name_ja String?
   role_kr         String
   role_en         String?
+  role_ja         String?
   start_date      String
   end_date        String
   bullets_kr      Json
   bullets_en      Json?
+  bullets_ja      Json?
   order           Int     @default(0)
   resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -187,8 +196,10 @@ model AdditionalItem {
   type           ItemType @default(OTHER)
   name_kr        String
   name_en        String?
+  name_ja        String?
   description_kr String?  @default("")
   description_en String?  @default("")
+  description_ja String?  @default("")
   date           String?
   order          Int      @default(0)
   resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)

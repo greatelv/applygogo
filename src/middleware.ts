@@ -20,6 +20,6 @@ export const config = {
   matcher: [
     "/",
     "/(ko|en|ja)/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|global|.*\\..*).*)",
   ],
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { NewResumePage } from "./new-resume-page";
 import { ProcessingPage } from "./processing-page";
@@ -72,6 +73,8 @@ export function ResumeWizard({
   initialData,
 }: ResumeWizardProps) {
   const router = useRouter();
+  const params = useParams();
+  const locale = (params.locale as string) || "ko";
   const { setWorkflowState, quota, setQuota, plan } = useApp();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -119,7 +122,7 @@ export function ResumeWizard({
       const formData = new FormData();
       formData.append("file", file);
 
-      const result = await uploadResumeAction(formData);
+      const result = await uploadResumeAction(locale, formData);
 
       if (result.success && result.resumeId) {
         setResumeId(result.resumeId);

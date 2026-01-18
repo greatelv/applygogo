@@ -15,6 +15,7 @@ export function BlogHeader() {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const locale = useLocale();
+  const isGlobal = locale !== "ko";
 
   // If loading, show a skeleton or nothing
   if (status === "loading") {
@@ -49,12 +50,16 @@ export function BlogHeader() {
             className="flex items-center hover:opacity-80 transition-opacity"
           >
             <img
-              src="/logo-for-light.svg"
+              src={
+                isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
+              }
               alt="지원고고"
               className="h-6 w-auto dark:hidden"
             />
             <img
-              src="/logo-for-dark.svg"
+              src={
+                isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+              }
               alt="지원고고"
               className="h-6 w-auto hidden dark:block"
             />

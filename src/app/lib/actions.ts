@@ -85,7 +85,7 @@ export async function getUserSettings() {
   };
 }
 
-export async function uploadResumeAction(formData: FormData) {
+export async function uploadResumeAction(locale: string, formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     throw new Error("로그인이 필요합니다.");
@@ -146,6 +146,7 @@ export async function uploadResumeAction(formData: FormData) {
         original_file_url: uploadData.path,
         status: "IDLE",
         current_step: "UPLOAD",
+        locale: locale || "ko",
       },
     });
 

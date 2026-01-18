@@ -1,6 +1,6 @@
 {
   "common": {
-    "title": "ApplyGogo - AI-powered Employment Platform for Foreigners",
+    "title": "ApplyGogo - AI-powered Employment Platform in Korea",
     "header": {
       "login": "Login",
       "signUp": "Sign Up",
@@ -40,9 +40,9 @@
     },
     "hero": {
       "badge": "AI-Powered Resume Transformation",
-      "title1": "Korean Resumes into",
-      "title2": "Global Standard English",
-      "description": "AI automatically performs <strong>Korean-to-English resume conversion</strong>, completing a professional <strong>English resume (CV)</strong> that recruiters notice in minutes.",
+      "title1": "Your Resume into",
+      "title2": "Professional Korean",
+      "description": "AI automatically performs <strong>English-to-Korean resume conversion</strong>, completing a professional <strong>Korean resume</strong> that Korean recruiters notice in minutes.",
       "cta": "Start for Free",
       "viewSample": "View Sample",
       "subText": "Start free without credit card • First 2 conversions free"
@@ -62,15 +62,15 @@
     },
     "features": {
       "title": "Why ApplyGogo?",
-      "subtitle": "We create resumes optimized for the job market, not just simple translations",
+      "subtitle": "We create Korean resumes optimized for the Korean job market",
       "items": [
         {
           "title": "AI-Powered Summary",
-          "description": "Gemini Pro analyzes your experience and reconstructs it into 3-4 core achievement-oriented bullet points. Exactly the format recruiters want."
+          "description": "Gemini Pro analyzes your experience and reconstructs it into core achievement-oriented bullet points suitable for Korean companies."
         },
         {
           "title": "Professional Translation",
-          "description": "Compare and edit Korean/English simultaneously with Split View. Complete customization with direct editing."
+          "description": "Compare and edit English/Korean simultaneously with Split View. Complete customization with direct editing."
         },
         {
           "title": "Premium Templates",
@@ -84,7 +84,7 @@
       "items": [
         {
           "title": "Upload PDF",
-          "description": "Upload your Korean resume PDF with drag & drop"
+          "description": "Upload your resume PDF with drag & drop"
         },
         {
           "title": "AI Conversion",
@@ -98,13 +98,13 @@
     },
     "recommended": {
       "title1": "For Everyone Dreaming",
-      "title2": "of a Global Career",
-      "item1Title": "Resumes for Multi-national Companies",
+      "title2": "of a Career in Korea",
+      "item1Title": "Resumes for Korean Companies",
       "item1Description": "We provide global standard formats for those unfamiliar with <strong>foreign resume formats</strong> and <strong>CV translation</strong>.",
-      "item2Title": "Fast Korean-to-English Conversion",
-      "item2Description": "Coming across a job opportunity but short on time to <strong>convert your resume to English</strong>? Just upload your <strong>Korean resume</strong> and complete it in 5 minutes.",
-      "item3Title": "Professional AI English Proofreading",
-      "item3Description": "Not just a <strong>resume translation</strong>, but a sophisticated <strong>English resume</strong> with polished expressions fitting 'recruitment grammar'. "
+      "item2Title": "Fast English-to-Korean Conversion",
+      "item2Description": "Coming across a job opportunity in Korea but need a <strong>Korean resume</strong>? Just upload your <strong>English resume</strong> and complete it in 5 minutes.",
+      "item3Title": "Professional AI Korean Proofreading",
+      "item3Description": "Not just a <strong>translation</strong>, but a sophisticated <strong>Korean resume</strong> with polite expressions fitting 'Korean business etiquette'."
     },
     "pricing": {
       "title": "Simple Passes",
@@ -133,8 +133,8 @@
       "subtitle": "Check what you're curious about",
       "items": [
         {
-          "q": "Q. Does the format of the Korean resume matter?",
-          "a": "Yes, we support most PDF formats, including free formats and downloads from JobKorea/Saramin. AI extracts text and analyzes content, so complex formats are fine."
+          "q": "Q. Does the format of the resume matter?",
+          "a": "Yes, we support most PDF formats. AI extracts text and analyzes content, so complex formats are fine."
         },
         {
           "q": "Q. Can I edit the translated content?",
@@ -147,14 +147,14 @@
       ]
     },
     "cta": {
-      "title": "Start Your Global Career Today",
-      "subtitle": "No more worries about English resumes with ApplyGogo",
+      "title": "Start Your Career in Korea Today",
+      "subtitle": "No more worries about Korean resumes with ApplyGogo",
       "button": "Start for Free"
     }
   },
   "login": {
     "title": "ApplyGogo",
-    "subtitle": "Korean resumes into global standard English resumes",
+    "subtitle": "Transform your resume into a professional Korean resume",
     "google": "Continue with Google",
     "naver": "Continue with Naver",
     "inAppWarning": "⚠️ Google login is not supported in in-app browsers.",
@@ -178,8 +178,8 @@
     "noCredits": "⚠️ Not enough credits to create a new resume. Please upgrade your plan or wait for the next renewal.",
     "lastModified": "Last modified: {date}",
     "empty": {
-      "title": "Complete your first English resume",
-      "description": "Just upload your Korean resume and AI will handle everything from analysis to English translation and formatting in 5 minutes.",
+      "title": "Complete your first Korean resume",
+      "description": "Just upload your English resume and AI will handle everything from analysis to Korean translation and formatting in 5 minutes.",
       "noCredits": "Not enough credits to create a new resume",
       "cta": "Start for Free"
     },
@@ -221,14 +221,14 @@
     "subtitle": "Review and edit the content analyzed by AI.",
     "guide": {
       "title": "You can edit content by clicking on it",
-      "description": "Edit the Korean content and click <strong>[Sync & Retranslate]</strong> to have AI re-translate based on the changes. Click the trash icon to delete unnecessary items."
+      "description": "Edit the original content and click <strong>[Sync & Retranslate]</strong> to have AI re-translate into Korean. Click the trash icon to delete unnecessary items."
     },
     "sections": {
       "personal": {
         "title": "Personal Info",
         "description": "Manage essential details like name, contact, and professional summary.",
-        "korean": "Korean (Original)",
-        "english": "English (Translated)",
+        "korean": "English (Original)",
+        "english": "Korean (Translated)",
         "name": "Name",
         "email": "Email",
         "phone": "Phone",
@@ -283,8 +283,8 @@
     }
   },
   "editorItems": {
-    "korean": "Korean (Original)",
-    "english": "English (Translated)",
+    "korean": "English (Original)",
+    "english": "Korean (Translated)",
     "delete": "Delete",
     "addBullet": "Add Bullet",
     "dragToReorder": "Drag to reorder",
@@ -308,7 +308,7 @@
     },
     "hero": {
       "badge": "Global Career Starter",
-      "title": "Your Gateway to the World,\nFast and Reliable",
+      "title": "Your Gateway to Korea,\nFast and Reliable",
       "description": "**ApplyGogo** was created for talents who miss out on global career opportunities due to language barriers and complex formats.\nProve your career to the world with the best AI technology.",
       "cta": "Convert Resume for Free",
       "companyCta": "View Company Info"
@@ -319,7 +319,7 @@
       "items": [
         {
           "title": "Global Standard",
-          "description": "Preferred resume formats and expressions vary by country and industry. ApplyGogo AI learns global hiring trends to provide the most effective formats."
+          "description": "Resume formats preferred by Korean companies are unique. ApplyGogo AI learns Korean hiring trends to provide the most effective formats."
         },
         {
           "title": "Context-Aware Translation",
@@ -327,22 +327,22 @@
         },
         {
           "title": "Overwhelming Time Saving",
-          "description": "Shortens the work of converting Korean resumes to English from days to just 5 minutes. Invest your time in more important 'interview preparation' and 'job analysis'."
+          "description": "Shortens the work of converting English resumes to Korean from days to just 5 minutes. Invest your time in interview preparation."
         }
       ]
     },
     "process": {
       "badge": "Seamless Process",
       "title": "Eliminated Complexities,\nFocused on the Core",
-      "description": "Just prepare your existing Korean resume PDF file.\nApplyGogo's AI engine will take care of the rest.",
+      "description": "Just prepare your existing English resume PDF file.\nApplyGogo's AI engine will take care of the rest.",
       "items": [
         "Start by uploading PDF without separate sign-up",
         "AI automatically categorizes sections and summarizes content",
         "Real-time preview and intuitive editing editor",
-        "ATS (Applicant Tracking System)-friendly formatting"
+        "Korean Standard Formatting"
       ],
-      "pdfLabel": "Korean PDF",
-      "resumeLabel": "Pro Resume"
+      "pdfLabel": "English PDF",
+      "resumeLabel": "Korean Resume"
     },
     "cta": {
       "title": "Your Career Should Shine\non a Wider Stage",
@@ -426,7 +426,7 @@
       "download": "Download PDF"
     },
     "originalView": {
-      "title": "View Original (Korean)",
+      "title": "View Original (English)",
       "expandTip": "(Click to expand)",
       "basicInfo": "Basic Info",
       "experience": "Experience",
@@ -603,7 +603,7 @@
   },
   "processingPage": {
     "title": "AI Processing",
-    "description": "AI is analyzing your resume and reconstructing it into an English resume that meets global standards.<br/>Please wait a moment as sophisticated work from text extraction to core achievement selection and professional translation is in progress.",
+    "description": "AI is analyzing your resume and reconstructing it into a professional Korean resume. Please wait a moment as sophisticated work from text extraction to core achievement selection and Korean translation is in progress.",
     "warning": "For stable analysis, please <strong>keep this screen open.</strong> (Work may be interrupted if you leave the page)",
     "steps": {
       "uploading": {
@@ -612,18 +612,18 @@
       },
       "extracting": {
         "label": "Step 1: Extraction",
-        "description": "Extracting Korean original text from PDF accurately...",
+        "description": "Extracting English original text from PDF accurately...",
         "tip": "Extracts proper nouns such as company names and school names as they are"
       },
       "refining": {
         "label": "Step 2: Refining",
-        "description": "Selecting core experience based on Korean criteria...",
+        "description": "Selecting core experience based on Korean standards...",
         "tip": "Selects 3-5 most impactful achievements"
       },
       "translating": {
         "label": "Step 3: Translation",
-        "description": "Translating selected Korean into English...",
-        "tip": "Translates focal achievements using Action Verbs"
+        "description": "Translating selected English into Korean...",
+        "tip": "Translates achievements into professional Korean business language"
       },
       "done": {
         "label": "Complete",
@@ -639,7 +639,7 @@
       "button": "Check Summary",
       "processing": "Processing..."
     },
-    "footerTip": "💡 <strong>3-Step AI Processing</strong>: Actual processing time per step is reflected. By first selecting core experiences based on Korean and then translating them, we provide more accurate and efficient results.",
+    "footerTip": "💡 <strong>3-Step AI Processing</strong>: Actual processing time per step is reflected. By first selecting core experiences and then refining them, we provide more accurate and efficient results.",
     "error": {
       "title": "Error Occurred",
       "retry": "Upload Again",
@@ -683,6 +683,38 @@
       "emptyContent": "Please write your feedback.",
       "success": "Thank you for your valuable feedback!",
       "error": "An error occurred."
+    }
+  },
+  "newResume": {
+    "title": "Upload",
+    "description": "Upload your PDF resume and AI will automatically summarize and translate it into Korean.",
+    "uploadError": "Upload failed. Please try again.",
+    "loading": {
+      "title": "Uploading...",
+      "description": "Securely saving your file."
+    },
+    "dropzone": {
+      "dragText": "Drag & Drop PDF file",
+      "orText": "or click the button below to select",
+      "button": "Select File"
+    },
+    "creditError": {
+      "title": "Insufficient Credits",
+      "description": "You do not have enough credits to proceed with AI resume analysis.<br/>Please refill credits to start the analysis.",
+      "buyPass": "Buy Pass for Unlimited Access",
+      "refill": "Refill Credits"
+    },
+    "errorDialog": {
+      "title": "Invalid File Format",
+      "confirm": "Confirm",
+      "sizeLimit": "The file size exceeds 5MB. Please upload a smaller file.",
+      "pdfOnly": "Only PDF files are allowed. Please try again."
+    },
+    "tip": {
+      "title": "💡 Tip",
+      "item1": "Resumes with clearly distinguished experience sections yield the best results.",
+      "item2": "PDF files under 5MB are recommended.",
+      "item3": "You can get the final PDF after the summary and translation steps."
     }
   }
 }

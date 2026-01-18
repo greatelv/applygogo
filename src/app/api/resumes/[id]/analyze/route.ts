@@ -9,6 +9,11 @@ import {
   getResumeTranslationPrompt,
 } from "@/lib/prompts";
 import {
+  GLOBAL_RESUME_EXTRACTION_PROMPT,
+  getGlobalRefinementPrompt,
+  getGlobalResumeTranslationPrompt,
+} from "@/lib/global-prompts";
+import {
   calculateCost,
   checkCredits,
   deductCredits,
@@ -24,7 +29,7 @@ import {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -34,13 +39,11 @@ export async function POST(
 
     const { id: resumeId } = await params;
 
-    // 1. Check and update plan status (auto-expire check)
+    // 1. Check and update plan status
     const planStatus = await checkAndUpdatePlanStatus(session.user.id);
-
-    // 2. Calculate cost for GENERATE action
     const cost = calculateCost("GENERATE", planStatus.planType);
 
-    // 3. Check if user has enough credits
+    // 2. Check credits
     const hasEnoughCredits = await checkCredits(session.user.id, cost);
     if (!hasEnoughCredits) {
       return NextResponse.json(
@@ -49,14 +52,14 @@ export async function POST(
           requiredCredits: cost,
           currentCredits: planStatus.credits,
         },
-        { status: 402 }
+        { status: 402 },
       );
     }
 
-    // 4. Deduct credits
+    // 3. Deduct credits
     await deductCredits(session.user.id, cost, "이력서 생성");
 
-    // 5. Get resume from DB
+    // 4. Get resume from DB
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId, userId: session.user.id },
     });
@@ -65,13 +68,16 @@ export async function POST(
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    // 6. Update status to PROCESSING
+    const locale = (resume as any).locale || "ko";
+    const isGlobal = locale === "en" || locale === "ja";
+
+    // 5. Update status
     await prisma.resume.update({
       where: { id: resumeId },
       data: { status: "PROCESSING" },
     });
 
-    // 3. Download PDF from Supabase Storage
+    // 6. Download PDF
     const { data: fileData, error: downloadError } = await supabaseAdmin.storage
       .from("resumes")
       .download(resume.original_file_url);
@@ -80,34 +86,32 @@ export async function POST(
       throw new Error("Failed to download PDF from storage");
     }
 
-    // 4. Convert PDF to base64 for Gemini API
+    // 7. Base64 encode
     const arrayBuffer = await fileData.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const base64Data = buffer.toString("base64");
 
-    // Helper function to clean JSON from markdown code blocks
     const cleanJsonText = (text: string) => {
-      // 1. Try to match markdown code blocks (flexible)
       const match = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
       if (match) return match[1];
-
-      // 2. If no code block, try to find the outermost braces
       const start = text.indexOf("{");
       const end = text.lastIndexOf("}");
       if (start !== -1 && end !== -1) {
         return text.substring(start, end + 1);
       }
-
-      // 3. Return original text as fallback
       return text;
     };
 
     // ========================================================================
-    // PHASE 1: 추출 (Extraction)
-    // - PDF에서 한글 원문만 정확히 추출
-    // - 번역 없음, 고유명사 그대로
+    // PHASE 1: EXTRACTION
     // ========================================================================
-    console.log("[Phase 1] Starting extraction...");
+    console.log(`[Phase 1] Starting extraction for locale: ${locale}...`);
+
+    // Import global prompts dynamically or use conditionals with top-level imports
+    // (Assuming imports present at top of file, see imports section below)
+    const extractionPrompt = isGlobal
+      ? GLOBAL_RESUME_EXTRACTION_PROMPT
+      : RESUME_EXTRACTION_PROMPT;
 
     const extractionResult = await generateContentWithRetry(geminiModel, [
       {
@@ -116,324 +120,237 @@ export async function POST(
           data: base64Data,
         },
       },
-      RESUME_EXTRACTION_PROMPT,
+      extractionPrompt,
     ]);
 
     const extractionText = extractionResult.response.text();
     const extractedData = JSON.parse(cleanJsonText(extractionText));
 
     console.log(
-      `[Phase 1] Extraction complete. Found ${
-        extractedData.work_experiences?.length || 0
-      } experiences, ` +
-        `${
-          extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
-          ) || 0
-        } total bullets.`
+      `[Phase 1] Extraction complete. Items: ${extractedData.work_experiences?.length || 0}`,
     );
 
     // ========================================================================
-    // PHASE 2: 정제 (Refinement) - 한글 기준
-    // - 회사별 통합
-    // - 스마트 불릿 선별 (3~5개)
-    // - 아직 번역하지 않음
+    // PHASE 2: REFINEMENT
     // ========================================================================
     let refinedData = extractedData;
-
-    if (
-      extractedData.work_experiences &&
-      extractedData.work_experiences.length > 0
-    ) {
-      console.log("[Phase 2] Starting refinement (Korean-based selection)...");
-
+    if (extractedData.work_experiences?.length > 0) {
+      console.log(`[Phase 2] Starting refinement...`);
       try {
-        const refinementPrompt = getRefinementPrompt(extractedData);
+        const getPrompt = isGlobal
+          ? getGlobalRefinementPrompt
+          : getRefinementPrompt;
+
+        const refinementPrompt = getPrompt(extractedData);
         const refinementResult = await generateContentWithRetry(
           geminiModel,
-          refinementPrompt
+          refinementPrompt,
         );
-
         const refinedText = refinementResult.response.text();
         refinedData = JSON.parse(cleanJsonText(refinedText));
-
-        const totalBullets =
-          refinedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
-          ) || 0;
-
-        console.log(
-          `[Phase 2] Refinement complete. ${
-            refinedData.work_experiences?.length || 0
-          } companies, ${totalBullets} bullets selected.`
-        );
+        console.log(`[Phase 2] Refinement complete.`);
       } catch (error) {
-        console.error(
-          "[Phase 2] Refinement failed, using extracted data:",
-          error
-        );
-        // Fall back to extracted data if refinement fails
+        console.error("[Phase 2] Failed, falling back to extracted.", error);
       }
-    } else {
-      console.log("[Phase 2] Skipped (no work experiences to refine)");
     }
 
     // ========================================================================
-    // PHASE 3: 번역 (Translation)
-    // - 정제된 한글 데이터를 영문으로 번역
-    // - 고유명사는 로마자 표기만
+    // PHASE 3: TRANSLATION
     // ========================================================================
-    console.log("[Phase 3] Starting translation...");
+    console.log(`[Phase 3] Starting translation...`);
 
-    const translationPrompt = getResumeTranslationPrompt(refinedData);
+    // Select translation prompt
+    let translationPrompt;
+    if (isGlobal) {
+      translationPrompt = getGlobalResumeTranslationPrompt(refinedData, locale);
+    } else {
+      translationPrompt = getResumeTranslationPrompt(refinedData);
+    }
+
     const translationResult = await generateContentWithRetry(
       geminiModel,
-      translationPrompt
+      translationPrompt,
     );
-
     const translationText = translationResult.response.text();
     const translatedData = JSON.parse(cleanJsonText(translationText));
 
     console.log("[Phase 3] Translation complete.");
 
     // ========================================================================
-    // Post-processing
+    // SAVING TO DB
     // ========================================================================
     let finalExperiences = translatedData.work_experiences || [];
 
-    // Sort experiences: Newest first (descending by end_date)
+    // Sort Newest First
     finalExperiences.sort((a: any, b: any) => {
-      const getTime = (dateStr: string) => {
-        if (!dateStr) return 0;
-        const lower = dateStr.toLowerCase();
-        if (
-          lower.includes("present") ||
-          lower.includes("현재") ||
-          lower.includes("재직")
-        ) {
-          return new Date().getTime() + 1000000; // Future date to keep at top
-        }
-        const cleanDate = dateStr.replace(/\./g, "-");
-        const date = new Date(cleanDate);
-        if (isNaN(date.getTime())) {
-          const dateWithDay = new Date(cleanDate + "-01");
-          return isNaN(dateWithDay.getTime()) ? 0 : dateWithDay.getTime();
-        }
-        return date.getTime();
+      const getTime = (d: string) => {
+        if (!d) return 0;
+        const clean = d.replace(/\./g, "-").toLowerCase();
+        if (clean.includes("present") || clean.includes("현재"))
+          return new Date().getTime() + 1000000;
+        return new Date(clean).getTime() || 0;
       };
-
       return getTime(b.end_date) - getTime(a.end_date);
     });
 
-    // Code-level enforcement of 4 bullets limit (safety net)
-    if (finalExperiences && finalExperiences.length > 0) {
-      finalExperiences = finalExperiences.map((exp: any) => ({
-        ...exp,
-        bullets_kr: Array.isArray(exp.bullets_kr)
-          ? exp.bullets_kr.slice(0, 5)
-          : [],
-        bullets_en: Array.isArray(exp.bullets_en)
-          ? exp.bullets_en.slice(0, 5)
-          : [],
-      }));
-    }
+    // Limit bullets safe-guard
+    finalExperiences = finalExperiences.map((exp: any) => ({
+      ...exp,
+      bullets_kr: exp.bullets_kr?.slice(0, 5) || [],
+      bullets_en: exp.bullets_en?.slice(0, 5) || [],
+      bullets_ja: exp.bullets_ja?.slice(0, 5) || [],
+    }));
 
-    // ========================================================================
-    // Save to Database
-    // ========================================================================
-
-    // Save work experiences
-    if (finalExperiences && finalExperiences.length > 0) {
+    // Create Experiences
+    if (finalExperiences.length > 0) {
       await prisma.workExperience.createMany({
         data: finalExperiences.map((exp: any, index: number) => ({
-          resumeId: resumeId,
-          company_name_kr: exp.company_name_kr
-            ? String(exp.company_name_kr)
-            : "회사명 없음",
-          company_name_en: exp.company_name_en
-            ? String(exp.company_name_en)
-            : exp.company_name_kr
-            ? String(exp.company_name_kr)
-            : "Unknown Company",
-          role_kr: exp.role_kr ? String(exp.role_kr) : "-",
-          role_en: exp.role_en
-            ? String(exp.role_en)
-            : exp.role_kr
-            ? String(exp.role_kr)
-            : "-",
-          start_date: exp.start_date ? String(exp.start_date) : "",
-          end_date: exp.end_date ? String(exp.end_date) : "",
-          bullets_kr: Array.isArray(exp.bullets_kr) ? exp.bullets_kr : [],
-          bullets_en: Array.isArray(exp.bullets_en)
-            ? exp.bullets_en
-            : Array.isArray(exp.bullets_kr)
-            ? exp.bullets_kr
-            : [],
+          resumeId,
           order: index,
+          start_date: exp.start_date || "",
+          end_date: exp.end_date || "",
+          // Mapping handled by prompts returning suffixed keys
+          company_name_kr: exp.company_name_kr || "Unknown",
+          company_name_en: exp.company_name_en, // Optional
+          company_name_ja: exp.company_name_ja, // Optional
+          role_kr: exp.role_kr || "-",
+          role_en: exp.role_en,
+          role_ja: exp.role_ja,
+          bullets_kr: exp.bullets_kr || [],
+          bullets_en: exp.bullets_en,
+          bullets_ja: exp.bullets_ja,
         })),
       });
     }
 
-    // Save educations
+    // Create Educations
     const educations = translatedData.educations || [];
-    if (educations && educations.length > 0) {
+    if (educations.length > 0) {
       await prisma.education.createMany({
         data: educations.map((edu: any, index: number) => ({
-          resumeId: resumeId,
-          school_name: edu.school_name
-            ? String(edu.school_name)
-            : "학교명 없음",
-          school_name_en: edu.school_name_en
-            ? String(edu.school_name_en)
-            : edu.school_name
-            ? String(edu.school_name)
-            : "Unknown School",
-          major: edu.major ? String(edu.major) : "",
-          major_en: edu.major_en
-            ? String(edu.major_en)
-            : edu.major
-            ? String(edu.major)
-            : "",
-          degree: edu.degree ? String(edu.degree) : "",
-          degree_en: edu.degree_en
-            ? String(edu.degree_en)
-            : edu.degree
-            ? String(edu.degree)
-            : "",
-          start_date: edu.start_date ? String(edu.start_date) : "",
-          end_date: edu.end_date ? String(edu.end_date) : "",
+          resumeId,
           order: index,
+          start_date: edu.start_date || "",
+          end_date: edu.end_date || "",
+          school_name: edu.school_name || "Unknown", // Mapped to KR usually
+          school_name_en: edu.school_name_en,
+          school_name_ja: edu.school_name_ja,
+          major: edu.major,
+          major_en: edu.major_en,
+          major_ja: edu.major_ja,
+          degree: edu.degree,
+          degree_en: edu.degree_en,
+          degree_ja: edu.degree_ja,
         })),
       });
     }
 
-    // Save skills
+    // Skills
     const skills = translatedData.skills || [];
-    if (skills && skills.length > 0) {
-      const validSkills = skills
-        .filter((skill: any) => {
-          if (typeof skill === "string") return skill.trim().length > 0;
-          if (typeof skill === "object" && skill.name) return true;
-          return false;
-        })
-        .map((skill: any, index: number) => {
-          const rawName = typeof skill === "string" ? skill : skill.name;
-          const safeName = rawName ? String(rawName) : "Unknown Skill";
-          return {
-            resumeId: resumeId,
-            name: safeName,
-            order: index,
-          };
-        });
-
-      if (validSkills.length > 0) {
-        await prisma.skill.createMany({
-          data: validSkills,
-        });
-      }
+    if (skills.length > 0) {
+      // Normalized simple string array? or objects? Prompt says array of strings.
+      // Check prompt output format: "skills": ["..."]
+      const validSkills = skills.map((s: any, i: number) => ({
+        resumeId,
+        name: typeof s === "string" ? s : s.name || "Skill",
+        order: i,
+      }));
+      if (validSkills.length > 0)
+        await prisma.skill.createMany({ data: validSkills });
     }
 
-    // Save additional items (certifications, awards, languages)
+    // Additional Items
+    const addItems = [];
     const { certifications, awards, languages } = translatedData;
-    const additionalItemsData: any[] = [];
 
-    if (certifications && certifications.length > 0) {
-      certifications.forEach((cert: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
+    if (certifications) {
+      certifications.forEach((c: any) =>
+        addItems.push({
+          resumeId,
           type: "CERTIFICATION",
-          name_kr: cert.name ? String(cert.name) : "Unknown Certification",
-          name_en: cert.name_en ? String(cert.name_en) : undefined,
-          description_kr: cert.issuer ? String(cert.issuer) : undefined,
-          description_en: cert.issuer_en ? String(cert.issuer_en) : undefined,
-          date: cert.date ? String(cert.date) : undefined,
-        });
-      });
+          name_kr: c.name_kr || c.name,
+          name_en: c.name_en,
+          name_ja: c.name_ja,
+          description_kr: c.description_kr || c.issuer,
+          description_en: c.description_en || c.issuer_en,
+          description_ja: c.description_ja,
+          date: c.date,
+        }),
+      );
     }
-
-    if (awards && awards.length > 0) {
-      awards.forEach((award: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
+    if (awards) {
+      awards.forEach((a: any) =>
+        addItems.push({
+          resumeId,
           type: "AWARD",
-          name_kr: award.name ? String(award.name) : "Unknown Award",
-          name_en: award.name_en ? String(award.name_en) : undefined,
-          description_kr: award.issuer ? String(award.issuer) : undefined,
-          description_en: award.issuer_en ? String(award.issuer_en) : undefined,
-          date: award.date ? String(award.date) : undefined,
-        });
-      });
+          name_kr: a.name_kr || a.name,
+          name_en: a.name_en,
+          name_ja: a.name_ja,
+          description_kr: a.description_kr || a.issuer,
+          description_en: a.description_en || a.issuer_en,
+          description_ja: a.description_ja,
+          date: a.date,
+        }),
+      );
     }
-
-    if (languages && languages.length > 0) {
-      languages.forEach((lang: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
+    if (languages) {
+      languages.forEach((l: any) =>
+        addItems.push({
+          resumeId,
           type: "LANGUAGE",
-          name_kr: lang.name ? String(lang.name) : "Unknown Language",
-          name_en: lang.name_en ? String(lang.name_en) : undefined,
-          description_kr: lang.level ? String(lang.level) : undefined,
-          description_en: lang.score ? String(lang.score) : undefined,
-          date: undefined,
-        });
-      });
+          name_kr: l.name_kr || l.name,
+          name_en: l.name_en,
+          name_ja: l.name_ja,
+          description_kr: l.description_kr || l.level,
+          description_en: l.description_en || l.level_en,
+          // no description_ja column? Wait, I added name_ja, description_ja in schema.
+          description_ja: l.description_ja,
+        }),
+      );
     }
 
-    if (additionalItemsData.length > 0) {
+    if (addItems.length > 0) {
+      // Force Any cast because TS types might lag
       await (prisma as any).additionalItem.createMany({
-        data: additionalItemsData.map((item, index) => ({
-          ...item,
-          order: index,
-        })),
+        data: addItems.map((item: any, i: number) => ({ ...item, order: i })),
       });
     }
 
-    // Update resume status to COMPLETED and save personal info & summary
-    const personalInfo = translatedData.personal_info || {};
-
+    // Update Resume Status & Info
+    const pInfo = translatedData.personal_info || {};
     await (prisma as any).resume.update({
       where: { id: resumeId },
       data: {
         status: "COMPLETED",
         current_step: "EDIT",
-        name_kr: personalInfo.name_kr || "",
-        name_en: personalInfo.name_en || "",
-        email: personalInfo.email || "",
-        phone: personalInfo.phone || "",
-        links: personalInfo.links || [],
-        summary: translatedData.professional_summary || "",
-        summary_kr: translatedData.professional_summary_kr || "",
+        name_kr: pInfo.name_kr || pInfo.name || "",
+        name_en: pInfo.name_en || "",
+        name_ja: pInfo.name_ja,
+        email: pInfo.email || "",
+        phone: pInfo.phone || "",
+        links: pInfo.links || [],
+        summary: pInfo.summary || "", // Extracted EN/JA summary
+        summary_kr: pInfo.summary_kr || "", // Translated KR summary
+        summary_ja: pInfo.summary_ja,
       },
     });
 
-    console.log("[Complete] 3-phase resume analysis finished successfully.");
-
-    return NextResponse.json({
-      success: true,
-      message: "Resume analyzed successfully",
-    });
+    console.log("[Complete] Analysis finished.");
+    return NextResponse.json({ success: true, message: "OK" });
   } catch (error: any) {
     console.error("Resume analysis error:", error);
-
-    // Update resume status to FAILED
+    // Failure handling
     try {
-      const { id: resumeId } = await params;
+      const { id } = await params;
       await prisma.resume.update({
-        where: { id: resumeId },
+        where: { id },
         data: {
           status: "FAILED",
-          failure_message: error.message || "Analysis failed",
+          failure_message: error.message || "Unknown error",
         },
       });
-    } catch (updateError) {
-      console.error("Failed to update resume status:", updateError);
-    }
+    } catch (e) {}
 
-    return NextResponse.json(
-      { error: error.message || "Failed to analyze resume" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -22,7 +22,7 @@ interface LandingPageProps {
   isLoading?: boolean;
 }
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 
 export function LandingPage({
@@ -32,6 +32,9 @@ export function LandingPage({
   const t = useTranslations("landing");
   const tc = useTranslations("common");
   const th = useTranslations("common.header");
+
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
 
   return (
     <div className="min-h-screen bg-background">
@@ -43,14 +46,22 @@ export function LandingPage({
             <Link href="/" className="flex items-center">
               <div className="relative h-6 w-24">
                 <Image
-                  src="/logo-for-light.svg"
+                  src={
+                    isGlobal
+                      ? "/global/logo-for-light.svg"
+                      : "/logo-for-light.svg"
+                  }
                   alt="ApplyGogo"
                   fill
                   className="object-contain dark:hidden"
                   priority
                 />
                 <Image
-                  src="/logo-for-dark.svg"
+                  src={
+                    isGlobal
+                      ? "/global/logo-for-black.svg"
+                      : "/logo-for-dark.svg"
+                  }
                   alt="ApplyGogo"
                   fill
                   className="object-contain hidden dark:block"

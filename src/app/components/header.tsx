@@ -37,7 +37,7 @@ interface HeaderProps {
   currentStep?: string;
 }
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 
 export function Header({
@@ -55,6 +55,8 @@ export function Header({
 }: HeaderProps) {
   const t = useTranslations("common.header");
   const tp = useTranslations("common.plan");
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
 
   const planConfig: Record<
     string,
@@ -113,12 +115,18 @@ export function Header({
               className="flex items-center hover:opacity-80 transition-opacity"
             >
               <img
-                src="/logo-for-light.svg"
+                src={
+                  isGlobal
+                    ? "/global/logo-for-light.svg"
+                    : "/logo-for-light.svg"
+                }
                 alt="ApplyGogo"
                 className="h-6 w-auto dark:hidden"
               />
               <img
-                src="/logo-for-dark.svg"
+                src={
+                  isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+                }
                 alt="ApplyGogo"
                 className="h-6 w-auto hidden dark:block"
               />
@@ -141,12 +149,16 @@ export function Header({
             className="lg:hidden flex items-center mr-4 hover:opacity-80 transition-opacity"
           >
             <img
-              src="/logo-for-light.svg"
+              src={
+                isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
+              }
               alt="ApplyGogo"
               className="h-6 w-auto dark:hidden"
             />
             <img
-              src="/logo-for-dark.svg"
+              src={
+                isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+              }
               alt="ApplyGogo"
               className="h-6 w-auto hidden dark:block"
             />

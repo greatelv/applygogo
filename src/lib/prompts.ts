@@ -19,7 +19,8 @@ export const RESUME_EXTRACTION_PROMPT = `
 
 0. **이력서 검증 (Verification - CRITICAL)**:
    - 만약 입력된 텍스트가 **이력서나 CV가 아니라고 판단되면** (예: 영수증, 계약서, 논문, 과제, 단순히 이름만 적힌 종이 등), 즉시 아래와 같이 반환하고 분석을 종료하세요.
-   { "is_resume": false }
+   - 또한, 문서의 **주된 언어(Dominant Language)**를 식별하세요. (가능한 값: "ko", "en", "ja", "other")
+   { "is_resume": false, "detected_language": "other" }
 
 1. **"무조건 추출" (Greedy Capture)**:
    - "이게 회사명이 맞나?" 고민하지 말고, **날짜와 직무가 보이면 무조건 추출**하세요.
@@ -64,6 +65,8 @@ export const RESUME_EXTRACTION_PROMPT = `
 
 \`\`\`json
 {
+  "is_resume": true,
+  "detected_language": "ko",
   "personal_info": {
     "name_kr": "...",
     "email": "...",
@@ -295,7 +298,7 @@ export const RESUME_ANALYSIS_PROMPT = RESUME_EXTRACTION_PROMPT;
 
 export const getTranslationPrompt = (
   texts: string[],
-  type: "bullets" | "general"
+  type: "bullets" | "general",
 ) => {
   let instruction = "";
   if (type === "bullets") {

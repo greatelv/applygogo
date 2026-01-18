@@ -13,7 +13,10 @@ export default async function Page({
   if (!session?.user?.id) redirect({ href: "/login", locale });
 
   const resumes = await prisma.resume.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      locale: locale,
+    },
     orderBy: { updated_at: "desc" },
   });
 

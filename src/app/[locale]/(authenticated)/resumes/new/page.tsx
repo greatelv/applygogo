@@ -1,29 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "@/i18n/routing";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useApp } from "@/app/context/app-context";
 import { NewResumePage } from "@/app/components/new-resume-page";
 import { uploadResumeAction } from "@/app/lib/actions";
-
-const steps = [
-  { id: "upload", label: "업로드" },
-  { id: "processing", label: "AI 처리" },
-  { id: "edit", label: "편집" },
-  { id: "preview", label: "템플릿 선택" },
-  { id: "complete", label: "완료" },
-];
+import { useTranslations } from "next-intl";
 
 export default function Page() {
+  const t = useTranslations("workflow");
   const router = useRouter();
+  const { locale } = useParams();
   const { setWorkflowState } = useApp();
   const [isUploading, setIsUploading] = useState(false);
+
+  const steps = useMemo(
+    () => [
+      { id: "upload", label: t("upload") },
+      { id: "processing", label: t("processing") },
+      { id: "edit", label: t("edit") },
+      { id: "preview", label: t("template") },
+      { id: "complete", label: t("complete") },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     setWorkflowState(steps, "upload");
     return () => setWorkflowState(undefined, undefined);
-  }, [setWorkflowState]);
+  }, [setWorkflowState, steps]);
 
   const handleUpload = async (file: File) => {
     try {
@@ -31,13 +38,16 @@ export default function Page() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const result = await uploadResumeAction(formData);
+      const result = await uploadResumeAction(
+        (locale as string) || "ko",
+        formData,
+      );
 
       if (result.success && result.resumeId) {
         router.push(`/resumes/${result.resumeId}/processing`);
       }
     } catch (error: any) {
-      alert(error.message || "업로드 실패");
+      alert(error.message || t("uploadError"));
       setIsUploading(false);
     }
   };
