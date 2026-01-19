@@ -340,6 +340,7 @@ export async function POST(
               ? String(cert.name_target)
               : undefined,
             description_source: cert.description_source || undefined,
+            description_target: cert.description_target || undefined,
             date: cert.date ? String(cert.date) : undefined,
             name_kr: "", // Legacy
           });
@@ -359,6 +360,7 @@ export async function POST(
               ? String(award.name_target)
               : undefined,
             description_source: award.description_source || undefined,
+            description_target: award.description_target || undefined,
             date: award.date ? String(award.date) : undefined,
             name_kr: "", // Legacy
           });
@@ -377,7 +379,12 @@ export async function POST(
             name_target: lang.name_target
               ? String(lang.name_target)
               : undefined,
-            description_source: lang.level ? String(lang.level) : undefined,
+            // Map 'level' or 'level_source' -> description_source
+            description_source:
+              lang.level_source || lang.level || lang.description_source || "",
+            // Map 'level_target' -> description_target
+            description_target:
+              lang.level_target || lang.description_target || "",
             name_kr: "", // Legacy
           });
         });

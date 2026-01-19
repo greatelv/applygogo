@@ -10,7 +10,11 @@ import {
   Path,
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
-import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
+import {
+  shouldUseTargetData,
+  isOutputKorean,
+  type AppLocale,
+} from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
@@ -225,8 +229,8 @@ export const ProfessionalPdf = ({
   additionalItems = [],
   locale = "ko",
 }: ProfessionalPdfProps & { locale?: AppLocale }) => {
-  const useTarget = shouldUseTargetData(locale);
-  const isKo = !useTarget;
+  // Logic: en/ja users get Korean output, ko users get English output
+  const isKo = isOutputKorean(locale || "ko");
 
   const validExperiences = experiences.filter(
     (e) => e.company_name_source?.trim() || e.company_name_target?.trim(),
@@ -280,15 +284,15 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={styles.eduItem}>
                   <Text style={styles.schoolName}>
-                    {isKo ? edu.school_name_source : edu.school_name_target}
+                    {edu.school_name_target || edu.school_name_source}
                   </Text>
                   <Text style={styles.degree}>
-                    {isKo ? edu.degree_source : edu.degree_target}
-                    {(isKo ? edu.degree_source : edu.degree_target) &&
-                    (isKo ? edu.major_source : edu.major_target)
+                    {edu.degree_target || edu.degree_source}
+                    {(edu.degree_target || edu.degree_source) &&
+                    (edu.major_target || edu.major_source)
                       ? ", "
                       : ""}
-                    {isKo ? edu.major_source : edu.major_target}
+                    {edu.major_target || edu.major_source}
                   </Text>
                   <Text style={styles.eduDate}>
                     {formatDateLocale(edu.start_date, isKo)} -{" "}
@@ -330,13 +334,11 @@ export const ProfessionalPdf = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {isKo ? lang.name_source : lang.name_target}
+                    {lang.name_target || lang.name_source}
                   </Text>
-                  {(isKo
-                    ? lang.description_source
-                    : lang.description_target) && (
+                  {(lang.description_target || lang.description_source) && (
                     <Text style={{ fontSize: 8.5, color: "#6b7280" }}>
-                      {isKo ? lang.description_source : lang.description_target}
+                      {lang.description_target || lang.description_source}
                     </Text>
                   )}
                 </View>
@@ -354,7 +356,7 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 9, color: "#374151" }}>
-                    {isKo ? cert.name_source : cert.name_target}
+                    {cert.name_target || cert.name_source}
                   </Text>
                   <Text style={{ fontSize: 8, color: "#9ca3af" }}>
                     {formatDateLocale(cert.date, isKo)}
@@ -370,16 +372,13 @@ export const ProfessionalPdf = ({
           {/* Header */}
           <View style={{ marginBottom: 24 }}>
             <Text style={styles.name}>
-              {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
-                "Name"}
+              {personalInfo?.name_target || personalInfo?.name_source || "Name"}
             </Text>
             {/* Use most recent role as title or just keep it simple */}
           </View>
 
           {/* Summary */}
-          {(isKo
-            ? personalInfo?.summary_source
-            : personalInfo?.summary_target) && (
+          {(personalInfo?.summary_target || personalInfo?.summary_source) && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 {isKo ? "핵심 요약" : "Professional Summary"}
@@ -391,9 +390,7 @@ export const ProfessionalPdf = ({
                   textAlign: "justify",
                 }}
               >
-                {isKo
-                  ? personalInfo.summary_source
-                  : personalInfo.summary_target}
+                {personalInfo.summary_target || personalInfo.summary_source}
               </Text>
             </View>
           )}
@@ -410,12 +407,10 @@ export const ProfessionalPdf = ({
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {isKo
-                          ? exp.company_name_source
-                          : exp.company_name_target}
+                        {exp.company_name_target || exp.company_name_source}
                       </Text>
                       <Text style={styles.position}>
-                        {isKo ? exp.role_source : exp.role_target}
+                        {exp.role_target || exp.role_source}
                       </Text>
                     </View>
                     <Text style={styles.period}>
@@ -424,7 +419,7 @@ export const ProfessionalPdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                    {(exp.bullets_target || exp.bullets_source)?.map(
                       (bullet: string, idx: number) => (
                         // @ts-ignore
                         <View key={idx} style={styles.bulletItem}>
@@ -449,11 +444,11 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 10, fontWeight: "bold" }}>
-                    {isKo ? award.name_source : award.name_target}
+                    {award.name_target || award.name_source}
                   </Text>
                   <Text style={{ fontSize: 9, color: "#4b5563" }}>
-                    {isKo ? award.description_source : award.description_target}
-                    {(isKo ? award.date : award.date)
+                    {award.description_target || award.description_source}
+                    {award.date
                       ? ` | ${formatDateLocale(award.date, isKo)}`
                       : ""}
                   </Text>

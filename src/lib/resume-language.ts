@@ -18,15 +18,25 @@ export type AppLocale = "ko" | "en" | "ja";
  * @returns true if should use target data (English), false if should use source data (Korean)
  */
 export function shouldUseTargetData(locale: AppLocale): boolean {
-  // Korean users see English (_target)
-  // Global users (en/ja) see Korean (_source)
-  return locale === "ko";
+  // In the converted resume view/PDF, we ALWAYS want to prioritize the target data
+  // Ko user -> Target is English
+  // Global user -> Target is Korean
+  return true;
 }
 
 /**
- * Gets the appropriate field value based on locale
- * @param sourceValue - The source language value (usually Korean for ko locale, English/Japanese for en/ja locale)
- * @param targetValue - The target language value (usually English for ko locale, Korean for en/ja locale)
+ * Determines if the output language should be Korean
+ * @param locale - The application locale
+ * @returns true if output should be Korean (for en/ja users), false if English (for ko users)
+ */
+export function isOutputKorean(locale: AppLocale): boolean {
+  return ["en", "ja"].includes(locale);
+}
+
+/**
+ * Gets the appropriate field value based on locale with fallback
+ * @param sourceValue - The source language value
+ * @param targetValue - The target language value
  * @param locale - The application locale
  * @returns The appropriate value based on locale
  */
@@ -35,6 +45,8 @@ export function getLocalizedValue<T>(
   targetValue: T,
   locale: AppLocale,
 ): T {
+  // Always prioritize target data, but fallback to source if target is missing
+  // Note: specific fallback logic for strings should be handled by caller or specific string helper
   return shouldUseTargetData(locale) ? targetValue : sourceValue;
 }
 
@@ -44,7 +56,7 @@ export function getLocalizedValue<T>(
  * @returns The language name to display
  */
 export function getResumeLanguageName(locale: AppLocale): string {
-  return shouldUseTargetData(locale) ? "English" : "Korean";
+  return isOutputKorean(locale) ? "Korean" : "English";
 }
 
 /**
@@ -59,7 +71,7 @@ export function getSectionTitle(
   enTitle: string,
   locale: AppLocale,
 ): string {
-  // If viewing English resume (ko locale), show English titles
-  // If viewing Korean resume (en/ja locale), show Korean titles
-  return shouldUseTargetData(locale) ? enTitle : koTitle;
+  // If output is Korean (en/ja locale), show Korean titles
+  // If output is English (ko locale), show English titles
+  return isOutputKorean(locale) ? koTitle : enTitle;
 }

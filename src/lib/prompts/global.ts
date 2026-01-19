@@ -189,7 +189,39 @@ Return the FULL JSON with both \`_source\` and \`_target\` fields.
       "bullets_target": ["... (Noun-ending Korean)"]
     }
   ],
-  ...
+  "educations": [
+    {
+      "school_name_source": "...",
+      "school_name_target": "...",
+      "major_source": "...",
+      "major_target": "...",
+      "degree_source": "...",
+      "degree_target": "..."
+    }
+  ],
+  "skills": ["Skill 1", "Skill 2"],
+  "certifications": [
+    {
+       "name_source": "AWS Certified Solutions Architect",
+       "name_target": "AWS 공인 솔루션스 아키텍트",
+       "date": "2023-05" 
+    }
+  ],
+  "awards": [
+    {
+       "name_source": "Best Employee",
+       "name_target": "최우수 사원상",
+       "date": "2022-12"
+    }
+  ],
+  "languages": [
+    {
+       "name_source": "English",
+       "name_target": "영어",
+       "level_source": "Native",
+       "level_target": "원어민 (Native)"
+    }
+  ]
 }
 \`\`\`
 `;

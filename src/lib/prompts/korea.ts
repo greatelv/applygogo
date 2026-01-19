@@ -169,7 +169,39 @@ ${JSON.stringify(refinedData, null, 2)}
       "bullets_target": ["Optimized X by Y%, resulting in Z"]
     }
   ],
-  ...
+  "educations": [
+    {
+      "school_name_source": "...",
+      "school_name_target": "...",
+      "major_source": "...",
+      "major_target": "...",
+      "degree_source": "...",
+      "degree_target": "..."
+    }
+  ],
+  "skills": ["Skill 1", "Skill 2"],
+  "certifications": [
+    {
+       "name_source": "정보처리기사",
+       "name_target": "Engineer Information Processing",
+       "date": "2023-05" 
+    }
+  ],
+  "awards": [
+    {
+       "name_source": "사내 해커톤 대상",
+       "name_target": "Grand Prize, Internal Hackathon",
+       "date": "2022-12"
+    }
+  ],
+  "languages": [
+    {
+       "name_source": "한국어",
+       "name_target": "Korean",
+       "level_source": "원어민",
+       "level_target": "Native"
+    }
+  ]
 }
 \`\`\`
 `;

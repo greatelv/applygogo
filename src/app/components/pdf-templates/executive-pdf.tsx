@@ -9,7 +9,11 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
-import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
+import {
+  shouldUseTargetData,
+  isOutputKorean,
+  type AppLocale,
+} from "@/lib/resume-language";
 
 const TextAny = Text as any;
 
@@ -226,8 +230,8 @@ export const ExecutivePdf = ({
   additionalItems = [],
   locale = "ko",
 }: ExecutivePdfProps & { locale?: AppLocale }) => {
-  const useTarget = shouldUseTargetData(locale);
-  const isKo = !useTarget;
+  // Logic: en/ja users get Korean output, ko users get English output
+  const isKo = isOutputKorean(locale || "ko");
 
   const validExperiences = experiences.filter(
     (e) => e.company_name_source?.trim() || e.company_name_target?.trim(),
@@ -249,8 +253,7 @@ export const ExecutivePdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
-              "Name"}
+            {personalInfo?.name_target || personalInfo?.name_source || "Name"}
           </Text>
           <View style={styles.headerContact}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -275,17 +278,13 @@ export const ExecutivePdf = ({
 
         <View style={styles.container}>
           {/* Summary */}
-          {(isKo
-            ? personalInfo?.summary_source
-            : personalInfo?.summary_target) && (
+          {(personalInfo?.summary_target || personalInfo?.summary_source) && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 {isKo ? "핵심 요약" : "Executive Summary"}
               </Text>
               <Text style={styles.summaryText}>
-                {isKo
-                  ? personalInfo.summary_source
-                  : personalInfo.summary_target}
+                {personalInfo.summary_target || personalInfo.summary_source}
               </Text>
             </View>
           )}
@@ -302,12 +301,10 @@ export const ExecutivePdf = ({
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {isKo
-                          ? exp.company_name_source
-                          : exp.company_name_target}
+                        {exp.company_name_target || exp.company_name_source}
                       </Text>
                       <Text style={styles.position}>
-                        {isKo ? exp.role_source : exp.role_target}
+                        {exp.role_target || exp.role_source}
                       </Text>
                     </View>
                     <Text style={styles.period}>
@@ -316,7 +313,7 @@ export const ExecutivePdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                    {(exp.bullets_target || exp.bullets_source)?.map(
                       (bullet: string, idx: number) => (
                         // @ts-ignore
                         <View key={idx} style={styles.bulletItem}>
@@ -342,15 +339,15 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.eduItem}>
                   <View style={styles.eduMain}>
                     <Text style={styles.companyName}>
-                      {isKo ? edu.school_name_source : edu.school_name_target}
+                      {edu.school_name_target || edu.school_name_source}
                     </Text>
                     <Text style={{ fontSize: 10, color: "#334155" }}>
-                      {isKo ? edu.degree_source : edu.degree_target}
-                      {(isKo ? edu.degree_source : edu.degree_target) &&
-                      (isKo ? edu.major_source : edu.major_target)
+                      {edu.degree_target || edu.degree_source}
+                      {(edu.degree_target || edu.degree_source) &&
+                      (edu.major_target || edu.major_source)
                         ? ", "
                         : ""}
-                      {isKo ? edu.major_source : edu.major_target}
+                      {edu.major_target || edu.major_source}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -410,7 +407,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {isKo ? item.name_source : item.name_target}{" "}
+                      • {item.name_target || item.name_source}{" "}
                       {item.date
                         ? `(${formatDateLocale(item.date, isKo)})`
                         : ""}
@@ -441,7 +438,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {isKo ? item.name_source : item.name_target}
+                      • {item.name_target || item.name_source}
                     </TextAny>
                   ))}
                 </View>
@@ -462,11 +459,9 @@ export const ExecutivePdf = ({
                     {languages.map((item: any, i: number) => (
                       // @ts-ignore
                       <Text key={i} style={{ fontSize: 10, color: "#334155" }}>
-                        • {isKo ? item.name_source : item.name_target}
-                        {(isKo
-                          ? item.description_source
-                          : item.description_target) &&
-                          ` (${isKo ? item.description_source : item.description_target})`}
+                        • {item.name_target || item.name_source}
+                        {(item.description_target || item.description_source) &&
+                          ` (${item.description_target || item.description_source})`}
                       </Text>
                     ))}
                   </View>
