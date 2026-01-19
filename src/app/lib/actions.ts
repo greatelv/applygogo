@@ -47,8 +47,8 @@ export async function getUserSettings() {
       linkedin_url: true,
       portfolio_url: true,
       created_at: true,
-      planType: true,
-      planExpiresAt: true,
+      plan_type: true,
+      plan_expires_at: true,
       credits: true,
     },
   });
@@ -57,20 +57,20 @@ export async function getUserSettings() {
 
   // Check if plan is expired and update if needed
   const now = new Date();
-  let currentPlanType = user.planType;
-  let currentPlanExpiresAt = user.planExpiresAt;
+  let currentPlanType = user.plan_type;
+  let currentPlanExpiresAt = user.plan_expires_at;
 
   if (
-    user.planExpiresAt &&
-    user.planExpiresAt <= now &&
-    user.planType !== "FREE"
+    user.plan_expires_at &&
+    user.plan_expires_at <= now &&
+    user.plan_type !== "FREE"
   ) {
     // Plan expired, update to FREE
     await prisma.user.update({
       where: { id: userId },
       data: {
-        planType: "FREE",
-        planExpiresAt: null,
+        plan_type: "FREE",
+        plan_expires_at: null,
       },
     });
     currentPlanType = "FREE";
@@ -116,13 +116,8 @@ export async function uploadResumeAction(locale: string, formData: FormData) {
     throw new Error("사용자 정보를 찾을 수 없습니다. 다시 로그인해주세요.");
   }
 
-  // Sanitize filename: remove special characters and keep only alphanumeric, dots, hyphens, underscores
-  const sanitizedFileName = file.name
-    .replace(/[^\w\s.-]/g, "") // Remove special chars except word chars, spaces, dots, hyphens
-    .replace(/\s+/g, "_") // Replace spaces with underscores
-    .replace(/_{2,}/g, "_"); // Replace multiple underscores with single
-
-  const fileName = `${Date.now()}-${sanitizedFileName}`;
+  // Use UUID for filename to avoid encoding issues with Korean filenames
+  const fileName = `${crypto.randomUUID()}.pdf`;
   const filePath = `${userId}/${fileName}`;
 
   // 1. Upload to Supabase Storage
@@ -141,12 +136,15 @@ export async function uploadResumeAction(locale: string, formData: FormData) {
   try {
     const resume = await prisma.resume.create({
       data: {
-        userId: userId,
+        id: crypto.randomUUID(),
+        user: { connect: { id: userId } },
         title: file.name.replace(/\.[^/.]+$/, ""),
         original_file_url: uploadData.path,
         status: "IDLE",
         current_step: "UPLOAD",
         locale: locale || "ko",
+        app_locale: locale || "ko", // Set app_locale
+        updated_at: new Date(),
       },
     });
 
@@ -185,12 +183,13 @@ export async function updateResumeTemplateAction(
     await prisma.resume.update({
       where: {
         id: resumeId,
-        userId: userId, // Security check
+        user_id: userId, // Security check (Note: verify if id/user_id compound key exists or separate)
       },
       data: {
         selected_template: templateEnumMap[template] as any,
         status: "COMPLETED",
         current_step: "COMPLETED",
+        updated_at: new Date(),
       },
     });
 
@@ -213,6 +212,7 @@ export async function updateResumeAction(
     certifications?: any[];
     awards?: any[];
     languages?: any[];
+    additionalItems?: any[];
   },
 ) {
   const session = await auth();
@@ -227,32 +227,36 @@ export async function updateResumeAction(
     experiences,
     educations,
     skills,
-    certifications,
-    awards,
-    languages,
+    // extra items might be merged into additionalItems
+    additionalItems,
   } = data;
 
   try {
     await prisma.$transaction(async (tx) => {
       // 1. Delete existing
-      await tx.workExperience.deleteMany({ where: { resumeId } });
-      await tx.education.deleteMany({ where: { resumeId } });
-      await tx.skill.deleteMany({ where: { resumeId } });
-      await tx.additionalItem.deleteMany({ where: { resumeId } });
+      await tx.workExperience.deleteMany({ where: { resume_id: resumeId } });
+      await tx.education.deleteMany({ where: { resume_id: resumeId } });
+      await tx.skill.deleteMany({ where: { resume_id: resumeId } });
+      await tx.additionalItem.deleteMany({ where: { resume_id: resumeId } });
 
       // 2. Create Work Experiences
       if (experiences?.length > 0) {
         await tx.workExperience.createMany({
           data: experiences.map((exp: any, index: number) => ({
-            resumeId,
-            company_name_kr: exp.company,
-            company_name_en: exp.companyEn,
-            role_kr: exp.position,
-            role_en: exp.positionEn,
-            start_date: exp.period.split(" ~ ")[0] || "",
-            end_date: exp.period.split(" ~ ")[1] || "",
-            bullets_kr: exp.bullets,
-            bullets_en: exp.bulletsEn,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            company_name_source: exp.company_source || "",
+            company_name_target: exp.company_target || "",
+            role_source: exp.role_source || "",
+            role_target: exp.role_target || "",
+            start_date: exp.start_date || "",
+            end_date: exp.end_date || "",
+            bullets_source: exp.bullets_source || [],
+            bullets_target: exp.bullets_target || [],
+            // Legacy / Required fields
+            company_name_kr: exp.company_source || "",
+            role_kr: exp.role_source || "",
+            bullets_kr: exp.bullets_source || [],
             order: index,
           })),
         });
@@ -262,15 +266,20 @@ export async function updateResumeAction(
       if (educations?.length > 0) {
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
-            resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
-            start_date: edu.start_date,
-            end_date: edu.end_date,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            school_name_source: edu.school_name_source || "",
+            school_name_target: edu.school_name_target || "",
+            major_source: edu.major_source || "",
+            major_target: edu.major_target || "",
+            degree_source: edu.degree_source || "",
+            degree_target: edu.degree_target || "",
+            start_date: edu.start_date || "",
+            end_date: edu.end_date || "",
+            // Legacy / Required fields
+            school_name: edu.school_name_source || "",
+            major: edu.major_source || "",
+            degree: edu.degree_source || "",
             order: index,
           })),
         });
@@ -280,68 +289,48 @@ export async function updateResumeAction(
       if (skills?.length > 0) {
         await tx.skill.createMany({
           data: skills.map((skill: any, index: number) => ({
-            resumeId,
-            name: skill.name,
-            level: skill.level,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            name: skill.name || "",
+            level: skill.level || "",
             order: index,
           })),
         });
       }
 
-      // 5. Create Certifications
-      // 5. Create Certifications (as Additional Items)
-      if (certifications?.length > 0) {
+      // 5. Create Additional Items (consolidated)
+      if (additionalItems?.length > 0) {
         await tx.additionalItem.createMany({
-          data: certifications.map((cert: any) => ({
-            resumeId,
-            type: "CERTIFICATION",
-            name_kr: cert.name,
-            description_kr: cert.issuer,
-            date: cert.date,
+          data: additionalItems.map((item: any) => ({
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            // Map legacy types if necessary, or use item.type directly
+            type: item.type,
+            name_source: item.name_source || "",
+            name_target: item.name_target || "",
+            description_source: item.description_source || "",
+            description_target: item.description_target || "",
+            date: item.date || "",
+            // Legacy / Required fields
+            name_kr: item.name_source || "",
+            description_kr: item.description_source || "",
           })),
         });
       }
 
-      // 6. Create Awards
-      // 6. Create Awards (as Additional Items)
-      if (awards?.length > 0) {
-        await tx.additionalItem.createMany({
-          data: awards.map((award: any) => ({
-            resumeId,
-            type: "AWARD",
-            name_kr: award.name,
-            description_kr: award.issuer,
-            date: award.date,
-          })),
-        });
-      }
-
-      // 7. Create Languages
-      // 7. Create Languages (as Additional Items)
-      if (languages?.length > 0) {
-        await tx.additionalItem.createMany({
-          data: languages.map((lang: any) => ({
-            resumeId,
-            type: "LANGUAGE",
-            name_kr: lang.name,
-            description_kr: [lang.level, lang.score]
-              .filter(Boolean)
-              .join(" / "),
-          })),
-        });
-      }
-
-      // 8. Update Metadata
+      // 6. Update Metadata
       await tx.resume.update({
-        where: { id: resumeId, userId },
+        where: { id: resumeId, user_id: userId },
         data: {
-          name_kr: personalInfo.name_kr,
-          name_en: personalInfo.name_en,
+          name_source: personalInfo.name_source,
+          name_target: personalInfo.name_target,
           email: personalInfo.email,
           phone: personalInfo.phone,
           links: personalInfo.links,
-          summary: personalInfo.summary || "",
+          summary_source: personalInfo.summary_source || "",
+          summary_target: personalInfo.summary_target || "",
           current_step: "TEMPLATE",
+          updated_at: new Date(),
         },
       });
     });
@@ -372,7 +361,6 @@ export async function deleteAccount(redirectTo?: string) {
     throw new Error("계정 삭제 중 오류가 발생했습니다.");
   }
 
-  // Signout should be outside the try-catch block if it redirects
   await signOut({ redirectTo: redirectTo || "/" });
   return { success: true };
 }

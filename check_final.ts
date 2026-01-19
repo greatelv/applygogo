@@ -15,8 +15,8 @@ async function check() {
   const user = await prisma.user.findUnique({
     where: { email },
     include: {
-      paymentHistories: {
-        orderBy: { paidAt: "desc" },
+      payment_histories: {
+        orderBy: { paid_at: "desc" },
       },
     },
   });
@@ -27,18 +27,18 @@ async function check() {
       {
         id: user?.id,
         email: user?.email,
-        planType: user?.planType,
+        planType: user?.plan_type,
         credits: user?.credits,
-        planExpiresAt: user?.planExpiresAt,
+        planExpiresAt: user?.plan_expires_at,
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 
   console.log(
     "Payment Histories (last 5):",
-    JSON.stringify(user?.paymentHistories.slice(0, 5), null, 2)
+    JSON.stringify(user?.payment_histories.slice(0, 5), null, 2),
   );
 }
 

@@ -15,6 +15,8 @@ interface DraggableEducationItemProps {
   onTranslate: (id: string) => void;
   onRemove: (id: string) => void;
   onChange: (id: string, field: keyof Education, value: string) => void;
+  sourceLabel: string;
+  targetLabel: string;
 }
 
 export const DraggableEducationItem = ({
@@ -25,6 +27,8 @@ export const DraggableEducationItem = ({
   onTranslate,
   onRemove,
   onChange,
+  sourceLabel,
+  targetLabel,
 }: DraggableEducationItemProps) => {
   const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
@@ -98,12 +102,12 @@ export const DraggableEducationItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                {t("editorItems.korean")}
+                {sourceLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                {t("editorItems.english")}
+                {targetLabel}
               </p>
             </div>
           </div>
@@ -140,10 +144,10 @@ export const DraggableEducationItem = ({
 
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Korean Education */}
+            {/* Source Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                {t("editorItems.korean")}
+                {sourceLabel}
               </p>
               <div
                 contentEditable
@@ -151,26 +155,30 @@ export const DraggableEducationItem = ({
                 onBlur={(e) =>
                   onChange(
                     edu.id,
-                    "school_name",
+                    "school_name_source",
                     e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder={t("editorItems.placeholders.school")}
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {edu.school_name}
+                {edu.school_name_source}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div
                   contentEditable
                   suppressContentEditableWarning
                   onBlur={(e) =>
-                    onChange(edu.id, "major", e.currentTarget.textContent || "")
+                    onChange(
+                      edu.id,
+                      "major_source",
+                      e.currentTarget.textContent || "",
+                    )
                   }
                   data-placeholder={t("editorItems.placeholders.major")}
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.major}
+                  {edu.major_source}
                 </div>
                 <span className="text-muted-foreground select-none">•</span>
                 <div
@@ -179,14 +187,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "degree",
+                      "degree_source",
                       e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder={t("editorItems.placeholders.degree")}
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.degree}
+                  {edu.degree_source}
                 </div>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
@@ -224,10 +232,10 @@ export const DraggableEducationItem = ({
               </div>
             </div>
 
-            {/* English Education */}
+            {/* Target Education */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                {t("editorItems.english")}
+                {targetLabel}
               </p>
               <div
                 contentEditable
@@ -235,14 +243,14 @@ export const DraggableEducationItem = ({
                 onBlur={(e) =>
                   onChange(
                     edu.id,
-                    "school_name_en",
+                    "school_name_target",
                     e.currentTarget.textContent || "",
                   )
                 }
                 data-placeholder="School Name"
                 className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {edu.school_name_en || edu.school_name}
+                {edu.school_name_target}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div
@@ -251,14 +259,14 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "major_en",
+                      "major_target",
                       e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Major"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.major_en || edu.major}
+                  {edu.major_target}
                 </div>
                 <span className="text-muted-foreground select-none">•</span>
                 <div
@@ -267,46 +275,23 @@ export const DraggableEducationItem = ({
                   onBlur={(e) =>
                     onChange(
                       edu.id,
-                      "degree_en",
+                      "degree_target",
                       e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Degree"
                   className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {edu.degree_en || edu.degree}
+                  {edu.degree_target}
                 </div>
               </div>
+              {/* Using same dates for Target as Source for now */}
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "start_date",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="Start Date"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
+                <div className="px-0 py-1 -mx-0 transition-colors bg-transparent min-w-[60px]">
                   {edu.start_date}
                 </div>
                 <span className="text-muted-foreground select-none">~</span>
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "end_date",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="End Date"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
+                <div className="px-0 py-1 -mx-0 transition-colors bg-transparent min-w-[60px]">
                   {edu.end_date}
                 </div>
               </div>

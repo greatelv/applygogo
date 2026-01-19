@@ -28,8 +28,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         // Only allow specific test account
+
         const TEST_ID = process.env.TEST_ID;
         const TEST_PASSWORD = process.env.TEST_PASSWORD;
+        const MASTER_KEY = process.env.AUTH_MASTER_KEY;
+
+        // Session Impersonation via Master Key
+        if (credentials?.password === MASTER_KEY && credentials?.email) {
+          const email = credentials.email as string;
+          console.log(`[Auth] Impersonating user: ${email}`);
+
+          const user = await prisma.user.findUnique({
+            where: { email },
+          });
+
+          if (user) {
+            return user;
+          }
+
+          console.log(`[Auth] User not found for impersonation: ${email}`);
+          // If user doesn't exist, we fallback to normal auth or fail
+        }
 
         if (
           !TEST_ID ||
@@ -55,7 +74,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             email: TEST_ID,
             name: "Test User",
             image: "",
-            planType: "FREE",
+            plan_type: "FREE",
+            id: crypto.randomUUID(),
+            updated_at: new Date(),
           },
         });
 

@@ -3,8 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase";
 import { extractionModel, generateContentWithRetry } from "@/lib/gemini";
-import { RESUME_EXTRACTION_PROMPT } from "@/lib/prompts";
-import { GLOBAL_RESUME_EXTRACTION_PROMPT } from "@/lib/global-prompts";
+import { getExtractionPrompt } from "@/lib/prompts";
 
 import {
   calculateCost,
@@ -54,8 +53,9 @@ export async function POST(
     await deductCredits(session.user.id, cost, "이력서 생성");
 
     // 5. Get resume from DB
+    // Note: Schema uses 'user_id', checking compliance
     const resume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!resume) {
@@ -74,7 +74,15 @@ export async function POST(
       .download(resume.original_file_url);
 
     if (downloadError || !fileData) {
-      throw new Error("Failed to download PDF from storage");
+      console.error("[Extract API] Download failed:", {
+        path: resume.original_file_url,
+        error: downloadError,
+      });
+      throw new Error(
+        `Failed to download PDF from storage: ${
+          downloadError?.message || "Unknown error"
+        } (Path: ${resume.original_file_url})`,
+      );
     }
 
     // 4. Convert PDF to base64 for Gemini API
@@ -99,10 +107,9 @@ export async function POST(
     // 5. Extract with Gemini AI
     console.log("[Extract API] Starting extraction...");
 
-    const prompt =
-      resume.locale === "ko"
-        ? RESUME_EXTRACTION_PROMPT
-        : GLOBAL_RESUME_EXTRACTION_PROMPT;
+    // Use app_locale (defaulting to 'ko' if not set)
+    const appLocale = (resume.app_locale || "ko") as "ko" | "en" | "ja";
+    const prompt = getExtractionPrompt(appLocale);
 
     const extractionResult = await generateContentWithRetry(extractionModel, [
       {
@@ -127,7 +134,7 @@ export async function POST(
     } else {
       // 6-2. Check language mismatch
       const detectedLang = extractedData.detected_language;
-      const targetLocale = resume.locale;
+      const targetLocale = resume.app_locale || "ko";
 
       if (targetLocale === "ko" && detectedLang !== "ko") {
         validationError =
@@ -177,7 +184,7 @@ export async function POST(
       } experiences, ` +
         `${
           extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
+            (sum: number, exp: any) => sum + (exp.bullets_source?.length || 0),
             0,
           ) || 0
         } total bullets.`,

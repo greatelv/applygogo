@@ -22,7 +22,7 @@ async function applyMissedBenefits() {
       created_at: {
         gte: todayStart,
       },
-      planType: "FREE",
+      plan_type: "FREE",
     },
   });
 

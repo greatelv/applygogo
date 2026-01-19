@@ -23,11 +23,13 @@ interface DraggableExperienceItemProps {
     id: string,
     index: number,
     value: string,
-    isEnglish: boolean,
+    isTarget: boolean,
   ) => void;
   onAddBullet: (id: string) => void;
   onRemoveBullet: (id: string, index: number) => void;
   highlightedBullets?: number[];
+  sourceLabel: string;
+  targetLabel: string;
 }
 
 export const DraggableExperienceItem = ({
@@ -42,6 +44,8 @@ export const DraggableExperienceItem = ({
   onAddBullet,
   onRemoveBullet,
   highlightedBullets,
+  sourceLabel,
+  targetLabel,
 }: DraggableExperienceItemProps) => {
   const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
@@ -120,12 +124,12 @@ export const DraggableExperienceItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                {t("editorItems.korean")}
+                {sourceLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                {t("editorItems.english")}
+                {targetLabel}
               </p>
             </div>
           </div>
@@ -162,10 +166,10 @@ export const DraggableExperienceItem = ({
 
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Left: Original (KR) */}
+            {/* Left: Source */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                {t("editorItems.korean")}
+                {sourceLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -174,14 +178,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "company",
+                      "company_name_source",
                       e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder={t("editorItems.placeholders.company")}
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.company}
+                  {exp.company_name_source}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -190,14 +194,14 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "position",
+                        "role_source",
                         e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder={t("editorItems.placeholders.position")}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.position}
+                    {exp.role_source}
                   </div>
                   <span className="text-muted-foreground select-none">•</span>
                   <div
@@ -206,20 +210,36 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "period",
+                        "start_date", // Shared field, assuming start_date/period mapping
                         e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder={t("editorItems.placeholders.period")}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.period}
+                    {exp.start_date}
+                  </div>
+                  <span className="text-muted-foreground select-none">-</span>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "end_date",
+                        e.currentTarget.textContent || "",
+                      )
+                    }
+                    data-placeholder={t("editorItems.placeholders.period")}
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.end_date}
                   </div>
                 </div>
               </div>
 
               <ul className="space-y-3">
-                {exp.bullets.map((bullet, index) => (
+                {(exp.bullets_source || []).map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -251,10 +271,10 @@ export const DraggableExperienceItem = ({
               </ul>
             </div>
 
-            {/* Right: Translated (EN) */}
+            {/* Right: Target */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                {t("editorItems.english")}
+                {targetLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -263,14 +283,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "companyEn",
+                      "company_name_target",
                       e.currentTarget.textContent || "",
                     )
                   }
                   data-placeholder="Company Name"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.companyEn}
+                  {exp.company_name_target}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -279,36 +299,28 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "positionEn",
+                        "role_target",
                         e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder="Position"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.positionEn}
+                    {exp.role_target}
                   </div>
+                  {/* Shared Date (typically not translated, so just read-only or shared)
+                      If we want editable dates on target side, we'd need checks. 
+                      For now, just showing same dates or source dates is fine. 
+                   */}
                   <span className="text-muted-foreground select-none">•</span>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "period",
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder="Period"
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.period}
-                  </div>
+                  <span>
+                    {exp.start_date || ""} - {exp.end_date || ""}
+                  </span>
                 </div>
               </div>
 
               <ul className="space-y-3">
-                {exp.bulletsEn.map((bullet, index) => (
+                {(exp.bullets_target || []).map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •

@@ -18,7 +18,7 @@ async function checkMissedUsers() {
       created_at: {
         gte: today,
       },
-      planType: "FREE",
+      plan_type: "FREE",
     },
     select: {
       id: true,

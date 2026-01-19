@@ -10,23 +10,23 @@ import { MinimalTemplate } from "./resume-templates/minimal-template";
 
 interface TranslatedExperience {
   id: string;
-  company: string;
-  position: string;
+  company_name_source: string;
+  role_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }

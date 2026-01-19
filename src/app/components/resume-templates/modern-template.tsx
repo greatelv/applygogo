@@ -19,23 +19,23 @@ const formatDate = (dateStr?: string) => {
 
 interface Experience {
   id: string;
-  company: string;
-  position: string;
+  company_name_source: string;
+  role_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -68,12 +68,13 @@ interface Language {
 }
 
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_source?: string;
+  name_target?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
-  summary?: string;
+  summary_source?: string;
+  summary_target?: string;
 }
 
 interface ModernTemplateProps {
@@ -92,19 +93,21 @@ export function ModernTemplate({
   additionalItems = [],
 }: ModernTemplateProps) {
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
   const others = additionalItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <div className="bg-white text-black p-8 min-h-full font-sans">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-gray-900">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_target ||
+            personalInfo?.name_source ||
+            "이름 없음"}
         </h1>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
           {personalInfo?.email && <span>{personalInfo.email}</span>}
@@ -138,17 +141,17 @@ export function ModernTemplate({
       </div>
 
       {/* Professional Summary */}
-      {personalInfo?.summary && (
+      {personalInfo?.summary_target || personalInfo?.summary_source ? (
         <div className="mb-8">
           <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
             <div className="w-8 h-0.5 bg-blue-600"></div>
             PROFESSIONAL SUMMARY
           </h2>
           <p className="text-sm text-gray-700 leading-relaxed">
-            {personalInfo.summary}
+            {personalInfo.summary_target || personalInfo.summary_source}
           </p>
         </div>
-      )}
+      ) : null}
 
       {/* Experience */}
       {experiences.length > 0 && (
@@ -162,9 +165,11 @@ export function ModernTemplate({
               <div key={exp.id}>
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="font-bold text-gray-900">{exp.companyEn}</h3>
+                    <h3 className="font-bold text-gray-900">
+                      {exp.company_name_target}
+                    </h3>
                     <p className="text-sm text-blue-600 font-medium">
-                      {exp.positionEn}
+                      {exp.role_target}
                     </p>
                   </div>
                   <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
@@ -173,7 +178,7 @@ export function ModernTemplate({
                   </span>
                 </div>
                 <ul className="space-y-1.5 ml-4">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bullets_target.map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-700 flex gap-2"
@@ -221,18 +226,18 @@ export function ModernTemplate({
               <div key={edu.id} className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_target || edu.school_name_source}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
+                  {((edu.degree_target && edu.degree_target !== "-") ||
+                    (edu.degree_source && edu.degree_source !== "-") ||
+                    (edu.major_target && edu.major_target !== "-") ||
+                    (edu.major_source && edu.major_source !== "-")) && (
                     <p className="text-sm text-gray-600">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
+                      {edu.degree_target || edu.degree_source}
+                      {(edu.degree_target || edu.degree_source) &&
+                        (edu.major_target || edu.major_source) &&
                         ", "}
-                      {edu.major_en || edu.major}
+                      {edu.major_target || edu.major_source}
                     </p>
                   )}
                 </div>
@@ -263,9 +268,9 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {certifications.map((cert) => (
                     <li key={cert.id}>
-                      {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
+                      {cert.name_target || cert.name_source}{" "}
+                      {cert.description_target || cert.description_source
+                        ? `| ${cert.description_target || cert.description_source}`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </li>
@@ -279,9 +284,9 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {awards.map((award) => (
                     <li key={award.id}>
-                      {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
+                      {award.name_target || award.name_source}{" "}
+                      {award.description_target || award.description_source
+                        ? `| ${award.description_target || award.description_source}`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </li>
@@ -301,11 +306,11 @@ export function ModernTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1">
-                        {lang.name_en || lang.name}
+                        {lang.name_target || lang.name_source}
                       </span>
-                      {(lang.description_en || lang.description) && (
+                      {(lang.description_target || lang.description_source) && (
                         <span className="text-gray-500">
-                          ({lang.description_en || lang.description})
+                          ({lang.description_target || lang.description_source})
                         </span>
                       )}
                     </span>

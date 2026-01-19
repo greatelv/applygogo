@@ -216,13 +216,13 @@ export const ModernPdf = ({
 
   // Filter out empty items first
   const validExperiences = experiences.filter(
-    (exp) => exp.company?.trim() || exp.companyEn?.trim(),
+    (exp) => exp.company_name_source?.trim() || exp.company_name_target?.trim(),
   );
   const validEducations = educations.filter(
-    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim(),
+    (edu) => edu.school_name_source?.trim() || edu.school_name_target?.trim(),
   );
   const validItems = additionalItems.filter(
-    (i) => i.name_kr?.trim() || i.name_en?.trim(),
+    (i) => i.name_source?.trim() || i.name_target?.trim(),
   );
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
@@ -262,9 +262,9 @@ export const ModernPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {(isKo ? personalInfo?.name_kr : personalInfo?.name_en) ||
-              personalInfo?.name_en ||
-              personalInfo?.name_kr ||
+            {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
+              personalInfo?.name_target ||
+              personalInfo?.name_source ||
               "이름 없음"}
           </Text>
           <View style={styles.contactRow}>
@@ -300,7 +300,7 @@ export const ModernPdf = ({
         </View>
 
         {/* Summary */}
-        {(personalInfo?.summary || personalInfo?.summary_en) && (
+        {(personalInfo?.summary_source || personalInfo?.summary_target) && (
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
@@ -309,8 +309,9 @@ export const ModernPdf = ({
               </Text>
             </View>
             <Text style={styles.summaryText}>
-              {(isKo ? personalInfo.summary : personalInfo.summary_en) ||
-                personalInfo.summary}
+              {(isKo
+                ? personalInfo.summary_source
+                : personalInfo.summary_target) || personalInfo.summary_source}
             </Text>
           </View>
         )}
@@ -331,12 +332,14 @@ export const ModernPdf = ({
                     <View style={styles.expHeader}>
                       <View>
                         <Text style={styles.companyName}>
-                          {(isKo ? exp.company : exp.companyEn) ||
-                            exp.companyEn}
+                          {(isKo
+                            ? exp.company_name_source
+                            : exp.company_name_target) ||
+                            exp.company_name_target}
                         </Text>
                         <Text style={styles.position}>
-                          {(isKo ? exp.position : exp.positionEn) ||
-                            exp.positionEn}
+                          {(isKo ? exp.role_source : exp.role_target) ||
+                            exp.role_target}
                         </Text>
                       </View>
                       <Text style={styles.period}>
@@ -346,7 +349,8 @@ export const ModernPdf = ({
                     </View>
                     <View style={styles.bulletList}>
                       {(
-                        (isKo ? exp.bullets : exp.bulletsEn) || exp.bulletsEn
+                        (isKo ? exp.bullets_source : exp.bullets_target) ||
+                        exp.bullets_target
                       )?.map((bullet: string, idx: number) => (
                         <React.Fragment key={idx}>
                           <View style={styles.bulletItem}>
@@ -401,14 +405,16 @@ export const ModernPdf = ({
                   <View style={styles.eduItem}>
                     <View>
                       <Text style={styles.companyName}>
-                        {(isKo ? edu.school_name : edu.school_name_en) ||
-                          edu.school_name_en ||
-                          edu.school_name}
+                        {(isKo
+                          ? edu.school_name_source
+                          : edu.school_name_target) ||
+                          edu.school_name_target ||
+                          edu.school_name_source}
                       </Text>
-                      {((edu.degree_en && edu.degree_en !== "-") ||
-                        (edu.degree && edu.degree !== "-") ||
-                        (edu.major_en && edu.major_en !== "-") ||
-                        (edu.major && edu.major !== "-")) && (
+                      {((edu.degree_target && edu.degree_target !== "-") ||
+                        (edu.degree_source && edu.degree_source !== "-") ||
+                        (edu.major_target && edu.major_target !== "-") ||
+                        (edu.major_source && edu.major_source !== "-")) && (
                         <Text
                           style={{
                             fontSize: 10.5,
@@ -416,19 +422,19 @@ export const ModernPdf = ({
                             marginTop: 2,
                           }}
                         >
-                          {(isKo ? edu.degree : edu.degree_en) ||
-                            edu.degree_en ||
-                            edu.degree}
-                          {((isKo ? edu.degree : edu.degree_en) ||
-                            edu.degree_en ||
-                            edu.degree) &&
-                            ((isKo ? edu.major : edu.major_en) ||
-                              edu.major_en ||
-                              edu.major) &&
+                          {(isKo ? edu.degree_source : edu.degree_target) ||
+                            edu.degree_target ||
+                            edu.degree_source}
+                          {((isKo ? edu.degree_source : edu.degree_target) ||
+                            edu.degree_target ||
+                            edu.degree_source) &&
+                            ((isKo ? edu.major_source : edu.major_target) ||
+                              edu.major_target ||
+                              edu.major_source) &&
                             ", "}
-                          {(isKo ? edu.major : edu.major_en) ||
-                            edu.major_en ||
-                            edu.major}
+                          {(isKo ? edu.major_source : edu.major_target) ||
+                            edu.major_target ||
+                            edu.major_source}
                         </Text>
                       )}
                     </View>
@@ -468,13 +474,15 @@ export const ModernPdf = ({
                   </Text>
                   {certifications.map((cert: any, i: number) => {
                     const name =
-                      (isKo ? cert.name : cert.name_en) ||
-                      cert.name_en ||
-                      cert.name;
+                      (isKo ? cert.name_source : cert.name_target) ||
+                      cert.name_target ||
+                      cert.name_source;
                     const desc =
-                      (isKo ? cert.description : cert.description_en) ||
-                      cert.description_en ||
-                      cert.description;
+                      (isKo
+                        ? cert.description_source
+                        : cert.description_target) ||
+                      cert.description_target ||
+                      cert.description_source;
                     const date = formatDateLocale(cert.date);
                     return (
                       <React.Fragment key={i}>
@@ -501,13 +509,15 @@ export const ModernPdf = ({
                   </Text>
                   {awards.map((award: any, i: number) => {
                     const name =
-                      (isKo ? award.name : award.name_en) ||
-                      award.name_en ||
-                      award.name;
+                      (isKo ? award.name_source : award.name_target) ||
+                      award.name_target ||
+                      award.name_source;
                     const desc =
-                      (isKo ? award.description : award.description_en) ||
-                      award.description_en ||
-                      award.description;
+                      (isKo
+                        ? award.description_source
+                        : award.description_target) ||
+                      award.description_target ||
+                      award.description_source;
                     const date = formatDateLocale(award.date);
                     return (
                       <React.Fragment key={i}>
@@ -537,13 +547,15 @@ export const ModernPdf = ({
                   >
                     {languages.map((lang: any, i: number) => {
                       const name =
-                        (isKo ? lang.name : lang.name_en) ||
-                        lang.name_en ||
-                        lang.name;
+                        (isKo ? lang.name_source : lang.name_target) ||
+                        lang.name_target ||
+                        lang.name_source;
                       const desc =
-                        (isKo ? lang.description : lang.description_en) ||
-                        lang.description_en ||
-                        lang.description;
+                        (isKo
+                          ? lang.description_source
+                          : lang.description_target) ||
+                        lang.description_target ||
+                        lang.description_source;
                       return (
                         <React.Fragment key={i}>
                           <Text style={{ fontSize: 10.5, color: "#374151" }}>

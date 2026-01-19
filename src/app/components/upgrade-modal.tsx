@@ -62,29 +62,40 @@ export function UpgradeModal({
       const price = isGlobal ? (config as any).priceGlobal : config.price;
       const currency = isGlobal ? "USD" : "KRW";
 
-      let response;
+      let response: any;
 
       if (isGlobal) {
         // Small delay to ensure the container is ready
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        response = await PortOne.loadPaymentUI({
-          uiType: "PAYPAL_SPB",
-          storeId: portoneConfig.storeId,
-          channelKey:
-            (portoneConfig as any).paypalChannelKey || portoneConfig.channelKey,
-          paymentId: `payment-${Date.now()}-${Math.random()
-            .toString(36)
-            .substr(2, 9)}`,
-          orderName: config.name,
-          totalAmount: price * 100, // USD requires cents
-          currency: "USD",
-          productType: "DIGITAL",
-          customer: {
-            customerId: userId,
-            fullName: userName || undefined,
-            email: userEmail || undefined,
-          },
+        // Restore Promise wrapping for loadPaymentUI callbacks
+        response = await new Promise((resolve, reject) => {
+          PortOne.loadPaymentUI(
+            {
+              storeId: portoneConfig.storeId,
+              channelKey:
+                (portoneConfig as any).paypalChannelKey ||
+                portoneConfig.channelKey,
+              paymentId: `payment-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`,
+              orderName: config.name,
+              totalAmount: price * 100, // USD requires cents
+              currency: "USD",
+              productType: "DIGITAL",
+              uiType: "PAYPAL_SPB",
+              customer: {
+                customerId: userId,
+                fullName: userName || undefined,
+                email: userEmail || undefined,
+              },
+            },
+            {
+              onPaymentSuccess: (res) => resolve(res),
+              onPaymentFail: (err) =>
+                reject(new Error(err.message || "Payment failed")),
+            },
+          );
         });
       } else {
         // Standard payment for KR users
@@ -106,8 +117,8 @@ export function UpgradeModal({
         });
       }
 
-      if (response.code != null) {
-        // User cancelled or error occurred
+      if (response?.code != null) {
+        // User cancelled or error occurred (for requestPayment mainly)
         setPurchasingProduct(null);
         return;
       }

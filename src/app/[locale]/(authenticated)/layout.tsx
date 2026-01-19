@@ -29,28 +29,28 @@ export default async function AuthenticatedLayout({
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: {
-      planType: true,
-      planExpiresAt: true,
+      plan_type: true,
+      plan_expires_at: true,
       credits: true,
     },
   });
 
   // Check if plan is expired
   const now = new Date();
-  let currentPlanType = user?.planType || "FREE";
+  let currentPlanType = user?.plan_type || "FREE";
   let currentCredits = user?.credits ?? 0;
 
   if (
-    user?.planExpiresAt &&
-    user.planExpiresAt <= now &&
-    user.planType !== "FREE"
+    user?.plan_expires_at &&
+    user.plan_expires_at <= now &&
+    user.plan_type !== "FREE"
   ) {
     // Plan expired, update to FREE
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
-        planType: "FREE",
-        planExpiresAt: null,
+        plan_type: "FREE",
+        plan_expires_at: null,
       },
     });
     currentPlanType = "FREE";

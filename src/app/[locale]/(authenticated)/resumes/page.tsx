@@ -14,7 +14,7 @@ export default async function Page({
 
   const resumes = await prisma.resume.findMany({
     where: {
-      userId: session.user.id,
+      user_id: session.user.id,
       locale: locale,
     },
     orderBy: { updated_at: "desc" },
@@ -23,10 +23,10 @@ export default async function Page({
   // Fetch full user details to check plan
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { planType: true },
+    select: { plan_type: true },
   });
 
-  const showBetaBanner = user?.planType === "PASS_BETA_3DAY";
+  const showBetaBanner = user?.plan_type === "PASS_BETA_3DAY";
 
   const mappedResumes = resumes.map((r) => ({
     id: r.id,

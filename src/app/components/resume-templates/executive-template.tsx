@@ -33,7 +33,7 @@ export function ExecutiveTemplate({
   additionalItems = [],
 }: ExecutiveTemplateProps) {
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
@@ -43,7 +43,7 @@ export function ExecutiveTemplate({
       {/* Dark Header */}
       <div className="bg-slate-900 text-white py-10 px-10 mb-8">
         <h1 className="text-4xl font-bold mb-2 tracking-wide text-white">
-          {personalInfo?.name_en || personalInfo?.name_kr || "Name"}
+          {personalInfo?.name_target || personalInfo?.name_source || "Name"}
         </h1>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-slate-300 items-center mt-3">
           {personalInfo?.email && <span>{personalInfo.email}</span>}
@@ -73,16 +73,16 @@ export function ExecutiveTemplate({
 
       <div className="px-10 pb-10">
         {/* Summary */}
-        {personalInfo?.summary && (
+        {personalInfo?.summary_target || personalInfo?.summary_source ? (
           <div className="mb-8">
             <h2 className="text-xs font-bold text-slate-900 border-b-2 border-slate-900 pb-1 mb-3 uppercase tracking-widest">
               Executive Summary
             </h2>
             <p className="text-slate-700 leading-relaxed">
-              {personalInfo.summary}
+              {personalInfo.summary_target || personalInfo.summary_source}
             </p>
           </div>
-        )}
+        ) : null}
 
         {/* Experience */}
         {experiences.length > 0 && (
@@ -96,10 +96,10 @@ export function ExecutiveTemplate({
                   <div className="flex justify-between items-center mb-1.5">
                     <div className="flexflex-col">
                       <div className="font-bold text-slate-900 text-[11.5pt]">
-                        {exp.companyEn}
+                        {exp.company_name_target}
                       </div>
                       <div className="text-slate-700 font-bold text-[10.5pt]">
-                        {exp.positionEn}
+                        {exp.role_target}
                       </div>
                     </div>
                     <div className="text-sm text-slate-500 font-medium">
@@ -108,7 +108,7 @@ export function ExecutiveTemplate({
                     </div>
                   </div>
                   <ul className="space-y-2 mt-2">
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
+                    {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <li key={idx} className="flex gap-3 pl-1">
                         <span
                           className="text-slate-900 mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
@@ -135,15 +135,15 @@ export function ExecutiveTemplate({
                 <div key={edu.id} className="flex justify-between items-start">
                   <div>
                     <div className="font-bold text-slate-900">
-                      {edu.school_name_en || edu.school_name}
+                      {edu.school_name_target || edu.school_name_source}
                     </div>
                     <div className="text-slate-700 text-sm">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                      (edu.major_en || edu.major)
+                      {edu.degree_target || edu.degree_source}
+                      {(edu.degree_target || edu.degree_source) &&
+                      (edu.major_target || edu.major_source)
                         ? ", "
                         : ""}
-                      {edu.major_en || edu.major}
+                      {edu.major_target || edu.major_source}
                     </div>
                   </div>
                   <div className="text-sm text-slate-500 font-medium whitespace-nowrap">
@@ -191,7 +191,7 @@ export function ExecutiveTemplate({
                   <ul className="space-y-1">
                     {certifications.map((item: any) => (
                       <li key={item.id} className="text-sm text-slate-600">
-                        • {item.name_en || item.name}{" "}
+                        • {item.name_target || item.name_source}{" "}
                         {item.date ? `(${formatDate(item.date)})` : ""}
                       </li>
                     ))}
@@ -206,7 +206,7 @@ export function ExecutiveTemplate({
                   <ul className="space-y-1">
                     {awards.map((item: any) => (
                       <li key={item.id} className="text-sm text-slate-600">
-                        • {item.name_en || item.name}
+                        • {item.name_target || item.name_source}
                       </li>
                     ))}
                   </ul>
@@ -220,9 +220,9 @@ export function ExecutiveTemplate({
                   <div className="flex gap-4 flex-wrap">
                     {languages.map((item: any) => (
                       <span key={item.id} className="text-sm text-slate-600">
-                        • {item.name_en || item.name}
-                        {(item.description_en || item.description) &&
-                          ` (${item.description_en || item.description})`}
+                        • {item.name_target || item.name_source}
+                        {(item.description_target || item.description_source) &&
+                          ` (${item.description_target || item.description_source})`}
                       </span>
                     ))}
                   </div>

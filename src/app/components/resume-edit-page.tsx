@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -82,6 +82,20 @@ export function ResumeEditPage({
   onDeductCredit,
 }: ResumeEditPageProps) {
   const t = useTranslations("editPage");
+  const locale = useLocale();
+
+  const getSourceLabel = () => {
+    if (locale === "en") return "English (Original)";
+    if (locale === "ja") return "日本語 (Original)";
+    return "한국어 (원본)";
+  };
+
+  const getTargetLabel = () => {
+    if (locale === "en") return "한국어 (번역본)";
+    if (locale === "ja") return "한국어 (번역본)";
+    return "English (Translated)";
+  };
+
   const {
     // States
     personalInfo,
@@ -170,12 +184,12 @@ export function ResumeEditPage({
             <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
-                  {t("sections.personal.korean")}
+                  {getSourceLabel()}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-semibold mb-1">
-                  {t("sections.personal.english")}
+                  {getTargetLabel()}
                 </p>
               </div>
             </div>
@@ -202,10 +216,10 @@ export function ResumeEditPage({
           </div>
           <div className="p-4 sm:p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Korean Info */}
+              {/* Source Info */}
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                  {t("sections.personal.korean")}
+                  {getSourceLabel()}
                 </p>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
@@ -216,14 +230,14 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_kr",
+                        "name_source",
                         e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder={t("sections.personal.name")}
                     className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.name_kr}
+                    {personalInfo.name_source}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -327,10 +341,10 @@ export function ResumeEditPage({
                 </div>
               </div>
 
-              {/* English Info */}
+              {/* Target Info */}
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                  {t("sections.personal.english")}
+                  {getTargetLabel()}
                 </p>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
@@ -341,7 +355,7 @@ export function ResumeEditPage({
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "name_en",
+                        "name_target",
                         e.currentTarget.textContent || "",
                       )
                     }
@@ -352,7 +366,7 @@ export function ResumeEditPage({
                         : ""
                     }`}
                   >
-                    {personalInfo.name_en}
+                    {personalInfo.name_target}
                   </div>
                 </div>
 
@@ -486,34 +500,34 @@ export function ResumeEditPage({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    {t("sections.personal.korean")}
+                    {getSourceLabel()}
                   </p>
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "summary_kr",
+                        "summary_source",
                         e.currentTarget.textContent || "",
                       )
                     }
                     data-placeholder={t("sections.personal.summary")}
                     className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {personalInfo.summary_kr}
+                    {personalInfo.summary_source}
                   </div>
                 </div>
 
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
-                    {t("sections.personal.english")}
+                    {getTargetLabel()}
                   </p>
                   <div
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) =>
                       handlePersonalInfoChange(
-                        "summary",
+                        "summary_target",
                         e.currentTarget.textContent || "",
                       )
                     }
@@ -524,7 +538,7 @@ export function ResumeEditPage({
                         : ""
                     }`}
                   >
-                    {personalInfo.summary}
+                    {personalInfo.summary_target}
                   </div>
                 </div>
               </div>
@@ -566,6 +580,8 @@ export function ResumeEditPage({
               onAddBullet={handleAddBullet}
               onRemoveBullet={handleRemoveBullet}
               highlightedBullets={highlightedBullets[exp.id]}
+              sourceLabel={getSourceLabel()}
+              targetLabel={getTargetLabel()}
             />
           ))}
 
@@ -609,6 +625,8 @@ export function ResumeEditPage({
                   onTranslate={handleTranslateEducation}
                   onRemove={handleRemoveEducation}
                   onChange={handleEducationChange}
+                  sourceLabel={getSourceLabel()}
+                  targetLabel={getTargetLabel()}
                 />
               ))}
             </div>
@@ -709,6 +727,8 @@ export function ResumeEditPage({
                   onRetranslate={handleRetranslateAdditionalItem}
                   onRemove={handleRemoveAdditionalItem}
                   onChange={handleAdditionalItemChange}
+                  sourceLabel={getSourceLabel()}
+                  targetLabel={getTargetLabel()}
                 />
               ))}
             </div>
@@ -739,14 +759,16 @@ export function ResumeEditPage({
 
             const compactedExperiences = experiences.filter(
               (exp) =>
-                (exp.company && exp.company.trim() !== "") ||
-                (exp.companyEn && exp.companyEn.trim() !== ""),
+                (exp.company_source && exp.company_source.trim() !== "") ||
+                (exp.company_target && exp.company_target.trim() !== ""),
             );
 
             const compactedEducations = educations.filter(
               (edu) =>
-                (edu.school_name && edu.school_name.trim() !== "") ||
-                (edu.school_name_en && edu.school_name_en.trim() !== ""),
+                (edu.school_name_source &&
+                  edu.school_name_source.trim() !== "") ||
+                (edu.school_name_target &&
+                  edu.school_name_target.trim() !== ""),
             );
 
             const compactedSkills = skills.filter(
@@ -755,8 +777,8 @@ export function ResumeEditPage({
 
             const compactedAdditionalItems = additionalItems.filter(
               (item) =>
-                (item.name_kr && item.name_kr.trim() !== "") ||
-                (item.name_en && item.name_en.trim() !== ""),
+                (item.name_source && item.name_source.trim() !== "") ||
+                (item.name_target && item.name_target.trim() !== ""),
             );
 
             onNext({
@@ -797,12 +819,12 @@ export function ResumeEditPage({
             <AlertDialogAction
               onClick={() => {
                 if (alertConfig.showCheckout) {
-                  // Navigate to pricing if credit error
-                  window.location.href = "/pricing";
+                  // Navigate to pricing or handle logic
                 }
+                setAlertConfig((prev) => ({ ...prev, open: false }));
               }}
             >
-              확인
+              Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

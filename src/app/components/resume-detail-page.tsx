@@ -37,24 +37,26 @@ import {
 
 interface TranslatedExperience {
   id: string;
-  company: string;
-  position: string;
+  company_name_source: string;
+  role_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 interface ResumeDetailPageProps {
   resumeId?: string;
   resumeTitle?: string;
   personalInfo?: {
-    name_kr: string;
-    name_en: string;
+    name_source: string;
+    name_target: string;
     email: string;
     phone: string;
     links: any[];
+    summary_source?: string;
+    summary_target?: string;
   };
   experiences?: TranslatedExperience[];
   educations?: any[];
@@ -437,7 +439,7 @@ export function ResumeDetailPage({
                 <span className="font-medium text-muted-foreground">
                   {t("originalView.labels.name")}
                 </span>
-                <span>{resume.personalInfo?.name_kr || "-"}</span>
+                <span>{resume.personalInfo?.name_source || "-"}</span>
               </div>
               {resume.personalInfo?.email && (
                 <div className="grid grid-cols-[100px_1fr] gap-2">
@@ -489,9 +491,11 @@ export function ResumeDetailPage({
                 <div key={exp.id}>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-semibold">{exp.company}</h4>
+                      <h4 className="font-semibold">
+                        {exp.company_name_source}
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        {exp.position}
+                        {exp.role_source}
                       </p>
                     </div>
                     <span className="text-sm text-muted-foreground">
@@ -499,7 +503,7 @@ export function ResumeDetailPage({
                     </span>
                   </div>
                   <ul className="space-y-1">
-                    {exp.bullets.map((bullet: string, index: number) => (
+                    {exp.bullets_source.map((bullet: string, index: number) => (
                       <li
                         key={index}
                         className="text-sm flex gap-2 text-muted-foreground"
@@ -527,13 +531,15 @@ export function ResumeDetailPage({
                     className="flex justify-between items-start"
                   >
                     <div>
-                      <h4 className="font-semibold">{edu.school_name}</h4>
-                      {((edu.degree && edu.degree !== "-") ||
-                        (edu.major && edu.major !== "-")) && (
+                      <h4 className="font-semibold">
+                        {edu.school_name_source}
+                      </h4>
+                      {((edu.degree_source && edu.degree_source !== "-") ||
+                        (edu.major_source && edu.major_source !== "-")) && (
                         <p className="text-sm text-muted-foreground">
-                          {edu.degree}
-                          {edu.degree && edu.major && ", "}
-                          {edu.major}
+                          {edu.degree_source}
+                          {edu.degree_source && edu.major_source && ", "}
+                          {edu.major_source}
                         </p>
                       )}
                     </div>
@@ -593,10 +599,12 @@ export function ResumeDetailPage({
                             className="text-sm flex justify-between"
                           >
                             <div>
-                              <span className="font-medium">{item.name}</span>
-                              {item.description && (
+                              <span className="font-medium">
+                                {item.name_source}
+                              </span>
+                              {item.description_source && (
                                 <span className="text-muted-foreground ml-2">
-                                  ({item.description})
+                                  ({item.description_source})
                                 </span>
                               )}
                             </div>

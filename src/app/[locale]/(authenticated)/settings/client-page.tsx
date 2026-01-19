@@ -110,10 +110,10 @@ export function SettingsClientPage({
 
       let response: any;
       if (isGlobal) {
-        response = await new Promise<any>((resolve, reject) => {
+        // Restore Promise wrapping and callbacks
+        response = await new Promise((resolve, reject) => {
           PortOne.loadPaymentUI(
             {
-              uiType: "PAYPAL_SPB",
               storeId: portoneConfig.storeId,
               channelKey: portoneConfig.paypalChannelKey,
               paymentId: `payment-${Date.now()}-${Math.random()
@@ -123,6 +123,7 @@ export function SettingsClientPage({
               totalAmount: product.amount * 100, // USD requires cents
               currency: currency as any,
               productType: "DIGITAL",
+              uiType: "PAYPAL_SPB",
               customer: {
                 customerId: user.id,
                 fullName: user.name || undefined,
@@ -272,23 +273,32 @@ export function SettingsClientPage({
   };
 
   return (
-    <SettingsPage
-      userName={user.name || "User"}
-      userEmail={user.email || ""}
-      userImage={user.image || undefined}
-      createdAt={createdAt}
-      onDeleteAccount={handleDeleteAccount}
-      hasActivePass={hasActivePass}
-      passType={planType}
-      quota={credits}
-      onUpgrade={handleUpgrade}
-      onRefund={handleRefund}
-      onCancel={() => {}}
-      currentPeriodEnd={planExpiresAt || undefined}
-      paymentHistory={paymentHistory}
-      isUpgrading={isUpgrading}
-      isRefunding={isRefunding}
-      canRefund={canRefund}
-    />
+    <>
+      <SettingsPage
+        userName={user.name || "User"}
+        userEmail={user.email || ""}
+        userImage={user.image || undefined}
+        createdAt={createdAt}
+        onDeleteAccount={handleDeleteAccount}
+        hasActivePass={hasActivePass}
+        passType={planType}
+        quota={credits}
+        onUpgrade={handleUpgrade}
+        onRefund={handleRefund}
+        onCancel={() => {}}
+        currentPeriodEnd={planExpiresAt || undefined}
+        paymentHistory={paymentHistory}
+        isUpgrading={isUpgrading}
+        isRefunding={isRefunding}
+        canRefund={canRefund}
+      />
+      {/* Hidden Container for PortOne V2 UI (PayPal SPB) */}
+      <div
+        className="portone-ui-settings-container hidden absolute top-0 left-0 w-full h-full z-50 bg-white/90"
+        data-portone-ui-type="paypal-spb"
+      >
+        {/* Style this better if using embedded mode */}
+      </div>
+    </>
   );
 }

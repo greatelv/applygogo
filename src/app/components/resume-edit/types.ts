@@ -1,25 +1,26 @@
 export interface Experience {
   id: string;
-  company: string;
-  position: string;
-  period: string;
-  bullets: string[];
+  company_name_source: string;
+  role_source: string;
+  start_date: string;
+  end_date: string;
+  bullets_source: string[];
 }
 
 export interface TranslatedExperience extends Experience {
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 export interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -31,13 +32,13 @@ export interface Skill {
 }
 
 export interface PersonalInfo {
-  name_kr: string;
-  name_en: string;
+  name_source: string;
+  name_target: string;
   email: string;
   phone: string;
   links: { label: string; url: string }[];
-  summary?: string;
-  summary_kr?: string;
+  summary_source: string;
+  summary_target: string;
 }
 
 export type ItemType =
@@ -50,9 +51,9 @@ export type ItemType =
 export interface AdditionalItem {
   id: string;
   type: ItemType;
-  name_kr: string;
-  name_en?: string;
-  description_kr?: string;
-  description_en?: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   date?: string;
 }

@@ -13,12 +13,12 @@ export default async function Page({
   const session = await auth();
 
   const resume = (await prisma.resume.findUnique({
-    where: { id, userId: session.user.id },
+    where: { id, user_id: session.user.id },
     include: {
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
-      additionalItems: { orderBy: { order: "asc" } },
+      additional_items: { orderBy: { order: "asc" } },
     },
   })) as any;
 
@@ -35,7 +35,7 @@ export default async function Page({
     redirect({ href: `/resumes/new`, locale });
   }
 
-  const mappedExperiences = resume.work_experiences.map((exp) => ({
+  const mappedExperiences = resume.work_experiences.map((exp: any) => ({
     id: exp.id,
     company: exp.company_name_kr,
     companyEn: exp.company_name_en || exp.company_name_kr,
@@ -55,7 +55,7 @@ export default async function Page({
     summary: resume.summary || "",
   };
 
-  const mappedEducations = resume.educations.map((edu) => ({
+  const mappedEducations = resume.educations.map((edu: any) => ({
     id: edu.id,
     school_name: edu.school_name,
     school_name_en: edu.school_name_en,
@@ -67,13 +67,13 @@ export default async function Page({
     end_date: edu.end_date,
   }));
 
-  const mappedSkills = resume.skills.map((s) => ({
+  const mappedSkills = resume.skills.map((s: any) => ({
     id: s.id,
     name: s.name,
     level: s.level,
   }));
 
-  const mappedAdditionalItems = resume.additionalItems.map((item) => ({
+  const mappedAdditionalItems = resume.additional_items.map((item: any) => ({
     id: item.id,
     type: item.type,
     name: item.name_kr,

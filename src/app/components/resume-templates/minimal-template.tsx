@@ -19,23 +19,23 @@ const formatDate = (dateStr?: string) => {
 
 interface Experience {
   id: string;
-  company: string;
-  position: string;
+  company_name_source: string;
+  role_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -68,12 +68,13 @@ interface Language {
 }
 
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_source?: string;
+  name_target?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
-  summary?: string;
+  summary_source?: string;
+  summary_target?: string;
 }
 
 interface MinimalTemplateProps {
@@ -92,19 +93,21 @@ export function MinimalTemplate({
   additionalItems = [],
 }: MinimalTemplateProps) {
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
   const others = additionalItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <div className="bg-white text-black p-8 min-h-full font-sans">
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_target ||
+            personalInfo?.name_source ||
+            "이름 없음"}
         </h1>
         {/* <p className="text-gray-500 text-sm mb-4">Frontend Developer</p> */}
         <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
@@ -130,13 +133,13 @@ export function MinimalTemplate({
       </div>
 
       {/* About */}
-      {personalInfo?.summary && (
+      {personalInfo?.summary_target || personalInfo?.summary_source ? (
         <div className="mb-10">
           <p className="text-sm text-gray-700 leading-relaxed font-light">
-            {personalInfo.summary}
+            {personalInfo.summary_target || personalInfo.summary_source}
           </p>
         </div>
-      )}
+      ) : null}
 
       {/* Experience */}
       {experiences.length > 0 && (
@@ -150,9 +153,9 @@ export function MinimalTemplate({
                 <div className="flex justify-between items-baseline mb-3">
                   <div>
                     <h3 className="font-medium text-gray-900">
-                      {exp.companyEn}
+                      {exp.company_name_target}
                     </h3>
-                    <p className="text-sm text-gray-500">{exp.positionEn}</p>
+                    <p className="text-sm text-gray-500">{exp.role_target}</p>
                   </div>
                   <span className="text-xs text-gray-400 tabular-nums">
                     {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -160,7 +163,7 @@ export function MinimalTemplate({
                   </span>
                 </div>
                 <ul className="space-y-2">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bullets_target.map((bullet, index) => (
                     <li
                       key={index}
                       className="text-sm text-gray-600 leading-relaxed font-light"
@@ -205,18 +208,18 @@ export function MinimalTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-medium text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_target || edu.school_name_source}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
+                  {((edu.degree_target && edu.degree_target !== "-") ||
+                    (edu.degree_source && edu.degree_source !== "-") ||
+                    (edu.major_target && edu.major_target !== "-") ||
+                    (edu.major_source && edu.major_source !== "-")) && (
                     <p className="text-sm text-gray-500">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
+                      {edu.degree_target || edu.degree_source}
+                      {(edu.degree_target || edu.degree_source) &&
+                        (edu.major_target || edu.major_source) &&
                         ", "}
-                      {edu.major_en || edu.major}
+                      {edu.major_target || edu.major_source}
                     </p>
                   )}
                 </div>
@@ -249,9 +252,9 @@ export function MinimalTemplate({
                       key={cert.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
+                      {cert.name_target || cert.name_source}{" "}
+                      {cert.description_target || cert.description_source
+                        ? `| ${cert.description_target || cert.description_source}`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </div>

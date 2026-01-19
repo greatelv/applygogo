@@ -15,16 +15,16 @@ export default async function Page({
   if (!session?.user?.id) redirect({ href: "/login", locale });
 
   const resume: any = await prisma.resume.findUnique({
-    where: { id, userId: session.user.id },
+    where: { id, user_id: session.user.id },
     include: {
       work_experiences: { orderBy: { order: "asc" } },
       educations: { orderBy: { order: "asc" } },
       skills: { orderBy: { order: "asc" } },
-      additionalItems: { orderBy: { order: "asc" } },
+      additional_items: { orderBy: { order: "asc" } },
       user: {
         select: {
-          planType: true,
-          planExpiresAt: true,
+          plan_type: true,
+          plan_expires_at: true,
         },
       },
     },
@@ -35,56 +35,57 @@ export default async function Page({
   // Determine user plan
   const now = new Date();
   const isPaidActive =
-    resume.user.planExpiresAt && resume.user.planExpiresAt > now;
-  const currentPlan = isPaidActive ? resume.user.planType : "FREE";
+    resume.user.plan_expires_at && resume.user.plan_expires_at > now;
+  const currentPlan = isPaidActive ? resume.user.plan_type : "FREE";
 
   // Data Mapping
-  const mappedExperiences = resume.work_experiences.map((exp) => ({
+  const mappedExperiences = resume.work_experiences.map((exp: any) => ({
     id: exp.id,
-    company: exp.company_name_kr,
-    companyEn: exp.company_name_en || exp.company_name_kr,
-    position: exp.role_kr,
-    positionEn: exp.role_en || exp.role_kr,
+    company_name_source: exp.company_name_source,
+    company_name_target: exp.company_name_target,
+    role_source: exp.role_source,
+    role_target: exp.role_target,
     period: `${exp.start_date} - ${exp.end_date}`,
-    bullets: (exp.bullets_kr as string[]) || [],
-    bulletsEn: (exp.bullets_en as string[]) || [],
+    bullets_source: (exp.bullets_source as string[]) || [],
+    bullets_target: (exp.bullets_target as string[]) || [],
   }));
 
-  const mappedEducations = resume.educations.map((edu) => ({
+  const mappedEducations = resume.educations.map((edu: any) => ({
     id: edu.id,
-    school_name: edu.school_name,
-    school_name_en: edu.school_name_en,
-    major: edu.major,
-    major_en: edu.major_en,
-    degree: edu.degree,
-    degree_en: edu.degree_en,
+    school_name_source: edu.school_name_source,
+    school_name_target: edu.school_name_target,
+    major_source: edu.major_source,
+    major_target: edu.major_target,
+    degree_source: edu.degree_source,
+    degree_target: edu.degree_target,
     start_date: edu.start_date,
     end_date: edu.end_date,
   }));
 
   const mappedPersonalInfo = {
-    name_kr: resume.name_kr || "",
-    name_en: resume.name_en || "",
+    name_source: resume.name_source || "",
+    name_target: resume.name_target || "",
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as { label: string; url: string }[]) || [],
-    summary: resume.summary || "",
+    summary_source: resume.summary_source || "",
+    summary_target: resume.summary_target || "",
   };
 
-  const mappedSkills = resume.skills.map((s) => ({
+  const mappedSkills = resume.skills.map((s: any) => ({
     id: s.id,
     name: s.name,
     level: s.level,
   }));
 
-  const mappedAdditionalItems = (resume.additionalItems || []).map(
+  const mappedAdditionalItems = (resume.additional_items || []).map(
     (item: any) => ({
       id: item.id,
       type: item.type,
-      name_kr: item.name_kr,
-      name_en: item.name_en,
-      description_kr: item.description_kr,
-      description_en: item.description_en,
+      name_source: item.name_source,
+      name_target: item.name_target,
+      description_source: item.description_source,
+      description_target: item.description_target,
       date: item.date,
     }),
   );

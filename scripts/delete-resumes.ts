@@ -32,7 +32,7 @@ const targetEmails = [
 async function main() {
   console.log("Starting resume deletion for emails:", targetEmails);
 
-  const users = await prisma.users.findMany({
+  const users = await prisma.user.findMany({
     where: {
       email: {
         in: targetEmails,
@@ -58,7 +58,7 @@ async function main() {
 
   // Delete resumes for these users.
   // Due to onDelete: Cascade in schema, this should delete related items (Education, WorkExperience, etc.)
-  const result = await prisma.resumes.deleteMany({
+  const result = await prisma.resume.deleteMany({
     where: {
       user_id: {
         in: userIds,
