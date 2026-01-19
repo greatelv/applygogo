@@ -33,90 +33,32 @@ export default async function Page({
     return ["-", "–", "—"].includes(s) ? "" : val;
   };
 
-  // Data Mapping for UI Component (Unified UI Strategy)
-  // Left Column (Source) -> company/name_kr inputs
-  // Right Column (Target) -> companyEn/name_en inputs
-  const isGlobal = locale === "en" || locale === "ja";
-  const sourceSuffix =
-    locale === "en" ? "_en" : locale === "ja" ? "_ja" : "_kr";
-  // Target is always KR for global, EN for KR
-  const targetSuffix = isGlobal ? "_kr" : "_en";
-
   const mappedExperiences = resume.work_experiences.map((exp: any) => {
     const start = clean(exp.start_date);
     const end = clean(exp.end_date);
-    const period = !start && !end ? "" : `${start} - ${end}`;
-
-    // Dynamic property access based on locale
-    const sourceCompany = exp[`company_name${sourceSuffix}`];
-    const targetCompany = exp[`company_name${targetSuffix}`];
-    const sourceRole = exp[`role${sourceSuffix}`];
-    const targetRole = exp[`role${targetSuffix}`];
-    const sourceBullets = exp[`bullets${sourceSuffix}`];
-    const targetBullets = exp[`bullets${targetSuffix}`];
 
     return {
       id: exp.id,
-      company: clean(sourceCompany), // Maps to Left UI
-      companyEn: clean(targetCompany) || clean(sourceCompany), // Maps to Right UI
-      position: clean(sourceRole),
-      positionEn: clean(targetRole) || clean(sourceRole),
-      period,
-      bullets: ((sourceBullets as string[]) || []).map(clean),
-      bulletsEn: ((targetBullets as string[]) || []).map(clean),
+      company_name_source: clean(exp.company_name_source),
+      company_name_target: clean(exp.company_name_target),
+      role_source: clean(exp.role_source),
+      role_target: clean(exp.role_target),
+      start_date: start,
+      end_date: end,
+      bullets_source: ((exp.bullets_source as string[]) || []).map(clean),
+      bullets_target: ((exp.bullets_target as string[]) || []).map(clean),
     };
   });
 
   const mappedEducations = resume.educations.map((edu: any) => {
-    // Education columns are strictly named, need careful mapping
-    // En/Ja columns: school_name_[suffix], major_[suffix], degree_[suffix]
-    const getCol = (base: string, suffix: string) =>
-      edu[`${base}${suffix}`] ||
-      edu[base]; /* fallback for base names like school_name */
-
-    // For KR (default), suffix is empty string for base columns like school_name
-    // But schema has school_name (KR), school_name_en (EN), school_name_ja (JA)
-    // So for KR: Source = school_name, Target = school_name_en
-
-    let sourceSchool,
-      targetSchool,
-      sourceMajor,
-      targetMajor,
-      sourceDegree,
-      targetDegree;
-
-    if (locale === "ja") {
-      sourceSchool = edu.school_name_ja;
-      targetSchool = edu.school_name; // KR is in base col
-      sourceMajor = edu.major_ja;
-      targetMajor = edu.major;
-      sourceDegree = edu.degree_ja;
-      targetDegree = edu.degree;
-    } else if (locale === "en") {
-      sourceSchool = edu.school_name_en;
-      targetSchool = edu.school_name;
-      sourceMajor = edu.major_en;
-      targetMajor = edu.major;
-      sourceDegree = edu.degree_en;
-      targetDegree = edu.degree;
-    } else {
-      // ko
-      sourceSchool = edu.school_name;
-      targetSchool = edu.school_name_en;
-      sourceMajor = edu.major;
-      targetMajor = edu.major_en;
-      sourceDegree = edu.degree;
-      targetDegree = edu.degree_en;
-    }
-
     return {
       id: edu.id,
-      school_name: clean(sourceSchool),
-      school_name_en: clean(targetSchool),
-      major: clean(sourceMajor),
-      major_en: clean(targetMajor),
-      degree: clean(sourceDegree),
-      degree_en: clean(targetDegree),
+      school_name_source: clean(edu.school_name_source),
+      school_name_target: clean(edu.school_name_target),
+      major_source: clean(edu.major_source),
+      major_target: clean(edu.major_target),
+      degree_source: clean(edu.degree_source),
+      degree_target: clean(edu.degree_target),
       start_date: clean(edu.start_date),
       end_date: clean(edu.end_date),
     };
@@ -129,46 +71,29 @@ export default async function Page({
   }));
 
   const mappedAdditionalItems = resume.additional_items.map((item: any) => {
-    const sourceName = item[`name${sourceSuffix}`];
-    const targetName = item[`name${targetSuffix}`];
-    const sourceDesc = item[`description${sourceSuffix}`];
-    const targetDesc = item[`description${targetSuffix}`];
-
     return {
       id: item.id,
       type: item.type,
-      name_kr: clean(sourceName), // Maps to Source UI
-      name_en: clean(targetName) || clean(sourceName), // Maps to Target UI
-      description_kr: clean(sourceDesc),
-      description_en: clean(targetDesc),
+      name_source: clean(item.name_source),
+      name_target: clean(item.name_target),
+      description_source: clean(item.description_source),
+      description_target: clean(item.description_target),
       date: clean(item.date),
     };
   });
 
   // Personal Info Mapping
-  const sourceName = resume[`name${sourceSuffix}`];
-  const targetName = resume[`name${targetSuffix}`];
-  // Assuming simpler summary mapping for now until summary_ja is fully confirmed in schema
-  // For safety, we use summary (EN/Target for KR) and summary_kr (KR/Source for EN/JA fallback?)
-  const pSourceSum =
-    locale === "ja"
-      ? resume.summary_ja
-      : locale === "en"
-        ? resume.summary
-        : resume.summary_kr;
-  const pTargetSum = locale === "ja" ? resume.summary_kr : resume.summary_kr;
-
   const initialPersonalInfo = {
-    name_kr: clean(sourceName), // Maps to name_kr field in UI (Left/Source)
-    name_en: clean(targetName), // Maps to name_en field in UI (Right/Target)
+    name_source: clean(resume.name_source),
+    name_target: clean(resume.name_target),
     email: clean(resume.email),
     phone: clean(resume.phone),
     links: ((resume.links as any[]) || []).map((link: any) => ({
       label: clean(link.label),
       url: clean(link.url),
     })),
-    summary_kr: clean(pSourceSum), // Maps to summary_kr field in UI (Left/Source)
-    summary: clean(pTargetSum) || clean(resume.summary), // Maps to summary field in UI (Right/Target)
+    summary_source: clean(resume.summary_source),
+    summary_target: clean(resume.summary_target),
   };
 
   return (

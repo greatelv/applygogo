@@ -55,14 +55,20 @@ interface Certification {
 
 interface Award {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   issuer?: string;
   date?: string;
 }
 
 interface Language {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   level?: string;
   score?: string;
 }
@@ -105,9 +111,7 @@ export function MinimalTemplate({
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
-          {personalInfo?.name_target ||
-            personalInfo?.name_source ||
-            "이름 없음"}
+          {personalInfo?.name_target || "이름 없음"}
         </h1>
         {/* <p className="text-gray-500 text-sm mb-4">Frontend Developer</p> */}
         <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
@@ -133,10 +137,10 @@ export function MinimalTemplate({
       </div>
 
       {/* About */}
-      {personalInfo?.summary_target || personalInfo?.summary_source ? (
+      {personalInfo?.summary_target ? (
         <div className="mb-10">
           <p className="text-sm text-gray-700 leading-relaxed font-light">
-            {personalInfo.summary_target || personalInfo.summary_source}
+            {personalInfo.summary_target}
           </p>
         </div>
       ) : null}
@@ -191,6 +195,9 @@ export function MinimalTemplate({
                 className="px-3 py-1 text-xs text-gray-700 bg-gray-50 rounded-full border border-gray-200"
               >
                 {skill.name}
+                {skill.level && (
+                  <span className="text-gray-400 ml-1">({skill.level})</span>
+                )}
               </span>
             ))}
           </div>
@@ -208,20 +215,13 @@ export function MinimalTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-medium text-gray-900">
-                    {edu.school_name_target || edu.school_name_source}
+                    {edu.school_name_target}
                   </h3>
-                  {((edu.degree_target && edu.degree_target !== "-") ||
-                    (edu.degree_source && edu.degree_source !== "-") ||
-                    (edu.major_target && edu.major_target !== "-") ||
-                    (edu.major_source && edu.major_source !== "-")) && (
-                    <p className="text-sm text-gray-500">
-                      {edu.degree_target || edu.degree_source}
-                      {(edu.degree_target || edu.degree_source) &&
-                        (edu.major_target || edu.major_source) &&
-                        ", "}
-                      {edu.major_target || edu.major_source}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-500">
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target && ", "}
+                    {edu.major_target}
+                  </p>
                 </div>
                 <span className="text-xs text-gray-400 tabular-nums">
                   {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -252,9 +252,9 @@ export function MinimalTemplate({
                       key={cert.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {cert.name_target || cert.name_source}{" "}
-                      {cert.description_target || cert.description_source
-                        ? `| ${cert.description_target || cert.description_source}`
+                      {cert.name_target}{" "}
+                      {cert.description_target
+                        ? `| ${cert.description_target}`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </div>
@@ -273,9 +273,9 @@ export function MinimalTemplate({
                       key={award.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
+                      {award.name_target}{" "}
+                      {award.description_target
+                        ? `| ${award.description_target}`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </div>
@@ -295,14 +295,35 @@ export function MinimalTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1 text-gray-800">
-                        {lang.name_en || lang.name}
+                        {lang.name_target}
                       </span>
-                      {(lang.description_en || lang.description) && (
+                      {lang.description_target && (
                         <span className="text-gray-400">
-                          ({lang.description_en || lang.description})
+                          ({lang.description_target})
                         </span>
                       )}
                     </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {others.length > 0 && (
+              <div>
+                <h3 className="text-xs font-medium text-gray-900 mb-2">
+                  Activities & Others
+                </h3>
+                <div className="flex flex-col gap-1">
+                  {others.map((item) => (
+                    <div
+                      key={item.id}
+                      className="text-sm text-gray-600 font-light"
+                    >
+                      {item.name_target}{" "}
+                      {item.description_target
+                        ? `| ${item.description_target}`
+                        : ""}{" "}
+                      {item.date ? `(${formatDate(item.date)})` : ""}
+                    </div>
                   ))}
                 </div>
               </div>

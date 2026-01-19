@@ -30,66 +30,68 @@ interface TemplatePreviewDialogProps {
 
 const mockResumeData = {
   personalInfo: {
-    name_kr: "김지원",
-    name_en: "Jiwon Kim",
+    name_source: "김지원",
+    name_target: "Jiwon Kim",
     email: "jiwon.kim@example.com",
     phone: "010-1234-5678",
     links: [
       { label: "LinkedIn", url: "https://linkedin.com/in/jiwonkim" },
       { label: "Portfolio", url: "https://jiwonkim.dev" },
     ],
-    summary:
+    summary_source:
       "7년차 시니어 소프트웨어 엔지니어로, 풀스택 개발 분야에서 풍부한 경험을 보유하고 있습니다. 확장 가능한 웹 애플리케이션의 설계 및 개발을 주도해 왔으며, React, Node.js 및 클라우드 인프라 활용에 능숙합니다. 깨끗하고 유지보수가 용이한 코드를 지향하며 기술을 통해 복잡한 비즈니스 문제를 해결하는 데 열정을 가지고 있습니다.",
+    summary_target:
+      "Senior Software Engineer with 7 years of experience in full-stack development. Led design and development of scalable web applications, proficient in React, Node.js, and cloud infrastructure. Passionate about clean, maintainable code and solving complex business problems through technology.",
   },
   experiences: [
     {
       id: "1",
-      company: "글로벌 테크 솔루션",
-      companyEn: "Global Tech Solutions",
-      position: "시니어 프론트엔드 엔지니어",
-      positionEn: "Senior Frontend Engineer",
+      company_name_source: "글로벌 테크 솔루션",
+      company_name_target: "Global Tech Solutions",
+      role_source: "시니어 프론트엔드 엔지니어",
+      role_target: "Senior Frontend Engineer",
       period: "2021.03 - 현재",
-      bullets: [
+      bullets_source: [
         "핵심 이커머스 플랫폼의 리빌딩을 주도하여 로딩 속도를 40% 개선하고 사용자 유지율을 향상시킴.",
         "GitHub Actions를 이용한 자동화된 CI/CD 파이프라인을 구축하여 배포 시간을 60% 단축함.",
         "UX 디자이너와 협업하여 사용자 인터페이스를 전면 개편, 전환율을 25% 상승시키는 성과를 거둠.",
         "주니어 개발자 멘토링 및 코드 리뷰를 통해 전반적인 코드 품질 향상에 기여함.",
       ],
-      bulletsEn: [
-        "핵심 이커머스 플랫폼의 리빌딩을 주도하여 로딩 속도를 40% 개선하고 사용자 유지율을 향상시킴.",
-        "GitHub Actions를 이용한 자동화된 CI/CD 파이프라인을 구축하여 배포 시간을 60% 단축함.",
-        "UX 디자이너와 협업하여 사용자 인터페이스를 전면 개편, 전환율을 25% 상승시키는 성과를 거둠.",
-        "주니어 개발자 멘토링 및 코드 리뷰를 통해 전반적인 코드 품질 향상에 기여함.",
+      bullets_target: [
+        "Led the rebuilding of core e-commerce platform, improving loading speeds by 40% and user retention.",
+        "Established automated CI/CD pipelines using GitHub Actions, reducing deployment time by 60%.",
+        "Collaborated with UX designers to overhaul UI, achieving a 25% increase in conversion rates.",
+        "Mentored junior developers and improved overall code quality through rigorous code reviews.",
       ],
     },
     {
       id: "2",
-      company: "스타트업 이노베이션",
-      companyEn: "StartUp Innovations",
-      position: "풀스택 개발자",
-      positionEn: "Full Stack Developer",
+      company_name_source: "스타트업 이노베이션",
+      company_name_target: "StartUp Innovations",
+      role_source: "풀스택 개발자",
+      role_target: "Full Stack Developer",
       period: "2018.06 - 2021.02",
-      bullets: [
+      bullets_source: [
         "React와 Python/Django를 사용하여 다수의 고객 대응용 웹 애플리케이션을 개발 및 유지보수함.",
         "데이터베이스 쿼리 및 API 엔드포인트 최적화를 통해 평균 응답 시간을 300ms 단축함.",
         "제3자 결제 게이트웨이 및 인증 시스템을 통합하여 플랫폼 보안 및 수익 모델 강화에 기여함.",
       ],
-      bulletsEn: [
-        "React와 Python/Django를 사용하여 다수의 고객 대응용 웹 애플리케이션을 개발 및 유지보수함.",
-        "데이터베이스 쿼리 및 API 엔드포인트 최적화를 통해 평균 응답 시간을 300ms 단축함.",
-        "제3자 결제 게이트웨이 및 인증 시스템을 통합하여 플랫폼 보안 및 수익 모델 강화에 기여함.",
+      bullets_target: [
+        "Developed and maintained various customer-facing web applications using React and Python/Django.",
+        "Optimized DB queries and API endpoints, reducing average response time by 300ms.",
+        "Integrated third-party payment gateways and authentication systems, strengthening platform security.",
       ],
     },
   ],
   educations: [
     {
       id: "1",
-      school_name: "고려대학교",
-      school_name_en: "Korea University",
-      degree: "학사",
-      degree_en: "Bachelor of Science",
-      major: "컴퓨터공학",
-      major_en: "Computer Science",
+      school_name_source: "고려대학교",
+      school_name_target: "Korea University",
+      degree_source: "학사",
+      degree_target: "Bachelor of Science",
+      major_source: "컴퓨터공학",
+      major_target: "Computer Science",
       start_date: "2014.03",
       end_date: "2018.02",
     },
@@ -105,22 +107,22 @@ const mockResumeData = {
   additionalItems: [
     {
       type: "LANGUAGE",
-      name: "영어",
-      name_en: "English",
-      description: "비즈니스 회화 가능",
-      description_en: "Professional Working Proficiency",
+      name_source: "영어",
+      name_target: "English",
+      description_source: "비즈니스 회화 가능",
+      description_target: "Professional Working Proficiency",
     },
     {
       type: "LANGUAGE",
-      name: "한국어",
-      name_en: "Korean",
-      description: "원어민",
-      description_en: "Native",
+      name_source: "한국어",
+      name_target: "Korean",
+      description_source: "원어민",
+      description_target: "Native",
     },
     {
       type: "CERTIFICATION",
-      name: "AWS Certified Solutions Architect",
-      name_en: "AWS Certified Solutions Architect",
+      name_source: "AWS Certified Solutions Architect",
+      name_target: "AWS Certified Solutions Architect",
       date: "2023.05",
     },
   ],

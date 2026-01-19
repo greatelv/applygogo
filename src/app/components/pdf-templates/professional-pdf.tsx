@@ -256,15 +256,12 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={styles.eduItem}>
                   <Text style={styles.schoolName}>
-                    {edu.school_name_target || edu.school_name_source}
+                    {edu.school_name_target}
                   </Text>
                   <Text style={styles.degree}>
-                    {edu.degree_target || edu.degree_source}
-                    {(edu.degree_target || edu.degree_source) &&
-                    (edu.major_target || edu.major_source)
-                      ? ", "
-                      : ""}
-                    {edu.major_target || edu.major_source}
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target ? ", " : ""}
+                    {edu.major_target}
                   </Text>
                   <Text style={styles.eduDate}>
                     {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -301,11 +298,11 @@ export const ProfessionalPdf = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {lang.name_target || lang.name_source}
+                    {lang.name_target}
                   </Text>
-                  {(lang.description_target || lang.description_source) && (
+                  {lang.description_target && (
                     <Text style={{ fontSize: 8.5, color: "#6b7280" }}>
-                      {lang.description_target || lang.description_source}
+                      {lang.description_target}
                     </Text>
                   )}
                 </View>
@@ -321,7 +318,7 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 9, color: "#374151" }}>
-                    {cert.name_target || cert.name_source}
+                    {cert.name_target}
                   </Text>
                   <Text style={{ fontSize: 8, color: "#9ca3af" }}>
                     {formatDate(cert.date)}
@@ -337,7 +334,7 @@ export const ProfessionalPdf = ({
           {/* Header */}
           <View style={{ marginBottom: 24 }}>
             <Text style={styles.name}>
-              {personalInfo?.name_target || personalInfo?.name_source || "Name"}
+              {personalInfo?.name_target || "Name"}
             </Text>
             {/* Use most recent role as title or just keep it simple */}
             {validExperiences[0]?.role_target && (
@@ -348,7 +345,7 @@ export const ProfessionalPdf = ({
           </View>
 
           {/* Summary */}
-          {(personalInfo?.summary_target || personalInfo?.summary_source) && (
+          {personalInfo?.summary_target && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Professional Summary</Text>
               <Text
@@ -358,7 +355,7 @@ export const ProfessionalPdf = ({
                   textAlign: "justify",
                 }}
               >
-                {personalInfo.summary_target || personalInfo.summary_source}
+                {personalInfo.summary_target}
               </Text>
             </View>
           )}
@@ -373,11 +370,9 @@ export const ProfessionalPdf = ({
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {exp.company_name_target || exp.company_name_source}
+                        {exp.company_name_target}
                       </Text>
-                      <Text style={styles.position}>
-                        {exp.role_target || exp.role_source}
-                      </Text>
+                      <Text style={styles.position}>{exp.role_target}</Text>
                     </View>
                     <Text style={styles.period}>
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -385,15 +380,13 @@ export const ProfessionalPdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {(exp.bullets_target || exp.bullets_source)?.map(
-                      (bullet: string, idx: number) => (
-                        // @ts-ignore
-                        <View key={idx} style={styles.bulletItem}>
-                          <Text style={styles.bulletPoint}>•</Text>
-                          <Text style={styles.bulletText}>{bullet}</Text>
-                        </View>
-                      ),
-                    )}
+                    {exp.bullets_target?.map((bullet: string, idx: number) => (
+                      // @ts-ignore
+                      <View key={idx} style={styles.bulletItem}>
+                        <Text style={styles.bulletPoint}>•</Text>
+                        <Text style={styles.bulletText}>{bullet}</Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               ))}
@@ -408,10 +401,10 @@ export const ProfessionalPdf = ({
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 10, fontWeight: "bold" }}>
-                    {award.name_target || award.name_source}
+                    {award.name_target}
                   </Text>
                   <Text style={{ fontSize: 9, color: "#4b5563" }}>
-                    {award.description_target || award.description_source}
+                    {award.description_target}
                     {award.date ? ` | ${formatDate(award.date)}` : ""}
                   </Text>
                 </View>

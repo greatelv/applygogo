@@ -55,14 +55,20 @@ interface Certification {
 
 interface Award {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   issuer?: string;
   date?: string;
 }
 
 interface Language {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   level?: string;
   score?: string;
 }
@@ -105,9 +111,7 @@ export function ClassicTemplate({
       {/* Header */}
       <div className="text-center mb-8 pb-6 border-b-2 border-gray-800">
         <h1 className="text-3xl font-bold mb-2 text-gray-900 tracking-wide uppercase">
-          {personalInfo?.name_target ||
-            personalInfo?.name_source ||
-            "이름 없음"}
+          {personalInfo?.name_target || "이름 없음"}
         </h1>
         {/* <p className="text-lg text-gray-700 mb-2">Frontend Developer</p> */}
         <div className="text-sm text-gray-600 flex justify-center flex-wrap gap-2">
@@ -140,13 +144,13 @@ export function ClassicTemplate({
       </div>
 
       {/* Professional Summary */}
-      {personalInfo?.summary_target || personalInfo?.summary_source ? (
+      {personalInfo?.summary_target ? (
         <div className="mb-6">
           <h2 className="text-base font-bold mb-2 text-gray-900 tracking-wider border-b border-gray-300 pb-1">
             PROFESSIONAL SUMMARY
           </h2>
           <p className="text-sm text-gray-800 leading-relaxed text-justify">
-            {personalInfo.summary_target || personalInfo.summary_source}
+            {personalInfo.summary_target}
           </p>
         </div>
       ) : null}
@@ -200,7 +204,17 @@ export function ClassicTemplate({
           <div className="text-sm text-gray-800">
             <p>
               <span className="font-semibold">Skills:</span>{" "}
-              {skills.map((s) => s.name).join(", ")}
+              {skills.map((s) => (
+                <span key={s.id}>
+                  {s.name}
+                  {s.level && (
+                    <span className="text-gray-500 italic ml-0.5">
+                      ({s.level})
+                    </span>
+                  )}
+                  {skills.indexOf(s) < skills.length - 1 ? ", " : ""}
+                </span>
+              ))}
             </p>
           </div>
         </div>
@@ -217,20 +231,13 @@ export function ClassicTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {edu.school_name_target || edu.school_name_source}
+                    {edu.school_name_target}
                   </h3>
-                  {((edu.degree_target && edu.degree_target !== "-") ||
-                    (edu.degree_source && edu.degree_source !== "-") ||
-                    (edu.major_target && edu.major_target !== "-") ||
-                    (edu.major_source && edu.major_source !== "-")) && (
-                    <p className="text-sm text-gray-700 italic">
-                      {edu.degree_target || edu.degree_source}
-                      {(edu.degree_target || edu.degree_source) &&
-                        (edu.major_target || edu.major_source) &&
-                        ", "}
-                      {edu.major_target || edu.major_source}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-700 italic">
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target && ", "}
+                    {edu.major_target}
+                  </p>
                 </div>
                 <span className="text-xs text-gray-600 italic">
                   {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -256,9 +263,8 @@ export function ClassicTemplate({
                 {certifications.map((cert, i) => (
                   <span key={cert.id}>
                     {i > 0 && ", "}
-                    {cert.name_target || cert.name_source}
-                    {(cert.description_target || cert.description_source) &&
-                      ` (${cert.description_target || cert.description_source})`}
+                    {cert.name_target}
+                    {cert.description_target && ` (${cert.description_target})`}
                     {cert.date && ` - ${formatDate(cert.date)}`}
                   </span>
                 ))}
@@ -270,9 +276,9 @@ export function ClassicTemplate({
                 {awards.map((award, i) => (
                   <span key={award.id}>
                     {i > 0 && ", "}
-                    {award.name_en || award.name}
-                    {(award.description_en || award.description) &&
-                      ` (${award.description_en || award.description})`}
+                    {award.name_target}
+                    {award.description_target &&
+                      ` (${award.description_target})`}
                     {award.date && ` - ${formatDate(award.date)}`}
                   </span>
                 ))}
@@ -284,9 +290,21 @@ export function ClassicTemplate({
                 {languages.map((lang, i) => (
                   <span key={lang.id}>
                     {i > 0 && ", "}
-                    {lang.name_en || lang.name}{" "}
-                    {(lang.description_en || lang.description) &&
-                      `(${lang.description_en || lang.description})`}
+                    {lang.name_target}{" "}
+                    {lang.description_target && `(${lang.description_target})`}
+                  </span>
+                ))}
+              </div>
+            )}
+            {others.length > 0 && (
+              <div>
+                <span className="font-semibold">Activities & Others: </span>
+                {others.map((item, i) => (
+                  <span key={item.id}>
+                    {i > 0 && ", "}
+                    {item.name_target}
+                    {item.description_target && ` (${item.description_target})`}
+                    {item.date && ` - ${formatDate(item.date)}`}
                   </span>
                 ))}
               </div>

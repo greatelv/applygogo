@@ -245,18 +245,18 @@ export async function updateResumeAction(
           data: experiences.map((exp: any, index: number) => ({
             id: crypto.randomUUID(),
             resume_id: resumeId,
-            company_name_source: exp.company_source || "",
-            company_name_target: exp.company_target || "",
+            company_name_source: exp.company_name_source || "",
+            company_name_target: exp.company_name_target || "",
             role_source: exp.role_source || "",
             role_target: exp.role_target || "",
             start_date: exp.start_date || "",
             end_date: exp.end_date || "",
             bullets_source: exp.bullets_source || [],
             bullets_target: exp.bullets_target || [],
-            // Legacy / Required fields
-            company_name_kr: exp.company_source || "",
-            role_kr: exp.role_source || "",
-            bullets_kr: exp.bullets_source || [],
+            // Legacy / Required fields (deprecated)
+            company_name_kr: "",
+            role_kr: "",
+            bullets_kr: [],
             order: index,
           })),
         });
@@ -276,10 +276,10 @@ export async function updateResumeAction(
             degree_target: edu.degree_target || "",
             start_date: edu.start_date || "",
             end_date: edu.end_date || "",
-            // Legacy / Required fields
-            school_name: edu.school_name_source || "",
-            major: edu.major_source || "",
-            degree: edu.degree_source || "",
+            // Legacy / Required fields (deprecated)
+            school_name: "",
+            major: "",
+            degree: "",
             order: index,
           })),
         });
@@ -311,9 +311,9 @@ export async function updateResumeAction(
             description_source: item.description_source || "",
             description_target: item.description_target || "",
             date: item.date || "",
-            // Legacy / Required fields
-            name_kr: item.name_source || "",
-            description_kr: item.description_source || "",
+            // Legacy / Required fields (deprecated)
+            name_kr: "",
+            description_kr: "",
           })),
         });
       }

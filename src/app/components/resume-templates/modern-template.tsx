@@ -105,9 +105,7 @@ export function ModernTemplate({
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-gray-900">
-          {personalInfo?.name_target ||
-            personalInfo?.name_source ||
-            "이름 없음"}
+          {personalInfo?.name_target || "이름 없음"}
         </h1>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
           {personalInfo?.email && <span>{personalInfo.email}</span>}
@@ -141,14 +139,14 @@ export function ModernTemplate({
       </div>
 
       {/* Professional Summary */}
-      {personalInfo?.summary_target || personalInfo?.summary_source ? (
+      {personalInfo?.summary_target ? (
         <div className="mb-8">
           <h2 className="text-lg font-bold mb-3 text-gray-900 flex items-center gap-2">
             <div className="w-8 h-0.5 bg-blue-600"></div>
             PROFESSIONAL SUMMARY
           </h2>
           <p className="text-sm text-gray-700 leading-relaxed">
-            {personalInfo.summary_target || personalInfo.summary_source}
+            {personalInfo.summary_target}
           </p>
         </div>
       ) : null}
@@ -208,6 +206,11 @@ export function ModernTemplate({
                 className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
               >
                 {skill.name}
+                {skill.level && (
+                  <span className="ml-1 text-xs text-gray-400 font-normal">
+                    ({skill.level})
+                  </span>
+                )}
               </span>
             ))}
           </div>
@@ -226,20 +229,13 @@ export function ModernTemplate({
               <div key={edu.id} className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {edu.school_name_target || edu.school_name_source}
+                    {edu.school_name_target}
                   </h3>
-                  {((edu.degree_target && edu.degree_target !== "-") ||
-                    (edu.degree_source && edu.degree_source !== "-") ||
-                    (edu.major_target && edu.major_target !== "-") ||
-                    (edu.major_source && edu.major_source !== "-")) && (
-                    <p className="text-sm text-gray-600">
-                      {edu.degree_target || edu.degree_source}
-                      {(edu.degree_target || edu.degree_source) &&
-                        (edu.major_target || edu.major_source) &&
-                        ", "}
-                      {edu.major_target || edu.major_source}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-600">
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target && ", "}
+                    {edu.major_target}
+                  </p>
                 </div>
                 <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
                   {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -268,9 +264,9 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {certifications.map((cert) => (
                     <li key={cert.id}>
-                      {cert.name_target || cert.name_source}{" "}
-                      {cert.description_target || cert.description_source
-                        ? `| ${cert.description_target || cert.description_source}`
+                      {cert.name_target}{" "}
+                      {cert.description_target
+                        ? `| ${cert.description_target}`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </li>
@@ -284,9 +280,9 @@ export function ModernTemplate({
                 <ul className="list-disc list-inside text-sm text-gray-700">
                   {awards.map((award) => (
                     <li key={award.id}>
-                      {award.name_target || award.name_source}{" "}
-                      {award.description_target || award.description_source
-                        ? `| ${award.description_target || award.description_source}`
+                      {award.name_target}{" "}
+                      {award.description_target
+                        ? `| ${award.description_target}`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </li>
@@ -306,16 +302,34 @@ export function ModernTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1">
-                        {lang.name_target || lang.name_source}
+                        {lang.name_target}
                       </span>
-                      {(lang.description_target || lang.description_source) && (
+                      {lang.description_target && (
                         <span className="text-gray-500">
-                          ({lang.description_target || lang.description_source})
+                          ({lang.description_target})
                         </span>
                       )}
                     </span>
                   ))}
                 </div>
+              </div>
+            )}
+            {others.length > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-gray-800 mb-1">
+                  Other Activities
+                </h3>
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                  {others.map((item) => (
+                    <li key={item.id}>
+                      {item.name_target}{" "}
+                      {item.description_target
+                        ? `| ${item.description_target}`
+                        : ""}{" "}
+                      {item.date ? `(${formatDate(item.date)})` : ""}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

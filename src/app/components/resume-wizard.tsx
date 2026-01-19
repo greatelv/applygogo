@@ -26,16 +26,17 @@ import {
 
 interface Experience {
   id: string;
-  company: string;
-  position: string;
-  period: string;
-  bullets: string[];
+  company_name_source: string;
+  role_source: string;
+  start_date: string;
+  end_date: string;
+  bullets_source: string[];
 }
 
 interface TranslatedExperience extends Experience {
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 export const createSteps = [
@@ -162,30 +163,60 @@ export function ResumeWizard({
           const transformedExperiences = data.work_experiences.map(
             (exp: any) => ({
               id: exp.id,
-              company: exp.company_name_kr,
-              companyEn: exp.company_name_en,
-              position: exp.role_kr,
-              positionEn: exp.role_en,
-              period: `${exp.start_date} ~ ${exp.end_date}`,
-              bullets: exp.bullets_kr,
-              bulletsEn: exp.bullets_en,
+              company_name_source: exp.company_name_source || "",
+              company_name_target: exp.company_name_target || "",
+              role_source: exp.role_source || "",
+              role_target: exp.role_target || "",
+              start_date: exp.start_date || "",
+              end_date: exp.end_date || "",
+              bullets_source: exp.bullets_source || [],
+              bullets_target: exp.bullets_target || [],
             }),
           );
 
           setExperiences(transformedExperiences);
-          setEducations(data.educations || []);
+          setEducations(
+            (data.educations || []).map((edu: any) => ({
+              id: edu.id,
+              school_name_source: edu.school_name_source || "",
+              school_name_target: edu.school_name_target || "",
+              major_source: edu.major_source || "",
+              major_target: edu.major_target || "",
+              degree_source: edu.degree_source || "",
+              degree_target: edu.degree_target || "",
+              start_date: edu.start_date,
+              end_date: edu.end_date,
+            })),
+          );
           setSkills(data.skills || []);
-          setCertifications(data.certifications || []);
-          setAwards(data.awards || []);
-          setLanguages(data.languages || []);
+
+          const additionalItems = (data.additional_items || []).map(
+            (item: any) => ({
+              id: item.id,
+              type: item.type,
+              name_source: item.name_source || "",
+              name_target: item.name_target || "",
+              description_source: item.description_source || "",
+              description_target: item.description_target || "",
+              date: item.date || "",
+              order: item.order,
+            }),
+          );
+
+          setCertifications(
+            additionalItems.filter((i) => i.type === "CERTIFICATION"),
+          );
+          setAwards(additionalItems.filter((i) => i.type === "AWARD"));
+          setLanguages(additionalItems.filter((i) => i.type === "LANGUAGE"));
+
           setPersonalInfo({
-            name_kr: data.name_kr,
-            name_en: data.name_en,
+            name_source: data.name_source || "",
+            name_target: data.name_target || "",
             email: data.email,
             phone: data.phone,
             links: (data.links as any[]) || [],
-            summary: data.summary || "",
-            summary_kr: data.summary_kr || "",
+            summary_source: data.summary_source || "",
+            summary_target: data.summary_target || "",
           });
 
           if (data.selected_template) {

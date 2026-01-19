@@ -37,6 +37,9 @@ export function ProfessionalTemplate({
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
+  const others = additionalItems.filter(
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
+  );
 
   return (
     <div className="bg-white text-gray-800 min-h-full font-sans flex text-[10pt] leading-relaxed">
@@ -79,15 +82,12 @@ export function ProfessionalTemplate({
               {educations.map((edu: any) => (
                 <div key={edu.id}>
                   <div className="font-bold text-gray-900">
-                    {edu.school_name_target || edu.school_name_source}
+                    {edu.school_name_target}
                   </div>
                   <div className="text-gray-600">
-                    {edu.degree_target || edu.degree_source}
-                    {(edu.degree_target || edu.degree_source) &&
-                    (edu.major_target || edu.major_source)
-                      ? ", "
-                      : ""}
-                    {edu.major_target || edu.major_source}
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target ? ", " : ""}
+                    {edu.major_target}
                   </div>
                   <div className="text-gray-400 text-[10px] mt-0.5 font-medium">
                     {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -108,6 +108,11 @@ export function ProfessionalTemplate({
               {skills.map((skill: any) => (
                 <li key={skill.id} className="text-xs text-gray-600">
                   • {skill.name}
+                  {skill.level && (
+                    <span className="text-gray-400 ml-1 text-[10px]">
+                      ({skill.level})
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -124,11 +129,11 @@ export function ProfessionalTemplate({
               {languages.map((lang: any) => (
                 <div key={lang.id} className="text-xs">
                   <span className="font-semibold text-gray-700 block">
-                    {lang.name_target || lang.name_source}
+                    {lang.name_target}
                   </span>
-                  {(lang.description_target || lang.description_source) && (
+                  {lang.description_target && (
                     <span className="text-gray-500 text-[10px]">
-                      {lang.description_target || lang.description_source}
+                      {lang.description_target}
                     </span>
                   )}
                 </div>
@@ -147,7 +152,7 @@ export function ProfessionalTemplate({
               {certifications.map((cert: any) => (
                 <div key={cert.id}>
                   <span className="block text-gray-700">
-                    {cert.name_target || cert.name_source}
+                    {cert.name_target}
                   </span>
                   {cert.date && (
                     <span className="text-[10px] text-gray-400">
@@ -165,7 +170,7 @@ export function ProfessionalTemplate({
       <div className="flex-1 pt-8 pb-8 pr-8 pl-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-1">
-            {personalInfo?.name_target || personalInfo?.name_source || "Name"}
+            {personalInfo?.name_target || "Name"}
           </h1>
           {/* Title Placeholder if specific field exists, usually use most recent job */}
           {experiences[0]?.role_target && (
@@ -176,13 +181,13 @@ export function ProfessionalTemplate({
         </div>
 
         {/* Summary */}
-        {personalInfo?.summary_target || personalInfo?.summary_source ? (
+        {personalInfo?.summary_target ? (
           <div className="mb-8">
             <h2 className="text-xs font-bold text-gray-900 border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide">
               Professional Summary
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed text-justify">
-              {personalInfo.summary_target || personalInfo.summary_source}
+              {personalInfo.summary_target}
             </p>
           </div>
         ) : null}
@@ -237,12 +242,42 @@ export function ProfessionalTemplate({
               {awards.map((award: any) => (
                 <div key={award.id} className="text-sm">
                   <span className="font-bold text-gray-800">
-                    {award.name_target || award.name_source}
+                    {award.name_target}
                   </span>
                   <div className="text-gray-600 text-xs">
-                    {award.description_target || award.description_source}
+                    {award.description_target}
                     {award.date ? ` | ${formatDate(award.date)}` : ""}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Others */}
+        {others.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xs font-bold text-gray-900 border-b border-gray-200 pb-1 mb-2 uppercase tracking-wide">
+              Activities & Others
+            </h2>
+            <div className="space-y-4">
+              {others.map((item: any) => (
+                <div key={item.id}>
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-bold text-gray-800 text-sm">
+                      {item.name_target}
+                    </span>
+                    {item.date && (
+                      <span className="text-[10px] text-gray-400">
+                        {formatDate(item.date)}
+                      </span>
+                    )}
+                  </div>
+                  {item.description_target && (
+                    <p className="text-xs text-gray-600 mt-1">
+                      {item.description_target}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

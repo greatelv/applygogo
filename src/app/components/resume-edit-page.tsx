@@ -759,8 +759,10 @@ export function ResumeEditPage({
 
             const compactedExperiences = experiences.filter(
               (exp) =>
-                (exp.company_source && exp.company_source.trim() !== "") ||
-                (exp.company_target && exp.company_target.trim() !== ""),
+                (exp.company_name_source &&
+                  exp.company_name_source.trim() !== "") ||
+                (exp.company_name_target &&
+                  exp.company_name_target.trim() !== ""),
             );
 
             const compactedEducations = educations.filter(

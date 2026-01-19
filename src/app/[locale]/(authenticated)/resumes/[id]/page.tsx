@@ -37,32 +37,33 @@ export default async function Page({
 
   const mappedExperiences = resume.work_experiences.map((exp: any) => ({
     id: exp.id,
-    company: exp.company_name_kr,
-    companyEn: exp.company_name_en || exp.company_name_kr,
-    position: exp.role_kr,
-    positionEn: exp.role_en || exp.role_kr,
+    company_name_source: exp.company_name_source || "",
+    company_name_target: exp.company_name_target || "",
+    role_source: exp.role_source || "",
+    role_target: exp.role_target || "",
     period: `${exp.start_date} - ${exp.end_date}`,
-    bullets: (exp.bullets_kr as string[]) || [],
-    bulletsEn: (exp.bullets_en as string[]) || [],
+    bullets_source: (exp.bullets_source as string[]) || [],
+    bullets_target: (exp.bullets_target as string[]) || [],
   }));
 
   const mappedPersonalInfo = {
-    name_kr: resume.name_kr || "",
-    name_en: resume.name_en || "",
+    name_source: resume.name_source || "",
+    name_target: resume.name_target || "",
     email: resume.email || "",
     phone: resume.phone || "",
     links: (resume.links as any[]) || [],
-    summary: resume.summary || "",
+    summary_source: resume.summary_source || "",
+    summary_target: resume.summary_target || "",
   };
 
   const mappedEducations = resume.educations.map((edu: any) => ({
     id: edu.id,
-    school_name: edu.school_name,
-    school_name_en: edu.school_name_en,
-    major: edu.major,
-    major_en: edu.major_en,
-    degree: edu.degree,
-    degree_en: edu.degree_en,
+    school_name_source: edu.school_name_source || "",
+    school_name_target: edu.school_name_target || "",
+    major_source: edu.major_source || "",
+    major_target: edu.major_target || "",
+    degree_source: edu.degree_source || "",
+    degree_target: edu.degree_target || "",
     start_date: edu.start_date,
     end_date: edu.end_date,
   }));
@@ -76,10 +77,10 @@ export default async function Page({
   const mappedAdditionalItems = resume.additional_items.map((item: any) => ({
     id: item.id,
     type: item.type,
-    name: item.name_kr,
-    name_en: item.name_en || item.name_kr,
-    description: item.description_kr || "",
-    description_en: item.description_en || "",
+    name_source: item.name_source || "",
+    name_target: item.name_target || "",
+    description_source: item.description_source || "",
+    description_target: item.description_target || "",
     date: item.date || "",
     order: item.order,
   }));

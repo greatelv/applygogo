@@ -217,9 +217,7 @@ export const ExecutivePdf = ({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.name}>
-            {personalInfo?.name_target || personalInfo?.name_source || "Name"}
-          </Text>
+          <Text style={styles.name}>{personalInfo?.name_target || "Name"}</Text>
           <View style={styles.headerContact}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
             {personalInfo?.phone && (
@@ -243,11 +241,11 @@ export const ExecutivePdf = ({
 
         <View style={styles.container}>
           {/* Summary */}
-          {(personalInfo?.summary_target || personalInfo?.summary_source) && (
+          {personalInfo?.summary_target && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Executive Summary</Text>
               <Text style={styles.summaryText}>
-                {personalInfo.summary_target || personalInfo.summary_source}
+                {personalInfo.summary_target}
               </Text>
             </View>
           )}
@@ -262,11 +260,9 @@ export const ExecutivePdf = ({
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {exp.company_name_target || exp.company_name_source}
+                        {exp.company_name_target}
                       </Text>
-                      <Text style={styles.position}>
-                        {exp.role_target || exp.role_source}
-                      </Text>
+                      <Text style={styles.position}>{exp.role_target}</Text>
                     </View>
                     <Text style={styles.period}>
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -274,15 +270,13 @@ export const ExecutivePdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {(exp.bullets_target || exp.bullets_source)?.map(
-                      (bullet: string, idx: number) => (
-                        // @ts-ignore
-                        <View key={idx} style={styles.bulletItem}>
-                          <Text style={styles.bulletPoint}>•</Text>
-                          <Text style={styles.bulletText}>{bullet}</Text>
-                        </View>
-                      ),
-                    )}
+                    {exp.bullets_target?.map((bullet: string, idx: number) => (
+                      // @ts-ignore
+                      <View key={idx} style={styles.bulletItem}>
+                        <Text style={styles.bulletPoint}>•</Text>
+                        <Text style={styles.bulletText}>{bullet}</Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               ))}
@@ -298,15 +292,12 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.eduItem}>
                   <View style={styles.eduMain}>
                     <Text style={styles.companyName}>
-                      {edu.school_name_target || edu.school_name_source}
+                      {edu.school_name_target}
                     </Text>
                     <Text style={{ fontSize: 10, color: "#334155" }}>
-                      {edu.degree_target || edu.degree_source}
-                      {(edu.degree_target || edu.degree_source) &&
-                      (edu.major_target || edu.major_source)
-                        ? ", "
-                        : ""}
-                      {edu.major_target || edu.major_source}
+                      {edu.degree_target}
+                      {edu.degree_target && edu.major_target ? ", " : ""}
+                      {edu.major_target}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -361,7 +352,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_target || item.name_source}{" "}
+                      • {item.name_target}{" "}
                       {item.date ? `(${formatDate(item.date)})` : ""}
                     </TextAny>
                   ))}
@@ -390,7 +381,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_target || item.name_source}
+                      • {item.name_target}
                     </TextAny>
                   ))}
                 </View>
@@ -411,9 +402,9 @@ export const ExecutivePdf = ({
                     {languages.map((item: any, i: number) => (
                       // @ts-ignore
                       <Text key={i} style={{ fontSize: 10, color: "#334155" }}>
-                        • {item.name_target || item.name_source}
-                        {(item.description_target || item.description_source) &&
-                          ` (${item.description_target || item.description_source})`}
+                        • {item.name_target}
+                        {item.description_target &&
+                          ` (${item.description_target})`}
                       </Text>
                     ))}
                   </View>

@@ -263,8 +263,6 @@ export const ModernPdf = ({
         <View style={styles.header}>
           <Text style={styles.name}>
             {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
-              personalInfo?.name_target ||
-              personalInfo?.name_source ||
               "이름 없음"}
           </Text>
           <View style={styles.contactRow}>
@@ -309,9 +307,7 @@ export const ModernPdf = ({
               </Text>
             </View>
             <Text style={styles.summaryText}>
-              {(isKo
-                ? personalInfo.summary_source
-                : personalInfo.summary_target) || personalInfo.summary_source}
+              {isKo ? personalInfo.summary_source : personalInfo.summary_target}
             </Text>
           </View>
         )}
@@ -332,14 +328,12 @@ export const ModernPdf = ({
                     <View style={styles.expHeader}>
                       <View>
                         <Text style={styles.companyName}>
-                          {(isKo
+                          {isKo
                             ? exp.company_name_source
-                            : exp.company_name_target) ||
-                            exp.company_name_target}
+                            : exp.company_name_target}
                         </Text>
                         <Text style={styles.position}>
-                          {(isKo ? exp.role_source : exp.role_target) ||
-                            exp.role_target}
+                          {isKo ? exp.role_source : exp.role_target}
                         </Text>
                       </View>
                       <Text style={styles.period}>
@@ -348,21 +342,20 @@ export const ModernPdf = ({
                       </Text>
                     </View>
                     <View style={styles.bulletList}>
-                      {(
-                        (isKo ? exp.bullets_source : exp.bullets_target) ||
-                        exp.bullets_target
-                      )?.map((bullet: string, idx: number) => (
-                        <React.Fragment key={idx}>
-                          <View style={styles.bulletItem}>
-                            <View style={styles.bulletIconContainer}>
-                              <Svg width={7} height={7} viewBox="0 0 24 24">
-                                <Path d="M8 5v14l11-7z" fill="#2563eb" />
-                              </Svg>
+                      {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                        (bullet: string, idx: number) => (
+                          <React.Fragment key={idx}>
+                            <View style={styles.bulletItem}>
+                              <View style={styles.bulletIconContainer}>
+                                <Svg width={7} height={7} viewBox="0 0 24 24">
+                                  <Path d="M8 5v14l11-7z" fill="#2563eb" />
+                                </Svg>
+                              </View>
+                              <Text style={styles.bulletText}>{bullet}</Text>
                             </View>
-                            <Text style={styles.bulletText}>{bullet}</Text>
-                          </View>
-                        </React.Fragment>
-                      ))}
+                          </React.Fragment>
+                        ),
+                      )}
                     </View>
                   </View>
                 </React.Fragment>
@@ -405,11 +398,7 @@ export const ModernPdf = ({
                   <View style={styles.eduItem}>
                     <View>
                       <Text style={styles.companyName}>
-                        {(isKo
-                          ? edu.school_name_source
-                          : edu.school_name_target) ||
-                          edu.school_name_target ||
-                          edu.school_name_source}
+                        {isKo ? edu.school_name_source : edu.school_name_target}
                       </Text>
                       {((edu.degree_target && edu.degree_target !== "-") ||
                         (edu.degree_source && edu.degree_source !== "-") ||
@@ -422,19 +411,11 @@ export const ModernPdf = ({
                             marginTop: 2,
                           }}
                         >
-                          {(isKo ? edu.degree_source : edu.degree_target) ||
-                            edu.degree_target ||
-                            edu.degree_source}
-                          {((isKo ? edu.degree_source : edu.degree_target) ||
-                            edu.degree_target ||
-                            edu.degree_source) &&
-                            ((isKo ? edu.major_source : edu.major_target) ||
-                              edu.major_target ||
-                              edu.major_source) &&
+                          {isKo ? edu.degree_source : edu.degree_target}
+                          {(isKo ? edu.degree_source : edu.degree_target) &&
+                            (isKo ? edu.major_source : edu.major_target) &&
                             ", "}
-                          {(isKo ? edu.major_source : edu.major_target) ||
-                            edu.major_target ||
-                            edu.major_source}
+                          {isKo ? edu.major_source : edu.major_target}
                         </Text>
                       )}
                     </View>
@@ -473,16 +454,10 @@ export const ModernPdf = ({
                     {isKo ? "자격증" : "Certifications"}
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name =
-                      (isKo ? cert.name_source : cert.name_target) ||
-                      cert.name_target ||
-                      cert.name_source;
-                    const desc =
-                      (isKo
-                        ? cert.description_source
-                        : cert.description_target) ||
-                      cert.description_target ||
-                      cert.description_source;
+                    const name = isKo ? cert.name_source : cert.name_target;
+                    const desc = isKo
+                      ? cert.description_source
+                      : cert.description_target;
                     const date = formatDateLocale(cert.date);
                     return (
                       <React.Fragment key={i}>
@@ -508,16 +483,10 @@ export const ModernPdf = ({
                     {isKo ? "수상 경력" : "Awards"}
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name =
-                      (isKo ? award.name_source : award.name_target) ||
-                      award.name_target ||
-                      award.name_source;
-                    const desc =
-                      (isKo
-                        ? award.description_source
-                        : award.description_target) ||
-                      award.description_target ||
-                      award.description_source;
+                    const name = isKo ? award.name_source : award.name_target;
+                    const desc = isKo
+                      ? award.description_source
+                      : award.description_target;
                     const date = formatDateLocale(award.date);
                     return (
                       <React.Fragment key={i}>
@@ -546,16 +515,10 @@ export const ModernPdf = ({
                     style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => {
-                      const name =
-                        (isKo ? lang.name_source : lang.name_target) ||
-                        lang.name_target ||
-                        lang.name_source;
-                      const desc =
-                        (isKo
-                          ? lang.description_source
-                          : lang.description_target) ||
-                        lang.description_target ||
-                        lang.description_source;
+                      const name = isKo ? lang.name_source : lang.name_target;
+                      const desc = isKo
+                        ? lang.description_source
+                        : lang.description_target;
                       return (
                         <React.Fragment key={i}>
                           <Text style={{ fontSize: 10.5, color: "#374151" }}>
