@@ -136,6 +136,9 @@ export async function generateMetadata({
     {} as Record<string, string>,
   );
 
+  // SEO: 언어가 매칭되지 않은 사용자를 위한 '자동 문' 역할 (x-default)
+  languages["x-default"] = `${baseUrl}${pathWithoutLocale}`;
+
   return {
     metadataBase: new URL(baseUrl),
     title: {
