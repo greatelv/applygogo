@@ -31,18 +31,40 @@ export function calculateCost(
  * 3일 무제한 이용권(50 크레딧 포함)을 지급합니다.
  */
 export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
+  const BENEFIT_START_DATE = new Date("2026-01-18T00:00:00+09:00"); // KST (Beta Start)
   const BENEFIT_END_DATE = new Date("2026-01-25T23:59:59+09:00"); // KST
   const now = new Date();
 
-  // 프로모션 기간이 지났으면 지급하지 않음
+  // 1. 프로모션 기간 체크
   if (now > BENEFIT_END_DATE) {
-    console.log("[Beta Promo] Promotion ended. Skipping benefit grant.");
     return;
   }
 
-  console.log(`[Beta Promo] Granting benefit to user ${userId}`);
+  // 2. 유저 상태 조회 (이미 혜택을 받았거나, 대상이 아닌지 확인)
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      plan_type: true,
+      created_at: true,
+    },
+  });
 
-  // 3일 이용권 부여 (내부적으로 크레딧 50 지급 포함)
+  if (!user) return;
+
+  // 2-1. 기존 가입 유저는 제외 (프로모션 시작일 이전 가입자)
+  if (user.created_at < BENEFIT_START_DATE) {
+    return;
+  }
+
+  // 2-2. 이미 플랜이 있거나(유료/베타), FREE가 아닌 경우 지급 중단 (중복 지급 방지)
+  // 단, FREE 상태라면 지급 (가입 시 지급 실패 케이스 커버)
+  if (user.plan_type !== "FREE") {
+    return; // 이미 혜택 적용됨
+  }
+
+  console.log(`[Beta Promo] Recovering benefit for user ${userId}`);
+
+  // 3. 3일 이용권 부여 (내부적으로 크레딧 50 지급 포함)
   await grantPass(userId, "PASS_BETA_3DAY", prisma);
 }
 

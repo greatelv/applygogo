@@ -6,6 +6,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "./auth.config";
 
+import { grantBetaWelcomeBenefit } from "@/lib/billing";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
@@ -91,16 +93,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async jwt({ token }) {
+    async jwt({ token, user, trigger }) {
+      // 로그인(signIn) 또는 회원가입(signUp) 시점에 혜택 누락 확인 및 지급
+      // (Fail-safe: createUser 이벤트가 실패했거나, 과거에 누락된 경우 자동 복구)
+      if (user && (trigger === "signIn" || trigger === "signUp")) {
+        // 백그라운드에서 실행 (await 안함 - 로그인 지연 방지)
+        grantBetaWelcomeBenefit(user.id).catch((e) =>
+          console.error("[Auth] Fail-safe benefit grant failed:", e),
+        );
+      }
       return token;
     },
   },
   events: {
     async createUser({ user }) {
       if (user.id) {
-        // 베타 런칭 프로모션 혜택 지급
-        const { grantBetaWelcomeBenefit } = await import("@/lib/billing");
-        await grantBetaWelcomeBenefit(user.id);
+        // 베타 런칭 프로모션 혜택 지급 (Primary Attempt)
+        try {
+          await grantBetaWelcomeBenefit(user.id);
+        } catch (error) {
+          console.error("[Auth] Failed to grant beta benefit:", error);
+        }
       }
     },
   },
