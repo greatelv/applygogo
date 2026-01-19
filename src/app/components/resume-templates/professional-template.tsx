@@ -113,7 +113,7 @@ export function ProfessionalTemplate({
             <ul className="space-y-1">
               {skills.map((skill: any) => (
                 <li key={skill.id} className="text-xs text-gray-600">
-                  • {skill.name}
+                  • {skill.name_target || skill.name}
                   {skill.level && (
                     <span className="text-gray-400 ml-1 text-[10px]">
                       ({skill.level})

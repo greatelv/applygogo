@@ -113,12 +113,35 @@ export async function POST(
 
         if (
           !refinedData.personal_info.summary_source &&
-          extractedPersonalInfo.summary_source
+          (extractedPersonalInfo.summary_source ||
+            extractedPersonalInfo.summary)
         ) {
           refinedData.personal_info.summary_source =
-            extractedPersonalInfo.summary_source;
+            extractedPersonalInfo.summary_source ||
+            extractedPersonalInfo.summary;
           console.log(
             "[Refine API] Restored summary_source from extracted data",
+          );
+        }
+
+        // Normalize Summary in Refined Data
+        if (!refinedData.personal_info.summary_source) {
+          refinedData.personal_info.summary_source =
+            refinedData.personal_info.summary ||
+            refinedData.personal_info.summary_kr ||
+            "";
+        }
+
+        // Normalize Links
+        if (
+          refinedData.personal_info.links &&
+          Array.isArray(refinedData.personal_info.links)
+        ) {
+          refinedData.personal_info.links = refinedData.personal_info.links.map(
+            (link: any) => ({
+              label: link.label || link.name || link.title || "Link",
+              url: link.url || link.link || link.href || "",
+            }),
           );
         }
       }

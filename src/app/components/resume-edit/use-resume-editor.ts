@@ -598,37 +598,46 @@ export const useResumeEditor = ({
     setSkills(newSkills);
   };
 
-  const handleTranslateSkill = async (skillId: string) => {
-    const skill = skills.find((s) => s.id === skillId);
-    if (!skill) return;
+  const handleTranslateAllSkills = async () => {
+    if (skills.length === 0) return;
 
-    setIsTranslating((prev) => ({ ...prev, [`skill-${skillId}`]: true }));
+    setIsTranslating((prev) => ({ ...prev, all_skills: true }));
     try {
-      // Translate name_source -> name_target
+      const sources = skills.map((s) => s.name_source || "");
+
       const response = await fetch("/api/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          texts: [skill.name_source],
+          texts: sources,
           type: "general",
         }),
       });
-      const { translatedTexts } = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Translation request failed");
+      }
+
+      const data = await response.json();
+      const translatedTexts = data.translatedTexts;
+
+      if (!Array.isArray(translatedTexts)) {
+        console.error("Invalid translation response:", data);
+        throw new Error("Invalid translation response format");
+      }
 
       setSkills((prev) =>
-        prev.map((s) => {
-          if (s.id !== skillId) return s;
-          return {
-            ...s,
-            name_target: translatedTexts[0] || s.name_target,
-          };
-        }),
+        prev.map((s, index) => ({
+          ...s,
+          name_target: translatedTexts[index] || s.name_target,
+        })),
       );
-      onDeductCredit?.(0.5); // Lower cost for single skill? Or same? Keeping small.
-    } catch (e) {
-      console.error(e);
+
+      onDeductCredit?.(1.0);
+    } catch (error) {
+      console.error("Skill translation error:", error);
     } finally {
-      setIsTranslating((prev) => ({ ...prev, [`skill-${skillId}`]: false }));
+      setIsTranslating((prev) => ({ ...prev, all_skills: false }));
     }
   };
 
@@ -671,6 +680,6 @@ export const useResumeEditor = ({
     handleRemoveSkill,
     handleSkillChange,
     moveSkill,
-    handleTranslateSkill,
+    handleTranslateAllSkills,
   };
 };

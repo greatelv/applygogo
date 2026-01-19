@@ -91,11 +91,12 @@ export default async function Page({
     email: clean(resume.email),
     phone: clean(resume.phone),
     links: ((resume.links as any[]) || []).map((link: any) => ({
-      label: clean(link.label),
-      url: clean(link.url),
+      label: clean(link.label || link.name || link.title),
+      url: clean(link.url || link.link || link.href),
     })),
-    summary_source: clean(resume.summary_source),
-    summary_target: clean(resume.summary_target),
+    summary_source:
+      clean(resume.summary_source) || clean(resume.summary_kr) || "",
+    summary_target: clean(resume.summary_target) || clean(resume.summary) || "",
   };
 
   return (

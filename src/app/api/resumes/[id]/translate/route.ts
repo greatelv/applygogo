@@ -121,13 +121,51 @@ export async function POST(
       console.log("[Translate API] Restored links from refined data");
     }
 
+    // Normalize Summary (Source)
+    if (!translatedData.personal_info.summary_source) {
+      translatedData.personal_info.summary_source =
+        translatedData.personal_info.summary ||
+        translatedData.personal_info.summary_kr ||
+        translatedData.personal_info.about ||
+        "";
+    }
+
+    // Normalize Summary (Target)
+    if (!translatedData.personal_info.summary_target) {
+      translatedData.personal_info.summary_target =
+        translatedData.personal_info.summary_en ||
+        translatedData.personal_info.summary_us ||
+        "";
+    }
+
+    // Normalize Links
+    if (
+      translatedData.personal_info.links &&
+      Array.isArray(translatedData.personal_info.links)
+    ) {
+      translatedData.personal_info.links =
+        translatedData.personal_info.links.map((link: any) => ({
+          label: link.label || link.name || link.title || "Link",
+          url: link.url || link.link || link.href || "",
+        }));
+    }
+
     if (
       !translatedData.personal_info.summary_source &&
-      refinedPersonalInfo.summary_source
+      (refinedPersonalInfo.summary_source || refinedPersonalInfo.summary)
     ) {
       translatedData.personal_info.summary_source =
-        refinedPersonalInfo.summary_source;
+        refinedPersonalInfo.summary_source || refinedPersonalInfo.summary;
       console.log("[Translate API] Restored summary_source from refined data");
+    }
+
+    if (
+      !translatedData.personal_info.summary_target &&
+      refinedPersonalInfo.summary_target
+    ) {
+      translatedData.personal_info.summary_target =
+        refinedPersonalInfo.summary_target;
+      console.log("[Translate API] Restored summary_target from refined data");
     }
 
     // 5. Post-processing

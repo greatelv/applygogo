@@ -120,7 +120,7 @@ export function ExecutiveTemplate({
                     {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <li key={idx} className="flex gap-3 pl-1">
                         <span
-                          className="text-slate-900 mt-2.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
+                          className="text-slate-900 mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
                           style={{ width: "4px", height: "4px" }}
                         />
                         <span className="text-slate-600 flex-1">{bullet}</span>
@@ -173,7 +173,7 @@ export function ExecutiveTemplate({
                   key={skill.id}
                   className="bg-slate-100 text-slate-900 px-3 py-1 rounded text-sm font-medium"
                 >
-                  {skill.name}
+                  {skill.name_target || skill.name}
                   {skill.level && (
                     <span className="text-slate-500 text-[10px] ml-1 font-normal">
                       ({skill.level})

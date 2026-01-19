@@ -75,6 +75,8 @@ export default async function Page({
   const mappedSkills = resume.skills.map((s: any) => ({
     id: s.id,
     name: s.name,
+    name_source: s.name_source,
+    name_target: s.name_target,
     level: s.level,
   }));
 

@@ -12,14 +12,17 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8 (32px) -> ~24pt
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 24, // mb-8
+    marginBottom: 16,
   },
   name: {
     fontSize: 36, // text-5xl
@@ -43,14 +46,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 24, // mb-8
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 9, // text-xs
     fontWeight: 700, // font-semibold (bold in pdf-renderer)
     color: "#9ca3af", // text-gray-400
     letterSpacing: 2.25, // tracking-widest
-    marginBottom: 18,
+    marginBottom: 12,
     textTransform: "uppercase",
   },
   summaryText: {
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: 300, // font-light
   },
   expContainer: {
-    gap: 24, // space-y-8
+    gap: 16,
   },
   expHeader: {
     flexDirection: "row",
@@ -262,7 +265,9 @@ export const MinimalPdf = ({
             <View style={styles.skillRow}>
               {skills.map((skill) => (
                 <React.Fragment key={skill.id}>
-                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                  <Text style={styles.skillBadge}>
+                    {skill.name_target || skill.name_source || skill.name}
+                  </Text>
                 </React.Fragment>
               ))}
             </View>

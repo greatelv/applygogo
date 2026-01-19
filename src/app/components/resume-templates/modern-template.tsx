@@ -49,6 +49,8 @@ interface Education {
 interface Skill {
   id: string;
   name: string;
+  name_source?: string;
+  name_target?: string;
   level?: string | null;
 }
 
@@ -211,7 +213,7 @@ export function ModernTemplate({
                 key={skill.id}
                 className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
               >
-                {skill.name}
+                {skill.name_target || skill.name}
                 {skill.level && (
                   <span className="ml-1 text-xs text-gray-400 font-normal">
                     ({skill.level})

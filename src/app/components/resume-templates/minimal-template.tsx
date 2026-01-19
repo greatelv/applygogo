@@ -49,6 +49,8 @@ interface Education {
 interface Skill {
   id: string;
   name: string;
+  name_source?: string;
+  name_target?: string;
   level?: string | null;
 }
 
@@ -202,7 +204,7 @@ export function MinimalTemplate({
                 key={skill.id}
                 className="px-3 py-1 text-xs text-gray-700 bg-gray-50 rounded-full border border-gray-200"
               >
-                {skill.name}
+                {skill.name_target || skill.name}
                 {skill.level && (
                   <span className="text-gray-400 ml-1">({skill.level})</span>
                 )}

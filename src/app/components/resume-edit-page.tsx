@@ -62,7 +62,6 @@ interface ResumeEditPageProps {
 import { DraggableAdditionalItem } from "./resume-edit/draggable-additional-item";
 import { DraggableEducationItem } from "./resume-edit/draggable-education-item";
 import { DraggableExperienceItem } from "./resume-edit/draggable-experience-item";
-import { DraggableSkillItem } from "./resume-edit/draggable-skill-item";
 
 import { useResumeEditor } from "./resume-edit/use-resume-editor";
 
@@ -136,8 +135,7 @@ export function ResumeEditPage({
     handleAddSkill,
     handleRemoveSkill,
     handleSkillChange,
-    moveSkill,
-    handleTranslateSkill,
+    handleTranslateAllSkills,
   } = useResumeEditor({
     initialPersonalInfo,
     initialExperiences,
@@ -636,49 +634,161 @@ export function ResumeEditPage({
 
           {/* Skills */}
           <div className="mt-12">
-            <div className="mb-6 flex items-end justify-between">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  {t("sections.skills.title")}
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  {t("sections.skills.description")}
-                </p>
-              </div>
-              <Button
-                size="sm"
-                onClick={() => handleAddSkill()}
-                className="h-9 px-4 shadow-sm text-sm font-semibold"
-              >
-                <Plus className="size-4 mr-1.5" />
-                {t("sections.skills.addItem")}
-              </Button>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">
+                {t("sections.skills.title")}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {t("sections.skills.description")}
+              </p>
             </div>
 
-            <div className="space-y-6">
-              {skills.length === 0 && (
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                  <p className="text-sm text-muted-foreground">
+            <div className="bg-card border border-border rounded-lg overflow-hidden">
+              <div className="bg-muted/50 px-6 py-4 border-b border-border relative">
+                <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold mb-1">
+                      {getSourceLabel()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold mb-1">
+                      {getTargetLabel()}
+                    </p>
+                  </div>
+                </div>
+                <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleTranslateAllSkills}
+                    disabled={isTranslating.all_skills}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {isTranslating.all_skills ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="size-4" />
+                    )}
+                    <span className="hidden lg:inline ml-2">
+                      {isTranslating.all_skills
+                        ? t("actions.processing")
+                        : t("actions.retranslate")}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-6">
+                {skills.length === 0 && (
+                  <div className="text-center text-sm text-muted-foreground py-8">
                     {t.rich("sections.skills.empty", {
                       strong: (chunks) => <strong>{chunks}</strong>,
                     })}
-                  </p>
-                </div>
-              )}
-              {skills.map((skill, index) => (
-                <DraggableSkillItem
-                  key={skill.id}
-                  index={index}
-                  skill={skill}
-                  moveSkill={moveSkill}
-                  isTranslating={!!isTranslating[`skill-${skill.id}`]}
-                  onTranslate={handleTranslateSkill}
-                  onRemove={handleRemoveSkill}
-                  onChange={handleSkillChange}
-                  sourceLabel={getSourceLabel()}
-                  targetLabel={getTargetLabel()}
-                />
-              ))}
+                    <div className="mt-4">
+                      <Button
+                        onClick={handleAddSkill}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Plus className="size-4 mr-1.5" />
+                        {t("sections.skills.addItem")}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {skills.length > 0 && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Source List */}
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold mb-3 lg:hidden">
+                        {getSourceLabel()}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {skills.map((skill) => (
+                          <Badge
+                            key={skill.id}
+                            variant="secondary"
+                            className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8 transition-all hover:bg-secondary/80 select-none"
+                          >
+                            <span
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleSkillChange(
+                                  skill.id,
+                                  "name_source",
+                                  e.currentTarget.textContent || "",
+                                )
+                              }
+                              className="outline-none min-w-[20px] cursor-text empty:before:content-['...'] empty:before:text-muted-foreground"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  e.currentTarget.blur();
+                                }
+                              }}
+                            >
+                              {skill.name_source}
+                            </span>
+                            <button
+                              onClick={() => handleRemoveSkill(skill.id)}
+                              className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
+                            >
+                              <X className="size-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                        <button
+                          onClick={handleAddSkill}
+                          className="inline-flex h-8 items-center justify-center rounded-full border border-dashed border-muted-foreground/30 bg-transparent px-3 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        >
+                          <Plus className="size-3 mr-1" />
+                          {t("sections.skills.addItem")}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Target List */}
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold mb-3 lg:hidden">
+                        {getTargetLabel()}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {skills.map((skill) => (
+                          <Badge
+                            key={skill.id}
+                            variant="secondary"
+                            className="px-3 py-1.5 text-sm font-medium h-8 select-none"
+                          >
+                            <span
+                              contentEditable
+                              suppressContentEditableWarning
+                              onBlur={(e) =>
+                                handleSkillChange(
+                                  skill.id,
+                                  "name_target",
+                                  e.currentTarget.textContent || "",
+                                )
+                              }
+                              className="outline-none min-w-[20px] cursor-text empty:before:content-['...'] empty:before:text-muted-foreground"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  e.currentTarget.blur();
+                                }
+                              }}
+                            >
+                              {skill.name_target}
+                            </span>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

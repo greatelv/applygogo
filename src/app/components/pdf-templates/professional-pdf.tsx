@@ -13,7 +13,10 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSansKR",
     fontSize: 10,
     lineHeight: 1.5,
@@ -52,10 +55,10 @@ const styles = StyleSheet.create({
 
   // Section Styles
   section: {
-    marginBottom: 20,
+    marginBottom: 14,
   },
   sidebarSection: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 11,
@@ -284,7 +287,7 @@ export const ProfessionalPdf = ({
               {validSkills.map((skill, i) => (
                 // @ts-ignore
                 <Text key={i} style={styles.skillItem}>
-                  • {skill.name}
+                  • {skill.name_target || skill.name_source || skill.name}
                 </Text>
               ))}
             </View>

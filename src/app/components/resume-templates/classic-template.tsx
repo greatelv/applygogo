@@ -49,6 +49,8 @@ interface Education {
 interface Skill {
   id: string;
   name: string;
+  name_source?: string;
+  name_target?: string;
   level?: string | null;
 }
 
@@ -212,7 +214,7 @@ export function ClassicTemplate({
               <span className="font-semibold">Skills:</span>{" "}
               {skills.map((s) => (
                 <span key={s.id}>
-                  {s.name}
+                  {s.name_target || s.name}
                   {s.level && (
                     <span className="text-gray-500 italic ml-0.5">
                       ({s.level})

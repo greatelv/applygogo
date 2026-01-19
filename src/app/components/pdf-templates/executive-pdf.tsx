@@ -18,14 +18,23 @@ const styles = StyleSheet.create({
     fontSize: 10.5,
     lineHeight: 1.6,
     color: "#333",
-    paddingBottom: 40,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   // Header with dark background
   header: {
     backgroundColor: "#0f172a", // slate-900
     color: "white",
-    padding: "30 24",
-    marginBottom: 24,
+    paddingTop: 50,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 20,
+    marginLeft: -30,
+    marginRight: -30,
+    marginTop: -30,
+    marginBottom: 16,
   },
   name: {
     fontSize: 28,
@@ -51,11 +60,11 @@ const styles = StyleSheet.create({
 
   // Main Content
   container: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 0,
   },
 
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 12,
@@ -109,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#0f172a",
     marginRight: 6,
-    marginTop: 4,
+    marginTop: 0,
   },
   bulletText: {
     flex: 1,
@@ -323,7 +332,7 @@ export const ExecutivePdf = ({
                 {skills.map((skill, i) => (
                   // @ts-ignore
                   <Text key={i} style={styles.skillBadge}>
-                    {skill.name}
+                    {skill.name_target || skill.name_source || skill.name}
                   </Text>
                 ))}
               </View>

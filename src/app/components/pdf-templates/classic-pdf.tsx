@@ -13,15 +13,18 @@ import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // Matched to p-8 (32px) ~ 24pt
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSerifKR",
     fontSize: 9.5, // Restored to 9.5
     color: "#000000",
     lineHeight: 1.5,
   },
   header: {
-    marginBottom: 18,
-    paddingBottom: 14,
+    marginBottom: 12,
+    paddingBottom: 10,
     borderBottomWidth: 2,
     borderBottomColor: "#1f2937",
     textAlign: "center",
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   section: {
-    marginBottom: 12, // Reduced from 14
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 10.5, // Reduced from 11
@@ -303,7 +306,9 @@ export const ClassicPdf = ({
             <View>
               <Text style={styles.skillText}>
                 <Text style={{ fontWeight: "bold" }}>Skills: </Text>
-                {skills.map((s) => s.name).join(", ")}
+                {skills
+                  .map((s) => s.name_target || s.name_source || s.name)
+                  .join(", ")}
               </Text>
             </View>
           </View>

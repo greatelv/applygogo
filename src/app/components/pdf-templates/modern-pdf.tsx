@@ -41,14 +41,17 @@ export const registerFonts = () => {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8 (32px) -> ~24pt
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm (14px) -> ~10.5pt
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 24, // mb-8 (32px) -> 24pt
+    marginBottom: 16,
   },
   name: {
     fontSize: 32, // text-5xl (48px) ~ 36pt. Let's go 32 to be safe but prominent
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 24, // mb-8 (32px) -> 24pt
+    marginBottom: 16,
   },
   sectionTitleRow: {
     flexDirection: "row",
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
   },
   expContainer: {
     // to simulate space-y-5
-    gap: 15, // 20px -> 15pt
+    gap: 10,
   },
   expHeader: {
     flexDirection: "row",
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   eduItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12, // space-y-4
+    marginBottom: 8,
   },
   linkText: {
     fontSize: 10.5,
@@ -385,7 +388,9 @@ export const ModernPdf = ({
             <View style={styles.skillRow}>
               {skills.map((skill) => (
                 <React.Fragment key={skill.id}>
-                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                  <Text style={styles.skillBadge}>
+                    {skill.name_target || skill.name_source || skill.name}
+                  </Text>
                 </React.Fragment>
               ))}
             </View>
