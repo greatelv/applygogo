@@ -496,33 +496,54 @@ isSponsored: false
     await scraper.close();
   } catch (error) {
     console.error(`[${locale}] Error generating blog post:`, error);
-    // Determine if we should fail the whole process or just this locale.
-    // For now, let's log and re-throw to ensure CI failure visibility.
     await scraper.close();
     throw error;
   }
 }
 
 async function main() {
-  const locales = ["ko", "en", "ja"];
+  // Get locale from command line arguments
+  const args = process.argv.slice(2);
+  const targetLocale = args[0];
+
+  const validLocales = ["ko", "en", "ja"];
+  let localesToRun = validLocales;
+
+  if (targetLocale) {
+    if (!validLocales.includes(targetLocale)) {
+      console.error(
+        `Invalid locale: "${targetLocale}". Must be one of: ${validLocales.join(", ")}`,
+      );
+      process.exit(1);
+    }
+    console.log(`\n🎯 Creating blog post for specific locale: ${targetLocale}`);
+    localesToRun = [targetLocale];
+  } else {
+    console.log(
+      "\n🌐 No locale specified. Running for ALL locales sequentially.",
+    );
+  }
 
   // Check if a manual topic is provided
   const manualTopic = process.env.MANUAL_TOPIC;
   if (manualTopic) {
-    console.log(
-      "Manual topic provided. Applying to ALL locales (or specific one if logic added).",
-    );
-    // Warning: Providing a Korean manual topic to EN/JA models might confuse them or produce mixed results.
-    // Ideally, we'd input locale-specific manual topics, but for now we assume it's unset mostly.
+    console.log("Manual topic provided. Applying to selected locales.");
   }
 
-  for (const locale of locales) {
+  let hasError = false;
+
+  for (const locale of localesToRun) {
     try {
       await generateBlogForLocale(locale);
     } catch (error) {
       console.error(`Failed to generate blog for ${locale}:`, error);
-      process.exitCode = 1; // Mark process as failed but continue trying others if needed
+      hasError = true;
+      // We continue to the next locale even if one fails
     }
+  }
+
+  if (hasError) {
+    process.exit(1);
   }
 }
 
