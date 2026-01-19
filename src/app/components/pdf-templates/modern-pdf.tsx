@@ -10,6 +10,7 @@ import {
   Svg,
   Path,
 } from "@react-pdf/renderer";
+import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 // Export a function to register fonts with dynamic base URL
 export const registerFonts = () => {
@@ -201,7 +202,7 @@ interface ModernPdfProps {
   educations?: any[];
   skills?: any[];
   additionalItems?: any[];
-  locale?: string;
+  locale?: AppLocale;
 }
 
 export const ModernPdf = ({
@@ -212,7 +213,9 @@ export const ModernPdf = ({
   additionalItems = [],
   locale = "ko",
 }: ModernPdfProps) => {
-  const isKo = locale === "ko";
+  // Use centralized logic: ko locale → English (_target), en/ja locale → Korean (_source)
+  const useTarget = shouldUseTargetData(locale);
+  const isKo = !useTarget; // Inverted for compatibility with existing template logic
 
   // Filter out empty items first
   const validExperiences = experiences.filter(

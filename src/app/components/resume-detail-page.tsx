@@ -151,6 +151,7 @@ export function ResumeDetailPage({
         educations: resume.educations,
         skills: resume.skills,
         additionalItems: resume.additionalItems,
+        locale: locale, // Pass locale to determine which language to use
       };
 
       const templateKey = resume.template.toLowerCase();

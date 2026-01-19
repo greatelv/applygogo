@@ -97,7 +97,40 @@ export async function POST(
 
     console.log("[Translate API] Translation complete.");
 
-    // 4. Post-processing
+    // 4. Data Validation & Fallback
+    // Ensure critical fields are not lost during translation
+    if (!translatedData.personal_info) {
+      translatedData.personal_info = {};
+    }
+
+    const refinedPersonalInfo = refinedData.personal_info || {};
+
+    // Preserve fields that AI might have omitted
+    if (!translatedData.personal_info.email && refinedPersonalInfo.email) {
+      translatedData.personal_info.email = refinedPersonalInfo.email;
+      console.log("[Translate API] Restored email from refined data");
+    }
+
+    if (!translatedData.personal_info.phone && refinedPersonalInfo.phone) {
+      translatedData.personal_info.phone = refinedPersonalInfo.phone;
+      console.log("[Translate API] Restored phone from refined data");
+    }
+
+    if (!translatedData.personal_info.links && refinedPersonalInfo.links) {
+      translatedData.personal_info.links = refinedPersonalInfo.links;
+      console.log("[Translate API] Restored links from refined data");
+    }
+
+    if (
+      !translatedData.personal_info.summary_source &&
+      refinedPersonalInfo.summary_source
+    ) {
+      translatedData.personal_info.summary_source =
+        refinedPersonalInfo.summary_source;
+      console.log("[Translate API] Restored summary_source from refined data");
+    }
+
+    // 5. Post-processing
     let finalExperiences = translatedData.work_experiences || [];
 
     // Sort experiences: Newest first (descending by end_date)

@@ -88,6 +88,40 @@ export async function POST(
           refinedData.work_experiences?.length || 0
         } companies, ${totalBullets} bullets selected.`,
       );
+
+      // Data Validation: Ensure personal_info fields are preserved
+      if (!refinedData.personal_info) {
+        refinedData.personal_info = extractedData.personal_info || {};
+      } else {
+        const extractedPersonalInfo = extractedData.personal_info || {};
+
+        // Preserve fields that AI might have omitted
+        if (!refinedData.personal_info.email && extractedPersonalInfo.email) {
+          refinedData.personal_info.email = extractedPersonalInfo.email;
+          console.log("[Refine API] Restored email from extracted data");
+        }
+
+        if (!refinedData.personal_info.phone && extractedPersonalInfo.phone) {
+          refinedData.personal_info.phone = extractedPersonalInfo.phone;
+          console.log("[Refine API] Restored phone from extracted data");
+        }
+
+        if (!refinedData.personal_info.links && extractedPersonalInfo.links) {
+          refinedData.personal_info.links = extractedPersonalInfo.links;
+          console.log("[Refine API] Restored links from extracted data");
+        }
+
+        if (
+          !refinedData.personal_info.summary_source &&
+          extractedPersonalInfo.summary_source
+        ) {
+          refinedData.personal_info.summary_source =
+            extractedPersonalInfo.summary_source;
+          console.log(
+            "[Refine API] Restored summary_source from extracted data",
+          );
+        }
+      }
     } else {
       console.log("[Refine API] Skipped (no work experiences to refine)");
     }

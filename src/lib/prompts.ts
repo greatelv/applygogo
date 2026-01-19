@@ -107,8 +107,15 @@ Return the refined data using the same \`_source\` keys.
 
 \`\`\`json
 {
-  "personal_info": { ... },
-  "professional_summary_source": "...",
+  "personal_info": {
+    "name_source": "...",
+    "email": "...",
+    "phone": "...",
+    "links": [
+      { "label": "...", "url": "..." }
+    ],
+    "summary_source": "..."
+  },
   "work_experiences": [
     {
       "company_name_source": "Refined Name",
@@ -175,9 +182,13 @@ Return the FULL JSON with both \`_source\` and \`_target\` fields.
   "personal_info": {
     "name_source": "...",
     "name_target": "Translated Name",
+    "email": "...",
+    "phone": "...",
+    "links": [
+      { "label": "...", "url": "..." }
+    ],
     "summary_source": "...",
     "summary_target": "Translated Summary"
-    ...
   },
   "work_experiences": [
     {
