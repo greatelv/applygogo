@@ -117,6 +117,10 @@ const styles = StyleSheet.create({
     color: "#4b5563",
     textDecoration: "none",
   },
+  bulletItem: {
+    flexDirection: "row",
+    gap: 4,
+  },
 });
 
 // Helper to format date YYYY-MM -> MMM YYYY
@@ -140,6 +144,12 @@ const formatDate = (dateStr?: string) => {
   } catch (e) {
     return cleanDate;
   }
+};
+
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
 };
 
 interface MinimalPdfProps {
@@ -189,7 +199,7 @@ export const MinimalPdf = ({
               .map((link: any, i: number) => (
                 // @ts-ignore
                 <View key={i} style={styles.contactItem}>
-                  <Link src={link.url} style={styles.linkText}>
+                  <Link src={ensureUrl(link.url)} style={styles.linkText}>
                     <Text style={{ fontWeight: "medium" }}>{link.label}: </Text>
                     {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </Link>
@@ -230,7 +240,12 @@ export const MinimalPdf = ({
                   <View style={styles.bulletList}>
                     {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <React.Fragment key={idx}>
-                        <Text style={styles.bulletText}>{bullet}</Text>
+                        <View style={styles.bulletItem}>
+                          <Text style={styles.bulletText}>•</Text>
+                          <Text style={{ ...styles.bulletText, flex: 1 }}>
+                            {bullet}
+                          </Text>
+                        </View>
                       </React.Fragment>
                     ))}
                   </View>

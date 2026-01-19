@@ -17,6 +17,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface ProfessionalTemplateProps {
   personalInfo?: any;
   experiences: any[];
@@ -60,7 +66,7 @@ export function ProfessionalTemplate({
               .map((link: any, i: number) => (
                 <div key={i} className="pt-0.5">
                   <a
-                    href={link.url}
+                    href={ensureUrl(link.url)}
                     target="_blank"
                     rel="noreferrer"
                     className="text-blue-600 hover:underline break-all block"
@@ -173,11 +179,6 @@ export function ProfessionalTemplate({
             {personalInfo?.name_target || "Name"}
           </h1>
           {/* Title Placeholder if specific field exists, usually use most recent job */}
-          {experiences[0]?.role_target && (
-            <div className="text-lg text-blue-600 font-medium">
-              {experiences[0].role_target}
-            </div>
-          )}
         </div>
 
         {/* Summary */}

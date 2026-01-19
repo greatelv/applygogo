@@ -13,23 +13,23 @@ import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 18, // Reduced from 20
+    padding: 24, // Matched to p-8 (32px) ~ 24pt
     fontFamily: "NotoSerifKR",
-    fontSize: 9, // Reduced from 9.5
+    fontSize: 9.5, // Restored to 9.5
     color: "#000000",
     lineHeight: 1.5,
   },
   header: {
-    marginBottom: 16, // Reduced from 18
-    paddingBottom: 12, // Reduced from 14
+    marginBottom: 18,
+    paddingBottom: 14,
     borderBottomWidth: 2,
     borderBottomColor: "#1f2937",
     textAlign: "center",
   },
   name: {
-    fontSize: 18, // Reduced from 20
+    fontSize: 24, // Increased to match text-3xl (30px) ~ 22.5pt -> 24pt
     fontWeight: "bold",
-    marginBottom: 6, // Reduced from 8
+    marginBottom: 8,
     color: "#111827",
     textTransform: "uppercase",
     letterSpacing: 1.5,

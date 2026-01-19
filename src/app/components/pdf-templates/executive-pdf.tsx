@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#0f172a", // slate-900
     color: "white",
-    padding: "30 40",
+    padding: "30 24",
     marginBottom: 24,
   },
   name: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 
   // Main Content
   container: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 24,
   },
 
   section: {
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#0f172a",
     marginRight: 6,
+    marginTop: 4,
   },
   bulletText: {
     flex: 1,
@@ -165,6 +166,12 @@ const styles = StyleSheet.create({
     color: "#334155",
   },
 });
+
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
 
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
@@ -231,7 +238,7 @@ export const ExecutivePdf = ({
               .map((link: any, i: number) => (
                 <React.Fragment key={i}>
                   <Text style={{ color: "#475569" }}>|</Text>
-                  <Link src={link.url} style={styles.headerLink}>
+                  <Link src={ensureUrl(link.url)} style={styles.headerLink}>
                     {link.label || "Link"}
                   </Link>
                 </React.Fragment>

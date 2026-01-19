@@ -256,13 +256,23 @@ async function generateBlogForLocale(locale: string) {
       articleResult.candidates?.[0]?.content?.parts?.[0]?.text || ""
     ).trim();
 
-    // Robustly strip potential markdown blocks around the JSON/Frontmatter
-    articleContent = articleContent
-      .replace(/^```[a-z]*\n/i, "")
-      .replace(/\n```$/g, "")
-      .trim();
+    // Clean up potential markdown code blocks
+    // Sometimes AI wraps the whole response in ```markdown ... ```
+    if (articleContent.startsWith("```")) {
+      const lines = articleContent.split("\n");
+      // Remove first line if it starts with ```
+      if (lines[0].trim().startsWith("```")) {
+        lines.shift();
+      }
+      // Remove last line if it is ```
+      if (lines[lines.length - 1].trim() === "```") {
+        lines.pop();
+      }
+      articleContent = lines.join("\n").trim();
+    }
 
-    const frontmatterRegex = /^---\n[\s\S]*?\n---/m;
+    // Regex to find a block starting with ---, containing "title:", and ending with ---
+    const frontmatterRegex = /^---\n[\s\S]*?title:[\s\S]*?\n---/m;
     const fmMatch = articleContent.match(frontmatterRegex);
 
     if (fmMatch) {

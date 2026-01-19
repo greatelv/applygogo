@@ -22,6 +22,7 @@ import { MinimalPdf } from "./pdf-templates/minimal-pdf";
 import { ProfessionalPdf } from "./pdf-templates/professional-pdf";
 import { ExecutivePdf } from "./pdf-templates/executive-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
+import { AppLocale } from "@/lib/resume-language";
 
 interface TemplatePreviewDialogProps {
   trigger?: React.ReactNode;
@@ -148,7 +149,7 @@ export function TemplatePreviewDialog({
   };
 
   const getTemplateComponent = () => {
-    const props = { ...mockResumeData, locale: "ko" };
+    const props = { ...mockResumeData, locale: "ko" as AppLocale };
     switch (selectedTab) {
       case "classic":
         return <ClassicPdf {...props} />;
@@ -251,7 +252,10 @@ export function TemplatePreviewDialog({
                       }
                     }
                   `}</style>
-                  <div className="w-full max-w-[800px] h-full relative">
+                  <div
+                    className="h-full relative shadow-2xl mx-auto"
+                    style={{ width: "210mm", maxWidth: "100%" }}
+                  >
                     <PDFViewer
                       width="100%"
                       height="100%"

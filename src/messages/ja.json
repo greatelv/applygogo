@@ -1,5 +1,7 @@
 {
   "common": {
+    "passOnly": "利用券専用",
+    "save": "保存",
     "title": "ApplyGogo - 韓国就職のためのAI履歴書プラットフォーム",
     "header": {
       "login": "ログイン",

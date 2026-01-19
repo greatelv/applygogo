@@ -17,6 +17,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface Experience {
   id: string;
   company_name_source: string;
@@ -127,13 +133,13 @@ export function ClassicTemplate({
             .map((link, i) => (
               <span key={i} className="flex gap-2">
                 <span>|</span>
+                <span className="font-semibold">{link.label}:</span>
                 <a
-                  href={link.url}
+                  href={ensureUrl(link.url)}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  <span className="font-semibold">{link.label}:</span>{" "}
                   {link.url
                     ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
                     : ""}

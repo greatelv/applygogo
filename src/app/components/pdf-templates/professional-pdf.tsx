@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   // Name usually goes in Main or Sidebar. Let's put Name in Main for impact.
 
   name: {
-    fontSize: 24,
+    fontSize: 28, // text-4xl (36px) ~ 27pt
     fontWeight: "bold",
     color: "#111827", // gray-900
     marginBottom: 4,
@@ -193,6 +193,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface ProfessionalPdfProps {
   personalInfo?: any;
   experiences?: any[];
@@ -240,7 +246,7 @@ export const ProfessionalPdf = ({
               link.url ? (
                 // @ts-ignore
                 <View key={i} style={styles.contactItem}>
-                  <Link src={link.url} style={styles.link}>
+                  <Link src={ensureUrl(link.url)} style={styles.link}>
                     {link.label || "Link"}
                   </Link>
                 </View>
@@ -337,11 +343,6 @@ export const ProfessionalPdf = ({
               {personalInfo?.name_target || "Name"}
             </Text>
             {/* Use most recent role as title or just keep it simple */}
-            {validExperiences[0]?.role_target && (
-              <Text style={styles.jobTitle}>
-                {validExperiences[0].role_target}
-              </Text>
-            )}
           </View>
 
           {/* Summary */}

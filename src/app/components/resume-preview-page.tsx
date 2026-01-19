@@ -69,6 +69,7 @@ export function ResumePreviewPage({
   isCompleting = false,
 }: ResumePreviewPageProps) {
   const t = useTranslations("templatesPage");
+  const tCommon = useTranslations("common");
   const [selectedTemplate, setSelectedTemplate] = useState(
     initialTemplate.toLowerCase(),
   );
@@ -256,9 +257,9 @@ export function ResumePreviewPage({
                 {/* Shortened Names for Mobile */}
                 <span className="z-10 relative">
                   {template.id === "professional"
-                    ? "Pro"
+                    ? tCommon("passOnly")
                     : template.id === "executive"
-                      ? "Exec"
+                      ? tCommon("passOnly")
                       : template.name}
                 </span>
                 {selectedTemplate === template.id && (
@@ -296,7 +297,7 @@ export function ResumePreviewPage({
                   <div className="flex items-center gap-2">
                     {template.isPro && (
                       <Badge variant="default" className="text-xs">
-                        PRO
+                        {tCommon("passOnly")}
                       </Badge>
                     )}
                     {selectedTemplate === template.id && (

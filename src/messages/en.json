@@ -1,5 +1,7 @@
 {
   "common": {
+    "passOnly": "Pass Only",
+    "save": "Save",
     "title": "ApplyGogo - AI-powered Employment Platform in Korea",
     "header": {
       "login": "Login",

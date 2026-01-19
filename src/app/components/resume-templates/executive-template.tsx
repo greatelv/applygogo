@@ -17,6 +17,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface ExecutiveTemplateProps {
   personalInfo?: any;
   experiences: any[];
@@ -44,7 +50,7 @@ export function ExecutiveTemplate({
   return (
     <div className="bg-white text-slate-800 min-h-full font-sans text-[10.5pt] leading-relaxed">
       {/* Dark Header */}
-      <div className="bg-slate-900 text-white py-10 px-10 mb-8">
+      <div className="bg-slate-900 text-white py-10 px-8 mb-8">
         <h1 className="text-4xl font-bold mb-2 tracking-wide text-white">
           {personalInfo?.name_target || "Name"}
         </h1>
@@ -62,7 +68,7 @@ export function ExecutiveTemplate({
               <div key={i} className="flex items-center gap-3">
                 <span className="text-slate-600">|</span>
                 <a
-                  href={link.url}
+                  href={ensureUrl(link.url)}
                   target="_blank"
                   rel="noreferrer"
                   className="text-slate-300 hover:text-white transition-colors"
@@ -74,7 +80,7 @@ export function ExecutiveTemplate({
         </div>
       </div>
 
-      <div className="px-10 pb-10">
+      <div className="px-8 pb-10">
         {/* Summary */}
         {personalInfo?.summary_target ? (
           <div className="mb-8">
@@ -114,7 +120,7 @@ export function ExecutiveTemplate({
                     {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <li key={idx} className="flex gap-3 pl-1">
                         <span
-                          className="text-slate-900 mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
+                          className="text-slate-900 mt-2.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
                           style={{ width: "4px", height: "4px" }}
                         />
                         <span className="text-slate-600 flex-1">{bullet}</span>

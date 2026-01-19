@@ -17,6 +17,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface Experience {
   id: string;
   company_name_source: string;
@@ -120,18 +126,19 @@ export function MinimalTemplate({
           {personalInfo?.links
             ?.filter((link) => link.label && link.url)
             .map((link, i) => (
-              <a
-                key={i}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:underline text-gray-600"
-              >
+              <span key={i} className="text-gray-600">
                 <span className="font-medium">{link.label}:</span>{" "}
-                {link.url
-                  ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
-                  : ""}
-              </a>
+                <a
+                  href={ensureUrl(link.url)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  {link.url
+                    ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                    : ""}
+                </a>
+              </span>
             ))}
         </div>
       </div>
@@ -170,9 +177,10 @@ export function MinimalTemplate({
                   {exp.bullets_target.map((bullet, index) => (
                     <li
                       key={index}
-                      className="text-sm text-gray-600 leading-relaxed font-light"
+                      className="text-sm text-gray-600 leading-relaxed font-light flex gap-2"
                     >
-                      {bullet}
+                      <span className="select-none text-gray-400">•</span>
+                      <span>{bullet}</span>
                     </li>
                   ))}
                 </ul>

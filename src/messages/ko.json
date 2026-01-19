@@ -1,6 +1,8 @@
 {
   "common": {
     "title": "지원고고 - AI 기반 외국인 전문 채용 플랫폼",
+    "passOnly": "이용권 전용",
+    "save": "저장",
     "header": {
       "login": "로그인",
       "signUp": "회원가입",

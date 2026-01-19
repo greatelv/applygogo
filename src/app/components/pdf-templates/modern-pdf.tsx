@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
     marginBottom: 24, // mb-8 (32px) -> 24pt
   },
   name: {
-    fontSize: 27, // text-4xl
+    fontSize: 32, // text-5xl (48px) ~ 36pt. Let's go 32 to be safe but prominent
     fontWeight: "bold",
-    marginBottom: 12, // Increased from 6pt to 12pt to prevent overlap
+    marginBottom: 12,
     color: "#111827",
-    lineHeight: 1.2, // Increased line height slightly
+    lineHeight: 1.2,
   },
   contactRow: {
     flexDirection: "row",
@@ -196,6 +196,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface ModernPdfProps {
   personalInfo?: any;
   experiences?: any[];
@@ -288,7 +294,7 @@ export const ModernPdf = ({
                     }}
                   >
                     <Text>•</Text>
-                    <Link src={link.url} style={styles.linkText}>
+                    <Link src={ensureUrl(link.url)} style={styles.linkText}>
                       <Text style={{ color: "#374151", fontWeight: "bold" }}>
                         {link.label}:{" "}
                       </Text>
