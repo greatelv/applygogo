@@ -1,4 +1,11 @@
 {
+  "templatePreview": {
+    "title": "Resume Template Preview",
+    "description": "Your resume will be automatically converted as shown below. Choose your preferred style.",
+    "selectedTemplate": "Selected Template: ",
+    "startWithTemplate": "Start with this template",
+    "close": "Close"
+  },
   "common": {
     "passOnly": "Pass Only",
     "save": "Save",

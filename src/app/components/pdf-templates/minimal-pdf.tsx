@@ -9,6 +9,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
+import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
@@ -127,11 +128,12 @@ const styles = StyleSheet.create({
 });
 
 // Helper to format date YYYY-MM -> MMM YYYY
-const formatDate = (dateStr?: string) => {
+const formatDateLocale = (dateStr?: string, isKo?: boolean) => {
   if (!dateStr) return "";
   const cleanDate = dateStr.trim();
   if (["-", "present", "현재"].includes(cleanDate.toLowerCase())) {
-    if (["present", "현재"].includes(cleanDate.toLowerCase())) return "Present";
+    if (["present", "현재"].includes(cleanDate.toLowerCase()))
+      return isKo ? "현재" : "Present";
     return "";
   }
 
@@ -140,6 +142,11 @@ const formatDate = (dateStr?: string) => {
     if (!year || !month) return cleanDate;
     const date = new Date(parseInt(year), parseInt(month) - 1);
     if (isNaN(date.getTime())) return cleanDate;
+
+    if (isKo) {
+      return `${year}.${month.padStart(2, "0")}`;
+    }
+
     return date.toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
@@ -169,7 +176,11 @@ export const MinimalPdf = ({
   educations = [],
   skills = [],
   additionalItems = [],
-}: MinimalPdfProps) => {
+  locale = "ko",
+}: MinimalPdfProps & { locale?: AppLocale }) => {
+  const useTarget = shouldUseTargetData(locale);
+  const isKo = !useTarget;
+
   // Filter out empty items first
   const validExperiences = experiences.filter(
     (exp) => exp.company_name_source?.trim() || exp.company_name_target?.trim(),
@@ -192,7 +203,8 @@ export const MinimalPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_target || "이름 없음"}
+            {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
+              "이름 없음"}
           </Text>
           <View style={styles.contactRow}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -212,10 +224,12 @@ export const MinimalPdf = ({
         </View>
 
         {/* About */}
-        {personalInfo?.summary_target && (
+        {(isKo
+          ? personalInfo?.summary_source
+          : personalInfo?.summary_target) && (
           <View style={styles.section}>
             <Text style={styles.summaryText}>
-              {personalInfo.summary_target}
+              {isKo ? personalInfo.summary_source : personalInfo.summary_target}
             </Text>
           </View>
         )}
@@ -223,7 +237,9 @@ export const MinimalPdf = ({
         {/* Experience */}
         {validExperiences.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experience</Text>
+            <Text style={styles.sectionTitle}>
+              {isKo ? "경력 사항" : "Experience"}
+            </Text>
             <View style={styles.expContainer}>
               {validExperiences.map((exp) => (
                 // @ts-ignore
@@ -231,26 +247,32 @@ export const MinimalPdf = ({
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {exp.company_name_target}
+                        {isKo
+                          ? exp.company_name_source
+                          : exp.company_name_target}
                       </Text>
-                      <Text style={styles.position}>{exp.role_target}</Text>
+                      <Text style={styles.position}>
+                        {isKo ? exp.role_source : exp.role_target}
+                      </Text>
                     </View>
                     <Text style={styles.period}>
-                      {formatDate(exp.period.split(" - ")[0])} -{" "}
-                      {formatDate(exp.period.split(" - ")[1])}
+                      {formatDateLocale(exp.period.split(" - ")[0], isKo)} -{" "}
+                      {formatDateLocale(exp.period.split(" - ")[1], isKo)}
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bullets_target?.map((bullet: string, idx: number) => (
-                      <React.Fragment key={idx}>
-                        <View style={styles.bulletItem}>
-                          <Text style={styles.bulletText}>•</Text>
-                          <Text style={{ ...styles.bulletText, flex: 1 }}>
-                            {bullet}
-                          </Text>
-                        </View>
-                      </React.Fragment>
-                    ))}
+                    {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                      (bullet: string, idx: number) => (
+                        <React.Fragment key={idx}>
+                          <View style={styles.bulletItem}>
+                            <Text style={styles.bulletText}>•</Text>
+                            <Text style={{ ...styles.bulletText, flex: 1 }}>
+                              {bullet}
+                            </Text>
+                          </View>
+                        </React.Fragment>
+                      ),
+                    )}
                   </View>
                 </View>
               ))}
@@ -261,7 +283,9 @@ export const MinimalPdf = ({
         {/* Skills */}
         {skills.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Skills</Text>
+            <Text style={styles.sectionTitle}>
+              {isKo ? "보유 기술" : "Skills"}
+            </Text>
             <View style={styles.skillRow}>
               {skills.map((skill) => (
                 <React.Fragment key={skill.id}>
@@ -277,21 +301,25 @@ export const MinimalPdf = ({
         {/* Education */}
         {validEducations.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Education</Text>
+            <Text style={styles.sectionTitle}>
+              {isKo ? "학력 사항" : "Education"}
+            </Text>
             <View style={styles.eduContainer}>
               {validEducations.map((edu) => (
                 // @ts-ignore
                 <View key={edu.id} style={styles.eduItem}>
                   <View>
                     <Text style={styles.companyName}>
-                      {edu.school_name_target}
+                      {isKo ? edu.school_name_source : edu.school_name_target}
                     </Text>
                     <Text style={styles.position}>
-                      {edu.degree_target}, {edu.major_target}
+                      {isKo ? edu.degree_source : edu.degree_target},{" "}
+                      {isKo ? edu.major_source : edu.major_target}
                     </Text>
                   </View>
                   <Text style={styles.period}>
-                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
+                    {formatDateLocale(edu.start_date, isKo)} -{" "}
+                    {formatDateLocale(edu.end_date, isKo)}
                   </Text>
                 </View>
               ))}
@@ -304,7 +332,9 @@ export const MinimalPdf = ({
           awards.length > 0 ||
           languages.length > 0) && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Additional Information</Text>
+            <Text style={styles.sectionTitle}>
+              {isKo ? "추가 정보" : "Additional Information"}
+            </Text>
             <View style={{ gap: 6 }}>
               {certifications.length > 0 && (
                 <View style={{ marginBottom: 4 }}>
@@ -315,12 +345,14 @@ export const MinimalPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Certifications
+                    {isKo ? "자격증" : "Certifications"}
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_target;
-                    const desc = cert.description_target;
-                    const date = formatDate(cert.date);
+                    const name = isKo ? cert.name_source : cert.name_target;
+                    const desc = isKo
+                      ? cert.description_source
+                      : cert.description_target;
+                    const date = formatDateLocale(cert.date, isKo);
                     return (
                       <React.Fragment key={i}>
                         <Text style={styles.bulletText}>
@@ -342,12 +374,14 @@ export const MinimalPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Awards
+                    {isKo ? "수상 경력" : "Awards"}
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name = award.name_target;
-                    const desc = award.description_target;
-                    const date = formatDate(award.date);
+                    const name = isKo ? award.name_source : award.name_target;
+                    const desc = isKo
+                      ? award.description_source
+                      : award.description_target;
+                    const date = formatDateLocale(award.date, isKo);
                     return (
                       <React.Fragment key={i}>
                         <Text style={styles.bulletText}>
@@ -369,14 +403,16 @@ export const MinimalPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Languages
+                    {isKo ? "언어" : "Languages"}
                   </Text>
                   <View
                     style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => {
-                      const name = lang.name_target;
-                      const desc = lang.description_target;
+                      const name = isKo ? lang.name_source : lang.name_target;
+                      const desc = isKo
+                        ? lang.description_source
+                        : lang.description_target;
                       return (
                         <React.Fragment key={i}>
                           <Text style={styles.bulletText}>

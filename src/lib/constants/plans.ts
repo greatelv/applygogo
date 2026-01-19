@@ -31,7 +31,7 @@ export const PLAN_PRODUCTS = {
     id: "CREDIT_50", // Not a planType, but a product ID
     name: "크레딧 충전 50", // DB orderName matching
     price: 3900,
-    priceGlobal: 3,
+    priceGlobal: 4,
     credits: 50,
     days: 0,
   },

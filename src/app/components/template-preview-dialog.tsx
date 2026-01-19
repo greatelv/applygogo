@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
+import { useTranslations, useLocale } from "next-intl";
 
 import { ModernPdf, registerFonts } from "./pdf-templates/modern-pdf";
 import { ClassicPdf } from "./pdf-templates/classic-pdf";
@@ -133,6 +134,9 @@ export function TemplatePreviewDialog({
   trigger,
   onSelectTemplate,
 }: TemplatePreviewDialogProps) {
+  const t = useTranslations("templatePreview");
+  const tt = useTranslations("templatesPage");
+  const locale = useLocale() as AppLocale;
   const [selectedTab, setSelectedTab] = useState("modern");
   const [isClient, setIsClient] = useState(false);
 
@@ -149,7 +153,7 @@ export function TemplatePreviewDialog({
   };
 
   const getTemplateComponent = () => {
-    const props = { ...mockResumeData, locale: "ko" as AppLocale };
+    const props = { ...mockResumeData, locale };
     switch (selectedTab) {
       case "classic":
         return <ClassicPdf {...props} />;
@@ -173,18 +177,15 @@ export function TemplatePreviewDialog({
           <DialogHeader className="px-6 py-4 border-b shrink-0 bg-background/95 backdrop-blur z-10">
             <div className="flex items-center justify-between">
               <div>
-                <DialogTitle className="text-xl">
-                  이력서 템플릿 미리보기
-                </DialogTitle>
+                <DialogTitle className="text-xl">{t("title")}</DialogTitle>
                 <DialogDescription className="mt-1">
-                  실제 이력서가 아래처럼 자동 변환됩니다. 원하시는 스타일을
-                  선택하세요.
+                  {t("description")}
                 </DialogDescription>
               </div>
               <DialogClose asChild>
                 <Button variant="ghost" size="icon" className="shrink-0">
                   <X className="size-4" />
-                  <span className="sr-only">닫기</span>
+                  <span className="sr-only">{t("close")}</span>
                 </Button>
               </DialogClose>
             </div>
@@ -202,31 +203,31 @@ export function TemplatePreviewDialog({
                   value="modern"
                   className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
                 >
-                  Modern
+                  {tt("templateNames.modern")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="professional"
                   className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
                 >
-                  Pro
+                  {tt("templateNames.professional")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="executive"
                   className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
                 >
-                  Exec
+                  {tt("templateNames.executive")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="classic"
                   className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
                 >
-                  Classic
+                  {tt("templateNames.classic")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="minimal"
                   className="flex-1 text-[3.2vw] sm:text-sm px-0.5"
                 >
-                  Minimal
+                  {tt("templateNames.minimal")}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -273,9 +274,9 @@ export function TemplatePreviewDialog({
             <div className="p-4 border-t bg-background shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground w-full sm:w-auto justify-center sm:justify-start">
                 <Check className="size-4 text-primary" />
-                <span>선택된 템플릿: </span>
+                <span>{t("selectedTemplate")}</span>
                 <span className="font-semibold text-foreground capitalize">
-                  {selectedTab}
+                  {tt(`templateNames.${selectedTab}`)}
                 </span>
               </div>
               <Button
@@ -283,7 +284,7 @@ export function TemplatePreviewDialog({
                 className="gap-2 w-full sm:w-auto"
                 size="lg"
               >
-                이 템플릿으로 시작하기
+                {t("startWithTemplate")}
                 <ArrowRight className="size-4" />
               </Button>
             </div>

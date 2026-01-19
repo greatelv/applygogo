@@ -10,6 +10,7 @@ import {
   Path,
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
+import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
@@ -175,11 +176,12 @@ const styles = StyleSheet.create({
 });
 
 // Helper to format date
-const formatDate = (dateStr?: string) => {
+const formatDateLocale = (dateStr?: string, isKo?: boolean) => {
   if (!dateStr) return "";
   const cleanDate = dateStr.trim();
   if (["-", "present", "현재"].includes(cleanDate.toLowerCase())) {
-    if (["present", "현재"].includes(cleanDate.toLowerCase())) return "Present";
+    if (["present", "현재"].includes(cleanDate.toLowerCase()))
+      return isKo ? "현재" : "Present";
     return "";
   }
   try {
@@ -187,6 +189,11 @@ const formatDate = (dateStr?: string) => {
     if (!year || !month) return cleanDate;
     const date = new Date(parseInt(year), parseInt(month) - 1);
     if (isNaN(date.getTime())) return cleanDate;
+
+    if (isKo) {
+      return `${year}.${month.padStart(2, "0")}`;
+    }
+
     return date.toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
@@ -216,7 +223,11 @@ export const ProfessionalPdf = ({
   educations = [],
   skills = [],
   additionalItems = [],
-}: ProfessionalPdfProps) => {
+  locale = "ko",
+}: ProfessionalPdfProps & { locale?: AppLocale }) => {
+  const useTarget = shouldUseTargetData(locale);
+  const isKo = !useTarget;
+
   const validExperiences = experiences.filter(
     (e) => e.company_name_source?.trim() || e.company_name_target?.trim(),
   );
@@ -238,7 +249,9 @@ export const ProfessionalPdf = ({
         <View style={styles.leftColumn}>
           {/* Contact Info (If sidebar based, putting contact here is good) */}
           <View style={styles.sidebarSection}>
-            <Text style={styles.sidebarTitle}>Contact</Text>
+            <Text style={styles.sidebarTitle}>
+              {isKo ? "연락처" : "Contact"}
+            </Text>
             {personalInfo?.email && (
               <Text style={styles.contactItem}>{personalInfo.email}</Text>
             )}
@@ -260,20 +273,26 @@ export const ProfessionalPdf = ({
           {/* Education */}
           {validEducations.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarTitle}>Education</Text>
+              <Text style={styles.sidebarTitle}>
+                {isKo ? "학력 사항" : "Education"}
+              </Text>
               {validEducations.map((edu, i) => (
                 // @ts-ignore
                 <View key={i} style={styles.eduItem}>
                   <Text style={styles.schoolName}>
-                    {edu.school_name_target}
+                    {isKo ? edu.school_name_source : edu.school_name_target}
                   </Text>
                   <Text style={styles.degree}>
-                    {edu.degree_target}
-                    {edu.degree_target && edu.major_target ? ", " : ""}
-                    {edu.major_target}
+                    {isKo ? edu.degree_source : edu.degree_target}
+                    {(isKo ? edu.degree_source : edu.degree_target) &&
+                    (isKo ? edu.major_source : edu.major_target)
+                      ? ", "
+                      : ""}
+                    {isKo ? edu.major_source : edu.major_target}
                   </Text>
                   <Text style={styles.eduDate}>
-                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
+                    {formatDateLocale(edu.start_date, isKo)} -{" "}
+                    {formatDateLocale(edu.end_date, isKo)}
                   </Text>
                 </View>
               ))}
@@ -283,7 +302,9 @@ export const ProfessionalPdf = ({
           {/* Skills */}
           {validSkills.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarTitle}>Skills</Text>
+              <Text style={styles.sidebarTitle}>
+                {isKo ? "보유 기술" : "Skills"}
+              </Text>
               {validSkills.map((skill, i) => (
                 // @ts-ignore
                 <Text key={i} style={styles.skillItem}>
@@ -296,7 +317,9 @@ export const ProfessionalPdf = ({
           {/* Languages */}
           {languages.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarTitle}>Languages</Text>
+              <Text style={styles.sidebarTitle}>
+                {isKo ? "언어" : "Languages"}
+              </Text>
               {languages.map((lang: any, i: number) => (
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
@@ -307,11 +330,13 @@ export const ProfessionalPdf = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {lang.name_target}
+                    {isKo ? lang.name_source : lang.name_target}
                   </Text>
-                  {lang.description_target && (
+                  {(isKo
+                    ? lang.description_source
+                    : lang.description_target) && (
                     <Text style={{ fontSize: 8.5, color: "#6b7280" }}>
-                      {lang.description_target}
+                      {isKo ? lang.description_source : lang.description_target}
                     </Text>
                   )}
                 </View>
@@ -322,15 +347,17 @@ export const ProfessionalPdf = ({
           {/* Certifications (Small ones) */}
           {certifications.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarTitle}>Certifications</Text>
+              <Text style={styles.sidebarTitle}>
+                {isKo ? "자격증" : "Certifications"}
+              </Text>
               {certifications.map((cert: any, i: number) => (
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 9, color: "#374151" }}>
-                    {cert.name_target}
+                    {isKo ? cert.name_source : cert.name_target}
                   </Text>
                   <Text style={{ fontSize: 8, color: "#9ca3af" }}>
-                    {formatDate(cert.date)}
+                    {formatDateLocale(cert.date, isKo)}
                   </Text>
                 </View>
               ))}
@@ -343,15 +370,20 @@ export const ProfessionalPdf = ({
           {/* Header */}
           <View style={{ marginBottom: 24 }}>
             <Text style={styles.name}>
-              {personalInfo?.name_target || "Name"}
+              {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
+                "Name"}
             </Text>
             {/* Use most recent role as title or just keep it simple */}
           </View>
 
           {/* Summary */}
-          {personalInfo?.summary_target && (
+          {(isKo
+            ? personalInfo?.summary_source
+            : personalInfo?.summary_target) && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Professional Summary</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "핵심 요약" : "Professional Summary"}
+              </Text>
               <Text
                 style={{
                   ...styles.text,
@@ -359,7 +391,9 @@ export const ProfessionalPdf = ({
                   textAlign: "justify",
                 }}
               >
-                {personalInfo.summary_target}
+                {isKo
+                  ? personalInfo.summary_source
+                  : personalInfo.summary_target}
               </Text>
             </View>
           )}
@@ -367,30 +401,38 @@ export const ProfessionalPdf = ({
           {/* Experience */}
           {validExperiences.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Work Experience</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "경력 사항" : "Work Experience"}
+              </Text>
               {validExperiences.map((exp, i) => (
                 // @ts-ignore
                 <View key={i} style={styles.expItem}>
                   <View style={styles.expHeader}>
                     <View>
                       <Text style={styles.companyName}>
-                        {exp.company_name_target}
+                        {isKo
+                          ? exp.company_name_source
+                          : exp.company_name_target}
                       </Text>
-                      <Text style={styles.position}>{exp.role_target}</Text>
+                      <Text style={styles.position}>
+                        {isKo ? exp.role_source : exp.role_target}
+                      </Text>
                     </View>
                     <Text style={styles.period}>
-                      {formatDate(exp.period.split(" - ")[0])} -{" "}
-                      {formatDate(exp.period.split(" - ")[1])}
+                      {formatDateLocale(exp.period.split(" - ")[0], isKo)} -{" "}
+                      {formatDateLocale(exp.period.split(" - ")[1], isKo)}
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bullets_target?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <View key={idx} style={styles.bulletItem}>
-                        <Text style={styles.bulletPoint}>•</Text>
-                        <Text style={styles.bulletText}>{bullet}</Text>
-                      </View>
-                    ))}
+                    {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                      (bullet: string, idx: number) => (
+                        // @ts-ignore
+                        <View key={idx} style={styles.bulletItem}>
+                          <Text style={styles.bulletPoint}>•</Text>
+                          <Text style={styles.bulletText}>{bullet}</Text>
+                        </View>
+                      ),
+                    )}
                   </View>
                 </View>
               ))}
@@ -400,16 +442,20 @@ export const ProfessionalPdf = ({
           {/* Awards (Main body usually) */}
           {awards.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Honors & Awards</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "수상 경력" : "Honors & Awards"}
+              </Text>
               {awards.map((award: any, i: number) => (
                 // @ts-ignore
                 <View key={i} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: 10, fontWeight: "bold" }}>
-                    {award.name_target}
+                    {isKo ? award.name_source : award.name_target}
                   </Text>
                   <Text style={{ fontSize: 9, color: "#4b5563" }}>
-                    {award.description_target}
-                    {award.date ? ` | ${formatDate(award.date)}` : ""}
+                    {isKo ? award.description_source : award.description_target}
+                    {(isKo ? award.date : award.date)
+                      ? ` | ${formatDateLocale(award.date, isKo)}`
+                      : ""}
                   </Text>
                 </View>
               ))}

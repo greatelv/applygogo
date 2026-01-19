@@ -1,4 +1,11 @@
 {
+  "templatePreview": {
+    "title": "履歴書テンプレートのプレビュー",
+    "description": "実際の履歴書は以下のように自動変換されます。お好みのスタイルを選択してください。",
+    "selectedTemplate": "選択されたテンプレート: ",
+    "startWithTemplate": "このテンプレートで始める",
+    "close": "閉じる"
+  },
   "common": {
     "passOnly": "利用券専用",
     "save": "保存",
