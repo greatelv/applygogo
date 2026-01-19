@@ -19,14 +19,19 @@ Your mission is to extract **ALL career history and details** from the provided 
 - If the document is in ${targetLanguage}, extract it consistently.
 - Even if mixed, prioritize ${targetLanguage} content for the '_source' fields.
 
-**CRITICAL RULES:**
-1. **Greedy Capture**: Extract EVERYTHING. Do not filter.
-   - Dates, Job Titles, Company Names are must-haves.
-2. **Context Isolation**: NEVER copy the previous company name for a new block.
-3. **Verbatim Extraction**:
-   - Extract text EXACTLY as it appears in the document.
-   - **Do not translate** at this stage.
-4. **Validation**:
+**CRITICAL RULES (CRITICAL):**
+1. **Greedy Capture (ALL-IN)**: Extract EVERYTHING. Do not filter or summarize at this stage.
+   - Dates, Job Titles, and Company Names are mandatory.
+2. **Company Name Extraction**: 
+   - Priority 1: **Legal Entity Name** (e.g., Google LLC).
+   - Priority 2: **Brand/Service Name** (e.g., Google).
+   - **NEVER** copy the previous company name for a new block.
+3. **Education**:
+   - Explicitly look for **School Names** (keywords: University, College, School).
+   - Extract major, degree, and start/end dates without omission.
+4. **Additional Info**:
+   - Extract certifications, awards, and language proficiencies accurately.
+5. **Validation**:
    - If the document is NOT a resume/CV, return \`{ "is_resume": false, "detected_language": "other" }\`.
    - Detect the **Dominant Language** ("en", "ja", "ko").
 
@@ -42,7 +47,7 @@ Extract into \`_source\` suffixed fields.
     "email": "...",
     "phone": "...",
     "links": [
-      { "label": "LinkedIn/Portfolio...", "url": "..." }
+      { "label": "LinkedIn/GitHub/Blog/Portfolio... (Infer from URL)", "url": "..." }
     ],
     "summary_source": "..."
   },
@@ -55,7 +60,19 @@ Extract into \`_source\` suffixed fields.
       "bullets_source": ["...", "..."]
     }
   ],
-  ...
+  "educations": [
+    {
+      "school_name_source": "...",
+      "major_source": "...",
+      "degree_source": "...",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM"
+    }
+  ],
+  "skills": ["Skill 1", "Skill 2"], 
+  "certifications": [{ "name_source": "...", "date": "..." }],
+  "awards": [{ "name_source": "...", "date": "..." }],
+  "languages": [{ "name_source": "...", "level": "..." }]
 }
 \`\`\`
 `;
@@ -76,19 +93,37 @@ export const getRefinementPromptGlobal = (
 
   return `
 You are a **Resume Refinement Expert** tailored for the **${context}**.
-Analyze the RAW extracted data (\`_source\` fields) and refine it.
+Analyze the RAW extracted data (\`_source\` fields) and refine it for maximum clarity.
 
-**GOALS:**
-1. **Merge Duplicates**: Combine split sections for the same company.
-2. **Clean Up**: Fix typos, standardize date formats (YYYY-MM).
-3. **Skill Normalization**: Split comma-separated skills into individual items.
-4. **Zero Deletion**: Do NOT remove any company block.
+**⚠️ 3 CORE MISSIONS:**
+
+1. **Alias Resolution (Merge Legal & Brand Names)**
+   - If a **[Brand Name]** and **[Legal Entity Name]** are both present and their **dates overlap by >80%**, merge them.
+   - Select the more formal **Legal Name** for the final output.
+2. **Merge Split Sections**
+   - If the same company is split into different sections due to promotions or role changes, merge them into a single block while preserving chronological order.
+3. **Zero Deletion Policy**
+   - Do **NOT** delete any company block unless it is a duplicate being merged.
+   - Standardize date formats to YYYY-MM.
+
+**SMART POLISHING & SELECTION:**
+- **Bullet Polishing**: Polish the descriptions for clarity in the source language.
+- **Condense**: Remove redundant narrative context like "Responsible for" or "Tasked with". Start with direct action verbs.
+- **Maintain Metrics**: Ensure all quantifiable results (%, $, #) are preserved.
 
 **INPUT DATA:**
 ${JSON.stringify(extractedData, null, 2)}
 
 **OUTPUT FORMAT:**
 Return the refined data using the same \`_source\` keys.
+
+\`\`\`json
+{
+  "personal_info": { "name_source": "...", ... },
+  "work_experiences": [...],
+  ...
+}
+\`\`\`
 `;
 };
 
@@ -101,7 +136,7 @@ export const getTranslationPromptGlobal = (
 ) => {
   let sourceLang = locale === "ja" ? "Japanese" : "English";
   let targetLang = "Korean";
-  let strategy = "Professional Business Korean (High-Density 'Gae-jo-sik')";
+  let strategy = "Professional Business Korean (Action-Oriented 'Gae-jo-sik')";
 
   return `
 You are an **Elite Resume Consultant** specialized in the **Korean Job Market**.
@@ -109,19 +144,53 @@ Your goal is to translate and upgrade the resume from **${sourceLang}** to **${t
 
 **STRATEGY:** ${strategy}
 
-**CRITICAL RULES:**
-1. **Translate**: Convert all \`_source\` fields into \`_target\` fields.
-   - \`name_source\` -> \`name_target\`
-   - \`company_name_source\` -> \`company_name_target\`
-2. **No Omission**: Translate ALL items. Keep the order exactly the same.
-3. **Proper Nouns**:
-   - Transliterate or use official Korean names for global brands (e.g., "Google" -> "구글").
-4. **Style**: Use professional Korean business style (Noun-ending, high-density bullet points).
+**⚠️ CRITICAL PROHIBITIONS:**
+1. **NO OMISSION**: Every single company and experience from the input MUST be in the output.
+2. **MAINTAIN ORDER**: Keep the chronological or original order exactly as provided.
+3. **PROPER NOUNS**:
+   - Use official Korean names for global brands if they exist (e.g., "Google" -> "구글", "Samsung" -> "삼성").
+   - For names/companies with NO official Korean name, use **Standard Korean Transliteration**.
+
+**CORE RULES:**
+1. **Professional Korean Style (Gae-jo-sik)**:
+   - Do NOT use full sentences. Use noun-ending (개조식) professional style.
+   - ❌ "~를 개발하여 성능을 개선했습니다."
+   - ✅ "~ 개발을 통한 성능 X% 개선"
+2. **Action-Oriented**: Translate action verbs into strong Korean professional equivalents.
+3. **Company Background (CRITICAL)**:
+   - For foreign companies, add a brief one-line description in parentheses if necessary to help Korean recruiters understand the scale or industry.
+   - Example: "Stripe" -> "Stripe (미국 최대 핀테크 유니콘 기업)"
+4. **Title & Education Mapping**:
+   - Map foreign job titles (e.g., Staff Engineer, Senior Associate) to appropriate Korean professional terminology.
+   - Translate degrees to standard Korean equivalents (e.g., Bachelor -> 학사, Master -> 석사, Associate -> 전문학사).
+5. **Industry Standardization**: Use standard Korean IT/Industry terminology for technical stacks and methodologies.
+6. **Quantifiable Impact**: Ensure all numbers, percentages, and metrics are clearly translated and highlighted.
+7. **Professional Summary**: Rewrite into a punchy 3-line summary (50-70 words equivalent in Korean).
 
 **INPUT DATA (Source):**
 ${JSON.stringify(refinedData, null, 2)}
 
 **OUTPUT FORMAT:**
 Return the FULL JSON with both \`_source\` and \`_target\` fields.
+
+\`\`\`json
+{
+  "personal_info": {
+    "name_source": "...",
+    "name_target": "홍길동",
+    "summary_source": "...",
+    "summary_target": "..."
+  },
+  "work_experiences": [
+    {
+      "company_name_source": "...",
+      "company_name_target": "...",
+      "bullets_source": ["..."],
+      "bullets_target": ["... (Noun-ending Korean)"]
+    }
+  ],
+  ...
+}
+\`\`\`
 `;
 };

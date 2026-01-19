@@ -120,7 +120,7 @@ export function ExecutiveTemplate({
                     {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <li key={idx} className="flex gap-3 pl-1">
                         <span
-                          className="text-slate-900 mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
+                          className="text-slate-900 mt-[10px] w-1.5 h-1.5 rounded-full bg-slate-900 flex-shrink-0 block"
                           style={{ width: "4px", height: "4px" }}
                         />
                         <span className="text-slate-600 flex-1">{bullet}</span>
