@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
+import { GhostInput } from "../ui/ghost-input";
 import { Education } from "./types";
 import { ItemTypes } from "./constants";
 
@@ -149,86 +150,41 @@ export const DraggableEducationItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {sourceLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    edu.id,
-                    "school_name_source",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder={t("editorItems.placeholders.school")}
-                className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {edu.school_name_source}
-              </div>
+              <GhostInput
+                value={edu.school_name_source}
+                onChange={(val) => onChange(edu.id, "school_name_source", val)}
+                placeholder={t("editorItems.placeholders.school")}
+                className="font-semibold text-xl inline-block min-w-[100px]"
+              />
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "major_source",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder={t("editorItems.placeholders.major")}
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.major_source}
-                </div>
+                <GhostInput
+                  value={edu.major_source}
+                  onChange={(val) => onChange(edu.id, "major_source", val)}
+                  placeholder={t("editorItems.placeholders.major")}
+                  className="min-w-[50px]"
+                />
                 <span className="text-muted-foreground select-none">•</span>
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "degree_source",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder={t("editorItems.placeholders.degree")}
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.degree_source}
-                </div>
+                <GhostInput
+                  value={edu.degree_source}
+                  onChange={(val) => onChange(edu.id, "degree_source", val)}
+                  placeholder={t("editorItems.placeholders.degree")}
+                  className="min-w-[30px]"
+                />
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "start_date",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="Start Date"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.start_date}
-                </div>
+                <GhostInput
+                  value={edu.start_date}
+                  onChange={(val) => onChange(edu.id, "start_date", val)}
+                  placeholder="Start Date"
+                  className="min-w-[60px]"
+                />
                 <span className="text-muted-foreground select-none">~</span>
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "end_date",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="End Date"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[60px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.end_date}
-                </div>
+                <GhostInput
+                  value={edu.end_date}
+                  onChange={(val) => onChange(edu.id, "end_date", val)}
+                  placeholder="End Date"
+                  className="min-w-[60px]"
+                />
               </div>
             </div>
 
@@ -237,53 +193,29 @@ export const DraggableEducationItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {targetLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    edu.id,
-                    "school_name_target",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder="School Name"
-                className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {edu.school_name_target}
-              </div>
+              <GhostInput
+                value={edu.school_name_target}
+                onChange={(val) => onChange(edu.id, "school_name_target", val)}
+                placeholder={t("editorItems.placeholders.target.school")}
+                readOnly={true}
+                className="font-semibold text-xl inline-block min-w-[100px]"
+              />
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "major_target",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="Major"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.major_target}
-                </div>
+                <GhostInput
+                  value={edu.major_target}
+                  onChange={(val) => onChange(edu.id, "major_target", val)}
+                  placeholder={t("editorItems.placeholders.target.major")}
+                  readOnly={true}
+                  className="min-w-[50px]"
+                />
                 <span className="text-muted-foreground select-none">•</span>
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      edu.id,
-                      "degree_target",
-                      e.currentTarget.textContent || "",
-                    )
-                  }
-                  data-placeholder="Degree"
-                  className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[30px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {edu.degree_target}
-                </div>
+                <GhostInput
+                  value={edu.degree_target}
+                  onChange={(val) => onChange(edu.id, "degree_target", val)}
+                  placeholder={t("editorItems.placeholders.target.degree")}
+                  readOnly={true}
+                  className="min-w-[30px] -my-1"
+                />
               </div>
               {/* Using same dates for Target as Source for now */}
               <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">

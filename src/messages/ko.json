@@ -309,7 +309,24 @@
       "major": "전공",
       "degree": "학위",
       "desc": "설명",
-      "date": "날짜"
+      "date": "날짜",
+      "target": {
+        "name": "이름",
+        "email": "이메일",
+        "phone": "전화번호",
+        "summary": "전문 요약 (Professional Summary)",
+        "company": "회사명",
+        "position": "직책",
+        "bullet": "업무 성과 및 활동",
+        "school": "학교명",
+        "major": "전공",
+        "degree": "학위",
+        "title": "제목 (번역됨)",
+        "desc": "설명 (번역됨)",
+        "skill": "스킬명",
+        "label": "라벨",
+        "url": "URL"
+      }
     }
   },
   "introduction": {

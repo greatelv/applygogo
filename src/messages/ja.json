@@ -309,7 +309,24 @@
       "major": "専攻",
       "degree": "学位",
       "desc": "説明",
-      "date": "日付"
+      "date": "日付",
+      "target": {
+        "name": "氏名",
+        "email": "メール",
+        "phone": "電話番号",
+        "summary": "専門要約 (Professional Summary)",
+        "company": "会社名",
+        "position": "役職",
+        "bullet": "業務成果および活動",
+        "school": "学校名",
+        "major": "専攻",
+        "degree": "学位",
+        "title": "タイトル (翻訳済み)",
+        "desc": "説明 (翻訳済み)",
+        "skill": "スキル名",
+        "label": "ラベル",
+        "url": "URL"
+      }
     }
   },
   "introduction": {

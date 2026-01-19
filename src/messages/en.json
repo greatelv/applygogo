@@ -309,7 +309,24 @@
       "major": "Major",
       "degree": "Degree",
       "desc": "Description",
-      "date": "Date"
+      "date": "Date",
+      "target": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "summary": "Professional Summary",
+        "company": "Company Name",
+        "position": "Position",
+        "bullet": "Achievements & Activities",
+        "school": "School Name",
+        "major": "Major",
+        "degree": "Degree",
+        "title": "Title (Translated)",
+        "desc": "Description (Translated)",
+        "skill": "Skill Name",
+        "label": "Label",
+        "url": "URL"
+      }
     }
   },
   "introduction": {

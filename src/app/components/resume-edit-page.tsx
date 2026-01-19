@@ -17,6 +17,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
+import { GhostInput } from "./ui/ghost-input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,6 +83,7 @@ export function ResumeEditPage({
   onDeductCredit,
 }: ResumeEditPageProps) {
   const t = useTranslations("editPage");
+  const tRoot = useTranslations();
   const locale = useLocale();
 
   const getSourceLabel = () => {
@@ -225,58 +227,36 @@ export function ResumeEditPage({
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                     {t("sections.personal.name")}
                   </label>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      handlePersonalInfoChange(
-                        "name_source",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={personalInfo.name_source}
+                    onChange={(val) =>
+                      handlePersonalInfoChange("name_source", val)
                     }
-                    data-placeholder={t("sections.personal.name")}
-                    className="text-lg sm:text-xl font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[36px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {personalInfo.name_source}
-                  </div>
+                    placeholder={t("sections.personal.name")}
+                    className="text-lg sm:text-xl font-semibold min-h-[36px]"
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                       {t("sections.personal.email")}
                     </label>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handlePersonalInfoChange(
-                          "email",
-                          e.currentTarget.textContent || "",
-                        )
-                      }
-                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px]"
-                    >
-                      {personalInfo.email}
-                    </div>
+                    <GhostInput
+                      value={personalInfo.email}
+                      onChange={(val) => handlePersonalInfoChange("email", val)}
+                      className="text-base sm:text-sm min-h-[24px]"
+                    />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                       {t("sections.personal.phone")}
                     </label>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handlePersonalInfoChange(
-                          "phone",
-                          e.currentTarget.textContent || "",
-                        )
-                      }
-                      data-placeholder={t("sections.personal.phone")}
-                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                    >
-                      {personalInfo.phone}
-                    </div>
+                    <GhostInput
+                      value={personalInfo.phone}
+                      onChange={(val) => handlePersonalInfoChange("phone", val)}
+                      placeholder={t("sections.personal.phone")}
+                      className="text-base sm:text-sm min-h-[24px]"
+                    />
                   </div>
                 </div>
 
@@ -291,38 +271,26 @@ export function ResumeEditPage({
                         className="flex items-center gap-2 group p-2 rounded -mx-2 transition-colors hover:bg-accent/50"
                       >
                         <div className="flex-1 grid grid-cols-3 gap-2">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
+                          <GhostInput
+                            value={link.label}
+                            onChange={(val) => {
                               const newLinks = [...personalInfo.links];
-                              newLinks[index] = {
-                                ...link,
-                                label: e.currentTarget.textContent || "",
-                              };
+                              newLinks[index] = { ...link, label: val };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="Label"
-                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {link.label}
-                          </div>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
+                            placeholder="Label"
+                            className="text-base sm:text-sm col-span-1"
+                          />
+                          <GhostInput
+                            value={link.url}
+                            onChange={(val) => {
                               const newLinks = [...personalInfo.links];
-                              newLinks[index] = {
-                                ...link,
-                                url: e.currentTarget.textContent || "",
-                              };
+                              newLinks[index] = { ...link, url: val };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="URL"
-                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {link.url}
-                          </div>
+                            placeholder="URL"
+                            className="text-base sm:text-sm text-muted-foreground col-span-2 break-all"
+                          />
                         </div>
                         <button
                           onClick={() => {
@@ -350,24 +318,16 @@ export function ResumeEditPage({
                   <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                     Name
                   </label>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      handlePersonalInfoChange(
-                        "name_target",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={personalInfo.name_target}
+                    onChange={(val) =>
+                      handlePersonalInfoChange("name_target", val)
                     }
-                    data-placeholder="Name"
-                    className={`font-semibold text-lg outline-none px-2 py-1 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
-                      highlightedPersonal.name
-                        ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
-                        : ""
-                    }`}
-                  >
-                    {personalInfo.name_target}
-                  </div>
+                    placeholder={tRoot("editorItems.placeholders.target.name")}
+                    readOnly={true}
+                    isHighlighted={highlightedPersonal.name}
+                    className="font-semibold text-lg"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -375,37 +335,29 @@ export function ResumeEditPage({
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                       Email
                     </label>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handlePersonalInfoChange(
-                          "email",
-                          e.currentTarget.textContent || "",
-                        )
-                      }
-                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text break-all min-h-[24px]"
-                    >
-                      {personalInfo.email}
-                    </div>
+                    <GhostInput
+                      value={personalInfo.email}
+                      onChange={(val) => handlePersonalInfoChange("email", val)}
+                      placeholder={tRoot(
+                        "editorItems.placeholders.target.email",
+                      )}
+                      readOnly={true}
+                      className="text-base sm:text-sm break-all min-h-[24px]"
+                    />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block uppercase">
                       Phone
                     </label>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        handlePersonalInfoChange(
-                          "phone",
-                          e.currentTarget.textContent || "",
-                        )
-                      }
-                      className="text-base sm:text-sm outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text"
-                    >
-                      {personalInfo.phone}
-                    </div>
+                    <GhostInput
+                      value={personalInfo.phone}
+                      onChange={(val) => handlePersonalInfoChange("phone", val)}
+                      placeholder={tRoot(
+                        "editorItems.placeholders.target.phone",
+                      )}
+                      readOnly={true}
+                      className="text-base sm:text-sm"
+                    />
                   </div>
                 </div>
 
@@ -420,42 +372,38 @@ export function ResumeEditPage({
                         className={`flex items-center gap-2 group p-2 rounded -mx-2 transition-all duration-1000 ${
                           highlightedPersonal.links
                             ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
-                            : "hover:bg-accent/50"
+                            : ""
                         }`}
                       >
                         <div className="flex-1 grid grid-cols-3 gap-2">
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
+                          <GhostInput
+                            value={link.label}
+                            onChange={(val) => {
                               const newLinks = [...personalInfo.links];
-                              newLinks[index] = {
-                                ...link,
-                                label: e.currentTarget.textContent || "",
-                              };
+                              newLinks[index] = { ...link, label: val };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="Label"
-                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text col-span-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {link.label}
-                          </div>
-                          <div
-                            contentEditable
-                            suppressContentEditableWarning
-                            onBlur={(e) => {
+                            placeholder={tRoot(
+                              "editorItems.placeholders.target.label",
+                            )}
+                            readOnly={true}
+                            isHighlighted={highlightedPersonal.links}
+                            className="text-base sm:text-sm col-span-1"
+                          />
+                          <GhostInput
+                            value={link.url}
+                            onChange={(val) => {
                               const newLinks = [...personalInfo.links];
-                              newLinks[index] = {
-                                ...link,
-                                url: e.currentTarget.textContent || "",
-                              };
+                              newLinks[index] = { ...link, url: val };
                               handlePersonalInfoChange("links", newLinks);
                             }}
-                            data-placeholder="URL"
-                            className="text-base sm:text-sm outline-none px-2 py-1 rounded transition-colors hover:bg-accent focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text text-muted-foreground col-span-2 break-all empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                          >
-                            {link.url}
-                          </div>
+                            placeholder={tRoot(
+                              "editorItems.placeholders.target.url",
+                            )}
+                            readOnly={true}
+                            isHighlighted={highlightedPersonal.links}
+                            className="text-base sm:text-sm text-muted-foreground col-span-2 break-all"
+                          />
                         </div>
                         <button
                           onClick={() => {
@@ -502,44 +450,34 @@ export function ResumeEditPage({
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
                     {getSourceLabel()}
                   </p>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      handlePersonalInfoChange(
-                        "summary_source",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={personalInfo.summary_source}
+                    onChange={(val) =>
+                      handlePersonalInfoChange("summary_source", val)
                     }
-                    data-placeholder={t("sections.personal.summary")}
-                    className="w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {personalInfo.summary_source}
-                  </div>
+                    placeholder={t("sections.personal.summary")}
+                    multiline
+                    className="w-full text-base sm:text-sm min-h-[60px] leading-relaxed"
+                  />
                 </div>
 
                 <div>
                   <p className="text-xs text-muted-foreground font-semibold mb-1 lg:hidden">
                     {getTargetLabel()}
                   </p>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      handlePersonalInfoChange(
-                        "summary_target",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={personalInfo.summary_target}
+                    onChange={(val) =>
+                      handlePersonalInfoChange("summary_target", val)
                     }
-                    data-placeholder="Summary"
-                    className={`w-full text-base sm:text-sm outline-none px-2 py-2 -mx-2 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[60px] whitespace-pre-wrap leading-relaxed empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
-                      highlightedPersonal.summary
-                        ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
-                        : ""
-                    }`}
-                  >
-                    {personalInfo.summary_target}
-                  </div>
+                    placeholder={tRoot(
+                      "editorItems.placeholders.target.summary",
+                    )}
+                    multiline
+                    readOnly={true}
+                    isHighlighted={highlightedPersonal.summary}
+                    className="w-full text-base sm:text-sm min-h-[60px] leading-relaxed"
+                  />
                 </div>
               </div>
             </div>
@@ -712,26 +650,13 @@ export function ResumeEditPage({
                             variant="secondary"
                             className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8 transition-all hover:bg-secondary/80 select-none"
                           >
-                            <span
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleSkillChange(
-                                  skill.id,
-                                  "name_source",
-                                  e.currentTarget.textContent || "",
-                                )
+                            <GhostInput
+                              value={skill.name_source}
+                              onChange={(val) =>
+                                handleSkillChange(skill.id, "name_source", val)
                               }
-                              className="outline-none min-w-[20px] cursor-text empty:before:content-['...'] empty:before:text-muted-foreground"
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  e.currentTarget.blur();
-                                }
-                              }}
-                            >
-                              {skill.name_source}
-                            </span>
+                              className="min-w-[20px] px-1 py-0.5"
+                            />
                             <button
                               onClick={() => handleRemoveSkill(skill.id)}
                               className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
@@ -762,26 +687,13 @@ export function ResumeEditPage({
                             variant="secondary"
                             className="px-3 py-1.5 text-sm font-medium h-8 select-none"
                           >
-                            <span
-                              contentEditable
-                              suppressContentEditableWarning
-                              onBlur={(e) =>
-                                handleSkillChange(
-                                  skill.id,
-                                  "name_target",
-                                  e.currentTarget.textContent || "",
-                                )
+                            <GhostInput
+                              value={skill.name_target}
+                              onChange={(val) =>
+                                handleSkillChange(skill.id, "name_target", val)
                               }
-                              className="outline-none min-w-[20px] cursor-text empty:before:content-['...'] empty:before:text-muted-foreground"
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  e.currentTarget.blur();
-                                }
-                              }}
-                            >
-                              {skill.name_target}
-                            </span>
+                              className="min-w-[20px] px-1 py-0.5"
+                            />
                           </Badge>
                         ))}
                       </div>

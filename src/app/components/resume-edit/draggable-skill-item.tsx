@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
+import { GhostInput } from "../ui/ghost-input";
 import { Skill } from "./types";
 import { ItemTypes } from "./constants";
 
@@ -149,21 +150,12 @@ export const DraggableSkillItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {sourceLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    skill.id,
-                    "name_source",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder={t("editPage.sections.skills.placeholder")}
-                className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {skill.name_source}
-              </div>
+              <GhostInput
+                value={skill.name_source}
+                onChange={(val) => onChange(skill.id, "name_source", val)}
+                placeholder={t("editPage.sections.skills.placeholder")}
+                className="font-semibold text-lg min-w-[100px]"
+              />
             </div>
 
             {/* Target Skill */}
@@ -171,21 +163,13 @@ export const DraggableSkillItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {targetLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    skill.id,
-                    "name_target",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder="Skill Name"
-                className="font-semibold text-lg outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {skill.name_target}
-              </div>
+              <GhostInput
+                value={skill.name_target}
+                onChange={(val) => onChange(skill.id, "name_target", val)}
+                placeholder={t("editorItems.placeholders.target.skill")}
+                readOnly={true}
+                className="font-semibold text-lg min-w-[100px]"
+              />
             </div>
           </div>
         </div>

@@ -339,7 +339,8 @@ export async function POST(
             name_target: cert.name_target
               ? String(cert.name_target)
               : undefined,
-            description_source: cert.date ? String(cert.date) : undefined, // Mapping date to description if needed
+            description_source: cert.description_source || undefined,
+            date: cert.date ? String(cert.date) : undefined,
             name_kr: "", // Legacy
           });
         });
@@ -357,7 +358,8 @@ export async function POST(
             name_target: award.name_target
               ? String(award.name_target)
               : undefined,
-            description_source: award.date ? String(award.date) : undefined,
+            description_source: award.description_source || undefined,
+            date: award.date ? String(award.date) : undefined,
             name_kr: "", // Legacy
           });
         });

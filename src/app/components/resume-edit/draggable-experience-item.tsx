@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
+import { GhostInput } from "../ui/ghost-input";
 import { TranslatedExperience } from "./types";
 import { ItemTypes } from "./constants";
 
@@ -172,69 +173,35 @@ export const DraggableExperienceItem = ({
                 {sourceLabel}
               </p>
               <div className="mb-4 space-y-1">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      exp.id,
-                      "company_name_source",
-                      e.currentTarget.textContent || "",
-                    )
+                <GhostInput
+                  value={exp.company_name_source}
+                  onChange={(val) =>
+                    onChange(exp.id, "company_name_source", val)
                   }
-                  data-placeholder={t("editorItems.placeholders.company")}
-                  className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {exp.company_name_source}
-                </div>
+                  placeholder={t("editorItems.placeholders.company")}
+                  className="font-semibold text-xl inline-block min-w-[100px]"
+                />
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "role_source",
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder={t("editorItems.placeholders.position")}
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.role_source}
-                  </div>
+                  <GhostInput
+                    value={exp.role_source}
+                    onChange={(val) => onChange(exp.id, "role_source", val)}
+                    placeholder={t("editorItems.placeholders.position")}
+                    className="min-w-[50px] -my-1"
+                  />
                   <span className="text-muted-foreground select-none">•</span>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "start_date", // Shared field, assuming start_date/period mapping
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder={t("editorItems.placeholders.period")}
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.start_date}
-                  </div>
+                  <GhostInput
+                    value={exp.start_date}
+                    onChange={(val) => onChange(exp.id, "start_date", val)}
+                    placeholder={t("editorItems.placeholders.period")}
+                    className="min-w-[50px] -my-1"
+                  />
                   <span className="text-muted-foreground select-none">-</span>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "end_date",
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder={t("editorItems.placeholders.period")}
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.end_date}
-                  </div>
+                  <GhostInput
+                    value={exp.end_date}
+                    onChange={(val) => onChange(exp.id, "end_date", val)}
+                    placeholder={t("editorItems.placeholders.period")}
+                    className="min-w-[50px] -my-1"
+                  />
                 </div>
               </div>
 
@@ -244,22 +211,14 @@ export const DraggableExperienceItem = ({
                     <span className="text-muted-foreground flex-shrink-0">
                       •
                     </span>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        onBulletEdit(
-                          exp.id,
-                          index,
-                          e.currentTarget.textContent || "",
-                          false,
-                        )
+                    <GhostInput
+                      value={bullet}
+                      onChange={(val) =>
+                        onBulletEdit(exp.id, index, val, false)
                       }
-                      data-placeholder={t("editorItems.placeholders.bullet")}
-                      className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                    >
-                      {bullet}
-                    </div>
+                      placeholder={t("editorItems.placeholders.bullet")}
+                      className="flex-1 text-muted-foreground -my-1 min-h-[24px]"
+                    />
                     <button
                       onClick={() => onRemoveBullet(exp.id, index)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"
@@ -277,37 +236,23 @@ export const DraggableExperienceItem = ({
                 {targetLabel}
               </p>
               <div className="mb-4 space-y-1">
-                <div
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) =>
-                    onChange(
-                      exp.id,
-                      "company_name_target",
-                      e.currentTarget.textContent || "",
-                    )
+                <GhostInput
+                  value={exp.company_name_target}
+                  onChange={(val) =>
+                    onChange(exp.id, "company_name_target", val)
                   }
-                  data-placeholder="Company Name"
-                  className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                >
-                  {exp.company_name_target}
-                </div>
+                  placeholder={t("editorItems.placeholders.target.company")}
+                  readOnly={true}
+                  className="font-semibold text-xl inline-block min-w-[100px]"
+                />
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "role_target",
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder="Position"
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.role_target}
-                  </div>
+                  <GhostInput
+                    value={exp.role_target}
+                    onChange={(val) => onChange(exp.id, "role_target", val)}
+                    placeholder={t("editorItems.placeholders.target.position")}
+                    readOnly={true}
+                    className="min-w-[50px] -my-1"
+                  />
                   {/* Shared Date (typically not translated, so just read-only or shared)
                       If we want editable dates on target side, we'd need checks. 
                       For now, just showing same dates or source dates is fine. 
@@ -325,26 +270,14 @@ export const DraggableExperienceItem = ({
                     <span className="text-muted-foreground flex-shrink-0">
                       •
                     </span>
-                    <div
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) =>
-                        onBulletEdit(
-                          exp.id,
-                          index,
-                          e.currentTarget.textContent || "",
-                          true,
-                        )
-                      }
-                      data-placeholder="Highlights"
-                      className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
-                        highlightedBullets?.includes(index)
-                          ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
-                          : ""
-                      }`}
-                    >
-                      {bullet}
-                    </div>
+                    <GhostInput
+                      value={bullet}
+                      onChange={(val) => onBulletEdit(exp.id, index, val, true)}
+                      placeholder="Highlights"
+                      readOnly={true}
+                      isHighlighted={highlightedBullets?.includes(index)}
+                      className="flex-1 -my-1 min-h-[24px]"
+                    />
                     <button
                       onClick={() => onRemoveBullet(exp.id, index)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-1 hover:bg-destructive/10 rounded"

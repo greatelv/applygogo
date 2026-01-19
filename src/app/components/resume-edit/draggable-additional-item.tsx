@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
+import { GhostInput } from "../ui/ghost-input";
 import { AdditionalItem } from "./types";
 import { ItemTypes } from "./constants";
 
@@ -148,55 +149,30 @@ export const DraggableAdditionalItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {sourceLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    item.id,
-                    "name_source",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder="Title"
-                className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {item.name_source}
-              </div>
+              <GhostInput
+                value={item.name_source}
+                onChange={(val) => onChange(item.id, "name_source", val)}
+                placeholder="Title"
+                className="text-base font-semibold min-h-[1.5rem]"
+              />
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "description_source",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={item.description_source}
+                    onChange={(val) =>
+                      onChange(item.id, "description_source", val)
                     }
-                    data-placeholder={t("editorItems.placeholders.desc")}
-                    className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {item.description_source}
-                  </div>
+                    placeholder={t("editorItems.placeholders.desc")}
+                    className="text-sm text-muted-foreground min-h-[1.25rem]"
+                  />
                 </div>
                 <div className="col-span-1">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "date", // Assuming date is shared? If separate, need source/target dates
-                        e.currentTarget.textContent || "",
-                      )
-                    }
-                    data-placeholder={t("editorItems.placeholders.date")}
-                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
-                  >
-                    {item.date}
-                  </div>
+                  <GhostInput
+                    value={item.date}
+                    onChange={(val) => onChange(item.id, "date", val)}
+                    placeholder={t("editorItems.placeholders.date")}
+                    className="text-sm text-muted-foreground font-medium min-h-[1.25rem] text-right"
+                  />
                 </div>
               </div>
             </div>
@@ -206,43 +182,33 @@ export const DraggableAdditionalItem = ({
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
                 {targetLabel}
               </p>
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) =>
-                  onChange(
-                    item.id,
-                    "name_target",
-                    e.currentTarget.textContent || "",
-                  )
-                }
-                data-placeholder="Title (Translated)"
-                className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-              >
-                {item.name_target}
-              </div>
+              <GhostInput
+                value={item.name_target}
+                onChange={(val) => onChange(item.id, "name_target", val)}
+                placeholder={t("editorItems.placeholders.target.title")}
+                readOnly={true}
+                className="text-base font-semibold min-h-[1.5rem]"
+              />
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "description_target",
-                        e.currentTarget.textContent || "",
-                      )
+                  <GhostInput
+                    value={item.description_target}
+                    onChange={(val) =>
+                      onChange(item.id, "description_target", val)
                     }
-                    data-placeholder="Description (Translated)"
-                    className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {item.description_target}
-                  </div>
+                    placeholder={t("editorItems.placeholders.target.desc")}
+                    readOnly={true}
+                    className="text-sm text-muted-foreground min-h-[1.25rem]"
+                  />
                 </div>
                 <div className="col-span-1">
-                  <div className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40">
-                    {item.date}
-                  </div>
+                  <GhostInput
+                    value={item.date}
+                    onChange={(val) => onChange(item.id, "date", val)}
+                    placeholder={t("editorItems.placeholders.date")}
+                    readOnly={true}
+                    className="text-sm text-muted-foreground font-medium min-h-[1.25rem] text-right"
+                  />
                 </div>
               </div>
             </div>
