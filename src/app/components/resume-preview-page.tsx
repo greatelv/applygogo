@@ -191,9 +191,32 @@ export function ResumePreviewPage({
     }
   };
 
+  const [contentHeight, setContentHeight] = useState<number>(0);
+  const resumeContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!resumeContentRef.current) return;
+
+    const updateHeight = () => {
+      if (resumeContentRef.current) {
+        setContentHeight(
+          resumeContentRef.current.getBoundingClientRect().height,
+        );
+      }
+    };
+
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(resumeContentRef.current);
+
+    return () => observer.disconnect();
+  }, [scale, selectedTemplate]);
+
   const renderA4Preview = () => {
     return (
       <div
+        ref={resumeContentRef}
         className="bg-white shadow-2xl origin-top mx-auto"
         style={{
           width: "210mm",
@@ -332,13 +355,13 @@ export function ResumePreviewPage({
         <div className="lg:col-span-2">
           <div
             ref={previewContainerRef}
-            className="bg-muted/30 border border-border rounded-lg overflow-x-auto py-8"
+            className="bg-muted/30 border border-border rounded-lg overflow-x-auto lg:overflow-hidden py-8 flex flex-col lg:items-center"
           >
             <div
               className="overflow-visible"
               style={{
                 width: "210mm",
-                height: `${297 * scale}mm`, // Adjust parent height to match scaled content
+                height: contentHeight > 0 ? contentHeight : `${297 * scale}mm`,
                 minHeight: "400px",
               }}
             >

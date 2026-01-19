@@ -28,6 +28,8 @@ export interface Education {
 export interface Skill {
   id: string;
   name: string;
+  name_source: string;
+  name_target?: string;
   level?: string | null;
 }
 

@@ -37,11 +37,8 @@ export default async function HomePage() {
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: "blog" });
   const format = await getFormatter();
-  const allPosts = getAllPosts();
-  // Filter posts based on locale if needed, or translate post content dynamically.
-  // For now, assuming posts are handled or we show all.
-  // Ideally, markdown posts should be locale-specific folders or frontmatter.
-  // But strictly adhering to UI localization here.
+  const allPosts = getAllPosts(locale);
+  // Posts are now locale-specific from content/posts/{locale}/ directory
 
   const latestPost = allPosts[0];
   const listPosts = allPosts.slice(1);

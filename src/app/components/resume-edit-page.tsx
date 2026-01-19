@@ -62,6 +62,7 @@ interface ResumeEditPageProps {
 import { DraggableAdditionalItem } from "./resume-edit/draggable-additional-item";
 import { DraggableEducationItem } from "./resume-edit/draggable-education-item";
 import { DraggableExperienceItem } from "./resume-edit/draggable-experience-item";
+import { DraggableSkillItem } from "./resume-edit/draggable-skill-item";
 
 import { useResumeEditor } from "./resume-edit/use-resume-editor";
 
@@ -107,10 +108,8 @@ export function ResumeEditPage({
     alertConfig,
     highlightedBullets,
     highlightedPersonal,
-    newSkill,
 
     // Setters
-    setNewSkill,
     setAlertConfig,
 
     // Handlers
@@ -136,6 +135,9 @@ export function ResumeEditPage({
     handleTranslateEducation,
     handleAddSkill,
     handleRemoveSkill,
+    handleSkillChange,
+    moveSkill,
+    handleTranslateSkill,
   } = useResumeEditor({
     initialPersonalInfo,
     initialExperiences,
@@ -634,56 +636,49 @@ export function ResumeEditPage({
 
           {/* Skills */}
           <div className="mt-12">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">
-                {t("sections.skills.title")}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {t("sections.skills.description")}
-              </p>
+            <div className="mb-6 flex items-end justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-2">
+                  {t("sections.skills.title")}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {t("sections.skills.description")}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => handleAddSkill()}
+                className="h-9 px-4 shadow-sm text-sm font-semibold"
+              >
+                <Plus className="size-4 mr-1.5" />
+                {t("sections.skills.addItem")}
+              </Button>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <Badge
-                    key={skill.id}
-                    variant="secondary"
-                    className="px-3 py-1.5 text-sm font-medium gap-2 pr-1.5 h-8"
-                  >
-                    {skill.name}
-                    <button
-                      onClick={() => handleRemoveSkill(skill.id)}
-                      className="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors"
-                    >
-                      <X className="size-3" />
-                    </button>
-                  </Badge>
-                ))}
-
-                <div className="flex gap-2 max-w-xs relative top-0.5">
-                  <Input
-                    placeholder={t("sections.skills.placeholder")}
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddSkill();
-                      }
-                    }}
-                    className="h-9 sm:h-8 text-base sm:text-sm w-full sm:w-32"
-                  />
-                  <Button
-                    onClick={handleAddSkill}
-                    variant="secondary"
-                    size="sm"
-                    className="h-9 sm:h-8 px-3 sm:px-2"
-                  >
-                    <Plus className="size-4" />
-                  </Button>
+            <div className="space-y-6">
+              {skills.length === 0 && (
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    {t.rich("sections.skills.empty", {
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
                 </div>
-              </div>
+              )}
+              {skills.map((skill, index) => (
+                <DraggableSkillItem
+                  key={skill.id}
+                  index={index}
+                  skill={skill}
+                  moveSkill={moveSkill}
+                  isTranslating={!!isTranslating[`skill-${skill.id}`]}
+                  onTranslate={handleTranslateSkill}
+                  onRemove={handleRemoveSkill}
+                  onChange={handleSkillChange}
+                  sourceLabel={getSourceLabel()}
+                  targetLabel={getTargetLabel()}
+                />
+              ))}
             </div>
           </div>
 
@@ -774,7 +769,9 @@ export function ResumeEditPage({
             );
 
             const compactedSkills = skills.filter(
-              (skill) => skill.name && skill.name.trim() !== "",
+              (skill) =>
+                (skill.name_source && skill.name_source.trim() !== "") ||
+                (skill.name_target && skill.name_target.trim() !== ""),
             );
 
             const compactedAdditionalItems = additionalItems.filter(

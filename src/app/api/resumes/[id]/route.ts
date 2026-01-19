@@ -146,7 +146,9 @@ export async function PUT(
           data: skills.map((skill: any, index: number) => ({
             id: crypto.randomUUID(),
             resume_id: resumeId,
-            name: skill.name,
+            name: skill.name || skill.name_source || "",
+            name_source: skill.name_source || skill.name || "",
+            name_target: skill.name_target || skill.name || "",
             order: index,
           })),
         });

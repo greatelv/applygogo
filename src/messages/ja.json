@@ -251,7 +251,9 @@
       "skills": {
         "title": "スキルスタック",
         "description": "保有する核心技術およびツールをタグで管理してみてください。",
-        "placeholder": "新しいスキル"
+        "placeholder": "新しいスキル (例: React)",
+        "addItem": "項目を追加",
+        "empty": "上の <strong>+ 項目を追加</strong> ボタンを押してスキルを追加してください。"
       },
       "additional": {
         "title": "追加情報",

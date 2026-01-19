@@ -251,7 +251,9 @@
       "skills": {
         "title": "Skills",
         "description": "Manage your core skills and tools as tags.",
-        "placeholder": "New skill"
+        "placeholder": "New skill (e.g. React)",
+        "addItem": "Add Item",
+        "empty": "Click the <strong>+ Add Item</strong> button above to add your skills."
       },
       "additional": {
         "title": "Additional Info",

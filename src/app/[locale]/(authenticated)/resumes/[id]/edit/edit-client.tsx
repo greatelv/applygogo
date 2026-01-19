@@ -88,8 +88,8 @@ export function EditClient({
       const filteredEducations = data.educations.filter((edu: any) =>
         edu.school_name_source?.trim(),
       );
-      const filteredSkills = data.skills.filter((skill: any) =>
-        skill.name?.trim(),
+      const filteredSkills = data.skills.filter(
+        (skill: any) => skill.name_source?.trim() || skill.name_target?.trim(),
       );
       const filteredAdditionalItems = (data.additionalItems || []).filter(
         (item: any) =>

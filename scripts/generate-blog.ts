@@ -19,7 +19,7 @@ const API_KEY =
 if (!API_KEY) {
   console.error("Error: GOOGLE_GENERATIVE_AI_API_KEY is not set");
   console.error(
-    "Please set it in .env file (local) or as an environment variable (CI/CD)"
+    "Please set it in .env file (local) or as an environment variable (CI/CD)",
   );
   process.exit(1);
 }
@@ -37,7 +37,7 @@ const streamPipeline = promisify(pipeline);
 // Helper: Generate with Fallback
 async function generateWithRetry(
   prompt: string,
-  modelName: string = "gemini-3-flash-preview"
+  modelName: string = "gemini-3-flash-preview",
 ): Promise<any> {
   const fallbackModel = "gemini-2.5-flash";
   try {
@@ -48,7 +48,7 @@ async function generateWithRetry(
   } catch (error: any) {
     const status = error.status || (error.response && error.response.status);
     console.warn(
-      `Primary model (${modelName}) failed (${status}). Trying fallback (${fallbackModel})...`
+      `Primary model (${modelName}) failed (${status}). Trying fallback (${fallbackModel})...`,
     );
     return await models.generateContent({
       model: fallbackModel,
@@ -60,7 +60,7 @@ async function generateWithRetry(
 // Helper: Download Image
 async function downloadImage(
   url: string,
-  outputPath: string
+  outputPath: string,
 ): Promise<boolean> {
   try {
     const response = await axios.get(url, { responseType: "stream" });
@@ -103,7 +103,7 @@ async function fetchOgImage(url: string, outputPath: string): Promise<boolean> {
     console.error(
       `Failed to fetch OG image: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`
+      }`,
     );
   }
   return false;
@@ -112,9 +112,12 @@ async function fetchOgImage(url: string, outputPath: string): Promise<boolean> {
 // SVG Generation Removed by request
 
 // Helper: Load Prompt Template
+// ... (previous imports)
+
+// Helper: Load Prompt Template
 async function loadPrompt(
   name: string,
-  variables: Record<string, any>
+  variables: Record<string, any>,
 ): Promise<string> {
   const promptPath = path.join(process.cwd(), "scripts/prompts", `${name}.md`);
   let content = await fs.readFile(promptPath, "utf-8");
@@ -127,8 +130,9 @@ async function loadPrompt(
   return content;
 }
 
-async function generateBlog() {
+async function generateBlogForLocale(locale: string) {
   const scraper = new UnsplashScraper();
+  console.log(`\n=== Starting Blog Generation for Locale: ${locale} ===\n`);
 
   try {
     // 0.1. Generate Current Date Context (KST: UTC+9)
@@ -143,7 +147,7 @@ async function generateBlog() {
     // YYYY-MM-DD format based on KST
     const currentDateStr = `${currentYear}-${String(currentMonth).padStart(
       2,
-      "0"
+      "0",
     )}-${String(currentDay).padStart(2, "0")}`;
     const currentDateKorean = `${currentYear}년 ${currentMonth}월`;
 
@@ -151,20 +155,28 @@ async function generateBlog() {
     const currentIsoDate = now.getTime();
 
     // 1. Generate Topic
-    console.log("Generating topic...");
+    console.log(`[${locale}] Generating topic...`);
 
-    const postsDir = path.join(process.cwd(), "content/posts");
+    // Define posts directory based on locale
+    const postsDir = path.join(process.cwd(), `content/posts/${locale}`);
     let existingTitles: string[] = [];
+
+    // Ensure the posts directory exists
+    try {
+      await fs.access(postsDir);
+    } catch {
+      await fs.mkdir(postsDir, { recursive: true });
+    }
+
     try {
       const files = await fs.readdir(postsDir);
       existingTitles = files.map((f) =>
-        f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(".md", "")
+        f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(".md", ""),
       );
     } catch (e) {
-      console.log("No existing posts found or error reading dir.");
+      console.log(`[${locale}] No existing posts found or error reading dir.`);
     }
 
-    // Handle Manual Topic Override
     // Handle Manual Topic Override
     const manualTopic = process.env.MANUAL_TOPIC || "";
 
@@ -172,9 +184,14 @@ async function generateBlog() {
       console.log(`\n!!! MANUAL TOPIC DETECTED: "${manualTopic}" !!!\n`);
     }
 
-    // Standard Automatic Generation (Unified)
-    const topicPrompt = await loadPrompt("topic-generation", {
-      manualTopic, // Pass manualTopic (empty string if not set)
+    // Determine prompt names based on locale
+    const topicPromptName =
+      locale === "ko" ? "topic-generation" : `topic-generation-${locale}`;
+    const articlePromptName =
+      locale === "ko" ? "article-generation" : `article-generation-${locale}`;
+
+    const topicPrompt = await loadPrompt(topicPromptName, {
+      manualTopic,
       existingTitles: existingTitles.join(", "),
       currentDateKorean,
       currentDateStr,
@@ -186,35 +203,39 @@ async function generateBlog() {
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
-    const topicData = JSON.parse(text);
 
-    console.log(`Selected Topic: ${topicData.title}`);
+    let topicData;
+    try {
+      topicData = JSON.parse(text);
+    } catch (e) {
+      console.error(`[${locale}] Failed to parse topic JSON. Raw text:`, text);
+      throw e;
+    }
+
+    console.log(`[${locale}] Selected Topic: ${topicData.title}`);
 
     // Sanitize title for YAML (escape double quotes)
     const safeTitle = topicData.title.replace(/"/g, '\\"');
 
-    // Handle null/missing targetServiceId
+    // Handle null/missing targetServiceId (Mainly for KO legacy logic, but kept for compatibility)
     const isServiceReview =
       topicData.targetServiceId &&
       topicData.targetServiceId !== "null" &&
       topicData.targetServiceId !== "msg_missing";
     const targetServiceId = isServiceReview ? topicData.targetServiceId : "";
 
-    const articleType = topicData.articleType || "service_guide"; // Default to guide if missing
+    const articleType = topicData.articleType || "service_guide";
 
-    // Prepare conditional frontmatter values
-    const officialWebsiteUrl = isServiceReview ? "대상 서비스의 공식 URL" : "";
+    const officialWebsiteUrl = isServiceReview
+      ? "Target Service Official URL"
+      : "";
     const targetLinkVariable = "";
-    const buttonText = isServiceReview ? `${targetServiceId} 바로가기` : "";
-
-    console.log(
-      `Is Service Review: ${isServiceReview}, Target Service: ${targetServiceId}`
-    );
+    const buttonText = isServiceReview ? `${targetServiceId} Link` : "";
 
     // 3. Write Article
-    console.log("Writing article...");
+    console.log(`[${locale}] Writing article...`);
 
-    const articlePrompt = await loadPrompt("article-generation", {
+    const articlePrompt = await loadPrompt(articlePromptName, {
       title: safeTitle,
       targetServiceId: targetServiceId,
       isSponsored: isServiceReview,
@@ -236,34 +257,43 @@ async function generateBlog() {
     ).trim();
 
     // Robustly strip potential markdown blocks around the JSON/Frontmatter
-    // Sometimes AI wraps the whole response in ```markdown ... ``` or ```yaml ... ```
     articleContent = articleContent
-      .replace(/^```[a-z]*\n/i, "") // Removes starting ```markdown or ```yaml
-      .replace(/\n```$/g, "") // Removes ending ```
+      .replace(/^```[a-z]*\n/i, "")
+      .replace(/\n```$/g, "")
       .trim();
 
-    // Ensure it starts with ---, if it starts with something else try to find the first ---
-    // Use Regex to find the first valid yaml frontmatter block
-    // It looks for a line starting with ---, followed by content, and closing with ---
     const frontmatterRegex = /^---\n[\s\S]*?\n---/m;
     const fmMatch = articleContent.match(frontmatterRegex);
 
     if (fmMatch) {
-      // If found, keep everything starting from the match
       articleContent = articleContent.substring(fmMatch.index!);
     } else {
       console.warn(
-        "Warning: Could not find valid frontmatter block. Keeping content as is."
+        `[${locale}] Warning: Could not find valid frontmatter block. Constructing fallback frontmatter.`,
       );
+      // Fallback: Construct frontmatter from topicData
+      const fallbackFrontmatter = `---
+title: "${safeTitle}"
+description: "${topicData.focus || safeTitle}"
+date: ${currentIsoDate}
+thumbnail: "/placeholder.svg?height=600&width=1200"
+author: "ApplyGoGo Team"
+officialWebsiteUrl: "https://applygogo.com"
+tags: ["Korea Job", "Career"]
+categories: ["Career"]
+targetLink: "https://applygogo.com"
+isSponsored: false
+---
+
+`;
+      articleContent = fallbackFrontmatter + articleContent;
     }
 
-    // Secondary check: remove any leading/trailing garbage that might have been left
     articleContent = articleContent.trim();
 
     // --- Dynamic Image Processing ---
-    console.log("Processing Images...");
+    console.log(`[${locale}] Processing Images...`);
 
-    // Setup Directory
     const generatedDir = path.join(process.cwd(), "public/generated");
     try {
       await fs.access(generatedDir);
@@ -271,117 +301,110 @@ async function generateBlog() {
       await fs.mkdir(generatedDir, { recursive: true });
     }
 
-    // 1. Hero Image Strategy
-    // Priority 1: Unsplash with Explicit Thumbnail Keyword (if provided)
-    // Priority 2: OG Image from Target URL
-    // Priority 3: Unsplash Fallback (Title -> Category)
-
     const urlMatch = articleContent.match(
-      /officialWebsiteUrl:\s*["']?([^"'\n]+)["']?/
+      /officialWebsiteUrl:\s*["']?([^"'\n]+)["']?/,
     );
     const targetUrl = urlMatch ? urlMatch[1] : null;
     let heroImagePath = "";
 
-    await scraper.init(); // Initialize once
+    await scraper.init();
 
     // --- Priority 1: Explicit Keyword ---
     if (topicData.thumbnailSearchKeyword) {
       console.log(
-        `[Hero Strategy] Priority 1: Searching Unsplash with keyword: "${topicData.thumbnailSearchKeyword}"`
+        `[${locale}] [Hero Strategy] Priority 1: Searching Unsplash with keyword: "${topicData.thumbnailSearchKeyword}"`,
       );
       try {
         const photo = await scraper.searchPhoto(
-          topicData.thumbnailSearchKeyword
+          topicData.thumbnailSearchKeyword,
         );
         if (photo) {
-          const safeTitle = topicData.slug;
-          const filename = `${safeTitle}-hero.jpg`;
+          // Use slug for filename safety
+          const safeSlug = topicData.slug || `post-${Date.now()}`;
+          const filename = `${safeSlug}-hero.jpg`;
           const outputPath = path.join(generatedDir, filename);
 
           const success = await downloadImage(photo.url, outputPath);
           if (success) {
             heroImagePath = `/generated/${filename}`;
             console.log(
-              `[Hero Strategy] Success: Saved Unsplash Hero Image from keyword.`
+              `[${locale}] [Hero Strategy] Success: Saved Unsplash Hero Image.`,
             );
           }
-        } else {
-          console.log(
-            `[Hero Strategy] Priority 1 Failed: No photo found for keyword.`
-          );
         }
       } catch (e) {
-        console.error("[Hero Strategy] Priority 1 Error:", e);
+        console.error(`[${locale}] [Hero Strategy] Priority 1 Error:`, e);
       }
     }
 
     // --- Priority 2: OG Image ---
-    if (!heroImagePath && targetUrl) {
+    if (!heroImagePath && targetUrl && targetUrl !== "https://applygogo.com") {
+      // Skip OG fetch for own domain placeholder
       console.log(
-        `[Hero Strategy] Priority 2: Attempting OG Image from ${targetUrl}`
+        `[${locale}] [Hero Strategy] Priority 2: Attempting OG Image from ${targetUrl}`,
       );
-      const ogFilename = `${topicData.slug}-og.jpg`;
+      const safeSlug = topicData.slug || `post-${Date.now()}`;
+      const ogFilename = `${safeSlug}-og.jpg`;
       const ogPath = path.join(generatedDir, ogFilename);
       const success = await fetchOgImage(targetUrl, ogPath);
       if (success) {
         heroImagePath = `/generated/${ogFilename}`;
-        console.log(`[Hero Strategy] Success: Saved OG Image.`);
-      } else {
-        console.log(
-          `[Hero Strategy] Priority 2 Failed: Could not fetch OG Image.`
-        );
+        console.log(`[${locale}] [Hero Strategy] Success: Saved OG Image.`);
       }
     }
 
-    // --- Priority 3: Unsplash Fallbacks (Title -> Category) ---
+    // --- Priority 3: Unsplash Fallbacks ---
     if (!heroImagePath) {
       console.log(
-        "[Hero Strategy] Priority 3: Fallback to Title/Category search..."
+        `[${locale}] [Hero Strategy] Priority 3: Fallback to Title/Category search...`,
       );
       try {
         let photo = await scraper.searchPhoto(topicData.title);
 
         if (!photo) {
+          // Extract category safely
           const catMatch = articleContent.match(/categories:\s*\[(.*?)\]/);
-          const firstCategory = catMatch
-            ? catMatch[1].split(",")[0].replace(/['"]/g, "").trim()
-            : "marketing";
+          // Handle both quoted and unquoted category lists
+          const rawCats = catMatch ? catMatch[1] : "business";
+          const firstCategory =
+            rawCats.split(",")[0].replace(/['"]/g, "").trim() || "business";
+
           console.log(
-            `[Hero Strategy] Title search failed. Retrying with category: ${firstCategory}`
+            `[${locale}] [Hero Strategy] Title search failed. Retrying with category: ${firstCategory}`,
           );
           photo = await scraper.searchPhoto(firstCategory);
         }
 
         if (photo) {
-          const safeTitle = topicData.slug;
-          const filename = `${safeTitle}-hero.jpg`;
+          const safeSlug = topicData.slug || `post-${Date.now()}`;
+          const filename = `${safeSlug}-hero.jpg`;
           const outputPath = path.join(generatedDir, filename);
 
           const success = await downloadImage(photo.url, outputPath);
           if (success) {
             heroImagePath = `/generated/${filename}`;
             console.log(
-              `[Hero Strategy] Success: Saved Unsplash Fallback Image.`
+              `[${locale}] [Hero Strategy] Success: Saved Unsplash Fallback Image.`,
             );
           }
         }
       } catch (e) {
-        console.error("[Hero Strategy] Priority 3 Error:", e);
+        console.error(`[${locale}] [Hero Strategy] Priority 3 Error:`, e);
       }
     }
 
     if (heroImagePath) {
       articleContent = articleContent.replace(
         "![HERO](HERO_PLACEHOLDER)",
-        `![${topicData.title}](${heroImagePath})`
+        `![${topicData.title}](${heroImagePath})`,
       );
       articleContent = articleContent.replace(
         /thumbnail:.*$/m,
-        `thumbnail: "${heroImagePath}"`
+        `thumbnail: "${heroImagePath}"`,
       );
     }
 
-    // 2. Unsplash Body Images with Puppeteer
+    // 2. Unsplash Body Images
     const unsplashRegex = /!\[(.*?)\]\(UNSPLASH:(.*?)\)/g;
     let match;
     const replacements: {
@@ -390,24 +413,13 @@ async function generateBlog() {
       credit: string;
     }[] = [];
 
-    // Reset regex index
     unsplashRegex.lastIndex = 0;
-
-    // We definitely want to search sequentially to reuse browser instance and avoid race conditions or bans
     const matches: RegExpExecArray[] = [];
     while ((match = unsplashRegex.exec(articleContent)) !== null) {
       matches.push(match);
     }
 
-    // Limit to maximum 2 body images
     const limitedMatches = matches.slice(0, 2);
-    console.log(
-      `Found ${matches.length} image placeholders, processing ${limitedMatches.length}`
-    );
-
-    // If we have matches, scraper is already initialized.
-
-    // Track used photo URLs to prevent duplicates
     const usedPhotoUrls = new Set<string>();
 
     for (const match of limitedMatches) {
@@ -415,14 +427,11 @@ async function generateBlog() {
       const altText = match[1];
       const query = match[2].trim();
 
-      console.log(`Processing Unsplash Request: "${query}"`);
+      console.log(`[${locale}] Processing Unsplash Request: "${query}"`);
 
-      // Use scraper
       let photo = await scraper.searchPhoto(query);
 
-      // Check for duplicate and retry if needed
       if (photo && usedPhotoUrls.has(photo.url)) {
-        console.log(`Duplicate photo detected, searching for alternative...`);
         photo = await scraper.searchPhoto(`${query} alternative`);
       }
 
@@ -430,7 +439,8 @@ async function generateBlog() {
         const ext = "jpg";
         const safeQuery = query.replace(/[^a-z0-9]/gi, "-");
         const suffix = Math.random().toString(36).substring(7);
-        const filename = `${topicData.slug}-${safeQuery}-${suffix}.${ext}`;
+        const safeSlug = topicData.slug || `post-${Date.now()}`;
+        const filename = `${safeSlug}-${safeQuery}-${suffix}.${ext}`;
         const outputPath = path.join(generatedDir, filename);
 
         const success = await downloadImage(photo.url, outputPath);
@@ -442,56 +452,22 @@ async function generateBlog() {
             credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${photo.photographerUrl}?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${photo.photographer}</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
           });
         } else {
-          replacements.push({
-            match: fullMatch,
-            replacement: `> [Image Placeholder: ${altText}]`,
-            credit: "",
-          });
-        }
-      } else {
-        console.warn(`No photo found for query: ${query}`);
-
-        // Retry with a generic keyword from category
-        const catMatch = articleContent.match(/categories:\s*\[(.*?)\]/);
-        const category = catMatch
-          ? catMatch[1].split(",")[0].replace(/['"]/g, "").trim()
-          : "technology";
-        console.log(`Retrying with generic category: ${category}`);
-
-        const fallbackPhoto = await scraper.searchPhoto(category);
-
-        if (fallbackPhoto) {
-          const ext = "jpg";
-          const suffix = Math.random().toString(36).substring(7);
-          const filename = `${topicData.slug}-fallback-${suffix}.${ext}`;
-          const outputPath = path.join(generatedDir, filename);
-
-          const success = await downloadImage(fallbackPhoto.url, outputPath);
-          if (success) {
-            usedPhotoUrls.add(fallbackPhoto.url);
-            replacements.push({
-              match: fullMatch,
-              replacement: `![${altText}](/generated/${filename})`,
-              credit: `<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="${fallbackPhoto.photographerUrl}?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">${fallbackPhoto.photographer}</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>`,
-            });
-          } else {
-            replacements.push({
-              match: fullMatch,
-              replacement: `> [Image Placeholder: ${altText}]`,
-              credit: "",
-            });
-          }
-        } else {
+          // Fallback text if download fails
           replacements.push({
             match: fullMatch,
             replacement: `> *${altText}*`,
             credit: "",
           });
         }
+      } else {
+        replacements.push({
+          match: fullMatch,
+          replacement: `> *${altText}*`,
+          credit: "",
+        });
       }
     }
 
-    // Apply replacements
     for (const item of replacements) {
       const finalCheck = item.credit
         ? `${item.replacement}\n${item.credit}`
@@ -500,31 +476,54 @@ async function generateBlog() {
     }
 
     // Save File
-    const filename = `${currentDateStr}-${topicData.slug}.md`;
+    const safeSlug = topicData.slug || `post-${Date.now()}`;
+    const filename = `${currentDateStr}-${safeSlug}.md`;
     const filepath = path.join(postsDir, filename);
 
-    // Ensure the posts directory exists (especially for CI/CD environments)
-    try {
-      await fs.access(postsDir);
-    } catch {
-      await fs.mkdir(postsDir, { recursive: true });
-    }
-
     await fs.writeFile(filepath, articleContent, "utf8");
-    console.log(`Successfully generated article: ${filepath}`);
+    console.log(`[${locale}] Successfully generated article: ${filepath}`);
 
+    // Export output only for the first one or accumulate (GitHub Output supports multiline?)
+    // For now, let's export the last one or all.
     if (process.env.GITHUB_OUTPUT) {
-      const slug = `${currentDateStr}-${topicData.slug}`;
-      const url = `https://applygogo.com/blog/${slug}`;
-      await fs.appendFile(process.env.GITHUB_OUTPUT, `new_post_url=${url}\n`);
-      console.log(`Exported new_post_url=${url} to GITHUB_OUTPUT`);
+      const url = `https://applygogo.com/${locale}/blog/${currentDateStr}-${safeSlug}`;
+      await fs.appendFile(
+        process.env.GITHUB_OUTPUT,
+        `new_post_url_${locale}=${url}\n`,
+      );
     }
-  } catch (error) {
-    console.error("Error generating blog post:", error);
-    process.exit(1);
-  } finally {
+
     await scraper.close();
+  } catch (error) {
+    console.error(`[${locale}] Error generating blog post:`, error);
+    // Determine if we should fail the whole process or just this locale.
+    // For now, let's log and re-throw to ensure CI failure visibility.
+    await scraper.close();
+    throw error;
   }
 }
 
-generateBlog();
+async function main() {
+  const locales = ["ko", "en", "ja"];
+
+  // Check if a manual topic is provided
+  const manualTopic = process.env.MANUAL_TOPIC;
+  if (manualTopic) {
+    console.log(
+      "Manual topic provided. Applying to ALL locales (or specific one if logic added).",
+    );
+    // Warning: Providing a Korean manual topic to EN/JA models might confuse them or produce mixed results.
+    // Ideally, we'd input locale-specific manual topics, but for now we assume it's unset mostly.
+  }
+
+  for (const locale of locales) {
+    try {
+      await generateBlogForLocale(locale);
+    } catch (error) {
+      console.error(`Failed to generate blog for ${locale}:`, error);
+      process.exitCode = 1; // Mark process as failed but continue trying others if needed
+    }
+  }
+}
+
+main();

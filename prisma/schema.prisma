@@ -9,24 +9,26 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Account {
-  user_id             String
-  type                String
-  provider            String
-  provider_account_id String
-  refresh_token       String?
-  access_token        String?
-  expires_at          Int?
-  token_type          String?
-  scope               String?
-  id_token            String?
-  session_state       String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime
-  user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, provider_account_id])
+  @@id([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
   @@map("accounts")
 }
+
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model AdditionalItem {
@@ -162,12 +164,16 @@ model Session {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Skill {
-  id        String  @id
-  resume_id String
-  name      String
-  level     String?
-  order     Int     @default(0)
-  resume    Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+  id          String  @id
+  resume_id   String
+  name        String
+  level       String?
+  order       Int     @default(0)
+  
+  // Refactored fields (New)
+  name_source String  @default("")
+  name_target String?
+  resume      Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("skills")
 }

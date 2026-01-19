@@ -18,22 +18,28 @@ import type { Metadata } from "next";
 
 interface PostPageProps {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllPostSlugs();
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  const locales = ["ko", "en", "ja"];
+  const params = [];
+
+  for (const locale of locales) {
+    const slugs = getAllPostSlugs(locale);
+    params.push(...slugs.map((slug) => ({ locale, slug })));
+  }
+
+  return params;
 }
 
 export async function generateMetadata({
   params,
 }: PostPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const { locale, slug } = await params;
+  const post = getPostBySlug(slug, locale);
 
   if (!post) {
     return {
@@ -75,8 +81,8 @@ export async function generateMetadata({
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const { locale, slug } = await params;
+  const post = getPostBySlug(slug, locale);
 
   if (!post) {
     notFound();
@@ -151,7 +157,7 @@ export default async function PostPage({ params }: PostPageProps) {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      }
+                      },
                     )}
                   </time>
                 </div>

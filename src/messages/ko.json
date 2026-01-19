@@ -251,7 +251,9 @@
       "skills": {
         "title": "기술 스택",
         "description": "보유한 핵심 기술 및 도구들을 태그로 관리해보세요.",
-        "placeholder": "새 기술 스택"
+        "placeholder": "새 기술 스택 (예: React)",
+        "addItem": "항목 추가",
+        "empty": "위의 <strong>+ 항목 추가</strong> 버튼을 눌러 보유 기술을 작성해주세요."
       },
       "additional": {
         "title": "추가 정보",

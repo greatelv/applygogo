@@ -566,19 +566,70 @@ export const useResumeEditor = ({
   };
 
   // Skills Handlers
+  const handleSkillChange = (id: string, field: keyof Skill, value: string) => {
+    setSkills((prev) =>
+      prev.map((skill) =>
+        skill.id === id ? { ...skill, [field]: value } : skill,
+      ),
+    );
+  };
+
   const handleAddSkill = () => {
-    if (!newSkill.trim()) return;
-    const skill: Skill = {
+    const newSkillItem: Skill = {
       id: `new-${Date.now()}`,
-      name: newSkill.trim(),
+      name: "",
+      name_source: "",
+      name_target: "",
       level: "Intermediate",
     };
-    setSkills((prev) => [...prev, skill]);
-    setNewSkill("");
+    setSkills((prev) => [...prev, newSkillItem]);
   };
 
   const handleRemoveSkill = (id: string) => {
     setSkills((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const moveSkill = (dragIndex: number, hoverIndex: number) => {
+    const dragItem = skills[dragIndex];
+    if (!dragItem) return;
+    const newSkills = [...skills];
+    newSkills.splice(dragIndex, 1);
+    newSkills.splice(hoverIndex, 0, dragItem);
+    setSkills(newSkills);
+  };
+
+  const handleTranslateSkill = async (skillId: string) => {
+    const skill = skills.find((s) => s.id === skillId);
+    if (!skill) return;
+
+    setIsTranslating((prev) => ({ ...prev, [`skill-${skillId}`]: true }));
+    try {
+      // Translate name_source -> name_target
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          texts: [skill.name_source],
+          type: "general",
+        }),
+      });
+      const { translatedTexts } = await response.json();
+
+      setSkills((prev) =>
+        prev.map((s) => {
+          if (s.id !== skillId) return s;
+          return {
+            ...s,
+            name_target: translatedTexts[0] || s.name_target,
+          };
+        }),
+      );
+      onDeductCredit?.(0.5); // Lower cost for single skill? Or same? Keeping small.
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsTranslating((prev) => ({ ...prev, [`skill-${skillId}`]: false }));
+    }
   };
 
   return {
@@ -618,5 +669,8 @@ export const useResumeEditor = ({
     handleTranslateEducation,
     handleAddSkill,
     handleRemoveSkill,
+    handleSkillChange,
+    moveSkill,
+    handleTranslateSkill,
   };
 };

@@ -251,16 +251,29 @@ export async function POST(
         const validSkills = skills
           .filter((skill: any) => {
             if (typeof skill === "string") return skill.trim().length > 0;
-            if (typeof skill === "object" && skill.name) return true;
+            if (typeof skill === "object" && (skill.name || skill.name_source))
+              return true;
             return false;
           })
           .map((skill: any, index: number) => {
-            const rawName = typeof skill === "string" ? skill : skill.name;
-            const safeName = rawName ? String(rawName) : "Unknown Skill";
+            // Handle both string and object formats
+            let name_source = "";
+            let name_target = "";
+
+            if (typeof skill === "string") {
+              name_source = String(skill);
+              name_target = String(skill);
+            } else {
+              name_source = skill.name_source || skill.name || "Unknown Skill";
+              name_target = skill.name_target || skill.name || name_source;
+            }
+
             return {
               id: crypto.randomUUID(),
-              resume_id: resumeId, // FK replaced
-              name: safeName,
+              resume_id: resumeId,
+              name: name_source,
+              name_source: name_source,
+              name_target: name_target,
               order: index,
             };
           });
