@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { AdditionalItem } from "./types";
 import { ItemTypes } from "./constants";
@@ -14,6 +15,8 @@ interface DraggableAdditionalItemProps {
   onRetranslate: (id: string) => void;
   onRemove: (id: string) => void;
   onChange: (id: string, field: keyof AdditionalItem, value: string) => void;
+  sourceLabel: string;
+  targetLabel: string;
 }
 
 export const DraggableAdditionalItem = ({
@@ -24,7 +27,10 @@ export const DraggableAdditionalItem = ({
   onRetranslate,
   onRemove,
   onChange,
+  sourceLabel,
+  targetLabel,
 }: DraggableAdditionalItemProps) => {
+  const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.ADDITIONAL_ITEM,
@@ -82,7 +88,7 @@ export const DraggableAdditionalItem = ({
       <div
         ref={drag as any}
         className="hidden lg:flex w-6 items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
-        title="드래그하여 순서 변경"
+        title={t("editorItems.dragToReorder")}
       >
         <GripVertical className="size-5" />
       </div>
@@ -96,12 +102,12 @@ export const DraggableAdditionalItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                한글 (원본)
+                {sourceLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold">
-                English (번역)
+                {targetLabel}
               </p>
             </div>
           </div>
@@ -119,7 +125,9 @@ export const DraggableAdditionalItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating
+                  ? t("editPage.actions.processing")
+                  : t("editPage.actions.retranslate")}
               </span>
             </Button>
             <button
@@ -127,16 +135,18 @@ export const DraggableAdditionalItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">
+                {t("editorItems.delete")}
+              </span>
             </button>
           </div>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Left: Original (KR) */}
+            {/* Left: Source */}
             <div className="space-y-4">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {sourceLabel}
               </p>
               <div
                 contentEditable
@@ -144,14 +154,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_kr",
-                    e.currentTarget.textContent || ""
+                    "name_source",
+                    e.currentTarget.textContent || "",
                   )
                 }
-                data-placeholder="활동/자격증/수상 명칭 (예: 정보처리기사)"
+                data-placeholder="Title"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_kr}
+                {item.name_source}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -161,14 +171,14 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_kr",
-                        e.currentTarget.textContent || ""
+                        "description_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="발급기관, 상세 내용, 점수 등 (예: 한국산업인력공단)"
+                    data-placeholder={t("editorItems.placeholders.desc")}
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_kr}
+                    {item.description_source}
                   </div>
                 </div>
                 <div className="col-span-1">
@@ -178,11 +188,11 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "date",
-                        e.currentTarget.textContent || ""
+                        "date", // Assuming date is shared? If separate, need source/target dates
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="날짜 (YYYY.MM)"
+                    data-placeholder={t("editorItems.placeholders.date")}
                     className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
                   >
                     {item.date}
@@ -191,10 +201,10 @@ export const DraggableAdditionalItem = ({
               </div>
             </div>
 
-            {/* Right: Translated (EN) */}
+            {/* Right: Target */}
             <div className="space-y-4">
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {targetLabel}
               </p>
               <div
                 contentEditable
@@ -202,14 +212,14 @@ export const DraggableAdditionalItem = ({
                 onBlur={(e) =>
                   onChange(
                     item.id,
-                    "name_en",
-                    e.currentTarget.textContent || ""
+                    "name_target",
+                    e.currentTarget.textContent || "",
                   )
                 }
-                data-placeholder="Item Name (EN)"
+                data-placeholder="Title (Translated)"
                 className="text-base font-semibold outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.5rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
               >
-                {item.name_en}
+                {item.name_target}
               </div>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
@@ -219,30 +229,18 @@ export const DraggableAdditionalItem = ({
                     onBlur={(e) =>
                       onChange(
                         item.id,
-                        "description_en",
-                        e.currentTarget.textContent || ""
+                        "description_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="Description/Issuer/Level (EN)"
+                    data-placeholder="Description (Translated)"
                     className="text-sm text-muted-foreground outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {item.description_en}
+                    {item.description_target}
                   </div>
                 </div>
                 <div className="col-span-1">
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        item.id,
-                        "date",
-                        e.currentTarget.textContent || ""
-                      )
-                    }
-                    data-placeholder="Date (YYYY.MM)"
-                    className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40"
-                  >
+                  <div className="text-sm text-muted-foreground font-medium outline-none px-2 py-1 -mx-2 rounded transition-colors hover:bg-accent/50 focus:bg-accent cursor-text min-h-[1.25rem] text-right empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/40">
                     {item.date}
                   </div>
                 </div>

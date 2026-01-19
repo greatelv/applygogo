@@ -18,14 +18,23 @@ const styles = StyleSheet.create({
     fontSize: 10.5,
     lineHeight: 1.6,
     color: "#333",
-    paddingBottom: 40,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   // Header with dark background
   header: {
     backgroundColor: "#0f172a", // slate-900
     color: "white",
-    padding: "30 40",
-    marginBottom: 24,
+    paddingTop: 50,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 20,
+    marginLeft: -30,
+    marginRight: -30,
+    marginTop: -30,
+    marginBottom: 16,
   },
   name: {
     fontSize: 28,
@@ -51,11 +60,11 @@ const styles = StyleSheet.create({
 
   // Main Content
   container: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 0,
   },
 
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 12,
@@ -109,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#0f172a",
     marginRight: 6,
+    marginTop: 0,
   },
   bulletText: {
     flex: 1,
@@ -166,6 +176,12 @@ const styles = StyleSheet.create({
   },
 });
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return "";
   const cleanDate = dateStr.trim();
@@ -203,11 +219,11 @@ export const ExecutivePdf = ({
   additionalItems = [],
 }: ExecutivePdfProps) => {
   const validExperiences = experiences.filter(
-    (e) => e.company?.trim() || e.companyEn?.trim()
+    (e) => e.company_name_source?.trim() || e.company_name_target?.trim(),
   );
 
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
@@ -217,9 +233,7 @@ export const ExecutivePdf = ({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "Name"}
-          </Text>
+          <Text style={styles.name}>{personalInfo?.name_target || "Name"}</Text>
           <View style={styles.headerContact}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
             {personalInfo?.phone && (
@@ -233,7 +247,7 @@ export const ExecutivePdf = ({
               .map((link: any, i: number) => (
                 <React.Fragment key={i}>
                   <Text style={{ color: "#475569" }}>|</Text>
-                  <Link src={link.url} style={styles.headerLink}>
+                  <Link src={ensureUrl(link.url)} style={styles.headerLink}>
                     {link.label || "Link"}
                   </Link>
                 </React.Fragment>
@@ -243,10 +257,12 @@ export const ExecutivePdf = ({
 
         <View style={styles.container}>
           {/* Summary */}
-          {personalInfo?.summary && (
+          {personalInfo?.summary_target && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Executive Summary</Text>
-              <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+              <Text style={styles.summaryText}>
+                {personalInfo.summary_target}
+              </Text>
             </View>
           )}
 
@@ -259,8 +275,10 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.expItem}>
                   <View style={styles.expHeader}>
                     <View>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
-                      <Text style={styles.position}>{exp.positionEn}</Text>
+                      <Text style={styles.companyName}>
+                        {exp.company_name_target}
+                      </Text>
+                      <Text style={styles.position}>{exp.role_target}</Text>
                     </View>
                     <Text style={styles.period}>
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -268,7 +286,7 @@ export const ExecutivePdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
+                    {exp.bullets_target?.map((bullet: string, idx: number) => (
                       // @ts-ignore
                       <View key={idx} style={styles.bulletItem}>
                         <Text style={styles.bulletPoint}>•</Text>
@@ -290,15 +308,12 @@ export const ExecutivePdf = ({
                 <View key={i} style={styles.eduItem}>
                   <View style={styles.eduMain}>
                     <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
+                      {edu.school_name_target}
                     </Text>
                     <Text style={{ fontSize: 10, color: "#334155" }}>
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                      (edu.major_en || edu.major)
-                        ? ", "
-                        : ""}
-                      {edu.major_en || edu.major}
+                      {edu.degree_target}
+                      {edu.degree_target && edu.major_target ? ", " : ""}
+                      {edu.major_target}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -317,7 +332,7 @@ export const ExecutivePdf = ({
                 {skills.map((skill, i) => (
                   // @ts-ignore
                   <Text key={i} style={styles.skillBadge}>
-                    {skill.name}
+                    {skill.name_target || skill.name_source || skill.name}
                   </Text>
                 ))}
               </View>
@@ -353,7 +368,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_en || item.name}{" "}
+                      • {item.name_target}{" "}
                       {item.date ? `(${formatDate(item.date)})` : ""}
                     </TextAny>
                   ))}
@@ -382,7 +397,7 @@ export const ExecutivePdf = ({
                         marginBottom: 2,
                       }}
                     >
-                      • {item.name_en || item.name}
+                      • {item.name_target}
                     </TextAny>
                   ))}
                 </View>
@@ -403,9 +418,9 @@ export const ExecutivePdf = ({
                     {languages.map((item: any, i: number) => (
                       // @ts-ignore
                       <Text key={i} style={{ fontSize: 10, color: "#334155" }}>
-                        • {item.name_en || item.name}
-                        {(item.description_en || item.description) &&
-                          ` (${item.description_en || item.description})`}
+                        • {item.name_target}
+                        {item.description_target &&
+                          ` (${item.description_target})`}
                       </Text>
                     ))}
                   </View>

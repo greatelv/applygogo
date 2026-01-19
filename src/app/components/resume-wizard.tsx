@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { NewResumePage } from "./new-resume-page";
 import { ProcessingPage } from "./processing-page";
 import { ResumeEditPage } from "./resume-edit-page";
@@ -25,16 +26,17 @@ import {
 
 interface Experience {
   id: string;
-  company: string;
-  position: string;
-  period: string;
-  bullets: string[];
+  company_name_source: string;
+  role_source: string;
+  start_date: string;
+  end_date: string;
+  bullets_source: string[];
 }
 
 interface TranslatedExperience extends Experience {
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 export const createSteps = [
@@ -72,6 +74,8 @@ export function ResumeWizard({
   initialData,
 }: ResumeWizardProps) {
   const router = useRouter();
+  const params = useParams();
+  const locale = (params.locale as string) || "ko";
   const { setWorkflowState, quota, setQuota, plan } = useApp();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -81,25 +85,25 @@ export function ResumeWizard({
 
   const [resumeTitle, setResumeTitle] = useState(initialData?.title || "");
   const [experiences, setExperiences] = useState<TranslatedExperience[]>(
-    initialData?.experiences || []
+    initialData?.experiences || [],
   );
   const [educations, setEducations] = useState<any[]>(
-    initialData?.educations || []
+    initialData?.educations || [],
   );
   const [skills, setSkills] = useState<any[]>(initialData?.skills || []);
   const [certifications, setCertifications] = useState<any[]>(
-    initialData?.certifications || []
+    initialData?.certifications || [],
   );
   const [awards, setAwards] = useState<any[]>(initialData?.awards || []);
   const [languages, setLanguages] = useState<any[]>(
-    initialData?.languages || []
+    initialData?.languages || [],
   );
   const [personalInfo, setPersonalInfo] = useState<any>(
-    initialData?.personalInfo || null
+    initialData?.personalInfo || null,
   );
   const [template, setTemplate] = useState(initialData?.template || "modern");
   const [resumeId, setResumeId] = useState<string | null>(
-    initialData?.id || null
+    initialData?.id || null,
   );
 
   // Always use the full 5 steps for consistency
@@ -119,7 +123,7 @@ export function ResumeWizard({
       const formData = new FormData();
       formData.append("file", file);
 
-      const result = await uploadResumeAction(formData);
+      const result = await uploadResumeAction(locale, formData);
 
       if (result.success && result.resumeId) {
         setResumeId(result.resumeId);
@@ -159,30 +163,60 @@ export function ResumeWizard({
           const transformedExperiences = data.work_experiences.map(
             (exp: any) => ({
               id: exp.id,
-              company: exp.company_name_kr,
-              companyEn: exp.company_name_en,
-              position: exp.role_kr,
-              positionEn: exp.role_en,
-              period: `${exp.start_date} ~ ${exp.end_date}`,
-              bullets: exp.bullets_kr,
-              bulletsEn: exp.bullets_en,
-            })
+              company_name_source: exp.company_name_source || "",
+              company_name_target: exp.company_name_target || "",
+              role_source: exp.role_source || "",
+              role_target: exp.role_target || "",
+              start_date: exp.start_date || "",
+              end_date: exp.end_date || "",
+              bullets_source: exp.bullets_source || [],
+              bullets_target: exp.bullets_target || [],
+            }),
           );
 
           setExperiences(transformedExperiences);
-          setEducations(data.educations || []);
+          setEducations(
+            (data.educations || []).map((edu: any) => ({
+              id: edu.id,
+              school_name_source: edu.school_name_source || "",
+              school_name_target: edu.school_name_target || "",
+              major_source: edu.major_source || "",
+              major_target: edu.major_target || "",
+              degree_source: edu.degree_source || "",
+              degree_target: edu.degree_target || "",
+              start_date: edu.start_date,
+              end_date: edu.end_date,
+            })),
+          );
           setSkills(data.skills || []);
-          setCertifications(data.certifications || []);
-          setAwards(data.awards || []);
-          setLanguages(data.languages || []);
+
+          const additionalItems = (data.additional_items || []).map(
+            (item: any) => ({
+              id: item.id,
+              type: item.type,
+              name_source: item.name_source || "",
+              name_target: item.name_target || "",
+              description_source: item.description_source || "",
+              description_target: item.description_target || "",
+              date: item.date || "",
+              order: item.order,
+            }),
+          );
+
+          setCertifications(
+            additionalItems.filter((i) => i.type === "CERTIFICATION"),
+          );
+          setAwards(additionalItems.filter((i) => i.type === "AWARD"));
+          setLanguages(additionalItems.filter((i) => i.type === "LANGUAGE"));
+
           setPersonalInfo({
-            name_kr: data.name_kr,
-            name_en: data.name_en,
+            name_source: data.name_source || "",
+            name_target: data.name_target || "",
             email: data.email,
             phone: data.phone,
             links: (data.links as any[]) || [],
-            summary: data.summary || "",
-            summary_kr: data.summary_kr || "",
+            summary_source: data.summary_source || "",
+            summary_target: data.summary_target || "",
           });
 
           if (data.selected_template) {
@@ -214,11 +248,11 @@ export function ResumeWizard({
     const { additionalItems, ...rest } = data;
 
     const certifications = additionalItems.filter(
-      (item) => item.type === "CERTIFICATION"
+      (item) => item.type === "CERTIFICATION",
     );
     const awards = additionalItems.filter((item) => item.type === "AWARD");
     const languages = additionalItems.filter(
-      (item) => item.type === "LANGUAGE"
+      (item) => item.type === "LANGUAGE",
     );
 
     setExperiences(data.experiences as any);
@@ -263,7 +297,7 @@ export function ResumeWizard({
     if (resumeId) {
       const response = await updateResumeTemplateAction(
         resumeId,
-        templateId as "modern" | "classic" | "minimal"
+        templateId as "modern" | "classic" | "minimal",
       );
       if (!response.success) {
         console.error("Failed to save template selection");

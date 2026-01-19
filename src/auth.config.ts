@@ -32,7 +32,9 @@ export const authConfig = {
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && isLoginPage) {
         // Prevent logged-in users from accessing login page again
-        return Response.redirect(new URL("/resumes", nextUrl));
+        const localeMatch = pathname.match(/^\/(en|ja|ko)\//);
+        const locale = localeMatch ? localeMatch[1] : "ko";
+        return Response.redirect(new URL(`/${locale}/resumes`, nextUrl));
       }
       return true;
     },

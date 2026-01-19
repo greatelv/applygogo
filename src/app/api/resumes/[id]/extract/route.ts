@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase";
 import { extractionModel, generateContentWithRetry } from "@/lib/gemini";
-import { RESUME_EXTRACTION_PROMPT } from "@/lib/prompts";
+import { getExtractionPrompt } from "@/lib/prompts";
 
 import {
   calculateCost,
@@ -20,7 +20,7 @@ import {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -45,7 +45,7 @@ export async function POST(
           requiredCredits: cost,
           currentCredits: planStatus.credits,
         },
-        { status: 402 }
+        { status: 402 },
       );
     }
 
@@ -53,8 +53,9 @@ export async function POST(
     await deductCredits(session.user.id, cost, "이력서 생성");
 
     // 5. Get resume from DB
+    // Note: Schema uses 'user_id', checking compliance
     const resume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!resume) {
@@ -73,7 +74,15 @@ export async function POST(
       .download(resume.original_file_url);
 
     if (downloadError || !fileData) {
-      throw new Error("Failed to download PDF from storage");
+      console.error("[Extract API] Download failed:", {
+        path: resume.original_file_url,
+        error: downloadError,
+      });
+      throw new Error(
+        `Failed to download PDF from storage: ${
+          downloadError?.message || "Unknown error"
+        } (Path: ${resume.original_file_url})`,
+      );
     }
 
     // 4. Convert PDF to base64 for Gemini API
@@ -98,6 +107,10 @@ export async function POST(
     // 5. Extract with Gemini AI
     console.log("[Extract API] Starting extraction...");
 
+    // Use app_locale (defaulting to 'ko' if not set)
+    const appLocale = (resume.app_locale || "ko") as "ko" | "en" | "ja";
+    const prompt = getExtractionPrompt(appLocale);
+
     const extractionResult = await generateContentWithRetry(extractionModel, [
       {
         inlineData: {
@@ -105,17 +118,40 @@ export async function POST(
           data: base64Data,
         },
       },
-      RESUME_EXTRACTION_PROMPT,
+      prompt,
     ]);
 
     const extractionText = extractionResult.response.text();
     const extractedData = JSON.parse(cleanJsonText(extractionText));
 
-    // 6. Validate if it's a resume
-    if (extractedData.is_resume === false) {
-      console.log("[Extract API] Not a resume. Deleting data...");
+    // 6. Validate: is_resume AND language check
+    let validationError = null;
 
-      // Clean up data since it's not a resume
+    // 6-1. Check if it is a resume
+    if (extractedData.is_resume === false) {
+      validationError =
+        "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요.";
+    } else {
+      // 6-2. Check language mismatch
+      const detectedLang = extractedData.detected_language;
+      const targetLocale = resume.app_locale || "ko";
+
+      if (targetLocale === "ko" && detectedLang !== "ko") {
+        validationError =
+          "국문 이력서 업로드 모드입니다. 한글 이력서를 업로드해주세요.";
+      } else if (targetLocale === "en" && detectedLang !== "en") {
+        validationError =
+          "Global(English) mode requires an English resume. Please upload an English resume.";
+      } else if (targetLocale === "ja" && detectedLang !== "ja") {
+        validationError =
+          "日本語モードでは日本語の履歴書が必要です。日本語の履歴書をアップロードしてください。";
+      }
+    }
+
+    if (validationError) {
+      console.log(`[Extract API] Validation failed: ${validationError}`);
+
+      // Clean up data
       try {
         // Delete file from storage
         if (resume.original_file_url) {
@@ -132,15 +168,13 @@ export async function POST(
         console.log("[Extract API] Successfully deleted invalid resume data");
       } catch (cleanupError) {
         console.error("Failed to clean up invalid resume data:", cleanupError);
-        // Continue to return error even if cleanup fails
       }
 
       return NextResponse.json(
         {
-          error:
-            "업로드된 파일이 이력서 양식이 아닌 것으로 판단됩니다. 올바른 이력서 파일을 업로드해주세요.",
+          error: validationError,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -150,10 +184,10 @@ export async function POST(
       } experiences, ` +
         `${
           extractedData.work_experiences?.reduce(
-            (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-            0
+            (sum: number, exp: any) => sum + (exp.bullets_source?.length || 0),
+            0,
           ) || 0
-        } total bullets.`
+        } total bullets.`,
     );
 
     return NextResponse.json({
@@ -179,7 +213,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: error.message || "Failed to extract resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

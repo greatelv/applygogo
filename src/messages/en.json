@@ -1,0 +1,965 @@
+{
+  "common": {
+    "passOnly": "Pass Only",
+    "save": "Save",
+    "title": "ApplyGogo - AI-powered Employment Platform in Korea",
+    "header": {
+      "login": "Login",
+      "signUp": "Sign Up",
+      "logout": "Logout",
+      "myResumes": "My Resumes",
+      "blog": "Blog",
+      "settings": "Settings",
+      "introduction": "About Service",
+      "buyTicket": "Buy Pass",
+      "credits": "Remaining Credits",
+      "creditLabel": "Credits",
+      "sidebarShow": "Show Sidebar",
+      "sidebarHide": "Hide Sidebar"
+    },
+    "footer": {
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "company": "About Us",
+      "contact": "Contact",
+      "introduction": "About Service",
+      "blog": "Blog",
+      "address": "4F, Dongbang Bldg, 60 Dongsomun-ro, Seongbuk-gu, Seoul",
+      "ceo": "Taekyung Jeon",
+      "businessNumber": "639-34-01724"
+    },
+    "plan": {
+      "FREE": "Free",
+      "PASS_7DAY": "7-Day Pass",
+      "PASS_30DAY": "30-Day Pass",
+      "PASS_BETA_3DAY": "Beta Unlimited"
+    },
+    "cancel": "Cancel",
+    "currency": "$"
+  },
+  "landing": {
+    "header": {
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "badge": "AI-Powered Resume Transformation",
+      "title1": "Your Resume into",
+      "title2": "Professional Korean",
+      "description": "AI automatically performs <strong>English-to-Korean resume conversion</strong>, completing a professional <strong>Korean resume</strong> that Korean recruiters notice in minutes.",
+      "cta": "Start for Free",
+      "viewSample": "View Sample",
+      "subText": "Start free without credit card • First 2 conversions free"
+    },
+    "cost": {
+      "badge": "Unbeatable Value",
+      "title1": "Faster than agents,",
+      "title2": "At 1/10th the cost",
+      "description": "Receive expert-level results instantly at a reasonable price, without expensive fees and long waiting times.",
+      "oldLabel": "Traditional",
+      "oldPrice": "$100",
+      "nowLabel": "Now",
+      "ourName": "ApplyGogo",
+      "compareTitle": "Production Cost Comparison",
+      "otherService": "Other Services",
+      "saveBadge": "{percent}% SAVE"
+    },
+    "features": {
+      "title": "Why ApplyGogo?",
+      "subtitle": "We create Korean resumes optimized for the Korean job market",
+      "items": [
+        {
+          "title": "AI-Powered Summary",
+          "description": "Gemini Pro analyzes your experience and reconstructs it into core achievement-oriented bullet points suitable for Korean companies."
+        },
+        {
+          "title": "Professional Translation",
+          "description": "Compare and edit English/Korean simultaneously with Split View. Complete customization with direct editing."
+        },
+        {
+          "title": "Premium Templates",
+          "description": "Choose from various templates like Modern, Professional, Executive and download as PDF immediately. Submit to companies right away."
+        }
+      ]
+    },
+    "steps": {
+      "title": "Complete in 3 Steps",
+      "subtitle": "Quick and easy without complex processes",
+      "items": [
+        {
+          "title": "Upload PDF",
+          "description": "Upload your resume PDF with drag & drop"
+        },
+        {
+          "title": "AI Conversion",
+          "description": "AI automatically handles summary and translation. Direct editing available."
+        },
+        {
+          "title": "Download PDF",
+          "description": "Export as PDF with your favorite template"
+        }
+      ]
+    },
+    "recommended": {
+      "title1": "For Everyone Dreaming",
+      "title2": "of a Career in Korea",
+      "item1Title": "Resumes for Korean Companies",
+      "item1Description": "We provide global standard formats for those unfamiliar with <strong>foreign resume formats</strong> and <strong>CV translation</strong>.",
+      "item2Title": "Fast English-to-Korean Conversion",
+      "item2Description": "Coming across a job opportunity in Korea but need a <strong>Korean resume</strong>? Just upload your <strong>English resume</strong> and complete it in 5 minutes.",
+      "item3Title": "Professional AI Korean Proofreading",
+      "item3Description": "Not just a <strong>translation</strong>, but a sophisticated <strong>Korean resume</strong> with polite expressions fitting 'Korean business etiquette'."
+    },
+    "pricing": {
+      "title": "Simple Passes",
+      "offer": "🎉 Limited-time launch special in progress",
+      "subtitle": "Start with a reasonable pass at a price you can't see anywhere else",
+      "free": {
+        "title": "Free Trial",
+        "subtitle": "Experience our service",
+        "credits": "<strong>10</strong> Credits provided",
+        "template": "Basic template only",
+        "retranslate": "1 credit per re-translation",
+        "period": "Unlimited period"
+      },
+      "recommend": "Recommend",
+      "features": {
+        "credits": "<strong>{count}</strong> Credits included",
+        "template": "All templates included",
+        "retranslate": "Unlimited re-translations",
+        "period7": "7-day access",
+        "period30": "30-day access"
+      },
+      "footer": "* 5 credits deducted for resume generation, free for pass holders or 1 credit for free users for re-translation."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Check what you're curious about",
+      "items": [
+        {
+          "q": "Q. Does the format of the resume matter?",
+          "a": "Yes, we support most PDF formats. AI extracts text and analyzes content, so complex formats are fine."
+        },
+        {
+          "q": "Q. Can I edit the translated content?",
+          "a": "Of course. You can freely edit the summarized content and English translation in the editor provided after AI conversion. Refine it delicately by comparing with the original in Split View."
+        },
+        {
+          "q": "Q. Is the free plan sufficient?",
+          "a": "We provide 10 credits per month for trial. It's enough to complete and download a resume, but we recommend a pass if you want various templates and unlimited editing."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Start Your Career in Korea Today",
+      "subtitle": "No more worries about Korean resumes with ApplyGogo",
+      "button": "Start for Free"
+    }
+  },
+  "login": {
+    "title": "ApplyGogo",
+    "subtitle": "Transform your resume into a professional Korean resume",
+    "google": "Continue with Google",
+    "naver": "Continue with Naver",
+    "inAppWarning": "⚠️ Google login is not supported in in-app browsers.",
+    "inAppAdvice": "(Please use Naver login for a smoother experience)",
+    "developerAccess": "DEVELOPER ACCESS",
+    "testLogin": "Test Login",
+    "termsAgreement": "By logging in, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "features": {
+      "aiSummary": "AI Summary",
+      "proTranslation": "Pro Translation",
+      "pdfExport": "PDF Export"
+    }
+  },
+  "resumes": {
+    "title": "Resume Management",
+    "count": "Total {count} resumes",
+    "createNew": "Create New Resume",
+    "upgrade": "Upgrade Plan",
+    "noCredits": "⚠️ Not enough credits to create a new resume. Please upgrade your plan or wait for the next renewal.",
+    "lastModified": "Last modified: {date}",
+    "empty": {
+      "title": "Complete your first Korean resume",
+      "description": "Just upload your English resume and AI will handle everything from analysis to Korean translation and formatting in 5 minutes.",
+      "noCredits": "Not enough credits to create a new resume",
+      "cta": "Start for Free"
+    },
+    "delete": {
+      "title": "Delete Resume",
+      "description": "Are you sure you want to delete this resume? Deleted data cannot be recovered.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "error": "Failed to delete resume."
+    },
+    "steps": {
+      "UPLOAD": "Uploading",
+      "PROCESSING": "AI Analyzing",
+      "EDIT": "Editing",
+      "TEMPLATE": "Selecting Template",
+      "COMPLETED": "Completed"
+    },
+    "status": {
+      "IDLE": "Idle",
+      "SUMMARIZED": "Summarized",
+      "TRANSLATED": "Translated",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed"
+    }
+  },
+  "workflow": {
+    "upload": "Upload",
+    "processing": "AI Processing",
+    "edit": "Edit",
+    "template": "Select Template",
+    "complete": "Complete"
+  },
+  "editor": {
+    "saveError": "An error occurred while saving the resume.",
+    "saving": "Saving..."
+  },
+  "editPage": {
+    "title": "Edit",
+    "subtitle": "Review and edit the content analyzed by AI.",
+    "guide": {
+      "title": "You can edit content by clicking on it",
+      "description": "Edit the original content and click <strong>[Sync & Retranslate]</strong> to have AI re-translate into Korean. Click the trash icon to delete unnecessary items."
+    },
+    "sections": {
+      "personal": {
+        "title": "Personal Info",
+        "description": "Manage essential details like name, contact, and professional summary.",
+        "korean": "English (Original)",
+        "english": "Korean (Translated)",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "links": "Links",
+        "addLink": "Add Link",
+        "summary": "Professional Summary"
+      },
+      "experience": {
+        "title": "Experience",
+        "description": "Please list your major careers and achievements in reverse chronological order.",
+        "addItem": "Add Item"
+      },
+      "education": {
+        "title": "Education",
+        "description": "Enter your degree and major information starting from the most recent.",
+        "addItem": "Add Item",
+        "empty": "Click the <strong>+ Add Item</strong> button above to add education."
+      },
+      "skills": {
+        "title": "Skills",
+        "description": "Manage your core skills and tools as tags.",
+        "placeholder": "New skill (e.g. React)",
+        "addItem": "Add Item",
+        "empty": "Click the <strong>+ Add Item</strong> button above to add your skills."
+      },
+      "additional": {
+        "title": "Additional Info",
+        "description": "You can add certifications, awards, languages, activities, and other info.",
+        "addItem": "Add Item",
+        "empty": "Click the <strong>+ Add Item</strong> button above to add certifications, awards, etc."
+      }
+    },
+    "actions": {
+      "retranslate": "Sync & Retranslate",
+      "processing": "Processing...",
+      "previous": "Back",
+      "createNew": "Create New",
+      "next": "Next"
+    }
+  },
+  "editorAlerts": {
+    "noChanges": {
+      "title": "No Changes Detected",
+      "description": "No changes were detected. Please edit the content and try again."
+    },
+    "error": {
+      "title": "Error Occurred",
+      "personal": "An error occurred while translating personal info.",
+      "general": "An error occurred while translating.",
+      "education": "An error occurred while translating education."
+    },
+    "credit": {
+      "title": "Insufficient Credits"
+    }
+  },
+  "editorItems": {
+    "korean": "English (Original)",
+    "english": "Korean (Translated)",
+    "delete": "Delete",
+    "addBullet": "Add Bullet",
+    "dragToReorder": "Drag to reorder",
+    "placeholders": {
+      "company": "Company/Organization",
+      "position": "Position/Role",
+      "period": "Period (e.g. 2020.01 - 2023.12)",
+      "bullet": "Achievements and activities",
+      "school": "School Name",
+      "major": "Major",
+      "degree": "Degree",
+      "desc": "Description",
+      "date": "Date"
+    }
+  },
+  "introduction": {
+    "header": {
+      "company": "About Us",
+      "blog": "Blog",
+      "cta": "Get Started"
+    },
+    "hero": {
+      "badge": "Global Career Starter",
+      "title": "Your Gateway to Korea,\nFast and Reliable",
+      "description": "**ApplyGogo** was created for talents who miss out on global career opportunities due to language barriers and complex formats.\nProve your career to the world with the best AI technology.",
+      "cta": "Convert Resume for Free",
+      "companyCta": "View Company Info"
+    },
+    "values": {
+      "title": "Why ApplyGogo?",
+      "subtitle": "Beyond simple translation, we create value that works in the job market",
+      "items": [
+        {
+          "title": "Global Standard",
+          "description": "Resume formats preferred by Korean companies are unique. ApplyGogo AI learns Korean hiring trends to provide the most effective formats."
+        },
+        {
+          "title": "Context-Aware Translation",
+          "description": "Not just a 1:1 literal translation, but a reconstruction into 'Business English' that highlights work performance and capabilities. We handle technical terms and nuances with care."
+        },
+        {
+          "title": "Overwhelming Time Saving",
+          "description": "Shortens the work of converting English resumes to Korean from days to just 5 minutes. Invest your time in interview preparation."
+        }
+      ]
+    },
+    "process": {
+      "badge": "Seamless Process",
+      "title": "Eliminated Complexities,\nFocused on the Core",
+      "description": "Just prepare your existing English resume PDF file.\nApplyGogo's AI engine will take care of the rest.",
+      "items": [
+        "Start by uploading PDF without separate sign-up",
+        "AI automatically categorizes sections and summarizes content",
+        "Real-time preview and intuitive editing editor",
+        "Korean Standard Formatting"
+      ],
+      "pdfLabel": "English PDF",
+      "resumeLabel": "Korean Resume"
+    },
+    "cta": {
+      "title": "Your Career Should Shine\non a Wider Stage",
+      "description": "Start your global challenge with ApplyGogo right now.",
+      "start": "Start for Free Now",
+      "company": "View Company Info"
+    }
+  },
+  "templatesPage": {
+    "title": "Select Template",
+    "description": "Choose your preferred template",
+    "templateNames": {
+      "modern": "Modern",
+      "professional": "Professional",
+      "executive": "Executive",
+      "classic": "Classic",
+      "minimal": "Minimal"
+    },
+    "templateDescriptions": {
+      "modern": "Clean and modern design. Recommended for IT/Startups",
+      "professional": "Professional feel with 2-column layout. Recommended for experienced professionals",
+      "executive": "Strong header and premium design. Recommended for leaders/executives",
+      "classic": "Traditional and formal style. Recommended for large companies/finance",
+      "minimal": "Minimal and sophisticated feel. Recommended for design/creative"
+    },
+    "proNotice": "⭐ This template is for pass holders only.",
+    "tip": "💡 <strong>Tip:</strong> Each template is optimized for different feels and purposes. Choose a template that fits the company and position you are applying for.",
+    "actions": {
+      "buy": "Purchase Pass",
+      "complete": "Complete",
+      "previous": "Previous",
+      "processing": "Processing..."
+    },
+    "saveError": "An error occurred while saving the template."
+  },
+  "upgradeModal": {
+    "title": "Purchase a Pass and Unlock Templates",
+    "description": "A pass is required to use premium templates. <br></br>Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
+    "plans": {
+      "pass7": {
+        "title": "7-Day Pass",
+        "subtitle": "Best for short-term focus",
+        "features": [
+          "{credits} Credits",
+          "Use all premium templates",
+          "Unlimited retranslation",
+          "Valid for {days} days"
+        ]
+      },
+      "pass30": {
+        "title": "30-Day Pass",
+        "subtitle": "Relaxed career move",
+        "badge": "Popular",
+        "features": [
+          "{credits} Credits",
+          "Use all premium templates",
+          "Unlimited retranslation",
+          "Valid for {days} days"
+        ]
+      }
+    },
+    "cta": "Buy Now",
+    "currency": "$",
+    "off": "OFF",
+    "notice": "💡 Passes do not renew automatically. Once expired, you will revert to the free plan, so buy with confidence.",
+    "success": "Purchase of {name} completed!",
+    "verifyError": "Payment verification failed.",
+    "error": "Error: {message}"
+  },
+  "resumeDetail": {
+    "success": {
+      "title": "Resume created successfully!",
+      "description": "Check the final result below and download as PDF."
+    },
+    "toolbar": {
+      "back": "Back",
+      "backList": "List",
+      "delete": "Delete",
+      "edit": "Edit",
+      "template": "Change Template",
+      "download": "Download PDF"
+    },
+    "originalView": {
+      "title": "View Original (English)",
+      "expandTip": "(Click to expand)",
+      "basicInfo": "Basic Info",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "additional": "Additional Info",
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "links": "Links"
+      },
+      "additionalTypes": {
+        "CERTIFICATION": "Certifications",
+        "AWARD": "Awards",
+        "LANGUAGE": "Languages",
+        "ACTIVITY": "Activities",
+        "OTHER": "Others"
+      }
+    },
+    "deleteAlert": {
+      "title": "Delete Resume",
+      "description": "Are you sure you want to delete this resume? Deleted data cannot be recovered.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "processing": "Deleting..."
+    },
+    "notifications": {
+      "deleteSuccess": "Resume has been deleted",
+      "deleteError": "Failed to delete resume.",
+      "downloadSuccess": "PDF download complete",
+      "downloadError": "An error occurred during PDF generation"
+    },
+    "deleting": "Deleting resume..."
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account info and billing in one place",
+    "sections": {
+      "account": "Account and Pass",
+      "purchase": "Purchase Pass",
+      "danger": "Danger Zone"
+    },
+    "labels": {
+      "username": "Username",
+      "email": "Email",
+      "joinedAt": "Joined At",
+      "passStatus": "Pass Status",
+      "credits": "Credits Remaining",
+      "expiration": "Expiration Date",
+      "usagePeriod": "Usage Period",
+      "paymentMethod": "Last Payment Method",
+      "tossPay": "Toss Pay",
+      "creditCard": "Credit Card",
+      "unknown": "No Info",
+      "unlimited": "Unlimited",
+      "expiringSoon": "Expiring Soon",
+      "paypalPayment": "PayPal Payment"
+    },
+    "passLabels": {
+      "PASS_7DAY": "7-Day Pass",
+      "PASS_30DAY": "30-Day Pass",
+      "PASS_BETA_3DAY": "Beta Launch Special 3-Day Unlimited",
+      "FREE": "Free",
+      "active": "Pass Active",
+      "inactive": "Free"
+    },
+    "plans": {
+      "pass30": {
+        "title": "30-Day Pass",
+        "recommended": "Recommended",
+        "current": "In Use",
+        "unavailable": "Cannot switch",
+        "beta": "Coming soon",
+        "test": "Buy Pass (Test)",
+        "features": [
+          "{credits} Credits",
+          "Unlimited templates & retranslation",
+          "Valid for 30 days"
+        ]
+      },
+      "pass7": {
+        "title": "7-Day Pass",
+        "current": "In Use",
+        "unavailable": "Cannot switch",
+        "beta": "Coming soon",
+        "test": "Buy Pass (Test)",
+        "features": [
+          "{credits} Credits",
+          "Unlimited templates & retranslation",
+          "Valid for 7 days"
+        ]
+      },
+      "refill": {
+        "title": "Credit Refill",
+        "required": "Pass required",
+        "beta": "Coming soon",
+        "test": "Refill Credits (Test)",
+        "features": ["Refill {credits} Credits", "No expiration"]
+      }
+    },
+    "notices": {
+      "passPromotion": "🎉 Special Launch Offer",
+      "beta": "🎉 During the <strong>Beta Launch Period</strong>, only the <strong>3-Day Unlimited Pass</strong> provided after signup is available.<br></br>Check back later for more plans after official launch!",
+      "freeTip": "💡 Purchase a pass to unlock all templates and unlimited retranslation benefits",
+      "paypalInstructions": "Please select your preferred payment method below.",
+      "refundPolicyFree": "Please check ApplyGogo's <link>Cancellation and Refund Policy</link> before purchasing.",
+      "refundPolicyPaid": {
+        "title": "Cancellation and Refund Policy",
+        "items": [
+          "Full refund possible within 7 days of payment if service is not used",
+          "Refund not possible if credits have been used or AI processing has been initiated",
+          "This service does not operate a partial refund policy"
+        ],
+        "details": "View Detailed Terms"
+      }
+    },
+    "history": {
+      "title": "Payment History",
+      "empty": "No payment history",
+      "table": {
+        "date": "Date",
+        "orderId": "Order ID",
+        "product": "Product",
+        "method": "Method",
+        "amount": "Amount",
+        "status": "Status",
+        "manage": "Manage"
+      },
+      "status": {
+        "paid": "Paid",
+        "refunded": "Refunded"
+      },
+      "refund": "Refund"
+    },
+    "dangerZone": {
+      "title": "Delete Account",
+      "description": "Deleting your account will permanently remove all data",
+      "button": "Delete Account"
+    },
+    "alerts": {
+      "passWarning": {
+        "title": "You have an active pass!",
+        "description": "You still have a valid paid pass.<br></br>If you leave now, <strong>all remaining days and benefits will be lost</strong> and cannot be refunded.",
+        "cancel": "Cancel and keep using",
+        "confirm": "Give up and proceed to delete"
+      },
+      "deleteAccount": {
+        "title": "Are you sure you want to delete your account? (Irreversible)",
+        "description": "Deleting your account will <strong>permanently delete all followings</strong> and cannot be recovered.",
+        "items": [
+          "All generated resume and cover letter data",
+          "Payment history and receipt info",
+          "All active passes and credits"
+        ],
+        "confirmText": "Do you still want to delete?",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "refund": {
+        "title": "Do you want to proceed with the refund?",
+        "description": "Upon refund, all benefits (credits and features) of the pass will be immediately revoked. This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Refund"
+      }
+    },
+    "toast": {
+      "purchaseSuccess": "{name} purchase complete! Thank you.",
+      "purchaseError": "Purchase error: {message}",
+      "refundSuccess": "Refund complete. Pass benefits have been revoked.",
+      "refundError": "Refund error: {message}",
+      "deleting": "Deleting account...",
+      "deleteSuccess": "Account deleted safely. Goodbye.",
+      "deleteError": "An error occurred while deleting account."
+    }
+  },
+  "processingPage": {
+    "title": "AI Processing",
+    "description": "AI is analyzing your resume and reconstructing it into a professional Korean resume. Please wait a moment as sophisticated work from text extraction to core achievement selection and Korean translation is in progress.",
+    "warning": "For stable analysis, please <strong>keep this screen open.</strong> (Work may be interrupted if you leave the page)",
+    "steps": {
+      "uploading": {
+        "label": "Upload Complete",
+        "description": "Resume PDF upload complete"
+      },
+      "extracting": {
+        "label": "Step 1: Extraction",
+        "description": "Extracting English original text from PDF accurately...",
+        "tip": "Extracts proper nouns such as company names and school names as they are"
+      },
+      "refining": {
+        "label": "Step 2: Refining",
+        "description": "Selecting core experience based on Korean standards...",
+        "tip": "Selects 3-5 most impactful achievements"
+      },
+      "translating": {
+        "label": "Step 3: Translation",
+        "description": "Translating selected English into Korean...",
+        "tip": "Translates achievements into professional Korean business language"
+      },
+      "done": {
+        "label": "Complete",
+        "description": "AI analysis is complete!"
+      }
+    },
+    "status": {
+      "completed": "Complete",
+      "processing": "In Progress"
+    },
+    "doneSection": {
+      "message": "Analysis complete! Moving to the next step...",
+      "button": "Check Summary",
+      "processing": "Processing..."
+    },
+    "footerTip": "💡 <strong>3-Step AI Processing</strong>: Actual processing time per step is reflected. By first selecting core experiences and then refining them, we provide more accurate and efficient results.",
+    "error": {
+      "title": "Error Occurred",
+      "retry": "Upload Again",
+      "credits": {
+        "title": "Insufficient Credits",
+        "description": "You do not have enough credits to proceed with AI resume analysis.<br></br>Please refill credits through payment to complete the analysis.",
+        "buyPass": "Purchase Pass for Unlimited Use",
+        "refill": "Refill Credits",
+        "footer": "You can retry the task after payment.",
+        "backToList": "Back to List"
+      }
+    }
+  },
+  "sidebar": {
+    "menu": "Menu",
+    "createNew": "Create New Resume",
+    "feedback": "Feedback",
+    "nav": {
+      "resumes": "Resumes",
+      "settings": "Settings",
+      "help": "Help",
+      "home": "About"
+    }
+  },
+  "feedbackModal": {
+    "title": "Send Feedback & Feature Requests",
+    "description": "Please feel free to leave any feedback or features you need.",
+    "labels": {
+      "rating": "Service Satisfaction",
+      "content": "Content"
+    },
+    "placeholders": {
+      "content": "Write your feedback here. (e.g., I want more resume templates, I want translation to be faster, etc.)"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    },
+    "notifications": {
+      "emptyContent": "Please write your feedback.",
+      "success": "Thank you for your valuable feedback!",
+      "error": "An error occurred."
+    }
+  },
+  "newResume": {
+    "title": "Upload",
+    "description": "Upload your PDF resume and AI will automatically summarize and translate it into Korean.",
+    "uploadError": "Upload failed. Please try again.",
+    "loading": {
+      "title": "Uploading...",
+      "description": "Securely saving your file."
+    },
+    "dropzone": {
+      "dragText": "Drag & Drop PDF file",
+      "orText": "or click the button below to select",
+      "button": "Select File"
+    },
+    "creditError": {
+      "title": "Insufficient Credits",
+      "description": "You do not have enough credits to proceed with AI resume analysis.<br></br>Please refill credits to start the analysis.",
+      "buyPass": "Buy Pass for Unlimited Access",
+      "refill": "Refill Credits"
+    },
+    "errorDialog": {
+      "title": "Invalid File Format",
+      "confirm": "Confirm",
+      "sizeLimit": "The file size exceeds 5MB. Please upload a smaller file.",
+      "pdfOnly": "Only PDF files are allowed. Please try again."
+    },
+    "tip": {
+      "title": "💡 Tip",
+      "item1": "Resumes with clearly distinguished experience sections yield the best results.",
+      "item2": "PDF files under 5MB are recommended.",
+      "item3": "You can get the final PDF after the summary and translation steps."
+    }
+  },
+  "betaBanner": {
+    "badge": "BETA",
+    "mobilePrefix": "Beta Gift: ",
+    "desktopPrefix": "Beta Launch Special: ",
+    "value": "$15 Value ",
+    "benefit": "Free 3-Day Unlimited Pass!",
+    "consoleMessage": "Try it out freely and please report any bugs or feedback at the <link>bottom left</link>."
+  },
+  "company": {
+    "header": {
+      "introduction": "About Service",
+      "blog": "Blog"
+    },
+    "hero": {
+      "badge": "Keique Corporation",
+      "title": "The Sweetest Innovation\n<highlight>in the Hiring Market</highlight>",
+      "subtitle": "We are creating a new hiring ecosystem where both job seekers and companies can be satisfied."
+    },
+    "about": {
+      "title": "Keique Corporation",
+      "p1": "The hiring process doesn't have to be painful. <br />It should be a sweet and satisfying experience, just like enjoying a piece of cake.",
+      "p2": "Through cutting-edge AI technology, Keique Corporation <br />transforms job seekers' anxiety into confidence and companies' hiring difficulties into enjoyment.",
+      "p3": "Beyond a simple utility tool, <br />we design and provide <strong>experiences that make you say \"Wow!\"</strong>"
+    },
+    "roadmap": {
+      "title": "Future Roadmap",
+      "subtitle": "10 projects to solve inefficiencies in the job market one by one",
+      "active": {
+        "badge": "LIVE",
+        "title": "ApplyGogo",
+        "description": "AI-powered English-to-Korean resume conversion and translation service. The starting point of your global career.",
+        "link": "Go to Service"
+      },
+      "comingSoon": {
+        "badge": "COMING SOON",
+        "title": "Undisclosed Project",
+        "description": "Innovative micro-service currently in preparation."
+      }
+    }
+  },
+  "helpPage": {
+    "title": "Need Help?",
+    "description": "Check frequently asked questions or contact us.",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "categories": {
+        "all": "All",
+        "gettingStarted": "Getting Started",
+        "features": "Features",
+        "payment": "Payment",
+        "security": "Security"
+      },
+      "items": [
+        {
+          "id": "1",
+          "category": "gettingStarted",
+          "question": "How do I use ApplyGogo?",
+          "answer": "1) Upload your PDF resume. 2) AI analyzes your resume to summarize and translate core content. 3) Review the summary and edit translations directly in a split-view window. 4) Apply your preferred design template and download it as a PDF."
+        },
+        {
+          "id": "2",
+          "category": "gettingStarted",
+          "question": "What file formats are supported?",
+          "answer": "Currently, only PDF files are supported. You can upload files up to 10MB in size. Please convert Word or other documents to PDF before uploading."
+        },
+        {
+          "id": "3",
+          "category": "features",
+          "question": "What's the difference between Free and Pro plans?",
+          "answer": "The Free plan provides 10 credits upon signup, basic templates, and allows you to save one resume. The Pro plan (Regular Price {normalPrice} → Launch Price {launchPrice}) includes {credits} credits per month, all templates, and unlimited resume storage."
+        },
+        {
+          "id": "4",
+          "category": "features",
+          "question": "How are credits deducted?",
+          "answer": "5 credits are deducted each time you generate a resume (AI processing). 'Retranslating' specific items costs 1 credit. Simply downloading a file does not consume any credits."
+        },
+        {
+          "id": "5",
+          "category": "features",
+          "question": "Can I download my resume as a Word file?",
+          "answer": "Currently, we only support PDF downloads to ensure the best design layout without any formatting issues."
+        },
+        {
+          "id": "6",
+          "category": "features",
+          "question": "Can I edit the translation results?",
+          "answer": "Yes, you can. During the editing stage, you can use the 'Split View' feature to see the original and translated text side-by-side and edit them freely by sentence."
+        },
+        {
+          "id": "7",
+          "category": "payment",
+          "question": "How do I change or cancel my plan?",
+          "answer": "You can upgrade or cancel your plan at any time through the Settings > Billing Management page. Even if you cancel, your Pro benefits will remain active for the remainder of the billing period."
+        },
+        {
+          "id": "8",
+          "category": "security",
+          "question": "Is my resume data safe?",
+          "answer": "Yes, all data is stored with strong encryption. Your information is kept safe until you choose to delete it and will never be shared with third parties."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Can't find the answer?",
+      "description": "Contact us via email and we'll reply within 24 hours.",
+      "button": "patakeique@gmail.com"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "Cake Corporation (hereinafter referred to as the \"Company\") establishes and discloses the following privacy policy to protect users' personal information and to promptly and smoothly handle grievances related thereto, in accordance with the Act on Promotion of Information and Communications Network Utilization and Information Protection, etc., and the Personal Information Protection Act.",
+    "sections": [
+      {
+        "title": "Article 1 (Purpose of Collection and Use of Personal Information)",
+        "content": "The Company processes personal information for the following purposes. The personal information being processed will not be used for purposes other than the following, and if the purpose of use is changed, necessary measures such as obtaining separate consent will be implemented.",
+        "items": [
+          "<strong>Membership Registration and Management:</strong> Identity verification, personal identification, prevention of illegal use by bad members and unauthorized use, confirmation of intent to join, age verification, handling of complaints, and delivery of notices.",
+          "<strong>Service Provision:</strong> AI resume generation, translation, summary, PDF conversion, content provision, and personalized service provision.",
+          "<strong>Marketing and Advertising:</strong> Development of new services (products) and personalized service provision, provision of event and advertising information and participation opportunities."
+        ]
+      },
+      {
+        "title": "Article 2 (Items of Personal Information Collected)",
+        "content": "The Company collects the following personal information for membership registration, consultation, and service application.",
+        "items": [
+          "Required items: Name, email address, profile image (for social login)",
+          "Information collected during service use: Access logs, cookies, access IP information, resume data (experience, education, tech stack, etc.)",
+          "Information collected during payment: Card company name, card number (partial), payment approval details (processed through PG company)"
+        ]
+      },
+      {
+        "title": "Article 3 (Retention and Use Period of Personal Information)",
+        "content": "The Company processes and retains personal information within the personal information retention and use period according to laws or the period agreed upon when collecting personal information from the information subject.",
+        "items": [
+          "Membership Registration and Management: Until membership withdrawal (However, if an investigation is underway due to violation of relevant laws, until the investigation is closed)",
+          "Provision of Goods or Services: Until the supply of goods/services is completed and payment/settlement is completed"
+        ]
+      },
+      {
+        "title": "Article 4 (Procedure and Method of Destruction of Personal Information)",
+        "content": "In principle, the Company destroys the information without delay after the purpose of collecting and using personal information is achieved. Information in the form of electronic files is deleted using technical methods that cannot reproduce the record."
+      },
+      {
+        "title": "Article 5 (Chief Privacy Officer)",
+        "content": "The Company designates a Chief Privacy Officer as follows to take overall responsibility for personal information processing and to handle complaints and damage relief of information subjects related to personal information processing.",
+        "manager": {
+          "name": "CPO: Taekyung Jeon",
+          "dept": "Department: Privacy Protection Team",
+          "email": "Email: patakeique@gmail.com"
+        }
+      }
+    ],
+    "footer": {
+      "date": "Announcement Date: January 9, 2026",
+      "enforceDate": "Enforcement Date: January 9, 2026"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "sections": [
+      {
+        "title": "Article 1 (Purpose)",
+        "content": "The purpose of these Terms is to regulate the rights, obligations, and responsibilities of the Company and members, and other necessary matters regarding the use of the ApplyGogo service (hereinafter referred to as \"Service\") operated by Keique Corporation (hereinafter referred to as \"Company\")."
+      },
+      {
+        "title": "Article 2 (Definition of Terms)",
+        "items": [
+          "\"Service\" refers to AI-based resume conversion and related general services provided by the Company.",
+          "\"Member\" refers to a person who has entered into a service use contract with the Company and uses the services provided by the Company.",
+          "\"Paid Service\" refers to various digital contents and general services provided by the Company for a fee."
+        ]
+      },
+      {
+        "title": "Article 3 (Effect and Change of Terms)",
+        "content": "The Company posts the contents of these Terms on the initial screen of the service so that members can easily understand them. The Company may revise these Terms within the scope that does not violate relevant laws, and in case of revision, the application date and reason for revision shall be specified and announced on the initial screen of the service along with the current Terms."
+      },
+      {
+        "title": "Article 4 (Membership Registration)",
+        "content": "Membership registration is concluded when a user agrees to the contents of the Terms and applies for registration, and the Company approves such application. The Company may withhold or reject approval in the following cases.",
+        "items": [
+          "If the applicant has previously lost membership qualifications under these Terms",
+          "If someone else's name is used",
+          "If false information is entered or contents presented by the Company are not entered"
+        ]
+      },
+      {
+        "title": "Article 5 (Provision and Change of Service)",
+        "content": "The Company provides services such as AI resume summary, translation, and PDF conversion to members. The Company may change the contents of the service provided according to changes in technical specifications or other operational needs, and in this case, the changed contents and application date will be specified and announced in advance."
+      },
+      {
+        "title": "Article 6 (Usage Fees and Payment)",
+        "content": "The service is provided in free and paid (passes, etc.) categories. Usage fees and payment methods for paid services follow what is specified on the relevant service page."
+      },
+      {
+        "title": "Article 7 (Cancellation and Refund Policy)",
+        "content": "The Company applies the following refund policy considering the characteristics of digital content and services.",
+        "items": [
+          "<strong>Full Refund:</strong> Within 7 days of purchasing a paid pass, provided that no credits provided through the pass have been used and no services such as AI processing have been used even once.",
+          "<strong>Non-refundable:</strong> If 7 days have passed since purchase, or if credits have been used at least once or AI processing has occurred, it is considered that the value of the digital content has significantly decreased, and refunds are not possible.",
+          "<strong>No Partial Refund:</strong> Since this service is provided as a term-based pass and credit recharge method, partial refunds for early termination are not provided."
+        ]
+      },
+      {
+        "title": "Article 8 (Privacy Protection)",
+        "content": "The Company strives to protect the personal information of members as prescribed by relevant laws. Regarding the protection and use of personal information, relevant laws and the Company's Privacy Policy apply."
+      },
+      {
+        "title": "Article 9 (Obligations of Members)",
+        "content": "Members shall not engage in the following acts.",
+        "items": [
+          "Registration of false information upon application or change",
+          "Theft of other people's information",
+          "Change of information posted by the Company",
+          "Acts that interfere with the legitimate operation of the service"
+        ]
+      }
+    ],
+    "footer": {
+      "date": "Announcement Date: January 9, 2026",
+      "enforceDate": "Enforcement Date: January 9, 2026"
+    }
+  },
+  "blog": {
+    "title": "ApplyGogo Blog - Insights for Your Global Career",
+    "description": "Check out tips for English resume writing to successful overseas employment cases to help your global growth.",
+    "recommended": "Recommended Content",
+    "tagline": {
+      "title": "Connecting Your Career <lb></lb>to the World",
+      "description": "With ApplyGogo's AI resume builder, anyone can easily and quickly <lb></lb>create a professional-level English resume.",
+      "cta": "Create English Resume for Free"
+    },
+    "allPosts": {
+      "title": "All Articles",
+      "subtitle": "Check out the latest news and career tips from ApplyGogo",
+      "empty": "No posts yet."
+    }
+  }
+}

@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,6 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Account {
   userId            String   @map("user_id")
   type              String
@@ -19,142 +21,201 @@ model Account {
   id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  updatedAt         DateTime
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model AdditionalItem {
+  id                 String   @id
+  resume_id          String
+  type               ItemType @default(OTHER)
+  name_kr            String
+  name_en            String?
+  description_kr     String?  @default("")
+  
+  // Refactored fields (New)
+  name_source        String   @default("")
+  name_target        String?
+  description_source String?  @default("")
+  description_target String?  @default("")
+  description_en     String?  @default("")
+  date               String?
+  order              Int      @default(0)
+  resume             Resume   @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+
+  @@map("additional_items")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Education {
-  id             String  @id @default(cuid())
-  resumeId       String  @map("resume_id")
-  school_name    String
-  major          String
-  degree         String
-  start_date     String
-  end_date       String
-  order          Int     @default(0)
-  degree_en      String?
-  major_en       String?
-  school_name_en String?
-  resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id                 String  @id
+  resume_id          String
+  school_name        String
+  major              String
+  degree             String
+  start_date         String
+  end_date           String
+  order              Int     @default(0)
+  degree_en          String?
+  major_en           String?
+  school_name_en     String?
+
+  // Refactored fields (New)
+  school_name_source String  @default("")
+  school_name_target String?
+  major_source       String  @default("")
+  major_target       String?
+  degree_source      String  @default("")
+  degree_target      String?
+  resume             Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("educations")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Feedback {
+  id         String   @id
+  user_id    String?
+  content    String
+  rating     Int
+  page_url   String?
+  created_at DateTime @default(now())
+  user       User?    @relation(fields: [user_id], references: [id])
 
+  @@map("feedbacks")
+}
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model PaymentHistory {
+  id                String   @id
+  user_id           String
+  payment_id        String   @unique
+  order_name        String
+  amount            Float
+  currency          String   @default("KRW")
+  status            String
+  method            String?
+  paid_at           DateTime @default(now())
+  receipt_url       String?
+  initial_credits   Int      @default(0)
+  remaining_credits Int      @default(0)
+  details           Json?
+  user              User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("payment_histories")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Resume {
-  id                String             @id @default(cuid())
-  userId            String             @map("user_id")
+  id                String         @id
+  user_id           String
   title             String
   original_file_url String
   target_role       String?
-  status            ResumeStatus       @default(IDLE)
+  status            ResumeStatus   @default(IDLE)
   failure_message   String?
-  current_step      ResumeStep         @default(UPLOAD)
+  current_step      ResumeStep     @default(UPLOAD)
   selected_template ResumeTemplate?
-  created_at        DateTime           @default(now())
-  updated_at        DateTime           @updatedAt
+  created_at        DateTime       @default(now())
+  updated_at        DateTime
+
   email             String?
   links             Json?
   name_en           String?
-  name_kr           String             @default("")
+  name_kr           String         @default("")
   phone             String?
-  summary           String?            @default("")
-  summary_kr        String?            @default("")
-  additionalItems   AdditionalItem[]
+  summary           String?        @default("")
+  summary_kr        String?        @default("")
+
+  // Refactored fields (New)
+  locale            String             @default("ko")
+  app_locale        String             @default("ko")
+  name_source       String             @default("")
+  name_target       String?
+  summary_source    String?            @default("")
+  summary_target    String?            @default("")
+
+  additional_items  AdditionalItem[]
   educations        Education[]
-  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
   skills            Skill[]
   work_experiences  WorkExperience[]
 
   @@map("resumes")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Session {
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Skill {
-  id       String  @id @default(cuid())
-  resumeId String  @map("resume_id")
-  name     String
-  level    String?
-  order    Int     @default(0)
-  resume   Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id          String  @id
+  resume_id   String
+  name        String
+  level       String?
+  order       Int     @default(0)
+  
+  // Refactored fields (New)
+  name_source String  @default("")
+  name_target String?
+  resume      Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("skills")
 }
 
-
-
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model UsageLog {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
+  id          String   @id
+  user_id     String
   amount      Float
   description String
   created_at  DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("usage_logs")
 }
 
-model PaymentHistory {
-  id               String   @id @default(cuid())
-  userId           String   @map("user_id")
-  paymentId        String   @unique @map("payment_id")
-  orderName        String   @map("order_name")
-  amount           Float
-  currency         String   @default("KRW")
-  status           String
-  method           String?
-  paidAt           DateTime @default(now()) @map("paid_at")
-  receiptUrl       String?  @map("receipt_url")
-  initialCredits   Int      @default(0) @map("initial_credits")
-  remainingCredits Int      @default(0) @map("remaining_credits")
-  details          Json?
-  
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("payment_histories")
-}
-
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  id               String             @id @default(cuid())
-  name             String?
-  email            String             @unique
-  emailVerified    DateTime?
-  image            String?
-  phone_number     String?
-  linkedin_url     String?
-  portfolio_url    String?
-  created_at       DateTime           @default(now())
-  updated_at       DateTime           @updatedAt
-  
-  // 기간제 이용권 필드
-  planType         String             @default("FREE") @map("plan_type") // 'FREE', 'PASS_7DAY', 'PASS_30DAY'
-  planExpiresAt    DateTime?          @map("plan_expires_at") // Null이면 만료됨/Free
-  credits          Int                @default(10) // 크레딧 지갑
-  
-  accounts         Account[]
-  resumes          Resume[]
-  sessions         Session[]
-  usage_logs       UsageLog[]
-  paymentHistories PaymentHistory[]
-  feedbacks        Feedback[]
+  id                String           @id
+  name              String?
+  email             String           @unique
+  emailVerified     DateTime?
+  image             String?
+  phone_number      String?
+  linkedin_url      String?
+  portfolio_url     String?
+  created_at        DateTime         @default(now())
+  updated_at        DateTime
+  plan_type         String           @default("FREE")
+  plan_expires_at   DateTime?
+  credits           Int              @default(10)
+  accounts          Account[]
+  feedbacks         Feedback[]
+  payment_histories PaymentHistory[]
+  resumes           Resume[]
+  sessions          Session[]
+  usage_logs        UsageLog[]
 
   @@map("users")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model VerificationToken {
   identifier String
   token      String
@@ -164,36 +225,38 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model WorkExperience {
-  id              String  @id @default(cuid())
-  resumeId        String  @map("resume_id")
-  company_name_kr String
-  company_name_en String?
-  role_kr         String
-  role_en         String?
-  start_date      String
-  end_date        String
-  bullets_kr      Json
-  bullets_en      Json?
-  order           Int     @default(0)
-  resume          Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  id                  String  @id
+  resume_id           String
+  company_name_kr     String
+  company_name_en     String?
+  role_kr             String
+  role_en             String?
+  start_date          String
+  end_date            String
+  bullets_kr          Json
+  bullets_en          Json?
+
+  // Refactored fields (New)
+  company_name_source String  @default("")
+  company_name_target String?
+  role_source         String  @default("")
+  role_target         String?
+  bullets_source      Json?
+  bullets_target      Json?
+  order               Int     @default(0)
+  resume              Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
 
   @@map("work_experiences")
 }
 
-model AdditionalItem {
-  id             String   @id @default(cuid())
-  resumeId      String   @map("resume_id")
-  type           ItemType @default(OTHER)
-  name_kr        String
-  name_en        String?
-  description_kr String?  @default("")
-  description_en String?  @default("")
-  date           String?
-  order          Int      @default(0)
-  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@map("additional_items")
+enum ItemType {
+  CERTIFICATION
+  AWARD
+  LANGUAGE
+  ACTIVITY
+  OTHER
 }
 
 enum ResumeStatus {
@@ -217,26 +280,4 @@ enum ResumeTemplate {
   MINIMAL
   PROFESSIONAL
   EXECUTIVE
-}
-
-
-enum ItemType {
-  CERTIFICATION
-  AWARD
-  LANGUAGE
-  ACTIVITY
-  OTHER
-}
-
-model Feedback {
-  id        String   @id @default(cuid())
-  userId    String?  @map("user_id")
-  content   String
-  rating    Int
-  pageUrl   String?  @map("page_url")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@map("feedbacks")
 }

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!paymentId) {
       return NextResponse.json(
         { message: "Missing paymentId" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -24,24 +24,24 @@ export async function POST(req: NextRequest) {
     // ensuring it belongs to the authenticated user.
     const targetPayment = await prisma.paymentHistory.findFirst({
       where: {
-        userId: session.user.id,
-        OR: [{ id: paymentId }, { paymentId: paymentId }],
+        user_id: session.user.id,
+        OR: [{ id: paymentId }, { payment_id: paymentId }],
       },
     });
 
     if (!targetPayment || targetPayment.status !== "PAID") {
       return NextResponse.json(
         { message: "Refundable payment not found or already refunded." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Ensure we are working with Numbers
-    const initialCredits = Number(targetPayment.initialCredits);
-    const remainingCredits = Number(targetPayment.remainingCredits);
-    const paidAt = new Date(targetPayment.paidAt);
-    const orderName = targetPayment.orderName;
-    const paymentIdPortOne = targetPayment.paymentId;
+    const initialCredits = Number(targetPayment.initial_credits);
+    const remainingCredits = Number(targetPayment.remaining_credits);
+    const paidAt = new Date(targetPayment.paid_at);
+    const orderName = targetPayment.order_name;
+    const paymentIdPortOne = targetPayment.payment_id;
 
     // 2. Eligibility Check
     // Rule 1: Within 7 days
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     if (diffDays > 7) {
       return NextResponse.json(
         { message: "Refund is only possible within 7 days of purchase." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
           message:
             "Refund is not possible if any of the credits from this payment have been used.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           reason: "사용자 요청 환불 (7일 이내 및 미사용)",
         }),
-      }
+      },
     );
 
     if (!refundRes.ok) {
@@ -94,12 +94,12 @@ export async function POST(req: NextRequest) {
       if (!isAlreadyCancelled) {
         return NextResponse.json(
           { message: errorData.message || "External refund process failed." },
-          { status: refundRes.status }
+          { status: refundRes.status },
         );
       }
 
       console.log(
-        "Payment already cancelled in PortOne, proceeding with DB update."
+        "Payment already cancelled in PortOne, proceeding with DB update.",
       );
     }
 
@@ -115,8 +115,8 @@ export async function POST(req: NextRequest) {
         throw new Error("Payment record missing during transaction.");
       }
 
-      const currentRemaining = Number(currentPayment.remainingCredits);
-      const currentInitial = Number(currentPayment.initialCredits);
+      const currentRemaining = Number(currentPayment.remaining_credits);
+      const currentInitial = Number(currentPayment.initial_credits);
 
       if (currentRemaining < currentInitial) {
         throw new Error("환불 처리 중 크레딧 사용이 감지되었습니다.");
@@ -135,8 +135,8 @@ export async function POST(req: NextRequest) {
         await tx.user.update({
           where: { id: session.user.id },
           data: {
-            planType: "FREE",
-            planExpiresAt: null,
+            plan_type: "FREE",
+            plan_expires_at: null,
             credits: {
               decrement: creditsToRevoke,
             },
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
         where: { id: targetPayment.id },
         data: {
           status: "REFUNDED",
-          remainingCredits: 0,
+          remaining_credits: 0,
         },
       });
     });
@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
     console.error("Refund error:", error);
     return NextResponse.json(
       { message: error.message || "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

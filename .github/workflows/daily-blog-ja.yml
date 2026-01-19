@@ -1,0 +1,84 @@
+name: Daily Blog Generation (JA)
+
+on:
+  schedule:
+    # Runs at 11:00 KST (Korea is UTC+9)
+    # Cron uses UTC. 11:00 KST = 02:00 UTC.
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      manual_topic:
+        description: "Custom blog topic (optional)"
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      INDEXNOW_API_KEY: ${{ secrets.INDEXNOW_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
+
+      - name: Run Blog Generation Script (JA)
+        id: generate_blog
+        env:
+          MANUAL_TOPIC: ${{ inputs.manual_topic }}
+        run: npx tsx scripts/generate-blog.ts ja
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add content/posts/**/*.md || true
+          git add public/generated/*.jpg || true
+          git add public/generated/*.png || true
+          git add public/generated/*.webp || true
+          git add public/generated/*.gif || true
+          git add public/generated/*.svg || true
+          if git diff --staged --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and Push
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git commit -m "chore(blog/ja): auto-generate daily post"
+          git push origin main
+
+      - name: Wait for Vercel Deployment
+        if: steps.git-check.outputs.changes == 'true'
+        run: sleep 120
+
+      - name: Submit to IndexNow
+        if: steps.git-check.outputs.changes == 'true'
+        env:
+          NEW_POST_URL: ${{ steps.generate_blog.outputs.new_post_url_ja }}
+        run: npx tsx scripts/submit-indexnow.ts "$NEW_POST_URL"

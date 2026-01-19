@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { translationModel, generateContentWithRetry } from "@/lib/gemini";
-import { getResumeTranslationPrompt } from "@/lib/prompts";
+import { getTranslationPrompt } from "@/lib/prompts";
 import {
   calculateCost,
   checkCredits,
@@ -11,15 +11,13 @@ import {
 } from "@/lib/billing";
 
 // ============================================================================
-// 재번역 API (RE-TRANSLATION)
-// - 편집된 한글 데이터를 영문으로 재번역
-// - Free 사용자: 1 크레딧 차감
-// - Paid 사용자: 0 크레딧 (무제한)
+// 3단계: 번역 API (TRANSLATION)
+// - 정제된 Source 데이터를 Target으로 번역
 // ============================================================================
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -34,7 +32,7 @@ export async function POST(
 
     // 4. Verify resume ownership
     const resume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!resume) {
@@ -42,7 +40,6 @@ export async function POST(
     }
 
     // 2. Calculate cost for RETRANSLATE action
-    // 만약 이미 완료된 이력서라면(재번역) 비용 발생, 초기 생성 중이라면 0
     const isReTranslation = resume.status === "COMPLETED";
     const cost = isReTranslation
       ? calculateCost("RETRANSLATE", planStatus.planType)
@@ -57,7 +54,7 @@ export async function POST(
           requiredCredits: cost,
           currentCredits: planStatus.credits,
         },
-        { status: 402 }
+        { status: 402 },
       );
     }
 
@@ -67,7 +64,7 @@ export async function POST(
     if (!refinedData) {
       return NextResponse.json(
         { error: "Refined data is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -88,10 +85,11 @@ export async function POST(
     // 3. Translate with Gemini AI
     console.log("[Translate API] Starting translation...");
 
-    const translationPrompt = getResumeTranslationPrompt(refinedData);
+    const appLocale = (resume.app_locale || "ko") as "ko" | "en" | "ja";
+    const translationPrompt = getTranslationPrompt(refinedData, appLocale);
     const translationResult = await generateContentWithRetry(
       translationModel,
-      translationPrompt
+      translationPrompt,
     );
 
     const translationText = translationResult.response.text();
@@ -99,7 +97,78 @@ export async function POST(
 
     console.log("[Translate API] Translation complete.");
 
-    // 4. Post-processing
+    // 4. Data Validation & Fallback
+    // Ensure critical fields are not lost during translation
+    if (!translatedData.personal_info) {
+      translatedData.personal_info = {};
+    }
+
+    const refinedPersonalInfo = refinedData.personal_info || {};
+
+    // Preserve fields that AI might have omitted
+    if (!translatedData.personal_info.email && refinedPersonalInfo.email) {
+      translatedData.personal_info.email = refinedPersonalInfo.email;
+      console.log("[Translate API] Restored email from refined data");
+    }
+
+    if (!translatedData.personal_info.phone && refinedPersonalInfo.phone) {
+      translatedData.personal_info.phone = refinedPersonalInfo.phone;
+      console.log("[Translate API] Restored phone from refined data");
+    }
+
+    if (!translatedData.personal_info.links && refinedPersonalInfo.links) {
+      translatedData.personal_info.links = refinedPersonalInfo.links;
+      console.log("[Translate API] Restored links from refined data");
+    }
+
+    // Normalize Summary (Source)
+    if (!translatedData.personal_info.summary_source) {
+      translatedData.personal_info.summary_source =
+        translatedData.personal_info.summary ||
+        translatedData.personal_info.summary_kr ||
+        translatedData.personal_info.about ||
+        "";
+    }
+
+    // Normalize Summary (Target)
+    if (!translatedData.personal_info.summary_target) {
+      translatedData.personal_info.summary_target =
+        translatedData.personal_info.summary_en ||
+        translatedData.personal_info.summary_us ||
+        "";
+    }
+
+    // Normalize Links
+    if (
+      translatedData.personal_info.links &&
+      Array.isArray(translatedData.personal_info.links)
+    ) {
+      translatedData.personal_info.links =
+        translatedData.personal_info.links.map((link: any) => ({
+          label: link.label || link.name || link.title || "Link",
+          url: link.url || link.link || link.href || "",
+        }));
+    }
+
+    if (
+      !translatedData.personal_info.summary_source &&
+      (refinedPersonalInfo.summary_source || refinedPersonalInfo.summary)
+    ) {
+      translatedData.personal_info.summary_source =
+        refinedPersonalInfo.summary_source || refinedPersonalInfo.summary;
+      console.log("[Translate API] Restored summary_source from refined data");
+    }
+
+    if (
+      !translatedData.personal_info.summary_target &&
+      refinedPersonalInfo.summary_target
+    ) {
+      translatedData.personal_info.summary_target =
+        refinedPersonalInfo.summary_target;
+      console.log("[Translate API] Restored summary_target from refined data");
+    }
+
+    // 5. Post-processing
     let finalExperiences = translatedData.work_experiences || [];
 
     // Sort experiences: Newest first (descending by end_date)
@@ -130,186 +199,224 @@ export async function POST(
     if (finalExperiences && finalExperiences.length > 0) {
       finalExperiences = finalExperiences.map((exp: any) => ({
         ...exp,
-        bullets_kr: Array.isArray(exp.bullets_kr)
-          ? exp.bullets_kr.slice(0, 5)
+        bullets_source: Array.isArray(exp.bullets_source)
+          ? exp.bullets_source.slice(0, 5)
           : [],
-        bullets_en: Array.isArray(exp.bullets_en)
-          ? exp.bullets_en.slice(0, 5)
+        bullets_target: Array.isArray(exp.bullets_target)
+          ? exp.bullets_target.slice(0, 5)
           : [],
       }));
     }
 
     // 5. Save to Database
+    // Transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      // Clear existing related data to prevent duplicates on re-translation
+      // FK replaced: resumeId -> resume_id
+      await tx.workExperience.deleteMany({ where: { resume_id: resumeId } });
+      await tx.education.deleteMany({ where: { resume_id: resumeId } });
+      await tx.skill.deleteMany({ where: { resume_id: resumeId } });
+      await tx.additionalItem.deleteMany({ where: { resume_id: resumeId } });
 
-    // Save work experiences
-    if (finalExperiences && finalExperiences.length > 0) {
-      await prisma.workExperience.createMany({
-        data: finalExperiences.map((exp: any, index: number) => ({
-          resumeId: resumeId,
-          company_name_kr: exp.company_name_kr
-            ? String(exp.company_name_kr)
-            : "회사명 없음",
-          company_name_en: exp.company_name_en
-            ? String(exp.company_name_en)
-            : exp.company_name_kr
-            ? String(exp.company_name_kr)
-            : "Unknown Company",
-          role_kr: exp.role_kr ? String(exp.role_kr) : "-",
-          role_en: exp.role_en
-            ? String(exp.role_en)
-            : exp.role_kr
-            ? String(exp.role_kr)
-            : "-",
-          start_date: exp.start_date ? String(exp.start_date) : "",
-          end_date: exp.end_date ? String(exp.end_date) : "",
-          bullets_kr: Array.isArray(exp.bullets_kr) ? exp.bullets_kr : [],
-          bullets_en: Array.isArray(exp.bullets_en)
-            ? exp.bullets_en
-            : Array.isArray(exp.bullets_kr)
-            ? exp.bullets_kr
-            : [],
-          order: index,
-        })),
-      });
-    }
-
-    // Save educations
-    const educations = translatedData.educations || [];
-    if (educations && educations.length > 0) {
-      await prisma.education.createMany({
-        data: educations.map((edu: any, index: number) => ({
-          resumeId: resumeId,
-          school_name: edu.school_name
-            ? String(edu.school_name)
-            : "학교명 없음",
-          school_name_en: edu.school_name_en
-            ? String(edu.school_name_en)
-            : edu.school_name
-            ? String(edu.school_name)
-            : "Unknown School",
-          major: edu.major ? String(edu.major) : "",
-          major_en: edu.major_en
-            ? String(edu.major_en)
-            : edu.major
-            ? String(edu.major)
-            : "",
-          degree: edu.degree ? String(edu.degree) : "",
-          degree_en: edu.degree_en
-            ? String(edu.degree_en)
-            : edu.degree
-            ? String(edu.degree)
-            : "",
-          start_date: edu.start_date ? String(edu.start_date) : "",
-          end_date: edu.end_date ? String(edu.end_date) : "",
-          order: index,
-        })),
-      });
-    }
-
-    // Save skills
-    const skills = translatedData.skills || [];
-    if (skills && skills.length > 0) {
-      const validSkills = skills
-        .filter((skill: any) => {
-          if (typeof skill === "string") return skill.trim().length > 0;
-          if (typeof skill === "object" && skill.name) return true;
-          return false;
-        })
-        .map((skill: any, index: number) => {
-          const rawName = typeof skill === "string" ? skill : skill.name;
-          const safeName = rawName ? String(rawName) : "Unknown Skill";
-          return {
-            resumeId: resumeId,
-            name: safeName,
+      // Save work experiences
+      if (finalExperiences && finalExperiences.length > 0) {
+        await tx.workExperience.createMany({
+          data: finalExperiences.map((exp: any, index: number) => ({
+            id: crypto.randomUUID(),
+            resume_id: resumeId, // FK replaced
+            company_name_source: exp.company_name_source
+              ? String(exp.company_name_source)
+              : "Unknown Company",
+            company_name_target: exp.company_name_target
+              ? String(exp.company_name_target)
+              : undefined,
+            role_source: exp.role_source ? String(exp.role_source) : "-",
+            role_target: exp.role_target ? String(exp.role_target) : undefined,
+            start_date: exp.start_date ? String(exp.start_date) : "",
+            end_date: exp.end_date ? String(exp.end_date) : "",
+            bullets_source: Array.isArray(exp.bullets_source)
+              ? exp.bullets_source
+              : [],
+            bullets_target: Array.isArray(exp.bullets_target)
+              ? exp.bullets_target
+              : [],
             order: index,
-          };
-        });
 
-      if (validSkills.length > 0) {
-        await prisma.skill.createMany({
-          data: validSkills,
+            // Legacy fallbacks (optional, can be empty string if strictly deprecated)
+            company_name_kr: "",
+            role_kr: "",
+            bullets_kr: [],
+          })),
         });
       }
-    }
 
-    // Save additional items (certifications, awards, languages)
-    const { certifications, awards, languages } = translatedData;
-    const additionalItemsData: any[] = [];
+      // Save educations
+      const educations = translatedData.educations || [];
+      if (educations && educations.length > 0) {
+        await tx.education.createMany({
+          data: educations.map((edu: any, index: number) => ({
+            id: crypto.randomUUID(),
+            resume_id: resumeId, // FK replaced
+            school_name_source: edu.school_name_source
+              ? String(edu.school_name_source)
+              : "Unknown School",
+            school_name_target: edu.school_name_target
+              ? String(edu.school_name_target)
+              : undefined,
+            major_source: edu.major_source ? String(edu.major_source) : "",
+            major_target: edu.major_target
+              ? String(edu.major_target)
+              : undefined,
+            degree_source: edu.degree_source ? String(edu.degree_source) : "",
+            degree_target: edu.degree_target
+              ? String(edu.degree_target)
+              : undefined,
+            start_date: edu.start_date ? String(edu.start_date) : "",
+            end_date: edu.end_date ? String(edu.end_date) : "",
+            order: index,
 
-    if (certifications && certifications.length > 0) {
-      certifications.forEach((cert: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
-          type: "CERTIFICATION",
-          name_kr: cert.name ? String(cert.name) : "Unknown Certification",
-          name_en: cert.name_en ? String(cert.name_en) : undefined,
-          description_kr: cert.issuer ? String(cert.issuer) : undefined,
-          description_en: cert.issuer_en ? String(cert.issuer_en) : undefined,
-          date: cert.date ? String(cert.date) : undefined,
+            // Legacy
+            school_name: "",
+            major: "",
+            degree: "",
+          })),
         });
-      });
-    }
+      }
 
-    if (awards && awards.length > 0) {
-      awards.forEach((award: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
-          type: "AWARD",
-          name_kr: award.name ? String(award.name) : "Unknown Award",
-          name_en: award.name_en ? String(award.name_en) : undefined,
-          description_kr: award.issuer ? String(award.issuer) : undefined,
-          description_en: award.issuer_en ? String(award.issuer_en) : undefined,
-          date: award.date ? String(award.date) : undefined,
+      // Save skills
+      const skills = translatedData.skills || [];
+      if (skills && skills.length > 0) {
+        const validSkills = skills
+          .filter((skill: any) => {
+            if (typeof skill === "string") return skill.trim().length > 0;
+            if (typeof skill === "object" && (skill.name || skill.name_source))
+              return true;
+            return false;
+          })
+          .map((skill: any, index: number) => {
+            // Handle both string and object formats
+            let name_source = "";
+            let name_target = "";
+
+            if (typeof skill === "string") {
+              name_source = String(skill);
+              name_target = String(skill);
+            } else {
+              name_source = skill.name_source || skill.name || "Unknown Skill";
+              name_target = skill.name_target || skill.name || name_source;
+            }
+
+            return {
+              id: crypto.randomUUID(),
+              resume_id: resumeId,
+              name: name_source,
+              name_source: name_source,
+              name_target: name_target,
+              order: index,
+            };
+          });
+
+        if (validSkills.length > 0) {
+          await tx.skill.createMany({
+            data: validSkills,
+          });
+        }
+      }
+
+      // Save additional items
+      const { certifications, awards, languages } = translatedData;
+      const additionalItemsData: any[] = [];
+
+      if (certifications && certifications.length > 0) {
+        certifications.forEach((cert: any) => {
+          additionalItemsData.push({
+            id: crypto.randomUUID(),
+            resume_id: resumeId, // FK replaced
+            type: "CERTIFICATION",
+            name_source: cert.name_source
+              ? String(cert.name_source)
+              : "Unknown",
+            name_target: cert.name_target
+              ? String(cert.name_target)
+              : undefined,
+            description_source: cert.date ? String(cert.date) : undefined, // Mapping date to description if needed
+            name_kr: "", // Legacy
+          });
         });
-      });
-    }
+      }
 
-    if (languages && languages.length > 0) {
-      languages.forEach((lang: any) => {
-        additionalItemsData.push({
-          resumeId: resumeId,
-          type: "LANGUAGE",
-          name_kr: lang.name ? String(lang.name) : "Unknown Language",
-          name_en: lang.name_en ? String(lang.name_en) : undefined,
-          description_kr: lang.level ? String(lang.level) : undefined,
-          description_en: lang.score ? String(lang.score) : undefined,
-          date: undefined,
+      if (awards && awards.length > 0) {
+        awards.forEach((award: any) => {
+          additionalItemsData.push({
+            id: crypto.randomUUID(),
+            resume_id: resumeId, // FK replaced
+            type: "AWARD",
+            name_source: award.name_source
+              ? String(award.name_source)
+              : "Unknown",
+            name_target: award.name_target
+              ? String(award.name_target)
+              : undefined,
+            description_source: award.date ? String(award.date) : undefined,
+            name_kr: "", // Legacy
+          });
         });
+      }
+
+      if (languages && languages.length > 0) {
+        languages.forEach((lang: any) => {
+          additionalItemsData.push({
+            id: crypto.randomUUID(),
+            resume_id: resumeId, // FK replaced
+            type: "LANGUAGE",
+            name_source: lang.name_source
+              ? String(lang.name_source)
+              : "Unknown",
+            name_target: lang.name_target
+              ? String(lang.name_target)
+              : undefined,
+            description_source: lang.level ? String(lang.level) : undefined,
+            name_kr: "", // Legacy
+          });
+        });
+      }
+
+      if (additionalItemsData.length > 0) {
+        await tx.additionalItem.createMany({
+          data: additionalItemsData.map((item, index) => ({
+            ...item,
+            order: index,
+          })),
+        });
+      }
+
+      // Update resume status
+      const personalInfo = translatedData.personal_info || {};
+      await tx.resume.update({
+        where: { id: resumeId },
+        data: {
+          status: "COMPLETED",
+          current_step: "EDIT",
+          name_source: personalInfo.name_source || "",
+          name_target: personalInfo.name_target || "",
+          email: personalInfo.email || "",
+          phone: personalInfo.phone || "",
+          links: personalInfo.links || [],
+          summary_source: personalInfo.summary_source || "",
+          summary_target: personalInfo.summary_target || "",
+
+          // Legacy fallbacks
+          name_kr: "",
+          title: `${personalInfo.name_source || "Resume"}`,
+        },
       });
-    }
-
-    if (additionalItemsData.length > 0) {
-      await (prisma as any).additionalItem.createMany({
-        data: additionalItemsData.map((item, index) => ({
-          ...item,
-          order: index,
-        })),
-      });
-    }
-
-    // Update resume status to COMPLETED and save personal info & summary
-    const personalInfo = translatedData.personal_info || {};
-
-    await (prisma as any).resume.update({
-      where: { id: resumeId },
-      data: {
-        status: "COMPLETED",
-        current_step: "EDIT",
-        name_kr: personalInfo.name_kr || "",
-        name_en: personalInfo.name_en || "",
-        email: personalInfo.email || "",
-        phone: personalInfo.phone || "",
-        links: personalInfo.links || [],
-        summary: translatedData.professional_summary || "",
-        summary_kr: translatedData.professional_summary_kr || "",
-      },
     });
 
     // Deduct credits
     await deductCredits(session.user.id, cost, "이력서 재번역");
 
     console.log(
-      `[Translate API] All data saved successfully. Deducted ${cost} credits.`
+      `[Translate API] All data saved successfully. Deducted ${cost} credits.`,
     );
 
     return NextResponse.json({
@@ -335,7 +442,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: error.message || "Failed to translate resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

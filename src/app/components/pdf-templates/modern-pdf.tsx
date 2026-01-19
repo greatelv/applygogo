@@ -10,6 +10,7 @@ import {
   Svg,
   Path,
 } from "@react-pdf/renderer";
+import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 // Export a function to register fonts with dynamic base URL
 export const registerFonts = () => {
@@ -40,21 +41,24 @@ export const registerFonts = () => {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8 (32px) -> ~24pt
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm (14px) -> ~10.5pt
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 24, // mb-8 (32px) -> 24pt
+    marginBottom: 16,
   },
   name: {
-    fontSize: 27, // text-4xl
+    fontSize: 32, // text-5xl (48px) ~ 36pt. Let's go 32 to be safe but prominent
     fontWeight: "bold",
-    marginBottom: 12, // Increased from 6pt to 12pt to prevent overlap
+    marginBottom: 12,
     color: "#111827",
-    lineHeight: 1.2, // Increased line height slightly
+    lineHeight: 1.2,
   },
   contactRow: {
     flexDirection: "row",
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 24, // mb-8 (32px) -> 24pt
+    marginBottom: 16,
   },
   sectionTitleRow: {
     flexDirection: "row",
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
   },
   expContainer: {
     // to simulate space-y-5
-    gap: 15, // 20px -> 15pt
+    gap: 10,
   },
   expHeader: {
     flexDirection: "row",
@@ -159,7 +163,7 @@ const styles = StyleSheet.create({
   eduItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12, // space-y-4
+    marginBottom: 8,
   },
   linkText: {
     fontSize: 10.5,
@@ -195,12 +199,19 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface ModernPdfProps {
   personalInfo?: any;
   experiences?: any[];
   educations?: any[];
   skills?: any[];
   additionalItems?: any[];
+  locale?: AppLocale;
 }
 
 export const ModernPdf = ({
@@ -209,23 +220,53 @@ export const ModernPdf = ({
   educations = [],
   skills = [],
   additionalItems = [],
+  locale = "ko",
 }: ModernPdfProps) => {
+  // Use centralized logic: ko locale → English (_target), en/ja locale → Korean (_source)
+  const useTarget = shouldUseTargetData(locale);
+  const isKo = !useTarget; // Inverted for compatibility with existing template logic
+
   // Filter out empty items first
   const validExperiences = experiences.filter(
-    (exp) => exp.company?.trim() || exp.companyEn?.trim()
+    (exp) => exp.company_name_source?.trim() || exp.company_name_target?.trim(),
   );
   const validEducations = educations.filter(
-    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+    (edu) => edu.school_name_source?.trim() || edu.school_name_target?.trim(),
   );
   const validItems = additionalItems.filter(
-    (i) => i.name_kr?.trim() || i.name_en?.trim()
+    (i) => i.name_source?.trim() || i.name_target?.trim(),
   );
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
   const languages = validItems.filter((i) => i.type === "LANGUAGE");
-  const others = validItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
-  );
+
+  const formatDateLocale = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const cleanDate = dateStr.trim();
+    if (["-", "present", "현재"].includes(cleanDate.toLowerCase())) {
+      if (["present", "현재"].includes(cleanDate.toLowerCase()))
+        return isKo ? "현재" : "Present";
+      return "";
+    }
+
+    try {
+      const [year, month] = cleanDate.split(/[-.]/);
+      if (!year || !month) return cleanDate;
+      const date = new Date(parseInt(year), parseInt(month) - 1);
+      if (isNaN(date.getTime())) return cleanDate;
+
+      if (isKo) {
+        return `${year}.${month.padStart(2, "0")}`;
+      }
+
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
+    } catch (e) {
+      return cleanDate;
+    }
+  };
 
   return (
     <Document>
@@ -233,7 +274,8 @@ export const ModernPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+            {(isKo ? personalInfo?.name_source : personalInfo?.name_target) ||
+              "이름 없음"}
           </Text>
           <View style={styles.contactRow}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -255,7 +297,7 @@ export const ModernPdf = ({
                     }}
                   >
                     <Text>•</Text>
-                    <Link src={link.url} style={styles.linkText}>
+                    <Link src={ensureUrl(link.url)} style={styles.linkText}>
                       <Text style={{ color: "#374151", fontWeight: "bold" }}>
                         {link.label}:{" "}
                       </Text>
@@ -268,13 +310,17 @@ export const ModernPdf = ({
         </View>
 
         {/* Summary */}
-        {personalInfo?.summary && (
+        {(personalInfo?.summary_source || personalInfo?.summary_target) && (
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "핵심 요약" : "PROFESSIONAL SUMMARY"}
+              </Text>
             </View>
-            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+            <Text style={styles.summaryText}>
+              {isKo ? personalInfo.summary_source : personalInfo.summary_target}
+            </Text>
           </View>
         )}
 
@@ -283,36 +329,48 @@ export const ModernPdf = ({
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "경력 사항" : "WORK EXPERIENCE"}
+              </Text>
             </View>
             <View style={styles.expContainer}>
               {validExperiences.map((exp) => (
-                // @ts-ignore
-                <View key={exp.id}>
-                  <View style={styles.expHeader}>
-                    <View>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
-                      <Text style={styles.position}>{exp.positionEn}</Text>
-                    </View>
-                    <Text style={styles.period}>
-                      {formatDate(exp.period.split(" - ")[0])} -{" "}
-                      {formatDate(exp.period.split(" - ")[1])}
-                    </Text>
-                  </View>
-                  <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <View key={idx} style={styles.bulletItem}>
-                        <View style={styles.bulletIconContainer}>
-                          <Svg width={7} height={7} viewBox="0 0 24 24">
-                            <Path d="M8 5v14l11-7z" fill="#2563eb" />
-                          </Svg>
-                        </View>
-                        <Text style={styles.bulletText}>{bullet}</Text>
+                <React.Fragment key={exp.id}>
+                  <View>
+                    <View style={styles.expHeader}>
+                      <View>
+                        <Text style={styles.companyName}>
+                          {isKo
+                            ? exp.company_name_source
+                            : exp.company_name_target}
+                        </Text>
+                        <Text style={styles.position}>
+                          {isKo ? exp.role_source : exp.role_target}
+                        </Text>
                       </View>
-                    ))}
+                      <Text style={styles.period}>
+                        {formatDateLocale(exp.period.split(" - ")[0])} -{" "}
+                        {formatDateLocale(exp.period.split(" - ")[1])}
+                      </Text>
+                    </View>
+                    <View style={styles.bulletList}>
+                      {(isKo ? exp.bullets_source : exp.bullets_target)?.map(
+                        (bullet: string, idx: number) => (
+                          <React.Fragment key={idx}>
+                            <View style={styles.bulletItem}>
+                              <View style={styles.bulletIconContainer}>
+                                <Svg width={7} height={7} viewBox="0 0 24 24">
+                                  <Path d="M8 5v14l11-7z" fill="#2563eb" />
+                                </Svg>
+                              </View>
+                              <Text style={styles.bulletText}>{bullet}</Text>
+                            </View>
+                          </React.Fragment>
+                        ),
+                      )}
+                    </View>
                   </View>
-                </View>
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -323,12 +381,16 @@ export const ModernPdf = ({
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>TECHNICAL SKILLS</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "보유 기술" : "TECHNICAL SKILLS"}
+              </Text>
             </View>
             <View style={styles.skillRow}>
               {skills.map((skill) => (
                 <React.Fragment key={skill.id}>
-                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                  <Text style={styles.skillBadge}>
+                    {skill.name_target || skill.name_source || skill.name}
+                  </Text>
                 </React.Fragment>
               ))}
             </View>
@@ -340,39 +402,43 @@ export const ModernPdf = ({
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>EDUCATION</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "학력 사항" : "EDUCATION"}
+              </Text>
             </View>
             <View style={{ gap: 12 }}>
               {validEducations.map((edu) => (
-                // @ts-ignore
-                <View key={edu.id} style={styles.eduItem}>
-                  <View>
-                    <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
-                    </Text>
-                    {((edu.degree_en && edu.degree_en !== "-") ||
-                      (edu.degree && edu.degree !== "-") ||
-                      (edu.major_en && edu.major_en !== "-") ||
-                      (edu.major && edu.major !== "-")) && (
-                      <Text
-                        style={{
-                          fontSize: 10.5,
-                          color: "#4b5563",
-                          marginTop: 2,
-                        }}
-                      >
-                        {edu.degree_en || edu.degree}
-                        {(edu.degree_en || edu.degree) &&
-                          (edu.major_en || edu.major) &&
-                          ", "}
-                        {edu.major_en || edu.major}
+                <React.Fragment key={edu.id}>
+                  <View style={styles.eduItem}>
+                    <View>
+                      <Text style={styles.companyName}>
+                        {isKo ? edu.school_name_source : edu.school_name_target}
                       </Text>
-                    )}
+                      {((edu.degree_target && edu.degree_target !== "-") ||
+                        (edu.degree_source && edu.degree_source !== "-") ||
+                        (edu.major_target && edu.major_target !== "-") ||
+                        (edu.major_source && edu.major_source !== "-")) && (
+                        <Text
+                          style={{
+                            fontSize: 10.5,
+                            color: "#4b5563",
+                            marginTop: 2,
+                          }}
+                        >
+                          {isKo ? edu.degree_source : edu.degree_target}
+                          {(isKo ? edu.degree_source : edu.degree_target) &&
+                            (isKo ? edu.major_source : edu.major_target) &&
+                            ", "}
+                          {isKo ? edu.major_source : edu.major_target}
+                        </Text>
+                      )}
+                    </View>
+                    <Text style={styles.period}>
+                      {formatDateLocale(edu.start_date)} -{" "}
+                      {formatDateLocale(edu.end_date)}
+                    </Text>
                   </View>
-                  <Text style={styles.period}>
-                    {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
-                  </Text>
-                </View>
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -385,7 +451,9 @@ export const ModernPdf = ({
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <View style={styles.sectionTitleBar} />
-              <Text style={styles.sectionTitle}>ADDITIONAL INFORMATION</Text>
+              <Text style={styles.sectionTitle}>
+                {isKo ? "추가 정보" : "ADDITIONAL INFORMATION"}
+              </Text>
             </View>
             <View style={{ gap: 8 }}>
               {certifications.length > 0 && (
@@ -397,12 +465,14 @@ export const ModernPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Certifications
+                    {isKo ? "자격증" : "Certifications"}
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_en || cert.name;
-                    const desc = cert.description_en || cert.description;
-                    const date = formatDate(cert.date);
+                    const name = isKo ? cert.name_source : cert.name_target;
+                    const desc = isKo
+                      ? cert.description_source
+                      : cert.description_target;
+                    const date = formatDateLocale(cert.date);
                     return (
                       <React.Fragment key={i}>
                         <Text style={{ fontSize: 10.5, color: "#374151" }}>
@@ -424,12 +494,14 @@ export const ModernPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Awards
+                    {isKo ? "수상 경력" : "Awards"}
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name = award.name_en || award.name;
-                    const desc = award.description_en || award.description;
-                    const date = formatDate(award.date);
+                    const name = isKo ? award.name_source : award.name_target;
+                    const desc = isKo
+                      ? award.description_source
+                      : award.description_target;
+                    const date = formatDateLocale(award.date);
                     return (
                       <React.Fragment key={i}>
                         <Text style={{ fontSize: 10.5, color: "#374151" }}>
@@ -451,14 +523,16 @@ export const ModernPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Languages
+                    {isKo ? "외국어" : "Languages"}
                   </Text>
                   <View
                     style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => {
-                      const name = lang.name_en || lang.name;
-                      const desc = lang.description_en || lang.description;
+                      const name = isKo ? lang.name_source : lang.name_target;
+                      const desc = isKo
+                        ? lang.description_source
+                        : lang.description_target;
                       return (
                         <React.Fragment key={i}>
                           <Text style={{ fontSize: 10.5, color: "#374151" }}>

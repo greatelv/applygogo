@@ -13,7 +13,7 @@ import { getRefinementPrompt } from "@/lib/prompts";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -25,7 +25,7 @@ export async function POST(
 
     // 1. Verify resume ownership
     const resume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!resume) {
@@ -38,7 +38,7 @@ export async function POST(
     if (!extractedData) {
       return NextResponse.json(
         { error: "Extracted data is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -64,13 +64,14 @@ export async function POST(
       extractedData.work_experiences.length > 0
     ) {
       console.log(
-        "[Refine API] Starting refinement (Korean-based selection)..."
+        "[Refine API] Starting refinement (Korean-based selection)...",
       );
 
-      const refinementPrompt = getRefinementPrompt(extractedData);
+      const appLocale = (resume.app_locale || "ko") as "ko" | "en" | "ja";
+      const refinementPrompt = getRefinementPrompt(extractedData, appLocale);
       const refinementResult = await generateContentWithRetry(
         refinementModel,
-        refinementPrompt
+        refinementPrompt,
       );
 
       const refinedText = refinementResult.response.text();
@@ -78,15 +79,72 @@ export async function POST(
 
       const totalBullets =
         refinedData.work_experiences?.reduce(
-          (sum: number, exp: any) => sum + (exp.bullets_kr?.length || 0),
-          0
+          (sum: number, exp: any) => sum + (exp.bullets_source?.length || 0),
+          0,
         ) || 0;
 
       console.log(
         `[Refine API] Complete. ${
           refinedData.work_experiences?.length || 0
-        } companies, ${totalBullets} bullets selected.`
+        } companies, ${totalBullets} bullets selected.`,
       );
+
+      // Data Validation: Ensure personal_info fields are preserved
+      if (!refinedData.personal_info) {
+        refinedData.personal_info = extractedData.personal_info || {};
+      } else {
+        const extractedPersonalInfo = extractedData.personal_info || {};
+
+        // Preserve fields that AI might have omitted
+        if (!refinedData.personal_info.email && extractedPersonalInfo.email) {
+          refinedData.personal_info.email = extractedPersonalInfo.email;
+          console.log("[Refine API] Restored email from extracted data");
+        }
+
+        if (!refinedData.personal_info.phone && extractedPersonalInfo.phone) {
+          refinedData.personal_info.phone = extractedPersonalInfo.phone;
+          console.log("[Refine API] Restored phone from extracted data");
+        }
+
+        if (!refinedData.personal_info.links && extractedPersonalInfo.links) {
+          refinedData.personal_info.links = extractedPersonalInfo.links;
+          console.log("[Refine API] Restored links from extracted data");
+        }
+
+        if (
+          !refinedData.personal_info.summary_source &&
+          (extractedPersonalInfo.summary_source ||
+            extractedPersonalInfo.summary)
+        ) {
+          refinedData.personal_info.summary_source =
+            extractedPersonalInfo.summary_source ||
+            extractedPersonalInfo.summary;
+          console.log(
+            "[Refine API] Restored summary_source from extracted data",
+          );
+        }
+
+        // Normalize Summary in Refined Data
+        if (!refinedData.personal_info.summary_source) {
+          refinedData.personal_info.summary_source =
+            refinedData.personal_info.summary ||
+            refinedData.personal_info.summary_kr ||
+            "";
+        }
+
+        // Normalize Links
+        if (
+          refinedData.personal_info.links &&
+          Array.isArray(refinedData.personal_info.links)
+        ) {
+          refinedData.personal_info.links = refinedData.personal_info.links.map(
+            (link: any) => ({
+              label: link.label || link.name || link.title || "Link",
+              url: link.url || link.link || link.href || "",
+            }),
+          );
+        }
+      }
     } else {
       console.log("[Refine API] Skipped (no work experiences to refine)");
     }
@@ -114,7 +172,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: error.message || "Failed to refine resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import * as PortOne from "@portone/browser-sdk/v2";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge"; // Badge 추가
+import { Badge } from "./ui/badge";
 import { Loader2, Zap, Calendar, CreditCard, Sparkles } from "lucide-react";
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
 import { cn } from "@/lib/utils";
@@ -38,41 +39,91 @@ export function UpgradeModal({
   portoneConfig,
 }: UpgradeModalProps) {
   const router = useRouter();
+  const t = useTranslations("upgradeModal");
+  const tc = useTranslations("common");
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
   const [purchasingProduct, setPurchasingProduct] = useState<string | null>(
-    null
+    null,
   );
 
   const handlePurchase = async (productType: "PASS_7DAY" | "PASS_30DAY") => {
+    toast.info(
+      locale === "ko"
+        ? "현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요."
+        : "Payment system is under review. Please try again after official launch.",
+    );
+    return;
     if (purchasingProduct) return;
     setPurchasingProduct(productType);
 
     try {
       const config = PLAN_PRODUCTS[productType];
+      const price = isGlobal ? (config as any).priceGlobal : config.price;
+      const currency = isGlobal ? "USD" : "KRW";
 
-      const response = await PortOne.requestPayment({
-        storeId: portoneConfig.storeId,
-        channelKey: portoneConfig.channelKey,
-        paymentId: `payment-${Date.now()}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-        orderName: config.name,
-        totalAmount: config.price,
-        currency: "KRW",
-        payMethod: "EASY_PAY",
-        customer: {
-          customerId: userId,
-          fullName: userName || undefined,
-          email: userEmail || undefined,
-        },
-      });
+      let response: any;
 
-      if (response.code != null) {
-        // 사용자가 취소했거나 에러 발생
+      if (isGlobal) {
+        // Small delay to ensure the container is ready
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        // Restore Promise wrapping for loadPaymentUI callbacks
+        response = await new Promise((resolve, reject) => {
+          PortOne.loadPaymentUI(
+            {
+              storeId: portoneConfig.storeId,
+              channelKey:
+                (portoneConfig as any).paypalChannelKey ||
+                portoneConfig.channelKey,
+              paymentId: `payment-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`,
+              orderName: config.name,
+              totalAmount: price * 100, // USD requires cents
+              currency: "USD",
+              productType: "DIGITAL",
+              uiType: "PAYPAL_SPB",
+              customer: {
+                customerId: userId,
+                fullName: userName || undefined,
+                email: userEmail || undefined,
+              },
+            },
+            {
+              onPaymentSuccess: (res) => resolve(res),
+              onPaymentFail: (err) =>
+                reject(new Error(err.message || "Payment failed")),
+            },
+          );
+        });
+      } else {
+        // Standard payment for KR users
+        response = await PortOne.requestPayment({
+          storeId: portoneConfig.storeId,
+          channelKey: portoneConfig.channelKey,
+          paymentId: `payment-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`,
+          orderName: config.name,
+          totalAmount: price,
+          currency: currency,
+          payMethod: "EASY_PAY",
+          customer: {
+            customerId: userId,
+            fullName: userName || undefined,
+            email: userEmail || undefined,
+          },
+        });
+      }
+
+      if (response?.code != null) {
+        // User cancelled or error occurred (for requestPayment mainly)
         setPurchasingProduct(null);
         return;
       }
 
-      // 서버 검증
+      // Server verification
       const verifyRes = await fetch("/api/payment/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,15 +131,15 @@ export function UpgradeModal({
       });
 
       if (!verifyRes.ok) {
-        throw new Error("결제 검증에 실패했습니다.");
+        throw new Error(t("verifyError"));
       }
 
-      toast.success(`${config.name} 구매가 완료되었습니다!`);
+      toast.success(t("success", { name: config.name }));
       onOpenChange(false);
       router.refresh();
     } catch (error: any) {
       console.error(error);
-      toast.error(`오류: ${error.message}`);
+      toast.error(t("error", { message: error.message }));
     } finally {
       setPurchasingProduct(null);
     }
@@ -101,16 +152,13 @@ export function UpgradeModal({
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
               <Sparkles className="size-5 text-primary" />
-              이용권 구매하고 템플릿 잠금 해제
+              {t("title")}
             </DialogTitle>
             <DialogDescription className="text-base mt-2">
-              프리미엄 템플릿을 사용하려면 이용권이 필요합니다. <br />
-              <span className="text-foreground font-medium">
-                Split View 편집
-              </span>
-              과{" "}
-              <span className="text-foreground font-medium">재번역 무제한</span>{" "}
-              혜택도 함께 누리세요!
+              {t.rich("description", {
+                br: () => <br />,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -121,26 +169,37 @@ export function UpgradeModal({
             <div className="relative rounded-xl border bg-card p-6 shadow-sm transition-all hover:border-primary/50 flex flex-col">
               <div className="mb-4">
                 <h3 className="font-semibold text-lg text-foreground">
-                  7일 이용권
+                  {t("plans.pass7.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  단기 집중 준비에 적합
+                  {t("plans.pass7.subtitle")}
                 </p>
               </div>
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
+                  {isGlobal && (
+                    <span className="text-lg font-medium">{t("currency")}</span>
+                  )}
                   <span className="text-3xl font-bold">
-                    {PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                   </span>
-                  <span className="text-lg font-medium">원</span>
+                  {!isGlobal && (
+                    <span className="text-lg font-medium">{t("currency")}</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}원
+                    {isGlobal && t("currency")}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal
+                      : PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
+                    {!isGlobal && t("currency")}
                   </span>
                   <Badge variant="secondary" className="text-xs font-medium">
-                    50% OFF
+                    50% {t("off")}
                   </Badge>
                 </div>
               </div>
@@ -149,21 +208,24 @@ export function UpgradeModal({
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground">
-                    {PLAN_PRODUCTS.PASS_7DAY.credits}
-                  </span>{" "}
-                  크레딧
+                    {t("plans.pass7.features.0", {
+                      credits: PLAN_PRODUCTS.PASS_7DAY.credits,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary shrink-0" />
-                  모든 고급 템플릿 사용
+                  {t("plans.pass7.features.1")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
-                  재번역 무제한
+                  {t("plans.pass7.features.2")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary shrink-0" />
-                  {PLAN_PRODUCTS.PASS_7DAY.days}일간 이용
+                  {t("plans.pass7.features.3", {
+                    days: PLAN_PRODUCTS.PASS_7DAY.days,
+                  })}
                 </li>
               </ul>
 
@@ -177,7 +239,7 @@ export function UpgradeModal({
                 {purchasingProduct === "PASS_7DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "구매하기"
+                  t("cta")
                 )}
               </Button>
             </div>
@@ -186,32 +248,47 @@ export function UpgradeModal({
             <div className="relative rounded-xl border border-primary bg-primary/5 p-6 shadow-md transition-all flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-primary text-primary-foreground hover:bg-primary px-4 py-1">
-                  추천
+                  {t("plans.pass30.badge")}
                 </Badge>
               </div>
 
               <div className="mb-4 mt-2">
                 <h3 className="font-semibold text-lg text-primary">
-                  30일 이용권
+                  {t("plans.pass30.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  여유로운 이직 준비
+                  {t("plans.pass30.subtitle")}
                 </p>
               </div>
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
+                  {isGlobal && (
+                    <span className="text-lg font-medium text-primary">
+                      {t("currency")}
+                    </span>
+                  )}
                   <span className="text-3xl font-bold text-primary">
-                    {PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
-                  <span className="text-lg font-medium text-primary">원</span>
+                  {!isGlobal && (
+                    <span className="text-lg font-medium text-primary">
+                      {t("currency")}
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}원
+                    {isGlobal && t("currency")}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal
+                      : PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
+                    {!isGlobal && t("currency")}
                   </span>
                   <Badge variant="destructive" className="text-xs font-medium">
-                    57% OFF
+                    57% {t("off")}
                   </Badge>
                 </div>
               </div>
@@ -220,21 +297,24 @@ export function UpgradeModal({
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-foreground font-medium">
-                    {PLAN_PRODUCTS.PASS_30DAY.credits}
-                  </span>{" "}
-                  크레딧
+                    {t("plans.pass30.features.0", {
+                      credits: PLAN_PRODUCTS.PASS_30DAY.credits,
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-primary shrink-0" />
-                  모든 고급 템플릿 사용
+                  {t("plans.pass30.features.1")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-primary shrink-0" />
-                  재번역 무제한
+                  {t("plans.pass30.features.2")}
                 </li>
                 <li className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary shrink-0" />
-                  {PLAN_PRODUCTS.PASS_30DAY.days}일간 이용
+                  {t("plans.pass30.features.3", {
+                    days: PLAN_PRODUCTS.PASS_30DAY.days,
+                  })}
                 </li>
               </ul>
 
@@ -247,7 +327,7 @@ export function UpgradeModal({
                 {purchasingProduct === "PASS_30DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "구매하기"
+                  t("cta")
                 )}
               </Button>
             </div>
@@ -255,11 +335,48 @@ export function UpgradeModal({
 
           <div className="mt-6 p-4 bg-muted/50 border border-border rounded-lg">
             <p className="text-xs text-muted-foreground text-center break-keep">
-              💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 무료
-              플랜으로 전환되니 안심하고 구매하세요.
+              {t("notice")}
             </p>
           </div>
         </div>
+
+        {/* PayPal SPB Container Overlay (for Modal) */}
+        {purchasingProduct && isGlobal && (
+          <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-sm w-full shadow-2xl space-y-6">
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-extrabold text-gray-900">
+                  {tc("labels.paypalPayment") || "PayPal Payment"}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {tc("notices.paypalInstructions") ||
+                    "Please select your preferred payment method below."}
+                </p>
+              </div>
+              <div
+                className="portone-ui-container w-full bg-white transition-all overflow-hidden"
+                data-portone-ui-type="paypal-spb"
+              >
+                <div className="flex flex-col items-center justify-center min-h-[160px] gap-2 p-4">
+                  <Loader2 className="size-6 animate-spin text-gray-400" />
+                  <span className="text-xs text-gray-400">
+                    Loading PayPal...
+                  </span>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                {tc("cancel")}
+              </Button>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -23,11 +23,23 @@ export async function POST(req: NextRequest) {
     if (!hasCredits) {
       return NextResponse.json(
         { error: "크레딧이 부족합니다." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
-    const prompt = getTranslationPrompt(texts, type);
+    const prompt = `
+You are a professional translator specialized in Tech Resumes.
+Translate the following list of skills or texts into English.
+If the text is already in English, keep it or refine it slightly for professionalism.
+Ensure technical terms are capitalized correctly (e.g., "mysql" -> "MySQL", "react" -> "React").
+
+Input:
+${JSON.stringify(texts)}
+
+Output Format:
+Return ONLY a JSON array of strings. Do not include markdown code blocks.
+Example: ["Java", "Spring Boot", "Machine Learning"]
+`;
 
     const result = await generateContentWithRetry(translationModel, prompt);
     const responseText = result.response.text();
@@ -47,7 +59,7 @@ export async function POST(req: NextRequest) {
     await deductCredits(
       session.user.id,
       cost,
-      `이력서 부분 재번역 ${resumeId ? `(Resume ID: ${resumeId})` : ""}`
+      `이력서 부분 재번역 ${resumeId ? `(Resume ID: ${resumeId})` : ""}`,
     );
 
     return NextResponse.json({ translatedTexts });
@@ -55,7 +67,7 @@ export async function POST(req: NextRequest) {
     console.error("Translation API Error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to translate" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

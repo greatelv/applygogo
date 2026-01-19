@@ -6,7 +6,7 @@ import { PLAN_PRODUCTS, getProductByPrice } from "@/lib/constants/plans";
  */
 export function calculateCost(
   action: "GENERATE" | "RETRANSLATE" | "DOWNLOAD",
-  planType: string
+  planType: string,
 ): number {
   if (action === "GENERATE") {
     return 5; // 모든 사용자 동일
@@ -27,11 +27,11 @@ export function calculateCost(
 
 /**
  * [BETA PROMOTION]
- * 신규 가입 유저에게 베타 기간( ~ 2026.01.17 23:59:59) 한정으로
+ * 신규 가입 유저에게 베타 기간( ~ 2026.01.25 23:59:59) 한정으로
  * 3일 무제한 이용권(50 크레딧 포함)을 지급합니다.
  */
 export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
-  const BENEFIT_END_DATE = new Date("2026-01-17T23:59:59+09:00"); // KST
+  const BENEFIT_END_DATE = new Date("2026-01-25T23:59:59+09:00"); // KST
   const now = new Date();
 
   // 프로모션 기간이 지났으면 지급하지 않음
@@ -51,14 +51,14 @@ export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
  */
 export async function checkCredits(
   userId: string,
-  cost: number
+  cost: number,
 ): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
       credits: true,
-      planType: true,
-      planExpiresAt: true,
+      plan_type: true,
+      plan_expires_at: true,
     },
   });
 
@@ -74,7 +74,7 @@ export async function checkCredits(
 export async function deductCredits(
   userId: string,
   amount: number,
-  description: string
+  description: string,
 ): Promise<void> {
   await prisma.$transaction(async (tx) => {
     // 1. 유저 정보 및 유료 크레딧 버킷 조회
@@ -89,11 +89,11 @@ export async function deductCredits(
 
     const paidBuckets = await tx.paymentHistory.findMany({
       where: {
-        userId: userId,
+        user_id: userId,
         status: "PAID",
-        remainingCredits: { gt: 0 },
+        remaining_credits: { gt: 0 },
       },
-      orderBy: { paidAt: "asc" }, // FIFO: 먼저 결제한 것부터
+      orderBy: { paid_at: "asc" }, // FIFO: 먼저 결제한 것부터
     });
 
     // 2. 소진 로직
@@ -101,8 +101,8 @@ export async function deductCredits(
 
     // 전체 결제 버킷 잔액 합계 계산
     const totalPaidCredits = paidBuckets.reduce(
-      (sum, b) => sum + b.remainingCredits,
-      0
+      (sum, b) => sum + b.remaining_credits,
+      0,
     );
     const freeCredits = user.credits - totalPaidCredits;
 
@@ -118,14 +118,14 @@ export async function deductCredits(
         if (remainingToDeduct <= 0) break;
 
         const deductFromThisBucket = Math.min(
-          bucket.remainingCredits,
-          remainingToDeduct
+          bucket.remaining_credits,
+          remainingToDeduct,
         );
 
         await tx.paymentHistory.update({
           where: { id: bucket.id },
           data: {
-            remainingCredits: {
+            remaining_credits: {
               decrement: deductFromThisBucket,
             },
           },
@@ -147,7 +147,8 @@ export async function deductCredits(
 
     await tx.usageLog.create({
       data: {
-        userId,
+        id: crypto.randomUUID(),
+        user: { connect: { id: userId } },
         amount,
         description,
       },
@@ -162,7 +163,7 @@ export async function deductCredits(
 export async function grantPass(
   userId: string,
   passType: "PASS_7DAY" | "PASS_30DAY" | "PASS_BETA_3DAY",
-  client: any = prisma
+  client: any = prisma,
 ): Promise<void> {
   const planConfig = PLAN_PRODUCTS[passType];
   if (!planConfig) {
@@ -172,15 +173,15 @@ export async function grantPass(
   // 현재 사용자 상태 조회
   const user = await client.user.findUnique({
     where: { id: userId },
-    select: { planExpiresAt: true, planType: true },
+    select: { plan_expires_at: true, plan_type: true },
   });
 
   const now = new Date();
   let baseDate = now;
 
   // 이미 유효한 이용권이 있다면 그 시점부터 연장
-  if (user?.planExpiresAt && user.planExpiresAt > now) {
-    baseDate = new Date(user.planExpiresAt);
+  if (user?.plan_expires_at && user.plan_expires_at > now) {
+    baseDate = new Date(user.plan_expires_at);
   }
 
   const newExpiresAt = new Date(baseDate);
@@ -189,8 +190,8 @@ export async function grantPass(
   await client.user.update({
     where: { id: userId },
     data: {
-      planType: passType, // 항상 최신 구매한 플랜 타입으로 갱신
-      planExpiresAt: newExpiresAt,
+      plan_type: passType, // 항상 최신 구매한 플랜 타입으로 갱신
+      plan_expires_at: newExpiresAt,
       credits: {
         increment: planConfig.credits,
       },
@@ -204,7 +205,7 @@ export async function grantPass(
 export async function refillCredits(
   userId: string,
   amount: number,
-  client: any = prisma
+  client: any = prisma,
 ): Promise<void> {
   await client.user.update({
     where: { id: userId },
@@ -224,14 +225,14 @@ export async function checkLowCredit(userId: string): Promise<boolean> {
     where: { id: userId },
     select: {
       credits: true,
-      planExpiresAt: true,
+      plan_expires_at: true,
     },
   });
 
   if (!user) return false;
 
   const now = new Date();
-  const isPaidActive = user.planExpiresAt && user.planExpiresAt > now;
+  const isPaidActive = user.plan_expires_at && user.plan_expires_at > now;
 
   return isPaidActive && user.credits < 5;
 }
@@ -242,13 +243,13 @@ export async function checkLowCredit(userId: string): Promise<boolean> {
 export async function revokePass(
   userId: string,
   creditsToDeduct: number,
-  client: any = prisma
+  client: any = prisma,
 ): Promise<void> {
   await client.user.update({
     where: { id: userId },
     data: {
-      planType: "FREE",
-      planExpiresAt: null,
+      plan_type: "FREE",
+      plan_expires_at: null,
       credits: {
         decrement: creditsToDeduct,
       },
@@ -268,9 +269,9 @@ export async function checkAndUpdatePlanStatus(userId: string): Promise<{
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      planType: true,
+      plan_type: true,
       credits: true,
-      planExpiresAt: true,
+      plan_expires_at: true,
     },
   });
 
@@ -282,15 +283,15 @@ export async function checkAndUpdatePlanStatus(userId: string): Promise<{
 
   // 만료일이 지났다면 FREE로 전환
   if (
-    user.planExpiresAt &&
-    user.planExpiresAt <= now &&
-    user.planType !== "FREE"
+    user.plan_expires_at &&
+    user.plan_expires_at <= now &&
+    user.plan_type !== "FREE"
   ) {
     await prisma.user.update({
       where: { id: userId },
       data: {
-        planType: "FREE",
-        planExpiresAt: null,
+        plan_type: "FREE",
+        plan_expires_at: null,
       },
     });
 
@@ -302,9 +303,9 @@ export async function checkAndUpdatePlanStatus(userId: string): Promise<{
   }
 
   return {
-    planType: user.planType,
+    planType: user.plan_type,
     credits: user.credits,
-    planExpiresAt: user.planExpiresAt,
+    planExpiresAt: user.plan_expires_at,
   };
 }
 
@@ -314,7 +315,7 @@ export async function checkAndUpdatePlanStatus(userId: string): Promise<{
  */
 export async function processPaymentSuccess(
   paymentData: any,
-  userEmail: string
+  userEmail: string,
 ) {
   const user = await prisma.user.findUnique({
     where: { email: userEmail },
@@ -327,7 +328,7 @@ export async function processPaymentSuccess(
   // 이미 처리된 결제인지 확인 (Idempotency)
   const existingHistory = await prisma.$queryRawUnsafe<any[]>(
     `SELECT id FROM payment_histories WHERE payment_id = $1 LIMIT 1`,
-    paymentData.id
+    paymentData.id,
   );
 
   if (existingHistory.length > 0) {
@@ -373,7 +374,7 @@ export async function processPaymentSuccess(
       paymentData.receiptUrl || null,
       product.credits,
       product.credits,
-      JSON.stringify(paymentData)
+      JSON.stringify(paymentData),
     );
   });
 

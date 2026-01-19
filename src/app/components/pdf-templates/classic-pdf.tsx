@@ -9,26 +9,30 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { registerFonts } from "./modern-pdf";
+import { shouldUseTargetData, type AppLocale } from "@/lib/resume-language";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 18, // Reduced from 20
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSerifKR",
-    fontSize: 9, // Reduced from 9.5
+    fontSize: 9.5, // Restored to 9.5
     color: "#000000",
     lineHeight: 1.5,
   },
   header: {
-    marginBottom: 16, // Reduced from 18
-    paddingBottom: 12, // Reduced from 14
+    marginBottom: 12,
+    paddingBottom: 10,
     borderBottomWidth: 2,
     borderBottomColor: "#1f2937",
     textAlign: "center",
   },
   name: {
-    fontSize: 18, // Reduced from 20
+    fontSize: 24, // Increased to match text-3xl (30px) ~ 22.5pt -> 24pt
     fontWeight: "bold",
-    marginBottom: 6, // Reduced from 8
+    marginBottom: 8,
     color: "#111827",
     textTransform: "uppercase",
     letterSpacing: 1.5,
@@ -53,7 +57,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   section: {
-    marginBottom: 12, // Reduced from 14
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 10.5, // Reduced from 11
@@ -167,6 +171,7 @@ interface ClassicPdfProps {
   educations?: any[];
   skills?: any[];
   additionalItems?: any[];
+  locale?: AppLocale;
 }
 
 export const ClassicPdf = ({
@@ -175,22 +180,25 @@ export const ClassicPdf = ({
   educations = [],
   skills = [],
   additionalItems = [],
+  locale = "ko",
 }: ClassicPdfProps) => {
+  // Use centralized logic: ko locale → English (_target), en/ja locale → Korean (_source)
+  const useTarget = shouldUseTargetData(locale);
   // Filter out empty items first
   const validExperiences = experiences.filter(
-    (exp) => exp.company?.trim() || exp.companyEn?.trim()
+    (exp) => exp.company_name_source?.trim() || exp.company_name_target?.trim(),
   );
   const validEducations = educations.filter(
-    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+    (edu) => edu.school_name_source?.trim() || edu.school_name_target?.trim(),
   );
   const validItems = additionalItems.filter(
-    (i) => i.name_kr?.trim() || i.name_en?.trim()
+    (i) => i.name_source?.trim() || i.name_target?.trim(),
   );
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
   const languages = validItems.filter((i) => i.type === "LANGUAGE");
   const others = validItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <Document>
@@ -198,7 +206,9 @@ export const ClassicPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+            {(useTarget
+              ? personalInfo?.name_target
+              : personalInfo?.name_source) || "이름 없음"}
           </Text>
           <View style={styles.contactContainer}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -227,41 +237,59 @@ export const ClassicPdf = ({
         </View>
 
         {/* Summary */}
-        {personalInfo?.summary && (
+        {(useTarget
+          ? personalInfo?.summary_target
+          : personalInfo?.summary_source) && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
-            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+            <Text style={styles.sectionTitle}>
+              {useTarget ? "PROFESSIONAL SUMMARY" : "핵심 요약"}
+            </Text>
+            <Text style={styles.summaryText}>
+              {useTarget
+                ? personalInfo.summary_target
+                : personalInfo.summary_source}
+            </Text>
           </View>
         )}
 
         {/* Experience */}
         {validExperiences.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PROFESSIONAL EXPERIENCE</Text>
+            <Text style={styles.sectionTitle}>
+              {useTarget ? "PROFESSIONAL EXPERIENCE" : "경력 사항"}
+            </Text>
             <View style={styles.expContainer}>
               {validExperiences.map((exp) => (
                 // @ts-ignore
                 <View key={exp.id}>
                   <View style={styles.expItemHeader}>
                     <View style={styles.expRow}>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
+                      <Text style={styles.companyName}>
+                        {useTarget
+                          ? exp.company_name_target
+                          : exp.company_name_source}
+                      </Text>
                       <Text style={styles.period}>
                         {formatDate(exp.period.split(" - ")[0])} -{" "}
                         {formatDate(exp.period.split(" - ")[1])}
                       </Text>
                     </View>
-                    <Text style={styles.position}>{exp.positionEn}</Text>
+                    <Text style={styles.position}>
+                      {useTarget ? exp.role_target : exp.role_source}
+                    </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
-                      // @ts-ignore
-                      <View key={idx} style={styles.bulletItem}>
-                        <View style={styles.bulletIconContainer}>
-                          <Text style={styles.bulletPoint}>•</Text>
+                    {(useTarget ? exp.bullets_target : exp.bullets_source)?.map(
+                      (bullet: string, idx: number) => (
+                        // @ts-ignore
+                        <View key={idx} style={styles.bulletItem}>
+                          <View style={styles.bulletIconContainer}>
+                            <Text style={styles.bulletPoint}>•</Text>
+                          </View>
+                          <Text style={styles.bulletText}>{bullet}</Text>
                         </View>
-                        <Text style={styles.bulletText}>{bullet}</Text>
-                      </View>
-                    ))}
+                      ),
+                    )}
                   </View>
                 </View>
               ))}
@@ -272,11 +300,15 @@ export const ClassicPdf = ({
         {/* Skills */}
         {skills.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>TECHNICAL COMPETENCIES</Text>
+            <Text style={styles.sectionTitle}>
+              {useTarget ? "TECHNICAL COMPETENCIES" : "보유 기술"}
+            </Text>
             <View>
               <Text style={styles.skillText}>
                 <Text style={{ fontWeight: "bold" }}>Skills: </Text>
-                {skills.map((s) => s.name).join(", ")}
+                {skills
+                  .map((s) => s.name_target || s.name_source || s.name)
+                  .join(", ")}
               </Text>
             </View>
           </View>
@@ -285,17 +317,22 @@ export const ClassicPdf = ({
         {/* Education */}
         {validEducations.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>EDUCATION</Text>
+            <Text style={styles.sectionTitle}>
+              {useTarget ? "EDUCATION" : "학력 사항"}
+            </Text>
             <View style={styles.eduContainer}>
               {validEducations.map((edu) => (
                 // @ts-ignore
                 <View key={edu.id} style={styles.eduItem}>
                   <View>
                     <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
+                      {useTarget
+                        ? edu.school_name_target
+                        : edu.school_name_source}
                     </Text>
                     <Text style={styles.position}>
-                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                      {useTarget ? edu.degree_target : edu.degree_source},{" "}
+                      {useTarget ? edu.major_target : edu.major_source}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -312,7 +349,9 @@ export const ClassicPdf = ({
           awards.length > 0 ||
           languages.length > 0) && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>ADDITIONAL INFORMATION</Text>
+            <Text style={styles.sectionTitle}>
+              {useTarget ? "ADDITIONAL INFORMATION" : "추가 정보"}
+            </Text>
             <View style={{ gap: 6 }}>
               {certifications.length > 0 && (
                 <View>
@@ -323,11 +362,15 @@ export const ClassicPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Certifications
+                    {useTarget ? "Certifications" : "자격증"}
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_en || cert.name;
-                    const desc = cert.description_en || cert.description;
+                    const name = useTarget
+                      ? cert.name_target
+                      : cert.name_source;
+                    const desc = useTarget
+                      ? cert.description_target
+                      : cert.description_source;
                     const date = formatDate(cert.date);
                     return (
                       <React.Fragment key={i}>
@@ -350,11 +393,15 @@ export const ClassicPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Awards
+                    {useTarget ? "Awards" : "수상 경력"}
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name = award.name_en || award.name;
-                    const desc = award.description_en || award.description;
+                    const name = useTarget
+                      ? award.name_target
+                      : award.name_source;
+                    const desc = useTarget
+                      ? award.description_target
+                      : award.description_source;
                     const date = formatDate(award.date);
                     return (
                       <React.Fragment key={i}>
@@ -377,11 +424,15 @@ export const ClassicPdf = ({
                       marginBottom: 2,
                     }}
                   >
-                    Languages
+                    {useTarget ? "Languages" : "외국어"}
                   </Text>
                   {languages.map((lang: any, i: number) => {
-                    const name = lang.name_en || lang.name;
-                    const desc = lang.description_en || lang.description;
+                    const name = useTarget
+                      ? lang.name_target
+                      : lang.name_source;
+                    const desc = useTarget
+                      ? lang.description_target
+                      : lang.description_source;
                     return (
                       <React.Fragment key={i}>
                         <Text style={styles.skillText}>

@@ -45,7 +45,7 @@ async function rescue() {
       "https://pay.toss.im/payfront/web/external/sales-check?payToken=N4e1SqREpXysq8mdBZQe06&transactionId=d8ca61b7-7daf-4702-9469-d8b11f1aa63a",
       50,
       50,
-      JSON.stringify({ rescued: true })
+      JSON.stringify({ rescued: true }),
     );
 
     console.log("Successfully inserted payment record.");
@@ -57,8 +57,8 @@ async function rescue() {
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        planType: "PASS_7DAY",
-        planExpiresAt: expiresAt,
+        plan_type: "PASS_7DAY",
+        plan_expires_at: expiresAt,
         credits: {
           increment: 50,
         },

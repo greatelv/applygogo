@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
+import { useLocale } from "next-intl";
 import dynamic from "next/dynamic";
 import { useApp } from "../context/app-context";
 import { useEffect } from "react";
@@ -8,7 +9,7 @@ import { useEffect } from "react";
 const DynamicDashboardLayout = dynamic(
   () =>
     import("../components/dashboard-layout").then((mod) => mod.DashboardLayout),
-  { ssr: false } // Keeping SSR disabled as requested
+  { ssr: false }, // Keeping SSR disabled as requested
 );
 
 interface ClientDashboardWrapperProps {
@@ -18,7 +19,7 @@ interface ClientDashboardWrapperProps {
     email?: string | null;
     image?: string | null;
   };
-  logOutAction: () => Promise<void>;
+  logOutAction: (redirectTo?: string) => Promise<void>;
   initialPlan: string;
   initialQuota: number;
 }
@@ -32,6 +33,7 @@ export function ClientDashboardWrapper({
 }: ClientDashboardWrapperProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useLocale();
 
   // Extract active item from pathname
   const activeItem = pathname?.split("/").filter(Boolean)[0] || "resumes";
@@ -62,7 +64,7 @@ export function ClientDashboardWrapper({
       activeItem={activeItem}
       onNavigate={handleNavigate}
       onLogout={async () => {
-        await logOutAction();
+        await logOutAction(`/${locale}`);
       }}
       onCreateNew={() => router.push("/resumes/new")}
       workflowSteps={workflowSteps}

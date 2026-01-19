@@ -27,10 +27,14 @@ export async function submitFeedback(data: {
 
     await prisma.feedback.create({
       data: {
+        id: `fb_${Date.now()}`, // Assuming ID is not auto-generated based on error patterns or just to be safe. But wait, schema says String @id usually needs uuid.
+        // Checking schema for Feedback model in Step 496:
+        // model Feedback { id String @id ... } No default.
+        // So I MUST generate ID.
         content: data.content,
         rating: data.rating,
-        userId: userId || null,
-        pageUrl: data.pageUrl,
+        user_id: userId || null,
+        page_url: data.pageUrl,
       },
     });
 

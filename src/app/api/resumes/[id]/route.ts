@@ -5,7 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -18,7 +18,7 @@ export async function GET(
     const resume = await prisma.resume.findUnique({
       where: {
         id: resumeId,
-        userId: session.user.id,
+        user_id: session.user.id,
       },
       include: {
         work_experiences: {
@@ -30,7 +30,7 @@ export async function GET(
         skills: {
           orderBy: { order: "asc" },
         },
-        additionalItems: {
+        additional_items: {
           orderBy: { order: "asc" },
         },
       },
@@ -45,14 +45,14 @@ export async function GET(
     console.error("Error fetching resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to fetch resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -63,13 +63,13 @@ export async function PUT(
     const { id: resumeId } = await params;
     const body = await request.json();
     const {
-      name_kr,
-      name_en,
+      name_source,
+      name_target,
       email,
       phone,
       links,
-      summary,
-      summary_kr,
+      summary_source,
+      summary_target,
       work_experiences,
       educations,
       skills,
@@ -77,7 +77,7 @@ export async function PUT(
 
     // Verify ownership
     const existingResume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!existingResume) {
@@ -87,24 +87,31 @@ export async function PUT(
     // Transaction: Delete existing -> Create new -> Update metadata
     await prisma.$transaction(async (tx) => {
       // 1. Delete existing child records
-      await tx.workExperience.deleteMany({ where: { resumeId } });
-      await tx.education.deleteMany({ where: { resumeId } });
-      await tx.skill.deleteMany({ where: { resumeId } });
+      // FK is resume_id (snake_case)
+      await tx.workExperience.deleteMany({ where: { resume_id: resumeId } });
+      await tx.education.deleteMany({ where: { resume_id: resumeId } });
+      await tx.skill.deleteMany({ where: { resume_id: resumeId } });
 
       // 2. Create new work experiences
       if (work_experiences?.length > 0) {
         await tx.workExperience.createMany({
           data: work_experiences.map((exp: any, index: number) => ({
-            resumeId,
-            company_name_kr: exp.company_name_kr,
-            company_name_en: exp.company_name_en,
-            role_kr: exp.role_kr,
-            role_en: exp.role_en,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            company_name_source: exp.company_name_source,
+            company_name_target: exp.company_name_target,
+            role_source: exp.role_source,
+            role_target: exp.role_target,
             start_date: exp.start_date,
             end_date: exp.end_date,
-            bullets_kr: exp.bullets_kr,
-            bullets_en: exp.bullets_en,
+            bullets_source: exp.bullets_source,
+            bullets_target: exp.bullets_target,
             order: index,
+
+            // Legacy fallbacks
+            company_name_kr: "",
+            role_kr: "",
+            bullets_kr: [],
           })),
         });
       }
@@ -113,16 +120,22 @@ export async function PUT(
       if (educations?.length > 0) {
         await tx.education.createMany({
           data: educations.map((edu: any, index: number) => ({
-            resumeId,
-            school_name: edu.school_name,
-            school_name_en: edu.school_name_en,
-            major: edu.major,
-            major_en: edu.major_en,
-            degree: edu.degree,
-            degree_en: edu.degree_en,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            school_name_source: edu.school_name_source,
+            school_name_target: edu.school_name_target,
+            major_source: edu.major_source,
+            major_target: edu.major_target,
+            degree_source: edu.degree_source,
+            degree_target: edu.degree_target,
             start_date: edu.start_date,
             end_date: edu.end_date,
             order: index,
+
+            // Legacy fallbacks
+            school_name: "",
+            major: "",
+            degree: "",
           })),
         });
       }
@@ -131,8 +144,11 @@ export async function PUT(
       if (skills?.length > 0) {
         await tx.skill.createMany({
           data: skills.map((skill: any, index: number) => ({
-            resumeId,
-            name: skill.name,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
+            name: skill.name || skill.name_source || "",
+            name_source: skill.name_source || skill.name || "",
+            name_target: skill.name_target || skill.name || "",
             order: index,
           })),
         });
@@ -142,31 +158,42 @@ export async function PUT(
       await (tx as any).resume.update({
         where: { id: resumeId },
         data: {
-          name_kr,
-          name_en,
+          name_source,
+          name_target,
           email,
           phone,
           links,
-          summary,
-          summary_kr,
+          summary_source,
+          summary_target,
           current_step: body.current_step || "TEMPLATE",
           updated_at: new Date(),
+
+          // Legacy
+          name_kr: "",
+          summary_kr: "",
         },
       });
 
       // Additional Items (Certifications, Awards, Languages, etc.)
-      await (tx as any).additionalItem.deleteMany({ where: { resumeId } });
+      await (tx as any).additionalItem.deleteMany({
+        where: { resume_id: resumeId },
+      });
       if (body.additional_items && body.additional_items.length > 0) {
         await (tx as any).additionalItem.createMany({
           data: body.additional_items.map((item: any, index: number) => ({
-            resumeId,
+            id: crypto.randomUUID(),
+            resume_id: resumeId,
             type: item.type,
-            name_kr: item.name_kr,
-            name_en: item.name_en,
-            description_kr: item.description_kr,
-            description_en: item.description_en,
+            name_source: item.name_source,
+            name_target: item.name_target,
+            description_source: item.description_source,
+            description_target: item.description_target,
             date: item.date,
             order: index,
+
+            // Legacy
+            name_kr: "",
+            description_kr: "",
           })),
         });
       }
@@ -177,14 +204,14 @@ export async function PUT(
     console.error("Error updating resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -198,7 +225,7 @@ export async function PATCH(
 
     // Verify ownership
     const existingResume = await prisma.resume.findUnique({
-      where: { id: resumeId, userId: session.user.id },
+      where: { id: resumeId, user_id: session.user.id },
     });
 
     if (!existingResume) {
@@ -220,14 +247,14 @@ export async function PATCH(
     console.error("Error patching resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to patch resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -241,7 +268,7 @@ export async function DELETE(
     const resume = await prisma.resume.findUnique({
       where: {
         id: resumeId,
-        userId: session.user.id,
+        user_id: session.user.id,
       },
     });
 
@@ -281,7 +308,7 @@ export async function DELETE(
     console.error("Error deleting resume:", error);
     return NextResponse.json(
       { error: error.message || "Failed to delete resume" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

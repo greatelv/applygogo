@@ -21,7 +21,7 @@ async function fix() {
   }
 
   console.log(
-    `Target User: ${user.email} (Current Credits: ${user.credits}, Plan: ${user.planType})`
+    `Target User: ${user.email} (Current Credits: ${user.credits}, Plan: ${user.plan_type})`,
   );
 
   try {
@@ -32,11 +32,11 @@ async function fix() {
       SET status = 'REFUNDED', remaining_credits = 0 
       WHERE user_id = $1 AND status = 'PAID'
     `,
-      user.id
+      user.id,
     );
 
     console.log(
-      `Updated ${updatedHistory} payment history records to REFUNDED.`
+      `Updated ${updatedHistory} payment history records to REFUNDED.`,
     );
 
     // 3. 유저 권한 및 크레딧 회수 (결제 2건분 = 100 크레딧 회수 및 플랜 초기화)
@@ -44,8 +44,8 @@ async function fix() {
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        planType: "FREE",
-        planExpiresAt: null,
+        plan_type: "FREE",
+        plan_expires_at: null,
         credits: 0, // 혹은 상황에 맞게 차감. 현재 100인 것이 모두 환불 대상이므로 0으로 설정
       },
     });

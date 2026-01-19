@@ -22,23 +22,26 @@ async function main() {
 
   const user = await prisma.user.create({
     data: {
+      id: `user_${Date.now()}`, // Manually generating ID as it's required
       email: testEmail,
       credits: 50, // User has 50 credits total
+      updated_at: new Date(), // Required field
     },
   });
 
   const paymentId = `pay_${Date.now()}`;
   const payment = await prisma.paymentHistory.create({
     data: {
-      userId: user.id,
-      paymentId: paymentId,
-      orderName: "10 Credit Pack",
+      id: `saved_${paymentId}`, // Also adding ID for paymentHistory just in case
+      user_id: user.id,
+      payment_id: paymentId,
+      order_name: "10 Credit Pack",
       amount: 1000,
       currency: "KRW",
       status: "PAID",
-      initialCredits: 10,
-      remainingCredits: 10, // Full
-      paidAt: new Date(),
+      initial_credits: 10,
+      remaining_credits: 10, // Full
+      paid_at: new Date(),
     },
   });
 
@@ -52,7 +55,7 @@ async function main() {
   // Simulate usage: remaining 9 < initial 10
   await prisma.paymentHistory.update({
     where: { id: payment.id },
-    data: { remainingCredits: 9 },
+    data: { remaining_credits: 9 },
   });
 
   // Execute Logic (replicated from route)
@@ -61,18 +64,18 @@ async function main() {
     const target = await prisma.paymentHistory.findUnique({
       where: { id: payment.id },
     });
-    const initial = Number(target?.initialCredits);
-    const remaining = Number(target?.remainingCredits);
+    const initial = Number(target?.initial_credits);
+    const remaining = Number(target?.remaining_credits);
 
     if (remaining < initial) {
       throw new Error(
-        "Refund is not possible if any of the credits from this payment have been used."
+        "Refund is not possible if any of the credits from this payment have been used.",
       );
     }
   } catch (e: any) {
     if (e.message.includes("Refund is not possible")) {
       console.log(
-        "   ✅ Success: Refund was correctly blocked because credits were used."
+        "   ✅ Success: Refund was correctly blocked because credits were used.",
       );
       blocked = true;
     } else {
@@ -93,7 +96,7 @@ async function main() {
   // Reset failure state
   await prisma.paymentHistory.update({
     where: { id: payment.id },
-    data: { remainingCredits: 10 }, // Full again
+    data: { remaining_credits: 10 }, // Full again
   });
 
   // Current User Credits
@@ -104,7 +107,7 @@ async function main() {
   await prisma.$transaction(async (tx) => {
     const p = await tx.paymentHistory.findUnique({ where: { id: payment.id } });
     if (!p) throw new Error("Payment not found");
-    const currentInitial = Number(p.initialCredits);
+    const currentInitial = Number(p.initial_credits);
 
     // Deduct from User
     await tx.user.update({
@@ -117,7 +120,7 @@ async function main() {
     // Update Payment
     await tx.paymentHistory.update({
       where: { id: payment.id },
-      data: { status: "REFUNDED", remainingCredits: 0 },
+      data: { status: "REFUNDED", remaining_credits: 0 },
     });
   });
 
@@ -134,11 +137,11 @@ async function main() {
 
   if (afterUser?.credits === expectedCredits) {
     console.log(
-      `   ✅ Success: Credits were correctly revoked (Expected: ${expectedCredits}, Actual: ${afterUser?.credits}).`
+      `   ✅ Success: Credits were correctly revoked (Expected: ${expectedCredits}, Actual: ${afterUser?.credits}).`,
     );
   } else {
     console.error(
-      `   ❌ Failed: Credit deduction calculation is wrong. Expected ${expectedCredits}, got ${afterUser?.credits}`
+      `   ❌ Failed: Credit deduction calculation is wrong. Expected ${expectedCredits}, got ${afterUser?.credits}`,
     );
     process.exit(1);
   }

@@ -12,14 +12,17 @@ import { registerFonts } from "./modern-pdf";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 24, // p-8 (32px) -> ~24pt
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 30,
+    paddingRight: 30,
     fontFamily: "NotoSansKR",
     fontSize: 10.5, // text-sm
     lineHeight: 1.625, // leading-relaxed
     color: "#000000",
   },
   header: {
-    marginBottom: 24, // mb-8
+    marginBottom: 16,
   },
   name: {
     fontSize: 36, // text-5xl
@@ -43,14 +46,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 24, // mb-8
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 9, // text-xs
     fontWeight: 700, // font-semibold (bold in pdf-renderer)
     color: "#9ca3af", // text-gray-400
     letterSpacing: 2.25, // tracking-widest
-    marginBottom: 18,
+    marginBottom: 12,
     textTransform: "uppercase",
   },
   summaryText: {
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: 300, // font-light
   },
   expContainer: {
-    gap: 24, // space-y-8
+    gap: 16,
   },
   expHeader: {
     flexDirection: "row",
@@ -117,6 +120,10 @@ const styles = StyleSheet.create({
     color: "#4b5563",
     textDecoration: "none",
   },
+  bulletItem: {
+    flexDirection: "row",
+    gap: 4,
+  },
 });
 
 // Helper to format date YYYY-MM -> MMM YYYY
@@ -142,6 +149,12 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface MinimalPdfProps {
   personalInfo?: any;
   experiences?: any[];
@@ -159,19 +172,19 @@ export const MinimalPdf = ({
 }: MinimalPdfProps) => {
   // Filter out empty items first
   const validExperiences = experiences.filter(
-    (exp) => exp.company?.trim() || exp.companyEn?.trim()
+    (exp) => exp.company_name_source?.trim() || exp.company_name_target?.trim(),
   );
   const validEducations = educations.filter(
-    (edu) => edu.school_name?.trim() || edu.school_name_en?.trim()
+    (edu) => edu.school_name_source?.trim() || edu.school_name_target?.trim(),
   );
   const validItems = additionalItems.filter(
-    (i) => i.name_kr?.trim() || i.name_en?.trim()
+    (i) => i.name_source?.trim() || i.name_target?.trim(),
   );
   const certifications = validItems.filter((i) => i.type === "CERTIFICATION");
   const awards = validItems.filter((i) => i.type === "AWARD");
   const languages = validItems.filter((i) => i.type === "LANGUAGE");
   const others = validItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <Document>
@@ -179,7 +192,7 @@ export const MinimalPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>
-            {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+            {personalInfo?.name_target || "이름 없음"}
           </Text>
           <View style={styles.contactRow}>
             {personalInfo?.email && <Text>{personalInfo.email}</Text>}
@@ -189,7 +202,7 @@ export const MinimalPdf = ({
               .map((link: any, i: number) => (
                 // @ts-ignore
                 <View key={i} style={styles.contactItem}>
-                  <Link src={link.url} style={styles.linkText}>
+                  <Link src={ensureUrl(link.url)} style={styles.linkText}>
                     <Text style={{ fontWeight: "medium" }}>{link.label}: </Text>
                     {link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </Link>
@@ -199,9 +212,11 @@ export const MinimalPdf = ({
         </View>
 
         {/* About */}
-        {personalInfo?.summary && (
+        {personalInfo?.summary_target && (
           <View style={styles.section}>
-            <Text style={styles.summaryText}>{personalInfo.summary}</Text>
+            <Text style={styles.summaryText}>
+              {personalInfo.summary_target}
+            </Text>
           </View>
         )}
 
@@ -215,8 +230,10 @@ export const MinimalPdf = ({
                 <View key={exp.id}>
                   <View style={styles.expHeader}>
                     <View>
-                      <Text style={styles.companyName}>{exp.companyEn}</Text>
-                      <Text style={styles.position}>{exp.positionEn}</Text>
+                      <Text style={styles.companyName}>
+                        {exp.company_name_target}
+                      </Text>
+                      <Text style={styles.position}>{exp.role_target}</Text>
                     </View>
                     <Text style={styles.period}>
                       {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -224,9 +241,14 @@ export const MinimalPdf = ({
                     </Text>
                   </View>
                   <View style={styles.bulletList}>
-                    {exp.bulletsEn?.map((bullet: string, idx: number) => (
+                    {exp.bullets_target?.map((bullet: string, idx: number) => (
                       <React.Fragment key={idx}>
-                        <Text style={styles.bulletText}>{bullet}</Text>
+                        <View style={styles.bulletItem}>
+                          <Text style={styles.bulletText}>•</Text>
+                          <Text style={{ ...styles.bulletText, flex: 1 }}>
+                            {bullet}
+                          </Text>
+                        </View>
                       </React.Fragment>
                     ))}
                   </View>
@@ -243,7 +265,9 @@ export const MinimalPdf = ({
             <View style={styles.skillRow}>
               {skills.map((skill) => (
                 <React.Fragment key={skill.id}>
-                  <Text style={styles.skillBadge}>{skill.name}</Text>
+                  <Text style={styles.skillBadge}>
+                    {skill.name_target || skill.name_source || skill.name}
+                  </Text>
                 </React.Fragment>
               ))}
             </View>
@@ -260,10 +284,10 @@ export const MinimalPdf = ({
                 <View key={edu.id} style={styles.eduItem}>
                   <View>
                     <Text style={styles.companyName}>
-                      {edu.school_name_en || edu.school_name}
+                      {edu.school_name_target}
                     </Text>
                     <Text style={styles.position}>
-                      {edu.degree_en || edu.degree}, {edu.major_en || edu.major}
+                      {edu.degree_target}, {edu.major_target}
                     </Text>
                   </View>
                   <Text style={styles.period}>
@@ -294,8 +318,8 @@ export const MinimalPdf = ({
                     Certifications
                   </Text>
                   {certifications.map((cert: any, i: number) => {
-                    const name = cert.name_en || cert.name;
-                    const desc = cert.description_en || cert.description;
+                    const name = cert.name_target;
+                    const desc = cert.description_target;
                     const date = formatDate(cert.date);
                     return (
                       <React.Fragment key={i}>
@@ -321,8 +345,8 @@ export const MinimalPdf = ({
                     Awards
                   </Text>
                   {awards.map((award: any, i: number) => {
-                    const name = award.name_en || award.name;
-                    const desc = award.description_en || award.description;
+                    const name = award.name_target;
+                    const desc = award.description_target;
                     const date = formatDate(award.date);
                     return (
                       <React.Fragment key={i}>
@@ -351,8 +375,8 @@ export const MinimalPdf = ({
                     style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}
                   >
                     {languages.map((lang: any, i: number) => {
-                      const name = lang.name_en || lang.name;
-                      const desc = lang.description_en || lang.description;
+                      const name = lang.name_target;
+                      const desc = lang.description_target;
                       return (
                         <React.Fragment key={i}>
                           <Text style={styles.bulletText}>

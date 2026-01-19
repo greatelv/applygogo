@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { Chrome, Languages } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { useInAppBrowser } from "../../hooks/use-in-app-browser";
 
@@ -12,11 +13,16 @@ interface LoginPageProps {
   onCredentialLogin?: (formData: FormData) => void;
 }
 
+import { useTranslations, useLocale } from "next-intl";
+
 export function LoginPage({
   onGoogleLogin,
   onNaverLogin,
   onCredentialLogin,
 }: LoginPageProps) {
+  const t = useTranslations("login");
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
   const { pending } = useFormStatus();
   const searchParams = useSearchParams();
   const { isInAppBrowser } = useInAppBrowser();
@@ -24,11 +30,25 @@ export function LoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl tracking-tight mb-3">지원고고</h1>
-          <p className="text-muted-foreground text-sm">
-            한국어 이력서를 글로벌 스탠다드 영문 이력서로
-          </p>
+        <div className="text-center mb-12 flex flex-col items-center">
+          <Link href="/" className="mb-6 hover:opacity-80 transition-opacity">
+            <h1 className="sr-only">{t("title")}</h1>
+            <img
+              src={
+                isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
+              }
+              alt="ApplyGogo"
+              className="h-10 w-auto dark:hidden"
+            />
+            <img
+              src={
+                isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+              }
+              alt="ApplyGogo"
+              className="h-10 w-auto hidden dark:block"
+            />
+          </Link>
+          <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
         </div>
 
         <div className="space-y-4">
@@ -42,29 +62,29 @@ export function LoginPage({
               disabled={pending}
             >
               <Chrome className="size-5 mr-2" />
-              Google로 시작하기
+              {t("google")}
             </Button>
           ) : (
             <div className="p-3 text-sm text-center text-amber-600 bg-amber-50 rounded-md border border-amber-200 mb-2">
-              <span className="block mb-1 break-keep">
-                ⚠️ 인앱 브라우저에서는 구글 로그인을 지원하지 않습니다.
-              </span>
+              <span className="block mb-1 break-keep">{t("inAppWarning")}</span>
               <span className="text-xs text-muted-foreground block break-keep">
-                (원활한 사용을 위해 네이버 로그인을 이용해주세요)
+                {t("inAppAdvice")}
               </span>
             </div>
           )}
 
-          <Button
-            type="button"
-            size="lg"
-            className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
-            onClick={onNaverLogin}
-            disabled={pending}
-          >
-            <span className="font-bold mr-2 text-lg">N</span>
-            네이버로 시작하기
-          </Button>
+          {!isGlobal && (
+            <Button
+              type="button"
+              size="lg"
+              className="w-full bg-[#03C75A] hover:bg-[#02b351] text-white"
+              onClick={onNaverLogin}
+              disabled={pending}
+            >
+              <span className="font-bold mr-2 text-lg">N</span>
+              {t("naver")}
+            </Button>
+          )}
 
           {/* Test Login Form (Only visible with ?mode=test) */}
           {searchParams.get("mode") === "test" && onCredentialLogin && (
@@ -73,7 +93,7 @@ export function LoginPage({
               className="mt-4 p-4 border border-dashed border-neutral-700/50 rounded-lg bg-neutral-900/50"
             >
               <div className="text-xs text-muted-foreground mb-3 text-center font-mono">
-                DEVELOPER ACCESS
+                {t("developerAccess")}
               </div>
               <div className="space-y-3">
                 <input
@@ -96,38 +116,47 @@ export function LoginPage({
                   className="w-full h-10 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700"
                   disabled={pending}
                 >
-                  테스트 계정 로그인
+                  {t("testLogin")}
                 </Button>
               </div>
             </form>
           )}
 
-          <p className="text-xs text-center text-muted-foreground mt-6">
-            로그인하면{" "}
-            <a href="#" className="underline hover:text-foreground">
-              서비스 약관
-            </a>
-            과{" "}
-            <a href="#" className="underline hover:text-foreground">
-              개인정보 처리방침
-            </a>
-            에 동의하게 됩니다
-          </p>
+          <div className="text-xs text-center text-muted-foreground mt-6">
+            {t.rich("termsAgreement", {
+              terms: (chunks) => (
+                <a href="/terms" className="underline hover:text-foreground">
+                  {chunks}
+                </a>
+              ),
+              privacy: (chunks) => (
+                <a href="/privacy" className="underline hover:text-foreground">
+                  {chunks}
+                </a>
+              ),
+            })}
+          </div>
         </div>
 
         <div className="mt-16 pt-8 border-t border-border">
           <div className="grid grid-cols-3 gap-4 sm:gap-8 text-center text-sm">
             <div>
               <div className="text-2xl mb-1">✨</div>
-              <div className="text-muted-foreground text-xs">AI 기반 요약</div>
+              <div className="text-muted-foreground text-xs">
+                {t("features.aiSummary")}
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">🌐</div>
-              <div className="text-muted-foreground text-xs">전문 번역</div>
+              <div className="text-muted-foreground text-xs">
+                {t("features.proTranslation")}
+              </div>
             </div>
             <div>
               <div className="text-2xl mb-1">📄</div>
-              <div className="text-muted-foreground text-xs">PDF 내보내기</div>
+              <div className="text-muted-foreground text-xs">
+                {t("features.pdfExport")}
+              </div>
             </div>
           </div>
         </div>

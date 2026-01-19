@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { motion } from "motion/react";
 import { GripVertical, RefreshCw, Trash2, Loader2, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { TranslatedExperience } from "./types";
 import { ItemTypes } from "./constants";
@@ -16,17 +17,19 @@ interface DraggableExperienceItemProps {
   onChange: (
     id: string,
     field: keyof TranslatedExperience,
-    value: string
+    value: string,
   ) => void;
   onBulletEdit: (
     id: string,
     index: number,
     value: string,
-    isEnglish: boolean
+    isTarget: boolean,
   ) => void;
   onAddBullet: (id: string) => void;
   onRemoveBullet: (id: string, index: number) => void;
   highlightedBullets?: number[];
+  sourceLabel: string;
+  targetLabel: string;
 }
 
 export const DraggableExperienceItem = ({
@@ -41,7 +44,10 @@ export const DraggableExperienceItem = ({
   onAddBullet,
   onRemoveBullet,
   highlightedBullets,
+  sourceLabel,
+  targetLabel,
 }: DraggableExperienceItemProps) => {
+  const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.EXPERIENCE,
@@ -104,7 +110,7 @@ export const DraggableExperienceItem = ({
       <div
         ref={drag as any}
         className="hidden lg:flex w-6 items-start pt-6 justify-center cursor-grab active:cursor-grabbing text-muted-foreground/0 group-hover/item:text-muted-foreground/50 hover:text-muted-foreground transition-colors absolute -left-8 h-full top-0"
-        title="드래그하여 순서 변경"
+        title={t("editorItems.dragToReorder")}
       >
         <GripVertical className="size-5" />
       </div>
@@ -118,12 +124,12 @@ export const DraggableExperienceItem = ({
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                한글 (원본)
+                {sourceLabel}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-1">
-                English (번역)
+                {targetLabel}
               </p>
             </div>
           </div>
@@ -141,7 +147,9 @@ export const DraggableExperienceItem = ({
                 <RefreshCw className="size-4" />
               )}
               <span className="hidden lg:inline ml-2 text-xs">
-                {isTranslating ? "처리 중..." : "동기화 후 재번역"}
+                {isTranslating
+                  ? t("editPage.actions.processing")
+                  : t("editPage.actions.retranslate")}
               </span>
             </Button>
             <button
@@ -149,17 +157,19 @@ export const DraggableExperienceItem = ({
               className="p-1.5 hover:bg-destructive/10 rounded text-destructive flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="size-4" />
-              <span className="text-xs hidden lg:inline">삭제</span>
+              <span className="text-xs hidden lg:inline">
+                {t("editorItems.delete")}
+              </span>
             </button>
           </div>
         </div>
 
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Left: Original (KR) */}
+            {/* Left: Source */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                한글 (원본)
+                {sourceLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -168,14 +178,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "company",
-                      e.currentTarget.textContent || ""
+                      "company_name_source",
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="회사/조직명 (예: 삼성전자)"
+                  data-placeholder={t("editorItems.placeholders.company")}
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.company}
+                  {exp.company_name_source}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -184,14 +194,14 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "position",
-                        e.currentTarget.textContent || ""
+                        "role_source",
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="직무"
+                    data-placeholder={t("editorItems.placeholders.position")}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.position}
+                    {exp.role_source}
                   </div>
                   <span className="text-muted-foreground select-none">•</span>
                   <div
@@ -200,20 +210,36 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "period",
-                        e.currentTarget.textContent || ""
+                        "start_date", // Shared field, assuming start_date/period mapping
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="기간 (예: 2020.01 - 2023.12)"
+                    data-placeholder={t("editorItems.placeholders.period")}
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.period}
+                    {exp.start_date}
+                  </div>
+                  <span className="text-muted-foreground select-none">-</span>
+                  <div
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) =>
+                      onChange(
+                        exp.id,
+                        "end_date",
+                        e.currentTarget.textContent || "",
+                      )
+                    }
+                    data-placeholder={t("editorItems.placeholders.period")}
+                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
+                  >
+                    {exp.end_date}
                   </div>
                 </div>
               </div>
 
               <ul className="space-y-3">
-                {exp.bullets.map((bullet, index) => (
+                {(exp.bullets_source || []).map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -226,10 +252,10 @@ export const DraggableExperienceItem = ({
                           exp.id,
                           index,
                           e.currentTarget.textContent || "",
-                          false
+                          false,
                         )
                       }
-                      data-placeholder="업무 성과 및 활동 내용"
+                      data-placeholder={t("editorItems.placeholders.bullet")}
                       className="flex-1 text-muted-foreground outline-none px-2 py-1 -mx-2 -my-1 rounded transition-colors hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                     >
                       {bullet}
@@ -245,10 +271,10 @@ export const DraggableExperienceItem = ({
               </ul>
             </div>
 
-            {/* Right: Translated (EN) */}
+            {/* Right: Target */}
             <div>
               <p className="text-xs text-muted-foreground font-semibold mb-2 lg:hidden">
-                English (번역)
+                {targetLabel}
               </p>
               <div className="mb-4 space-y-1">
                 <div
@@ -257,14 +283,14 @@ export const DraggableExperienceItem = ({
                   onBlur={(e) =>
                     onChange(
                       exp.id,
-                      "companyEn",
-                      e.currentTarget.textContent || ""
+                      "company_name_target",
+                      e.currentTarget.textContent || "",
                     )
                   }
-                  data-placeholder="Company Name (EN)"
+                  data-placeholder="Company Name"
                   className="font-semibold text-xl outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 transition-colors cursor-text inline-block min-w-[100px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                 >
-                  {exp.companyEn}
+                  {exp.company_name_target}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div
@@ -273,36 +299,28 @@ export const DraggableExperienceItem = ({
                     onBlur={(e) =>
                       onChange(
                         exp.id,
-                        "positionEn",
-                        e.currentTarget.textContent || ""
+                        "role_target",
+                        e.currentTarget.textContent || "",
                       )
                     }
-                    data-placeholder="Position (EN)"
+                    data-placeholder="Position"
                     className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
                   >
-                    {exp.positionEn}
+                    {exp.role_target}
                   </div>
+                  {/* Shared Date (typically not translated, so just read-only or shared)
+                      If we want editable dates on target side, we'd need checks. 
+                      For now, just showing same dates or source dates is fine. 
+                   */}
                   <span className="text-muted-foreground select-none">•</span>
-                  <div
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) =>
-                      onChange(
-                        exp.id,
-                        "period",
-                        e.currentTarget.textContent || ""
-                      )
-                    }
-                    data-placeholder="Period (EN)"
-                    className="outline-none hover:bg-accent/50 focus:bg-accent rounded px-2 py-1 -mx-2 -my-1 transition-colors cursor-text min-w-[50px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30"
-                  >
-                    {exp.period}
-                  </div>
+                  <span>
+                    {exp.start_date || ""} - {exp.end_date || ""}
+                  </span>
                 </div>
               </div>
 
               <ul className="space-y-3">
-                {exp.bulletsEn.map((bullet, index) => (
+                {(exp.bullets_target || []).map((bullet, index) => (
                   <li key={index} className="flex gap-4 text-sm group">
                     <span className="text-muted-foreground flex-shrink-0">
                       •
@@ -315,10 +333,10 @@ export const DraggableExperienceItem = ({
                           exp.id,
                           index,
                           e.currentTarget.textContent || "",
-                          true
+                          true,
                         )
                       }
-                      data-placeholder="Achievements and activities (EN)"
+                      data-placeholder="Highlights"
                       className={`flex-1 outline-none px-2 py-1 -mx-2 -my-1 rounded transition-all duration-1000 hover:bg-accent/50 focus:bg-accent focus:ring-2 focus:ring-ring/20 cursor-text min-h-[24px] empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/30 ${
                         highlightedBullets?.includes(index)
                           ? "bg-yellow-100 dark:bg-yellow-500/20 ring-1 ring-yellow-400/50"
@@ -345,7 +363,7 @@ export const DraggableExperienceItem = ({
               onClick={() => onAddBullet(exp.id)}
               className="w-full h-10 border border-border shadow-sm hover:bg-accent transition-colors text-sm font-medium"
             >
-              <Plus className="size-4 mr-2" /> 항목 추가
+              <Plus className="size-4 mr-2" /> {t("editorItems.addBullet")}
             </Button>
           </div>
         </div>

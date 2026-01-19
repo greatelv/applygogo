@@ -2,17 +2,20 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Header } from "@/app/components/header";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 import { Languages } from "lucide-react";
+import { useLocale } from "next-intl";
 
 export function BlogHeader() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const locale = useLocale();
+  const isGlobal = locale !== "ko";
 
   // If loading, show a skeleton or nothing
   if (status === "loading") {
@@ -28,7 +31,7 @@ export function BlogHeader() {
         userName={session.user.name || "사용자"}
         userEmail={session.user.email || ""}
         userImage={session.user.image || undefined}
-        onLogout={() => signOut({ callbackUrl: "/" })}
+        onLogout={() => signOut({ redirectTo: `/${locale}` })}
         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
         // Blog doesn't have a sidebar, so these are no-ops or hidden
         isSidebarOpen={false}
@@ -47,12 +50,16 @@ export function BlogHeader() {
             className="flex items-center hover:opacity-80 transition-opacity"
           >
             <img
-              src="/logo-for-light.svg"
+              src={
+                isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
+              }
               alt="지원고고"
               className="h-6 w-auto dark:hidden"
             />
             <img
-              src="/logo-for-dark.svg"
+              src={
+                isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
+              }
               alt="지원고고"
               className="h-6 w-auto hidden dark:block"
             />

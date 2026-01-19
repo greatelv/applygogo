@@ -17,25 +17,31 @@ const formatDate = (dateStr?: string) => {
   }
 };
 
+const ensureUrl = (url?: string) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+};
+
 interface Experience {
   id: string;
-  company: string;
-  position: string;
+  company_name_source: string;
+  role_source: string;
   period: string;
-  bullets: string[];
-  companyEn: string;
-  positionEn: string;
-  bulletsEn: string[];
+  bullets_source: string[];
+  company_name_target: string;
+  role_target: string;
+  bullets_target: string[];
 }
 
 interface Education {
   id: string;
-  school_name: string;
-  school_name_en?: string;
-  major: string;
-  major_en?: string;
-  degree: string;
-  degree_en?: string;
+  school_name_source: string;
+  school_name_target?: string;
+  major_source: string;
+  major_target?: string;
+  degree_source: string;
+  degree_target?: string;
   start_date: string;
   end_date: string;
 }
@@ -43,6 +49,8 @@ interface Education {
 interface Skill {
   id: string;
   name: string;
+  name_source?: string;
+  name_target?: string;
   level?: string | null;
 }
 
@@ -55,25 +63,32 @@ interface Certification {
 
 interface Award {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   issuer?: string;
   date?: string;
 }
 
 interface Language {
   id: string;
-  name: string;
+  name_source: string;
+  name_target: string;
+  description_source: string;
+  description_target: string;
   level?: string;
   score?: string;
 }
 
 interface PersonalInfo {
-  name_kr?: string;
-  name_en?: string;
+  name_source?: string;
+  name_target?: string;
   email?: string;
   phone?: string;
   links?: { label: string; url: string }[];
-  summary?: string;
+  summary_source?: string;
+  summary_target?: string;
 }
 
 interface MinimalTemplateProps {
@@ -92,19 +107,19 @@ export function MinimalTemplate({
   additionalItems = [],
 }: MinimalTemplateProps) {
   const certifications = additionalItems.filter(
-    (i) => i.type === "CERTIFICATION"
+    (i) => i.type === "CERTIFICATION",
   );
   const awards = additionalItems.filter((i) => i.type === "AWARD");
   const languages = additionalItems.filter((i) => i.type === "LANGUAGE");
   const others = additionalItems.filter(
-    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type)
+    (i) => !["CERTIFICATION", "AWARD", "LANGUAGE"].includes(i.type),
   );
   return (
     <div className="bg-white text-black p-8 min-h-full font-sans">
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-5xl font-light mb-1 text-gray-900 tracking-tight">
-          {personalInfo?.name_en || personalInfo?.name_kr || "이름 없음"}
+          {personalInfo?.name_target || "이름 없음"}
         </h1>
         {/* <p className="text-gray-500 text-sm mb-4">Frontend Developer</p> */}
         <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-2">
@@ -113,30 +128,31 @@ export function MinimalTemplate({
           {personalInfo?.links
             ?.filter((link) => link.label && link.url)
             .map((link, i) => (
-              <a
-                key={i}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:underline text-gray-600"
-              >
+              <span key={i} className="text-gray-600">
                 <span className="font-medium">{link.label}:</span>{" "}
-                {link.url
-                  ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
-                  : ""}
-              </a>
+                <a
+                  href={ensureUrl(link.url)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  {link.url
+                    ? link.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                    : ""}
+                </a>
+              </span>
             ))}
         </div>
       </div>
 
       {/* About */}
-      {personalInfo?.summary && (
+      {personalInfo?.summary_target ? (
         <div className="mb-10">
           <p className="text-sm text-gray-700 leading-relaxed font-light">
-            {personalInfo.summary}
+            {personalInfo.summary_target}
           </p>
         </div>
-      )}
+      ) : null}
 
       {/* Experience */}
       {experiences.length > 0 && (
@@ -150,9 +166,9 @@ export function MinimalTemplate({
                 <div className="flex justify-between items-baseline mb-3">
                   <div>
                     <h3 className="font-medium text-gray-900">
-                      {exp.companyEn}
+                      {exp.company_name_target}
                     </h3>
-                    <p className="text-sm text-gray-500">{exp.positionEn}</p>
+                    <p className="text-sm text-gray-500">{exp.role_target}</p>
                   </div>
                   <span className="text-xs text-gray-400 tabular-nums">
                     {formatDate(exp.period.split(" - ")[0])} -{" "}
@@ -160,12 +176,13 @@ export function MinimalTemplate({
                   </span>
                 </div>
                 <ul className="space-y-2">
-                  {exp.bulletsEn.map((bullet, index) => (
+                  {exp.bullets_target.map((bullet, index) => (
                     <li
                       key={index}
-                      className="text-sm text-gray-600 leading-relaxed font-light"
+                      className="text-sm text-gray-600 leading-relaxed font-light flex gap-2"
                     >
-                      {bullet}
+                      <span className="select-none text-gray-400">•</span>
+                      <span>{bullet}</span>
                     </li>
                   ))}
                 </ul>
@@ -187,7 +204,10 @@ export function MinimalTemplate({
                 key={skill.id}
                 className="px-3 py-1 text-xs text-gray-700 bg-gray-50 rounded-full border border-gray-200"
               >
-                {skill.name}
+                {skill.name_target || skill.name}
+                {skill.level && (
+                  <span className="text-gray-400 ml-1">({skill.level})</span>
+                )}
               </span>
             ))}
           </div>
@@ -205,20 +225,13 @@ export function MinimalTemplate({
               <div key={edu.id} className="flex justify-between items-baseline">
                 <div>
                   <h3 className="font-medium text-gray-900">
-                    {edu.school_name_en || edu.school_name}
+                    {edu.school_name_target}
                   </h3>
-                  {((edu.degree_en && edu.degree_en !== "-") ||
-                    (edu.degree && edu.degree !== "-") ||
-                    (edu.major_en && edu.major_en !== "-") ||
-                    (edu.major && edu.major !== "-")) && (
-                    <p className="text-sm text-gray-500">
-                      {edu.degree_en || edu.degree}
-                      {(edu.degree_en || edu.degree) &&
-                        (edu.major_en || edu.major) &&
-                        ", "}
-                      {edu.major_en || edu.major}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-500">
+                    {edu.degree_target}
+                    {edu.degree_target && edu.major_target && ", "}
+                    {edu.major_target}
+                  </p>
                 </div>
                 <span className="text-xs text-gray-400 tabular-nums">
                   {formatDate(edu.start_date)} - {formatDate(edu.end_date)}
@@ -249,9 +262,9 @@ export function MinimalTemplate({
                       key={cert.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {cert.name_en || cert.name}{" "}
-                      {cert.description_en || cert.description
-                        ? `| ${cert.description_en || cert.description}`
+                      {cert.name_target}{" "}
+                      {cert.description_target
+                        ? `| ${cert.description_target}`
                         : ""}{" "}
                       {cert.date ? `(${formatDate(cert.date)})` : ""}
                     </div>
@@ -270,9 +283,9 @@ export function MinimalTemplate({
                       key={award.id}
                       className="text-sm text-gray-600 font-light"
                     >
-                      {award.name_en || award.name}{" "}
-                      {award.description_en || award.description
-                        ? `| ${award.description_en || award.description}`
+                      {award.name_target}{" "}
+                      {award.description_target
+                        ? `| ${award.description_target}`
                         : ""}{" "}
                       {award.date ? `(${formatDate(award.date)})` : ""}
                     </div>
@@ -292,14 +305,35 @@ export function MinimalTemplate({
                         <span className="mr-4 text-gray-300">|</span>
                       )}
                       <span className="font-medium mr-1 text-gray-800">
-                        {lang.name_en || lang.name}
+                        {lang.name_target}
                       </span>
-                      {(lang.description_en || lang.description) && (
+                      {lang.description_target && (
                         <span className="text-gray-400">
-                          ({lang.description_en || lang.description})
+                          ({lang.description_target})
                         </span>
                       )}
                     </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {others.length > 0 && (
+              <div>
+                <h3 className="text-xs font-medium text-gray-900 mb-2">
+                  Activities & Others
+                </h3>
+                <div className="flex flex-col gap-1">
+                  {others.map((item) => (
+                    <div
+                      key={item.id}
+                      className="text-sm text-gray-600 font-light"
+                    >
+                      {item.name_target}{" "}
+                      {item.description_target
+                        ? `| ${item.description_target}`
+                        : ""}{" "}
+                      {item.date ? `(${formatDate(item.date)})` : ""}
+                    </div>
                   ))}
                 </div>
               </div>
