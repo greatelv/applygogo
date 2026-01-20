@@ -391,10 +391,8 @@ export function SettingsPage({
               }
               className="w-full mt-auto"
               disabled={
-                (hasActivePass && passType === "PASS_30DAY") ||
-                (hasActivePass && passType !== "PASS_30DAY") ||
-                (userEmail !== "test@applygogo.com" &&
-                  process.env.NODE_ENV !== "development")
+                userEmail !== "test@applygogo.com" &&
+                (hasActivePass || process.env.NODE_ENV !== "development")
               }
               onClick={() => onUpgrade("PASS_30DAY")}
               isLoading={isUpgrading}
@@ -470,10 +468,8 @@ export function SettingsPage({
               }
               className="w-full mt-auto"
               disabled={
-                (hasActivePass && passType === "PASS_7DAY") ||
-                (hasActivePass && passType !== "PASS_7DAY") ||
-                (userEmail !== "test@applygogo.com" &&
-                  process.env.NODE_ENV !== "development")
+                userEmail !== "test@applygogo.com" &&
+                (hasActivePass || process.env.NODE_ENV !== "development")
               }
               onClick={() => onUpgrade("PASS_7DAY")}
               isLoading={isUpgrading}
