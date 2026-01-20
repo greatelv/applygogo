@@ -46,6 +46,10 @@ export function UpgradeModal({
   const [purchasingProduct, setPurchasingProduct] = useState<string | null>(
     null,
   );
+  const isRestricted =
+    !isGlobal &&
+    userEmail !== "test@applygogo.com" &&
+    process.env.NODE_ENV !== "development";
 
   const handlePurchase = async (productType: "PASS_7DAY" | "PASS_30DAY") => {
     // 한국 사용자(isGlobal === false)인 경우에만 심사 중 제한을 적용
@@ -235,13 +239,15 @@ export function UpgradeModal({
 
               <Button
                 onClick={() => handlePurchase("PASS_7DAY")}
-                disabled={purchasingProduct === "PASS_7DAY"}
+                disabled={purchasingProduct === "PASS_7DAY" || isRestricted}
                 className="w-full"
                 variant="outline"
                 size="lg"
               >
                 {purchasingProduct === "PASS_7DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isRestricted ? (
+                  t("beta")
                 ) : (
                   t("cta")
                 )}
@@ -324,12 +330,14 @@ export function UpgradeModal({
 
               <Button
                 onClick={() => handlePurchase("PASS_30DAY")}
-                disabled={purchasingProduct === "PASS_30DAY"}
+                disabled={purchasingProduct === "PASS_30DAY" || isRestricted}
                 className="w-full"
                 size="lg"
               >
                 {purchasingProduct === "PASS_30DAY" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isRestricted ? (
+                  t("beta")
                 ) : (
                   t("cta")
                 )}
