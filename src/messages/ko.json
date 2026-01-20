@@ -534,6 +534,7 @@
         "current": "현재 이용 중",
         "unavailable": "전환 불가",
         "beta": "베타 기간 준비 중",
+        "purchase": "이용권 구매하기",
         "test": "이용권 구매 (테스트)",
         "features": [
           "{credits} 크레딧",
@@ -546,6 +547,7 @@
         "current": "현재 이용 중",
         "unavailable": "전환 불가",
         "beta": "베타 기간 준비 중",
+        "purchase": "이용권 구매하기",
         "test": "이용권 구매 (테스트)",
         "features": [
           "{credits} 크레딧",
@@ -557,6 +559,7 @@
         "title": "크레딧 충전",
         "required": "이용권 필요",
         "beta": "베타 기간 준비 중",
+        "purchase": "크레딧 충전하기",
         "test": "크레딧 충전 (테스트)",
         "features": ["{credits} 크레딧 충전", "기간 제한 없음"]
       }

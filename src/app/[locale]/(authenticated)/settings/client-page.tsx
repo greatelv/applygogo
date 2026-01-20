@@ -37,7 +37,7 @@ export function SettingsClientPage({
   const isGlobal = locale !== "ko";
 
   const [isUpgrading, setIsUpgrading] = useState(false);
-  const [isRefunding, setIsRefunding] = useState(false);
+  const [refundingId, setRefundingId] = useState<string | null>(null);
 
   const planType = settings?.planType || "FREE";
   const credits = settings?.credits || 0;
@@ -71,15 +71,13 @@ export function SettingsClientPage({
   const handleUpgrade = async (
     passType: "PASS_7DAY" | "PASS_30DAY" | "REFILL_50",
   ) => {
+    // 한국 사용자(isGlobal === false)인 경우에만 심사 중 제한을 적용
     if (
+      !isGlobal &&
       user.email !== "test@applygogo.com" &&
       process.env.NODE_ENV !== "development"
     ) {
-      toast.info(
-        locale === "ko"
-          ? "현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요."
-          : "Payment system is under review. Please try again after official launch.",
-      );
+      toast.info("현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요.");
       return;
     }
     if (isUpgrading) return;
@@ -195,15 +193,10 @@ export function SettingsClientPage({
   };
 
   const handleRefund = async (paymentId: string) => {
-    if (isRefunding) return;
-    setIsRefunding(true);
+    if (refundingId) return;
+    setRefundingId(paymentId);
 
     const previousHistory = [...paymentHistory];
-    const optimisticHistory = paymentHistory.map((item: any) =>
-      item.id === paymentId ? { ...item, status: "REFUNDED" } : item,
-    );
-    // @ts-ignore
-    setPaymentHistory(optimisticHistory);
 
     try {
       const res = await fetch("/api/payment/refund", {
@@ -222,6 +215,13 @@ export function SettingsClientPage({
 
       toast.success(t("toast.refundSuccess"));
 
+      // Update local state immediately for responsiveness
+      const updatedHistory = paymentHistory.map((item: any) =>
+        item.id === paymentId ? { ...item, status: "REFUNDED" } : item,
+      );
+      // @ts-ignore
+      setPaymentHistory(updatedHistory);
+
       await fetchHistory();
       router.refresh();
       setPlan("FREE");
@@ -231,7 +231,7 @@ export function SettingsClientPage({
       // @ts-ignore
       setPaymentHistory(previousHistory);
     } finally {
-      setIsRefunding(false);
+      setRefundingId(null);
     }
   };
 
@@ -241,16 +241,6 @@ export function SettingsClientPage({
   );
 
   let hasActivePass = planExpiresAt ? planExpiresAt > now : false;
-
-  if (!hasActivePass && latestPayment) {
-    const paidAt = new Date(latestPayment.paidAt);
-    const durationDays = latestPayment.name.includes("30일") ? 30 : 7;
-    const expiry = new Date(paidAt);
-    expiry.setDate(expiry.getDate() + durationDays);
-    if (expiry > now) {
-      hasActivePass = true;
-    }
-  }
 
   let canRefund = false;
   if (latestPayment && hasActivePass) {
@@ -294,7 +284,7 @@ export function SettingsClientPage({
         currentPeriodEnd={planExpiresAt || undefined}
         paymentHistory={paymentHistory}
         isUpgrading={isUpgrading}
-        isRefunding={isRefunding}
+        refundingId={refundingId}
         canRefund={canRefund}
       />
       {/* Hidden Container for PortOne V2 UI (PayPal SPB) */}

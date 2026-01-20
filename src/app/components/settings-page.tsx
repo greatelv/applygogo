@@ -74,7 +74,7 @@ interface SettingsPageProps {
   }>;
   // Loading States
   isUpgrading?: boolean;
-  isRefunding?: boolean;
+  refundingId?: string | null;
   isUpdatingCard?: boolean;
   canRefund?: boolean;
 }
@@ -98,7 +98,7 @@ export function SettingsPage({
   paymentInfo,
   paymentHistory = [],
   isUpgrading = false,
-  isRefunding = false,
+  refundingId = null,
   isUpdatingCard = false,
   canRefund = false,
 }: SettingsPageProps) {
@@ -113,6 +113,10 @@ export function SettingsPage({
     .toUpperCase()
     .slice(0, 2);
   const isGlobal = locale !== "ko";
+  const isRestricted =
+    !isGlobal &&
+    userEmail !== "test@applygogo.com" &&
+    process.env.NODE_ENV !== "development";
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isPassWarningOpen, setIsPassWarningOpen] = useState(false);
@@ -158,9 +162,17 @@ export function SettingsPage({
 
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return t("labels.unknown");
-    return new Date(date).toLocaleDateString(
-      locale === "ko" ? "ko-KR" : locale === "ja" ? "ja-JP" : "en-US",
-    );
+    // Use Intl.DateTimeFormat for true locale-aware formatting
+    // ko: 2026. 1. 20. 오후 12:55
+    // en: Jan 20, 2026, 12:55 PM
+    return new Date(date).toLocaleString(locale, {
+      year: "numeric",
+      month: locale === "ko" ? "numeric" : "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   const formatPrice = (price?: number) => {
@@ -171,6 +183,39 @@ export function SettingsPage({
     }
     // Default (including English) puts symbol before
     return `${tc("currency")}${price.toLocaleString()}`;
+  };
+
+  const formatHistoryPrice = (amount: number, currency: string) => {
+    // Default currency if missing or undefined
+    const safeCurrency = currency || "KRW";
+
+    // Temporary fix for legacy data:
+    // If USD and amount >= 100 (likely stored as cents), divide by 100
+    let displayAmount = amount;
+    if (safeCurrency === "USD" && amount >= 100) {
+      displayAmount = amount / 100;
+    }
+
+    try {
+      // Use Intl.NumberFormat for proper currency formatting
+      // This handles currency symbols, positions, and decimal places automatically per locale
+      const formatter = new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: safeCurrency,
+        minimumFractionDigits: safeCurrency === "KRW" ? 0 : 2,
+        maximumFractionDigits: safeCurrency === "KRW" ? 0 : 2,
+      });
+
+      // Override: For Korean locale with KRW, use "원" suffix instead of "₩" prefix (Cultural preference)
+      if (locale === "ko" && safeCurrency === "KRW") {
+        return `${displayAmount.toLocaleString("ko-KR")}원`;
+      }
+
+      return formatter.format(displayAmount);
+    } catch (e) {
+      // Fallback
+      return `${displayAmount.toLocaleString()} ${safeCurrency}`;
+    }
   };
 
   return (
@@ -392,7 +437,7 @@ export function SettingsPage({
               className="w-full mt-auto"
               disabled={
                 userEmail !== "test@applygogo.com" &&
-                (hasActivePass || process.env.NODE_ENV !== "development")
+                (hasActivePass || isRestricted)
               }
               onClick={() => onUpgrade("PASS_30DAY")}
               isLoading={isUpgrading}
@@ -403,7 +448,9 @@ export function SettingsPage({
                   : t("plans.pass30.unavailable")
                 : userEmail === "test@applygogo.com"
                   ? t("plans.pass30.test")
-                  : t("plans.pass30.beta")}
+                  : isRestricted
+                    ? t("plans.pass30.beta")
+                    : t("plans.pass30.purchase")}
             </Button>
           </div>
 
@@ -469,7 +516,7 @@ export function SettingsPage({
               className="w-full mt-auto"
               disabled={
                 userEmail !== "test@applygogo.com" &&
-                (hasActivePass || process.env.NODE_ENV !== "development")
+                (hasActivePass || isRestricted)
               }
               onClick={() => onUpgrade("PASS_7DAY")}
               isLoading={isUpgrading}
@@ -480,7 +527,9 @@ export function SettingsPage({
                   : t("plans.pass7.unavailable")
                 : userEmail === "test@applygogo.com"
                   ? t("plans.pass7.test")
-                  : t("plans.pass7.beta")}
+                  : isRestricted
+                    ? t("plans.pass7.beta")
+                    : t("plans.pass7.purchase")}
             </Button>
           </div>
 
@@ -527,17 +576,15 @@ export function SettingsPage({
             <Button
               variant="outline"
               className="w-full mt-auto"
-              disabled={
-                !hasActivePass ||
-                (userEmail !== "test@applygogo.com" &&
-                  process.env.NODE_ENV !== "development")
-              }
+              disabled={!hasActivePass || isRestricted}
               onClick={() => onUpgrade("REFILL_50")}
               isLoading={isUpgrading}
             >
               {userEmail === "test@applygogo.com"
                 ? t("plans.refill.test")
-                : t("plans.refill.beta")}
+                : isRestricted
+                  ? t("plans.refill.beta")
+                  : t("plans.refill.purchase")}
             </Button>
           </div>
         </div>
@@ -645,7 +692,7 @@ export function SettingsPage({
                           {item.method}
                         </td>
                         <td className="py-3 px-4 text-right">
-                          {item.amount.toLocaleString()} {item.currency}
+                          {formatHistoryPrice(item.amount, item.currency)}
                         </td>
                         <td className="py-3 px-4 text-center">
                           <Badge
@@ -682,11 +729,11 @@ export function SettingsPage({
                                   variant="ghost"
                                   size="sm"
                                   className="h-7 text-[11px] text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                                  disabled={isRefunding}
+                                  disabled={!!refundingId}
                                   onClick={() => {
                                     setRefundIdToConfirm(item.id);
                                   }}
-                                  isLoading={isRefunding}
+                                  isLoading={refundingId === item.id}
                                 >
                                   {t("history.refund")}
                                 </Button>

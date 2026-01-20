@@ -358,10 +358,20 @@ export async function processPaymentSuccess(
   }
 
   const amount = paymentData.amount.total;
-  const product = getProductByPrice(amount);
+  const currency = paymentData.currency || "KRW";
+
+  // Find product simply by matching the Order Name
+  // (We already verified amount & currency in the route handler)
+  const productKey = Object.keys(PLAN_PRODUCTS).find(
+    // @ts-ignore
+    (key) => PLAN_PRODUCTS[key].name === paymentData.orderName,
+  );
+
+  // @ts-ignore
+  const product = productKey ? PLAN_PRODUCTS[productKey] : null;
 
   if (!product) {
-    throw new Error(`Invalid payment amount: ${amount}`);
+    throw new Error(`Unknown product name: ${paymentData.orderName}`);
   }
 
   await prisma.$transaction(async (tx) => {
@@ -390,7 +400,7 @@ export async function processPaymentSuccess(
       paymentData.id,
       product.name,
       amount,
-      "KRW",
+      currency,
       "PAID",
       paymentData.method?.type || null,
       paymentData.receiptUrl || null,

@@ -48,12 +48,16 @@ export function UpgradeModal({
   );
 
   const handlePurchase = async (productType: "PASS_7DAY" | "PASS_30DAY") => {
-    toast.info(
-      locale === "ko"
-        ? "현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요."
-        : "Payment system is under review. Please try again after official launch.",
-    );
-    return;
+    // 한국 사용자(isGlobal === false)인 경우에만 심사 중 제한을 적용
+    if (
+      !isGlobal &&
+      userEmail !== "test@applygogo.com" &&
+      process.env.NODE_ENV !== "development"
+    ) {
+      toast.info("현재 결제 시스템 심사 중입니다. 정식 오픈 후 이용해 주세요.");
+      return;
+    }
+
     if (purchasingProduct) return;
     setPurchasingProduct(productType);
 

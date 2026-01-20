@@ -534,6 +534,7 @@
         "current": "In Use",
         "unavailable": "Cannot switch",
         "beta": "Coming soon",
+        "purchase": "Purchase Pass",
         "test": "Buy Pass (Test)",
         "features": [
           "{credits} Credits",
@@ -546,6 +547,7 @@
         "current": "In Use",
         "unavailable": "Cannot switch",
         "beta": "Coming soon",
+        "purchase": "Purchase Pass",
         "test": "Buy Pass (Test)",
         "features": [
           "{credits} Credits",
@@ -557,6 +559,7 @@
         "title": "Credit Refill",
         "required": "Pass required",
         "beta": "Coming soon",
+        "purchase": "Refill Credits",
         "test": "Refill Credits (Test)",
         "features": ["Refill {credits} Credits", "No expiration"]
       }

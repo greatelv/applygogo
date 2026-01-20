@@ -34,9 +34,12 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
     const allItems = data.items || [];
 
-    // 2. [필수] 서버 사이드 보안 필터링: 내 결제 내역만 골라내기
+    // 2. [필수] 서버 사이드 보안 필터링: 내 결제 내역만 골라내기 & 실패 내역 제외
     const myItems = allItems.filter(
-      (item: any) => item.customer && item.customer.id === userId
+      (item: any) =>
+        item.customer &&
+        item.customer.id === userId &&
+        item.status !== "FAILED",
     );
 
     const history = myItems.map((item: any) => {
@@ -55,7 +58,7 @@ export async function GET(req: NextRequest) {
         id: item.id,
         name: item.orderName,
         amount: item.amount.total,
-        currency: item.amount.currency,
+        currency: item.currency || item.amount.currency || "KRW",
         status: item.status === "CANCELLED" ? "REFUNDED" : item.status,
         paidAt: item.paidAt,
         receiptUrl: item.receiptUrl || "",
@@ -68,7 +71,7 @@ export async function GET(req: NextRequest) {
     console.error("Fetch payment history error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
