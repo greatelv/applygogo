@@ -33,7 +33,11 @@
       "blog": "Blog",
       "address": "4F, Dongbang Bldg, 60 Dongsomun-ro, Seongbuk-gu, Seoul",
       "ceo": "Taekyung Jeon",
-      "businessNumber": "639-34-01724"
+      "businessNumber": "639-34-01724",
+      "ceoLabel": "Representative",
+      "businessNumberLabel": "Business Registration Number",
+      "addressLabel": "Address",
+      "companyName": "Keique Corporation"
     },
     "plan": {
       "FREE": "Free",

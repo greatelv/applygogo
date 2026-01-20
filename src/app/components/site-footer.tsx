@@ -110,14 +110,14 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             {/* Business Info */}
             <div className="space-y-1 text-xs text-muted-foreground leading-relaxed">
               <p>
-                <span className="font-medium">Keique Corporation</span>
+                <span className="font-medium">{t("companyName")}</span>
                 <span className="mx-2">|</span>
-                {t("ceo")}: Taekyung Jeon
+                {t("ceoLabel")}: {t("ceo")}
                 <span className="mx-2">|</span>
-                {t("businessNumber")}: 639-34-01724
+                {t("businessNumberLabel")}: {t("businessNumber")}
               </p>
               <p>
-                {t("address")}
+                {t("addressLabel")}: {t("address")}
                 <span className="mx-2">|</span>
                 Email: patakeique@gmail.com
               </p>

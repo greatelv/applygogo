@@ -33,7 +33,11 @@
       "blog": "블로그",
       "address": "서울시 성북구 동소문로 60 동방빌딩 4층",
       "ceo": "전태경",
-      "businessNumber": "639-34-01724"
+      "businessNumber": "639-34-01724",
+      "ceoLabel": "대표",
+      "businessNumberLabel": "사업자등록번호",
+      "addressLabel": "주소",
+      "companyName": "케익 코퍼레이션"
     },
     "plan": {
       "FREE": "무료",
