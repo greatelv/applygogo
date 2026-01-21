@@ -21,7 +21,7 @@ model Account {
   id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
-  updatedAt         DateTime
+  updatedAt         DateTime @updatedAt
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
@@ -123,7 +123,7 @@ model Resume {
   current_step      ResumeStep     @default(UPLOAD)
   selected_template ResumeTemplate?
   created_at        DateTime       @default(now())
-  updated_at        DateTime
+  updated_at        DateTime       @updatedAt
 
   email             String?
   links             Json?
@@ -151,48 +151,8 @@ model Resume {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model Session {
-  session_token String   @unique
-  user_id       String
-  expires       DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model Skill {
-  id          String  @id
-  resume_id   String
-  name        String
-  level       String?
-  order       Int     @default(0)
-  
-  // Refactored fields (New)
-  name_source String  @default("")
-  name_target String?
-  resume      Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
-
-  @@map("skills")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model UsageLog {
-  id          String   @id
-  user_id     String
-  amount      Float
-  description String
-  created_at  DateTime @default(now())
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("usage_logs")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  id                String           @id
+  id                String           @id @default(uuid())
   name              String?
   email             String           @unique
   emailVerified     DateTime?
@@ -201,7 +161,7 @@ model User {
   linkedin_url      String?
   portfolio_url     String?
   created_at        DateTime         @default(now())
-  updated_at        DateTime
+  updated_at        DateTime         @updatedAt
   plan_type         String           @default("FREE")
   plan_expires_at   DateTime?
   credits           Int              @default(10)
@@ -223,6 +183,19 @@ model VerificationToken {
 
   @@id([identifier, token])
   @@map("verification_tokens")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Session {
+  id           String   @id @default(uuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -280,4 +253,32 @@ enum ResumeTemplate {
   MINIMAL
   PROFESSIONAL
   EXECUTIVE
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Skill {
+  id          String  @id
+  resume_id   String
+  name        String
+  level       String?
+  order       Int     @default(0)
+  
+  // Refactored fields (New)
+  name_source String  @default("")
+  name_target String?
+  resume      Resume  @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+
+  @@map("skills")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model UsageLog {
+  id          String   @id
+  user_id     String
+  amount      Float
+  description String
+  created_at  DateTime @default(now())
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("usage_logs")
 }

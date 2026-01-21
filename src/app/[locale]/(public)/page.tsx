@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
-import { useParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { LandingPage } from "@/app/components/landing-page";
 
 import { useSession } from "next-auth/react";
@@ -11,6 +11,7 @@ export default function Page() {
   const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
   const { status } = useSession();
+  const locale = useLocale();
 
   const handleGetStarted = () => {
     setIsNavigating(true);
@@ -20,9 +21,6 @@ export default function Page() {
       router.push("/login");
     }
   };
-
-  const params = useParams();
-  const locale = (params?.locale as string) || "ko";
 
   const schemaData = {
     ko: {
