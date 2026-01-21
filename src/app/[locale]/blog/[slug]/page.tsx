@@ -151,9 +151,12 @@ export default async function PostPage({ params }: PostPageProps) {
                     dateTime={new Date(post.frontmatter.date).toISOString()}
                   >
                     {new Date(post.frontmatter.date).toLocaleDateString(
-                      "ko-KR",
+                      locale === "ko"
+                        ? "ko-KR"
+                        : locale === "ja"
+                          ? "ja-JP"
+                          : "en-US",
                       {
-                        timeZone: "Asia/Seoul",
                         year: "numeric",
                         month: "long",
                         day: "numeric",
