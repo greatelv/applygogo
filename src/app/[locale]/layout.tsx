@@ -158,7 +158,12 @@ export async function generateMetadata({
       siteName: siteName,
       images: [
         {
-          url: "/og-image.png",
+          url:
+            locale === "ko"
+              ? "/og-image-ko.png"
+              : locale === "ja"
+                ? "/og-image-ja.png"
+                : "/og-image-en.png",
           width: 1200,
           height: 630,
           alt: `${siteName} - AI Resume Builder`,
@@ -169,7 +174,13 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: title,
       description: description,
-      images: ["/og-image.png"],
+      images: [
+        locale === "ko"
+          ? "/og-image-ko.png"
+          : locale === "ja"
+            ? "/og-image-ja.png"
+            : "/og-image-en.png",
+      ],
     },
     alternates: {
       canonical: `${baseUrl}${pathname}`,
