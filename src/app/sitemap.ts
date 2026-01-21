@@ -37,13 +37,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: changeFreq,
         priority: priority,
         alternates: {
-          languages: locales.reduce(
-            (acc, l) => {
-              acc[l] = `${baseUrl}/${l}${route}`;
-              return acc;
-            },
-            {} as Record<string, string>,
-          ),
+          languages: {
+            ...locales.reduce(
+              (acc, l) => {
+                acc[l] = `${baseUrl}/${l}${route}`;
+                return acc;
+              },
+              {} as Record<string, string>,
+            ),
+            "x-default": `${baseUrl}${route}`,
+          },
         },
       });
     });
