@@ -48,19 +48,40 @@ export default function Page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: currentSchema.name,
-            applicationCategory: "BusinessApplication",
-            operatingSystem: "Web",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: currentSchema.name,
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              description: currentSchema.description,
             },
-            description: currentSchema.description,
-          }),
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "ApplyGogo",
+              url: "https://applygogo.com",
+              logo: "https://applygogo.com/android-chrome-512x512.png",
+              sameAs: ["https://applygogo.com"],
+              contactPoint: {
+                "@type": "ContactPoint",
+                email: "support@applygogo.com",
+                contactType: "customer support",
+              },
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: currentSchema.name,
+              url: "https://applygogo.com",
+            },
+          ]),
         }}
       />
       <LandingPage onGetStarted={handleGetStarted} isLoading={isNavigating} />
