@@ -53,18 +53,50 @@
       "getStarted": "Get Started"
     },
     "hero": {
-      "badge": "AI-Powered Resume Transformation",
-      "title1": "Your Resume into",
-      "title2": "Professional Korean",
-      "description": "AI automatically performs <strong>English-to-Korean resume conversion</strong>, completing a professional <strong>Korean resume</strong> that Korean recruiters notice in minutes.",
+      "badge": "Trusted by Global Talents in Korea",
+      "title1": "Landing a Job in Korea",
+      "title2": "Starts with the Perfect Resume",
+      "description": "Don't let language barriers hide your talent. Our AI transforms your CV into a <strong>native-level Korean resume</strong> optimized for local recruiters in 5 minutes.",
       "cta": "Start for Free",
       "viewSample": "View Sample",
       "subText": "Start free without credit card • First 2 conversions free"
     },
+    "pain": {
+      "title": "Korean Resumes are Unique.\nJust Translating isn't Enough.",
+      "subtitle": "Recruiters spend 6 seconds on a resume. Make yours count in Korean.",
+      "problem": {
+        "title": "Generic Translation",
+        "desc": "Awkward nuances, wrong formatting, ignored cultural context."
+      },
+      "solution": {
+        "title": "ApplyGogo AI",
+        "desc": "Business-native tone, Standard Korean format, Culture-aware refinement."
+      }
+    },
+    "comparison": {
+      "title": "Why Global Talents Choose ApplyGogo",
+      "subtitle": "Stop wasting time and money on slow agencies.",
+      "agencies": "Translation Agencies",
+      "us": "ApplyGogo Agent",
+      "rows": [
+        { "label": "Cost", "bad": "$100+", "good": "From $10" },
+        { "label": "Time", "bad": "3-5 Business Days", "good": "5 Minutes" },
+        {
+          "label": "Expertise",
+          "bad": "General Translators",
+          "good": "HR Data Specialized AI"
+        },
+        {
+          "label": "Output",
+          "bad": "Original Layout",
+          "good": "Korean Standard Layout"
+        }
+      ]
+    },
     "cost": {
       "badge": "Unbeatable Value",
-      "title1": "Faster than agents,",
-      "title2": "At 1/10th the cost",
+      "title1": "Faster than humans,",
+      "title2": "Smarter than translators",
       "description": "Receive expert-level results instantly at a reasonable price, without expensive fees and long waiting times.",
       "oldLabel": "Traditional",
       "oldPrice": "$100",

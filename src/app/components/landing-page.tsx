@@ -3,9 +3,12 @@ import {
   Check,
   Sparkles,
   FileText,
-  Globe,
   Download,
   Languages,
+  Building2,
+  Globe,
+  X,
+  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
@@ -53,7 +56,7 @@ export function LandingPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted mb-6">
-              <Sparkles className="size-4 text-muted-foreground" />
+              <Globe className="size-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
                 {t("hero.badge")}
               </span>
@@ -103,116 +106,95 @@ export function LandingPage({
         </div>
       </section>
 
-      {/* Cost Hook Section */}
-      <section className="py-20 border-b border-border bg-background">
+      {/* Pain Point Section */}
+      <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-primary/5 via-primary/5 to-background rounded-3xl p-8 lg:p-12 overflow-hidden relative border border-primary/10">
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-50" />
-            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-              <div className="space-y-6 text-center lg:text-left">
-                <Badge
-                  variant="outline"
-                  className="bg-background text-primary border-primary/30 px-3 py-1"
-                >
-                  {t("cost.badge")}
-                </Badge>
-                <h2 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
-                  {t("cost.title1")}
-                  <br />
-                  <span className="text-primary">{t("cost.title2")}</span>
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  {t("cost.description")}
-                </p>
-
-                <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <div className="flex items-center gap-3 bg-background/50 rounded-lg p-3 shadow-sm border border-border">
-                    <div className="size-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
-                      <span className="text-red-600 dark:text-red-400 font-bold text-sm">
-                        {t("cost.oldLabel")}
-                      </span>
-                    </div>
-                    <div className="text-left">
-                      <div className="text-xs text-muted-foreground">
-                        {t("cost.oldLabel")} Cost
-                      </div>
-                      <div className="font-semibold text-sm line-through text-muted-foreground decoration-red-500/50">
-                        {t("cost.oldPrice")}
-                      </div>
-                    </div>
-                  </div>
-                  <ArrowRight className="hidden sm:block size-5 text-muted-foreground self-center" />
-                  <div className="flex items-center gap-3 bg-background rounded-lg p-3 shadow-sm border border-primary/20 ring-1 ring-primary/10">
-                    <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="text-primary font-bold text-sm">
-                        {t("cost.nowLabel")}
-                      </span>
-                    </div>
-                    <div className="text-left">
-                      <div className="text-xs text-muted-foreground">
-                        {t("cost.ourName")}
-                      </div>
-                      <div className="font-bold text-lg text-primary">
-                        {isGlobal
-                          ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
-                          : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
-                        {tc("currency")}
-                      </div>
-                    </div>
-                  </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight">
+              {t.rich("pain.title", {
+                br: () => <br />,
+              })}
+            </h2>
+            <p className="text-muted-foreground mt-4">{t("pain.subtitle")}</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Problem Card */}
+            <div className="bg-card border border-border/50 p-8 rounded-2xl opacity-70 grayscale-[0.5]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-full">
+                  <X className="size-6 text-red-500" />
                 </div>
+                <h3 className="text-xl font-semibold">
+                  {t("pain.problem.title")}
+                </h3>
               </div>
-
-              {/* Right Side Visual */}
-              <div className="relative mx-auto lg:ml-auto w-full max-w-sm">
-                <div className="bg-background rounded-2xl shadow-xl border border-border overflow-hidden transform hover:scale-105 transition-transform duration-500">
-                  <div className="p-6 border-b border-border bg-muted/30">
-                    <div className="text-sm font-medium text-center text-muted-foreground">
-                      {t("cost.compareTitle")}
-                    </div>
-                  </div>
-                  <div className="p-8 space-y-8">
-                    {/* Bar 1 */}
-                    <div className="space-y-2 opacity-60">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          {t("cost.otherService")}
-                        </span>
-                        <span className="font-medium">
-                          {t("cost.oldPrice")}+
-                        </span>
-                      </div>
-                      <div className="h-3 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-gray-400 w-full" />
-                      </div>
-                    </div>
-                    {/* Bar 2 */}
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-base">
-                        <span className="font-bold text-primary">
-                          {t("cost.ourName")}
-                        </span>
-                        <span className="font-bold text-primary">
-                          {isGlobal
-                            ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
-                            : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
-                          {tc("currency")}
-                        </span>
-                      </div>
-                      <div className="h-4 bg-primary/10 rounded-full overflow-hidden relative">
-                        <div className="h-full bg-primary w-[10%] rounded-full relative">
-                          <div className="absolute -right-1 top-0 bottom-0 w-2 bg-white/50 blur-[2px] animate-pulse" />
-                        </div>
-                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] text-primary font-bold pr-3">
-                          {t("cost.saveBadge", { percent: 87 })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+              <p className="text-muted-foreground">{t("pain.problem.desc")}</p>
+            </div>
+            {/* Solution Card */}
+            <div className="bg-background border-2 border-primary/20 p-8 rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Sparkles className="size-24 text-primary" />
+              </div>
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <Check className="size-6 text-primary" />
                 </div>
+                <h3 className="text-xl font-bold text-primary">
+                  {t("pain.solution.title")}
+                </h3>
+              </div>
+              <p className="text-foreground font-medium relative z-10">
+                {t("pain.solution.desc")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Section (Replaces Cost Hook) */}
+      <section className="py-20 bg-background border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tight">
+              {t("comparison.title")}
+            </h2>
+            <p className="text-muted-foreground mt-2">
+              {t("comparison.subtitle")}
+            </p>
+          </div>
+
+          <div className="bg-muted/20 rounded-3xl p-6 md:p-10 border border-border shadow-sm">
+            <div className="grid grid-cols-3 gap-4 mb-6 text-center text-sm font-semibold tracking-wide">
+              <div></div>
+              <div className="pb-2 text-muted-foreground">
+                {t("comparison.agencies")}
+              </div>
+              <div className="pb-2 text-primary text-base">
+                {t("comparison.us")}
               </div>
             </div>
+            {/* Rows */}
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="grid grid-cols-3 gap-4 py-6 border-t border-border/50 items-center relative"
+              >
+                <div className="text-sm font-medium text-muted-foreground pl-2">
+                  {t(`comparison.rows.${i}.label`)}
+                </div>
+                <div className="text-center text-sm opacity-70">
+                  {t(`comparison.rows.${i}.bad`)}
+                </div>
+                <div className="text-center font-bold text-primary flex items-center justify-center gap-2 text-lg">
+                  {t(`comparison.rows.${i}.good`)}
+                  {i === 1 && (
+                    <Zap className="size-4 text-amber-500 fill-amber-500" />
+                  )}
+                </div>
+                {/* Highlight background for ApplyGogo column */}
+                <div className="absolute top-2 bottom-2 right-0 w-1/3 bg-primary/5 -z-10 rounded-lg" />
+              </div>
+            ))}
           </div>
         </div>
       </section>

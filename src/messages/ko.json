@@ -53,25 +53,58 @@
       "getStarted": "시작하기"
     },
     "hero": {
-      "badge": "AI 기반 이력서 변환 서비스",
-      "title1": "한국어 이력서를",
-      "title2": "글로벌 스탠다드 영문으로",
-      "description": "AI가 자동으로 <strong>국문 이력서 영문 변환</strong>을 수행하여, 채용 담당자가 주목하는 프로페셔널한 <strong>영문 이력서(CV)</strong>를 몇 분 안에 완성해드립니다.",
-      "cta": "무료로 시작하기",
+      "badge": "AI 기반 원스톱 이력서 완성",
+      "title1": "복잡한 영문 이력서,",
+      "title2": "클릭 한 번으로 끝내세요",
+      "description": "번역기, 챗GPT 오가며 씨름하지 마세요.<br></br>ApplyGoGo가 <strong>100% 원어민 표현</strong>으로 5분 만에 완벽하게 변환해 드립니다.",
+      "cta": "무료로 이력서 만들기",
       "viewSample": "샘플 보기",
-      "subText": "신용카드 없이 무료로 시작 • 최초 2회 무료 변환"
+      "subText": "신용카드 없이 무료로 시작 • 100% 자동 변환"
     },
+    "pain": {
+      "title": "한국어 이력서 작성, \n번역만으로는 부족합니다.",
+      "subtitle": "채용 담당자가 이력서를 검토하는 시간은 단 6초. 그 짧은 순간에 합격을 결정짓는 한국어 이력서가 필요합니다.",
+      "problem": {
+        "title": "일반적인 번역",
+        "desc": "어색한 직역투, 맞지 않는 형식, 한국 기업 정서 고려 부족"
+      },
+      "solution": {
+        "title": "ApplyGogo AI",
+        "desc": "비즈니스 한국어 톤앤매너, 표준 이력서 포맷, 직무 성과 중심 재구성"
+      }
+    },
+    "comparison": {
+      "title": "왜 170개국 인재들이 선택했을까요?",
+      "subtitle": "비싸고 느린 번역 대행 서비스와는 이제 작별하세요.",
+      "agencies": "일반 번역 에이전시",
+      "us": "ApplyGogo",
+      "rows": [
+        { "label": "비용", "bad": "10만원 이상", "good": "1만원부터" },
+        { "label": "소요 시간", "bad": "3~5일", "good": "단 5분" },
+        {
+          "label": "전문성",
+          "bad": "일반 번역가",
+          "good": "HR 데이터 학습 AI"
+        },
+        {
+          "label": "결과물",
+          "bad": "기존 포맷 유지",
+          "good": "한국 표준 이력서 포맷"
+        }
+      ]
+    },
+
     "cost": {
-      "badge": "압도적인 가성비",
-      "title1": "외주보다 빠르고,",
-      "title2": "비용은 1/10 수준으로",
-      "description": "비싼 비용과 긴 대기시간 없이, 합리적인 가격으로 전문가 수준의 결과물을 즉시 받아보세요.",
-      "oldLabel": "기존",
+      "badge": "압도적인 효율",
+      "title1": "번역기보다 정확하고,",
+      "title2": "에이전시보다 빠릅니다",
+      "description": "어색한 번역과 느린 첨삭 서비스의 단점을 모두 해결했습니다. 압도적인 퀄리티와 속도를 경험해보세요.",
+      "oldLabel": "번역 대행",
       "oldPrice": "100,000원",
       "nowLabel": "Now",
       "ourName": "지원고고",
-      "compareTitle": "제작 비용 비교",
-      "otherService": "기타 외주 서비스",
+      "compareTitle": "제작 비용 및 시간 비교",
+      "otherService": "일반 번역 에이전시",
       "saveBadge": "{percent}% SAVE"
     },
     "features": {
