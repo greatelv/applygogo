@@ -16,9 +16,9 @@ interface LandingSurveyModalProps {
   locale: string;
 }
 
-const SURVEY_KEY = "SURVEY_LANDING_REASON_KR_V1";
+const SURVEY_KEY = "SURVEY_LANDING_REASON_V1";
 
-const OPTIONS = [
+const OPTIONS_KR = [
   {
     id: "annoying_ai_switch",
     text: "🤖 챗GPT 복사/붙여넣기 반복이 번거로워서",
@@ -41,25 +41,75 @@ const OPTIONS = [
   },
 ];
 
+const OPTIONS_GLOBAL = [
+  {
+    id: "annoying_ai_switch",
+    text: "🤖 Tired of switching between ChatGPT & Word",
+  },
+  {
+    id: "first_time_lost",
+    text: "📝 Writing my first Korean resume is overwhelming",
+  },
+  {
+    id: "cost_burden",
+    text: "💸 Translation agencies are too expensive",
+  },
+  {
+    id: "quick_korean_use",
+    text: "🚀 Need to convert my CV to Korean ASAP",
+  },
+  {
+    id: "korean_format_need",
+    text: "🎯 Need a professional Korean resume format",
+  },
+];
+
 export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Prevent hydration mismatch by checking mounting
   const [isMounted, setIsMounted] = useState(false);
 
+  // Determine options and text based on locale
+  const isKo = locale === "ko";
+  const options = isKo ? OPTIONS_KR : OPTIONS_GLOBAL;
+  const surveyCode = isKo ? "LANDING_REASON_KR" : "LANDING_REASON_GLOBAL";
+
+  const title = isKo ? (
+    <>
+      잠깐! <span className="text-primary">ApplyGoGo</span>를 방문하신
+      <br />
+      가장 큰 이유는 무엇인가요?
+    </>
+  ) : (
+    <>
+      Wait! What brings you to <span className="text-primary">ApplyGoGo</span>?
+    </>
+  );
+
+  const description = isKo ? (
+    <>
+      여러분의 의견을 들려주시면
+      <br />더 좋은 서비스를 만드는 데 큰 도움이 됩니다. 🙇‍♂️
+    </>
+  ) : (
+    <>Your feedback helps us build a better service for you. 🙇‍♂️</>
+  );
+
+  const skipText = isKo ? "건너뛰기" : "Skip";
+
   useEffect(() => {
     setIsMounted(true);
-    // Check only if locale is Korean
-    if (locale !== "ko") return;
+    // Removed locale restriction, now runs for all locales
 
     const hasCompleted = localStorage.getItem(SURVEY_KEY);
     if (!hasCompleted) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 0);
+      }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [locale]);
+  }, []); // Run on mount (client-side only logic handled by checks)
 
   const handleSelect = async (optionId: string, optionText: string) => {
     if (isSubmitting) return;
@@ -73,7 +123,7 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          code: "LANDING_REASON_KR",
+          code: surveyCode,
           answer: optionText,
         }),
       });
@@ -82,10 +132,15 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
       localStorage.setItem(SURVEY_KEY, "true");
 
       // Show Success Toast
-      toast.success("소중한 의견 감사합니다!", {
-        description: "ApplyGoGo가 더 나은 서비스를 만드는 데 큰 도움이 됩니다.",
-        duration: 3000,
-      });
+      toast.success(
+        isKo ? "소중한 의견 감사합니다!" : "Thank you for your feedback!",
+        {
+          description: isKo
+            ? "ApplyGoGo가 더 나은 서비스를 만드는 데 큰 도움이 됩니다."
+            : "Your input helps us improve ApplyGoGo significantly.",
+          duration: 3000,
+        },
+      );
 
       // Close Modal immediately
       setIsOpen(false);
@@ -121,17 +176,14 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
       <DialogContent className="sm:max-w-md data-[state=closed]:zoom-out-100 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] duration-200">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center pb-2 break-keep">
-            잠깐! <span className="text-primary">ApplyGoGo</span>를 방문하신
-            <br />
-            가장 큰 이유는 무엇인가요?
+            {title}
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground font-medium text-base break-keep">
-            여러분의 의견을 들려주시면
-            <br />더 좋은 서비스를 만드는 데 큰 도움이 됩니다. 🙇‍♂️
+            {description}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 mt-4">
-          {OPTIONS.map((option) => (
+          {options.map((option) => (
             <button
               key={option.id}
               onClick={() => handleSelect(option.id, option.text)}
@@ -146,7 +198,7 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  제출 중...
+                  {isKo ? "제출 중..." : "Submitting..."}
                 </>
               ) : (
                 option.text
@@ -159,7 +211,7 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
             onClick={handleSkip}
             className="text-xs text-muted-foreground underline hover:text-foreground p-2"
           >
-            건너뛰기
+            {skipText}
           </button>
         </div>
       </DialogContent>
