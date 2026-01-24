@@ -36,6 +36,8 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { PublicHeader } from "./header";
 
+import { LandingSurveyModal } from "./landing-survey-modal";
+
 export function LandingPage({
   onGetStarted,
   isLoading = false,
@@ -48,6 +50,7 @@ export function LandingPage({
 
   return (
     <div className="min-h-screen bg-background">
+      <LandingSurveyModal locale={locale} />
       <BetaBanner />
       <PublicHeader onGetStarted={onGetStarted} isLoading={isLoading} />
 

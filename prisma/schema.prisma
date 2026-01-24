@@ -171,8 +171,20 @@ model User {
   resumes           Resume[]
   sessions          Session[]
   usage_logs        UsageLog[]
+  survey_responses  SurveyResponse[]
 
   @@map("users")
+}
+
+model SurveyResponse {
+  id        String   @id @default(cuid())
+  code      String
+  answer    String
+  user_id   String?
+  created_at DateTime @default(now())
+  user      User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("survey_responses")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
