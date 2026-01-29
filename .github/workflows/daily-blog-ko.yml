@@ -80,5 +80,5 @@ jobs:
       - name: Submit to IndexNow
         if: steps.git-check.outputs.changes == 'true'
         env:
-          NEW_POST_URL: ${{ steps.generate_blog.outputs.new_post_url }}
+          NEW_POST_URL: ${{ steps.generate_blog.outputs.new_post_url_ko }}
         run: npx tsx scripts/submit-indexnow.ts "$NEW_POST_URL"
