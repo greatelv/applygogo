@@ -136,7 +136,7 @@ export function LandingSurveyModal({ locale }: LandingSurveyModalProps) {
         isKo ? "소중한 의견 감사합니다!" : "Thank you for your feedback!",
         {
           description: isKo
-            ? "ApplyGoGo가 더 나은 서비스를 만드는 데 큰 도움이 됩니다."
+            ? "지원고고가 더 나은 서비스를 만드는 데 큰 도움이 됩니다."
             : "Your input helps us improve ApplyGoGo significantly.",
           duration: 3000,
         },
