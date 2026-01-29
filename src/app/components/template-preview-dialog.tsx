@@ -22,7 +22,7 @@ import { ClassicPdf } from "./pdf-templates/classic-pdf";
 import { MinimalPdf } from "./pdf-templates/minimal-pdf";
 import { ProfessionalPdf } from "./pdf-templates/professional-pdf";
 import { ExecutivePdf } from "./pdf-templates/executive-pdf";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer, BlobProvider } from "@react-pdf/renderer";
 import { AppLocale } from "@/lib/resume-language";
 
 interface TemplatePreviewDialogProps {
@@ -30,7 +30,7 @@ interface TemplatePreviewDialogProps {
   onSelectTemplate: (template: string) => void;
 }
 
-const mockResumeData = {
+const koUserMockData = {
   personalInfo: {
     name_source: "김지원",
     name_target: "Jiwon Kim",
@@ -130,6 +130,108 @@ const mockResumeData = {
   ],
 };
 
+const globalUserMockData = {
+  personalInfo: {
+    name_source: "Jiwon Kim",
+    name_target: "김지원",
+    email: "jiwon.kim@example.com",
+    phone: "010-1234-5678",
+    links: [
+      { label: "LinkedIn", url: "https://linkedin.com/in/jiwonkim" },
+      { label: "Portfolio", url: "https://jiwonkim.dev" },
+    ],
+    summary_source:
+      "Senior Software Engineer with 7 years of experience in full-stack development. Led design and development of scalable web applications, proficient in React, Node.js, and cloud infrastructure. Passionate about clean, maintainable code and solving complex business problems through technology.",
+    summary_target:
+      "7년차 시니어 소프트웨어 엔지니어로, 풀스택 개발 분야에서 풍부한 경험을 보유하고 있습니다. 확장 가능한 웹 애플리케이션의 설계 및 개발을 주도해 왔으며, React, Node.js 및 클라우드 인프라 활용에 능숙합니다. 깨끗하고 유지보수가 용이한 코드를 지향하며 기술을 통해 복잡한 비즈니스 문제를 해결하는 데 열정을 가지고 있습니다.",
+  },
+  experiences: [
+    {
+      id: "1",
+      company_name_source: "Global Tech Solutions",
+      company_name_target: "글로벌 테크 솔루션",
+      role_source: "Senior Frontend Engineer",
+      role_target: "시니어 프론트엔드 엔지니어",
+      period: "2021.03 - 현재",
+      bullets_source: [
+        "Led the rebuilding of core e-commerce platform, improving loading speeds by 40% and user retention.",
+        "Established automated CI/CD pipelines using GitHub Actions, reducing deployment time by 60%.",
+        "Collaborated with UX designers to overhaul UI, achieving a 25% increase in conversion rates.",
+        "Mentored junior developers and improved overall code quality through rigorous code reviews.",
+      ],
+      bullets_target: [
+        "핵심 이커머스 플랫폼의 리빌딩을 주도하여 로딩 속도를 40% 개선하고 사용자 유지율을 향상시킴.",
+        "GitHub Actions를 이용한 자동화된 CI/CD 파이프라인을 구축하여 배포 시간을 60% 단축함.",
+        "UX 디자이너와 협업하여 사용자 인터페이스를 전면 개편, 전환율을 25% 상승시키는 성과를 거둠.",
+        "주니어 개발자 멘토링 및 코드 리뷰를 통해 전반적인 코드 품질 향상에 기여함.",
+      ],
+    },
+    {
+      id: "2",
+      company_name_source: "StartUp Innovations",
+      company_name_target: "스타트업 이노베이션",
+      role_source: "Full Stack Developer",
+      role_target: "풀스택 개발자",
+      period: "2018.06 - 2021.02",
+      bullets_source: [
+        "Developed and maintained various customer-facing web applications using React and Python/Django.",
+        "Optimized DB queries and API endpoints, reducing average response time by 300ms.",
+        "Integrated third-party payment gateways and authentication systems, strengthening platform security.",
+      ],
+      bullets_target: [
+        "React와 Python/Django를 사용하여 다수의 고객 대응용 웹 애플리케이션을 개발 및 유지보수함.",
+        "데이터베이스 쿼리 및 API 엔드포인트 최적화를 통해 평균 응답 시간을 300ms 단축함.",
+        "제3자 결제 게이트웨이 및 인증 시스템을 통합하여 플랫폼 보안 및 수익 모델 강화에 기여함.",
+      ],
+    },
+  ],
+  educations: [
+    {
+      id: "1",
+      school_name_source: "Korea University",
+      school_name_target: "고려대학교",
+      degree_source: "Bachelor of Science",
+      degree_target: "학사",
+      major_source: "Computer Science",
+      major_target: "컴퓨터공학",
+      start_date: "2014.03",
+      end_date: "2018.02",
+    },
+  ],
+  skills: [
+    { id: "1", name: "React" },
+    { id: "2", name: "TypeScript" },
+    { id: "3", name: "Node.js" },
+    { id: "4", name: "Next.js" },
+    { id: "5", name: "AWS" },
+    { id: "6", name: "Docker" },
+  ],
+  additionalItems: [
+    {
+      type: "LANGUAGE",
+      name_source: "English",
+      name_target: "영어",
+      description_source: "Professional Working Proficiency",
+      description_target: "비즈니스 회화 가능",
+    },
+    {
+      type: "LANGUAGE",
+      name_source: "Korean",
+      name_target: "한국어",
+      description_source: "Native",
+      description_target: "원어민",
+    },
+    {
+      type: "CERTIFICATION",
+      name_source: "AWS Certified Solutions Architect",
+      name_target: "AWS Certified Solutions Architect",
+      date: "2023.05",
+    },
+  ],
+};
+
+import { isOutputKorean } from "@/lib/resume-language";
+
 export function TemplatePreviewDialog({
   trigger,
   onSelectTemplate,
@@ -140,6 +242,10 @@ export function TemplatePreviewDialog({
   const [selectedTab, setSelectedTab] = useState("modern");
   const [isClient, setIsClient] = useState(false);
 
+  // Pick the right mock data based on locale
+  const mockResumeData = isOutputKorean(locale)
+    ? globalUserMockData
+    : koUserMockData;
   useEffect(() => {
     setIsClient(true);
     // Important: Register fonts early
@@ -234,7 +340,7 @@ export function TemplatePreviewDialog({
 
             <div className="flex-1 bg-muted/10 relative overflow-hidden">
               {isClient && (
-                <div className="absolute inset-0 w-full h-full flex justify-center py-4 sm:py-8 px-2 sm:px-0 overflow-y-auto">
+                <div className="absolute inset-0 w-full h-full py-2 px-1 sm:px-2 overflow-y-auto flex justify-center items-start">
                   {/* Remove Toolbar and optimize viewing experience */}
                   <style jsx global>{`
                     iframe {
@@ -254,18 +360,33 @@ export function TemplatePreviewDialog({
                     }
                   `}</style>
                   <div
-                    className="h-full relative shadow-2xl mx-auto"
-                    style={{ width: "210mm", maxWidth: "100%" }}
+                    className="relative shadow-2xl mx-auto w-full bg-white rounded-lg overflow-hidden shrink-0"
+                    style={{ aspectRatio: "1 / 1.4142" }}
                   >
-                    <PDFViewer
-                      width="100%"
-                      height="100%"
-                      showToolbar={false}
-                      className="w-full h-full rounded-lg"
-                      style={{ border: "none" }} // Ensure no inline border
-                    >
-                      {getTemplateComponent()}
-                    </PDFViewer>
+                    <BlobProvider document={getTemplateComponent()}>
+                      {({ url, loading }) => {
+                        if (loading || !url) {
+                          return (
+                            <div className="flex items-center justify-center w-full h-full bg-white rounded-lg">
+                              <div className="flex flex-col items-center gap-2">
+                                <div className="size-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                                <p className="text-sm text-muted-foreground">
+                                  Preparing Preview...
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return (
+                          <iframe
+                            src={`${url}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`}
+                            className="w-full h-full rounded-lg"
+                            style={{ border: "none" }}
+                            title="Resume Preview"
+                          />
+                        );
+                      }}
+                    </BlobProvider>
                   </div>
                 </div>
               )}
