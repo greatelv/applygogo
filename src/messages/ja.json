@@ -16,6 +16,7 @@
       "logout": "ログアウト",
       "myResumes": "マイ履歴書",
       "blog": "ブログ",
+      "releaseNotes": "リリースノート",
       "settings": "設定",
       "introduction": "サービス紹介",
       "buyTicket": "利用券購入",
@@ -31,6 +32,7 @@
       "contact": "お問い合わせ",
       "introduction": "サービス紹介",
       "blog": "ブログ",
+      "releaseNotes": "リリースノート",
       "address": "ソウル特別市城北区東小門路60東方ビル4階",
       "ceo": "全泰景",
       "businessNumber": "639-34-01724",
@@ -50,7 +52,8 @@
   },
   "landing": {
     "header": {
-      "getStarted": "始める"
+      "getStarted": "始める",
+      "releaseNotes": "リリースノート"
     },
     "hero": {
       "badge": "韓国で働くグローバル人材が信頼するサービス",

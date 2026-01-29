@@ -16,6 +16,7 @@
       "logout": "로그아웃",
       "myResumes": "내 이력서",
       "blog": "블로그",
+      "releaseNotes": "릴리즈 노트",
       "settings": "설정",
       "introduction": "서비스 소개",
       "buyTicket": "이용권 구매",
@@ -31,6 +32,7 @@
       "contact": "고객문의",
       "introduction": "서비스 소개",
       "blog": "블로그",
+      "releaseNotes": "릴리즈 노트",
       "address": "서울시 성북구 동소문로 60 동방빌딩 4층",
       "ceo": "전태경",
       "businessNumber": "639-34-01724",
@@ -46,11 +48,12 @@
       "PASS_BETA_3DAY": "베타 무제한"
     },
     "cancel": "취소",
-    "currency": "원"
+    "currency": "₩"
   },
   "landing": {
     "header": {
-      "getStarted": "시작하기"
+      "getStarted": "시작하기",
+      "releaseNotes": "릴리즈 노트"
     },
     "hero": {
       "badge": "AI 기반 원스톱 이력서 완성",
@@ -100,7 +103,7 @@
       "title2": "에이전시보다 빠릅니다",
       "description": "어색한 번역과 느린 첨삭 서비스의 단점을 모두 해결했습니다. 압도적인 퀄리티와 속도를 경험해보세요.",
       "oldLabel": "번역 대행",
-      "oldPrice": "100,000원",
+      "oldPrice": "₩100,000",
       "nowLabel": "Now",
       "ourName": "지원고고",
       "compareTitle": "제작 비용 및 시간 비교",
@@ -472,7 +475,7 @@
     },
     "cta": "구매하기",
     "beta": "베타 기간 준비 중",
-    "currency": "원",
+    "currency": "₩",
     "off": "OFF",
     "notice": "💡 이용권은 자동 갱신되지 않습니다. 기간이 만료되면 자동으로 무료 플랜으로 전환되니 안심하고 구매하세요.",
     "success": "{name} 구매가 완료되었습니다!",
@@ -793,7 +796,7 @@
     "badge": "BETA",
     "mobilePrefix": "베타 기념 ",
     "desktopPrefix": "베타 런칭 기념 ",
-    "value": "2만원 상당의 ",
+    "value": "₩20,000 상당의 ",
     "benefit": "3일 무제한 이용권 증정!",
     "consoleMessage": "마음껏 이용해보시고 <link>좌측 하단</link>에서 서비스 의견 혹은 버그를 제보해주세요."
   },

@@ -177,11 +177,6 @@ export function SettingsPage({
 
   const formatPrice = (price?: number) => {
     if (typeof price !== "number") return "";
-    // Korean uses currency symbol (Won) after the number
-    if (locale === "ko") {
-      return `${price.toLocaleString()}${tc("currency")}`;
-    }
-    // Default (including English) puts symbol before
     return `${tc("currency")}${price.toLocaleString()}`;
   };
 
@@ -205,11 +200,6 @@ export function SettingsPage({
         minimumFractionDigits: safeCurrency === "KRW" ? 0 : 2,
         maximumFractionDigits: safeCurrency === "KRW" ? 0 : 2,
       });
-
-      // Override: For Korean locale with KRW, use "원" suffix instead of "₩" prefix (Cultural preference)
-      if (locale === "ko" && safeCurrency === "KRW") {
-        return `${displayAmount.toLocaleString("ko-KR")}원`;
-      }
 
       return formatter.format(displayAmount);
     } catch (e) {

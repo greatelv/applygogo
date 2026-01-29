@@ -1,13 +1,14 @@
 import { Link } from "@/i18n/routing";
+import { useTranslations, useLocale } from "next-intl";
 
 interface SiteFooterProps {
   simple?: boolean;
 }
 
-import { useTranslations } from "next-intl";
-
 export function SiteFooter({ simple }: SiteFooterProps) {
   const t = useTranslations("common.footer");
+  const locale = useLocale();
+  const isKo = locale === "ko";
 
   if (simple) {
     return (
@@ -36,12 +37,16 @@ export function SiteFooter({ simple }: SiteFooterProps) {
                 </a>
               </div>
               <div className="hidden md:block text-[10px] text-muted-foreground/60">
-                © 2026 ApplyGogo (Keique Corporation). All rights reserved.
+                © 2026{" "}
+                {isKo
+                  ? "지원고고 (케익코퍼레이션)"
+                  : "ApplyGogo (Keique Corporation)"}
+                . All rights reserved.
               </div>
             </div>
 
             <div className="text-[10px] text-muted-foreground/60 leading-normal text-center md:text-left">
-              <span>Keique Corporation</span>
+              <span>{isKo ? "케익코퍼레이션" : "Keique Corporation"}</span>
               <span className="mx-1.5">|</span>
               <span>{t("ceo")}: Taekyung Jeon</span>
               <span className="mx-1.5">|</span>
@@ -54,7 +59,11 @@ export function SiteFooter({ simple }: SiteFooterProps) {
             </div>
 
             <div className="md:hidden text-center text-[10px] text-muted-foreground/60">
-              © 2026 ApplyGogo (Keique Corporation). All rights reserved.
+              © 2026{" "}
+              {isKo
+                ? "지원고고 (케익코퍼레이션)"
+                : "ApplyGogo (Keique Corporation)"}
+              . All rights reserved.
             </div>
           </div>
         </div>
@@ -105,6 +114,12 @@ export function SiteFooter({ simple }: SiteFooterProps) {
               >
                 {t("blog")}
               </Link>
+              <Link
+                href="/release-notes"
+                className="hover:text-foreground transition-colors"
+              >
+                {t("releaseNotes")}
+              </Link>
             </div>
 
             {/* Business Info */}
@@ -126,7 +141,11 @@ export function SiteFooter({ simple }: SiteFooterProps) {
 
           {/* Copyright */}
           <div className="text-xs text-muted-foreground">
-            © 2026 ApplyGogo (Keique Corporation). All rights reserved.
+            © 2026{" "}
+            {isKo
+              ? "지원고고 (케익코퍼레이션)"
+              : "ApplyGogo (Keique Corporation)"}
+            . All rights reserved.
           </div>
         </div>
       </div>

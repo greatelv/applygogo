@@ -186,25 +186,19 @@ export function UpgradeModal({
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                  {isGlobal && (
-                    <span className="text-lg font-medium">{t("currency")}</span>
-                  )}
+                  <span className="text-lg font-medium">{t("currency")}</span>
                   <span className="text-3xl font-bold">
                     {isGlobal
                       ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal
                       : PLAN_PRODUCTS.PASS_7DAY.price.toLocaleString()}
                   </span>
-                  {!isGlobal && (
-                    <span className="text-lg font-medium">{t("currency")}</span>
-                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {isGlobal && t("currency")}
+                    {t("currency")}
                     {isGlobal
                       ? PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal
                       : PLAN_PRODUCTS.PASS_7DAY.originalPrice?.toLocaleString()}
-                    {!isGlobal && t("currency")}
                   </span>
                   <Badge variant="secondary" className="text-xs font-medium">
                     50% {t("off")}
@@ -273,29 +267,21 @@ export function UpgradeModal({
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                  {isGlobal && (
-                    <span className="text-lg font-medium text-primary">
-                      {t("currency")}
-                    </span>
-                  )}
+                  <span className="text-lg font-medium text-primary">
+                    {t("currency")}
+                  </span>
                   <span className="text-3xl font-bold text-primary">
                     {isGlobal
                       ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal
                       : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
-                  {!isGlobal && (
-                    <span className="text-lg font-medium text-primary">
-                      {t("currency")}
-                    </span>
-                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-sm text-muted-foreground line-through">
-                    {isGlobal && t("currency")}
+                    {t("currency")}
                     {isGlobal
                       ? PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal
                       : PLAN_PRODUCTS.PASS_30DAY.originalPrice?.toLocaleString()}
-                    {!isGlobal && t("currency")}
                   </span>
                   <Badge variant="destructive" className="text-xs font-medium">
                     57% {t("off")}

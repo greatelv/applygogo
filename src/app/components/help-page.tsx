@@ -42,12 +42,8 @@ export function HelpPage() {
   const faqs: FAQItem[] = faqItemsRaw.map((item, index) => ({
     ...item,
     answer: t(`faq.items.${index}.answer`, {
-      normalPrice: isGlobal
-        ? `${currency}${normalPrice}`
-        : `${normalPrice.toLocaleString()}${currency}`,
-      launchPrice: isGlobal
-        ? `${currency}${launchPrice}`
-        : `${launchPrice.toLocaleString()}${currency}`,
+      normalPrice: `${currency}${normalPrice.toLocaleString()}`,
+      launchPrice: `${currency}${launchPrice.toLocaleString()}`,
       credits: PLAN_PRODUCTS.PASS_30DAY.credits,
     }),
   }));

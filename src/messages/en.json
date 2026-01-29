@@ -16,6 +16,7 @@
       "logout": "Logout",
       "myResumes": "My Resumes",
       "blog": "Blog",
+      "releaseNotes": "Release Notes",
       "settings": "Settings",
       "introduction": "About Service",
       "buyTicket": "Buy Pass",
@@ -31,6 +32,7 @@
       "contact": "Contact",
       "introduction": "About Service",
       "blog": "Blog",
+      "releaseNotes": "Release Notes",
       "address": "4F, Dongbang Bldg, 60 Dongsomun-ro, Seongbuk-gu, Seoul",
       "ceo": "Taekyung Jeon",
       "businessNumber": "639-34-01724",
@@ -50,7 +52,8 @@
   },
   "landing": {
     "header": {
-      "getStarted": "Get Started"
+      "getStarted": "Get Started",
+      "releaseNotes": "Release Notes"
     },
     "hero": {
       "badge": "Trusted by Global Talents in Korea",

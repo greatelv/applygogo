@@ -8,6 +8,7 @@ import {
   Sparkles,
   PanelLeft,
   FileText,
+  Tag,
 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/routing";
 import { Badge } from "./ui/badge";
@@ -124,14 +125,14 @@ export function Header({
                     ? "/global/logo-for-light.svg"
                     : "/logo-for-light.svg"
                 }
-                alt="ApplyGogo"
+                alt={isGlobal ? "ApplyGogo" : "지원고고"}
                 className="h-6 w-auto dark:hidden"
               />
               <img
                 src={
                   isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
                 }
-                alt="ApplyGogo"
+                alt={isGlobal ? "ApplyGogo" : "지원고고"}
                 className="h-6 w-auto hidden dark:block"
               />
             </Link>
@@ -156,14 +157,14 @@ export function Header({
               src={
                 isGlobal ? "/global/logo-for-light.svg" : "/logo-for-light.svg"
               }
-              alt="ApplyGogo"
+              alt={isGlobal ? "ApplyGogo" : "지원고고"}
               className="h-6 w-auto dark:hidden"
             />
             <img
               src={
                 isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
               }
-              alt="ApplyGogo"
+              alt={isGlobal ? "ApplyGogo" : "지원고고"}
               className="h-6 w-auto hidden dark:block"
             />
           </Link>
@@ -285,6 +286,12 @@ export function Header({
                   {t("blog")}
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/release-notes" className="cursor-pointer">
+                  <Tag className="size-4 mr-2" />
+                  {t("releaseNotes")}
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onLogout}>
                 <LogOut className="size-4 mr-2" />
@@ -337,14 +344,14 @@ export function PublicHeader({ onGetStarted, isLoading }: PublicHeaderProps) {
                     ? "/global/logo-for-light.svg"
                     : "/logo-for-light.svg"
                 }
-                alt="ApplyGogo"
+                alt={isGlobal ? "ApplyGogo" : "지원고고"}
                 className="object-contain h-6 dark:hidden"
               />
               <img
                 src={
                   isGlobal ? "/global/logo-for-black.svg" : "/logo-for-dark.svg"
                 }
-                alt="ApplyGogo"
+                alt={isGlobal ? "ApplyGogo" : "지원고고"}
                 className="object-contain h-6 hidden dark:block"
               />
             </div>
@@ -361,6 +368,12 @@ export function PublicHeader({ onGetStarted, isLoading }: PublicHeaderProps) {
               className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {th("blog")}
+            </Link>
+            <Link
+              href="/release-notes"
+              className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {th("releaseNotes")}
             </Link>
             <LanguageSwitcher />
             <div className="hidden sm:block">

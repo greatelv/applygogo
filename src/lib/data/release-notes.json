@@ -1,0 +1,78 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-01-01",
+    "title": {
+      "ko": "ApplyGoGo 정식 서비스 출시!",
+      "en": "ApplyGoGo Official Launch!",
+      "ja": "ApplyGoGo 公式サービス開始！"
+    },
+    "description": {
+      "ko": "글로벌 이력서 작성 및 번역 기능을 이제 만나보실 수 있습니다. 한국어, 영어, 일본어를 지원하며 AI 기반의 최적화된 번역을 제공합니다.",
+      "en": "Experience our global resume writing and translation features. Supporting Korean, English, and Japanese with AI-optimized translations.",
+      "ja": "グローバルな履歴書作成および翻訳機能をぜひ体験してください。韓国語、英語、日本語をサポートし、AIベースの最適化された翻訳を提供します。"
+    },
+    "week": {
+      "ko": "1주차",
+      "en": "Week 1",
+      "ja": "1週目"
+    }
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-01-08",
+    "title": {
+      "ko": "템플릿 최적화 및 다국어 지원 강화",
+      "en": "Template Optimization & Enhanced Multilingual Support",
+      "ja": "テンプレートの最適化と多言語対応の強化"
+    },
+    "description": {
+      "ko": "일본어 및 영어 템플릿 최적화 작업을 완료했습니다. 각 국가별 이력서 표준에 맞춘 레이아웃을 제공하여 더 자연스러운 이력서를 생성해보세요.",
+      "en": "We've completed optimizations for Japanese and English templates. Create more natural resumes with layouts tailored to each country's standards.",
+      "ja": "日本語と英語のテンプレート最適化作業が完了しました。各国の履歴書基準に合わせたレイアウトを提供し、より自然な履歴書を作成できます。"
+    },
+    "week": {
+      "ko": "2주차",
+      "en": "Week 2",
+      "ja": "2週目"
+    }
+  },
+  {
+    "version": "1.2.0",
+    "date": "2026-01-15",
+    "title": {
+      "ko": "AI 생성 속도 향상",
+      "en": "Improved AI Generation Speed",
+      "ja": "AI生成速度の向上"
+    },
+    "description": {
+      "ko": "AI 기반 자기소개서 초안 생성 및 이력서 최적화 엔진의 속도를 50% 향상시켰습니다. 이제 기다림 없이 즉시 결과물을 확인하실 수 있습니다.",
+      "en": "We've improved the speed of our AI-based cover letter generation and resume optimization engine by 50%. Get your results instantly without waiting.",
+      "ja": "AIベースの自己紹介書ドラフト作成および履歴書最適化エンジンの速度を50%向上させました。待機時間なしで、すぐに結果を確認できます。"
+    },
+    "week": {
+      "ko": "3주차",
+      "en": "Week 3",
+      "ja": "3週目"
+    }
+  },
+  {
+    "version": "1.3.0",
+    "date": "2026-01-22",
+    "title": {
+      "ko": "릴리즈 노트 페이지 추가",
+      "en": "Release Notes Page Added",
+      "ja": "リリースノートページ追加"
+    },
+    "description": {
+      "ko": "제품의 성장 과정을 투명하게 보여드리기 위한 릴리즈 노트 페이지가 추가되었습니다! 앞으로의 업데이트 소식을 여기서 확인하세요.",
+      "en": "We've added a release notes page to transparently share our product's growth! Keep track of all future updates right here.",
+      "ja": "製品の成長過程を透明に伝えるためのリリースノートページを追加しました！今後のアップデート情報はこちらでご確認ください。"
+    },
+    "week": {
+      "ko": "4주차",
+      "en": "Week 4",
+      "ja": "4週目"
+    }
+  }
+]
