@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.1.0",
+    "title": {
+      "ko": "✨ 지원고고, 사용자 경험을 위한 대규모 업데이트!",
+      "en": "✨ ApplyGogo: Major Update for Enhanced User Experience!",
+      "ja": "✨ ApplyGogo：ユーザーエクスペリエンス向上のための大規模アップデート！"
+    },
+    "description": {
+      "ko": "이번 업데이트는 국제화 지원 강화, 이력서 편집 기능 개선, 그리고 AI 기능을 활용한 이력서 분석 및 번역 기능을 향상했습니다. 더욱 편리하고 효율적인 서비스 이용을 경험해보세요!",
+      "en": "This update focuses on enhanced internationalization support, improved resume editing features, and AI-powered resume analysis and translation capabilities. Experience a more convenient and efficient service!",
+      "ja": "今回のアップデートでは、国際化サポートの強化、履歴書編集機能の改善、そしてAI機能を活用した履歴書分析および翻訳機能を向上させました。より便利で効率的なサービスをご利用ください！"
+    },
+    "week": {
+      "ko": "2주차",
+      "en": "Week 2",
+      "ja": "2週目"
+    },
+    "date": "2026-01-30"
+  },
+  {
     "version": "1.0.0",
     "date": "2026-01-01",
     "title": {
