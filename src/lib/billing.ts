@@ -27,12 +27,12 @@ export function calculateCost(
 
 /**
  * [BETA PROMOTION]
- * 신규 가입 유저에게 베타 기간( ~ 2026.01.25 23:59:59) 한정으로
+ * 신규 가입 유저에게 베타 기간( ~ 2026.02.08 23:59:59) 한정으로
  * 3일 무제한 이용권(50 크레딧 포함)을 지급합니다.
  */
 export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
   const BENEFIT_START_DATE = new Date("2026-01-18T00:00:00+09:00"); // KST (Beta Start)
-  const BENEFIT_END_DATE = new Date("2026-01-25T23:59:59+09:00"); // KST
+  const BENEFIT_END_DATE = new Date("2026-02-08T23:59:59+09:00"); // KST
   const now = new Date();
 
   // 1. 프로모션 기간 체크
