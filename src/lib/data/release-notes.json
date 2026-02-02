@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.1.1",
+    "title": {
+      "ko": "지원고고 블로그 자동 생성 기능 업데이트!",
+      "en": "ApplyGogo Blog Auto-Generation Feature Updated!",
+      "ja": "ApplyGogoブログの自動生成機能がアップデートされました！"
+    },
+    "description": {
+      "ko": "매일 새로운 소식을 자동으로 받아보세요! 블로그 콘텐츠 자동 생성 기능이 개선되어 더욱 풍성한 정보를 제공합니다.",
+      "en": "Get new updates automatically every day! The blog content auto-generation feature has been improved to provide even richer information.",
+      "ja": "毎日新しい情報を自動的に受け取れます！ブログコンテンツの自動生成機能が改善され、より豊富な情報を提供します。"
+    },
+    "week": {
+      "ko": "3주차",
+      "en": "Week 3",
+      "ja": "3週目"
+    },
+    "date": "2026-02-02"
+  },
+  {
     "version": "1.1.0",
     "title": {
       "ko": "✨ 지원고고, 사용자 경험을 위한 대규모 업데이트!",
