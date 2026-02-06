@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.2.1",
+    "title": {
+      "ko": "지원고고, 새로운 성공 스토리와 이메일 알림 기능 추가!",
+      "en": "ApplyGogo: New Success Stories & Email Notifications!",
+      "ja": "ApplyGogo: 新しいサクセスストーリーとメール通知機能を追加！"
+    },
+    "description": {
+      "ko": "지원고고 랜딩 페이지에 성공 스토리 섹션이 추가되었고, 이메일 알림 기능이 생겨 더욱 편리하게 이용할 수 있습니다. 매일 새로운 블로그 포스팅도 놓치지 마세요!",
+      "en": "We've added a success story section to the ApplyGogo landing page and introduced email notifications for a better experience. Don't miss out on our daily blog posts!",
+      "ja": "ApplyGogoのランディングページにサクセスストーリーのセクションが追加され、メール通知機能も導入されました。毎日のブログ投稿もお見逃しなく！"
+    },
+    "week": {
+      "ko": "4주차",
+      "en": "Week 4",
+      "ja": "4週目"
+    },
+    "date": "2026-02-06"
+  },
+  {
     "version": "1.1.1",
     "title": {
       "ko": "지원고고 블로그 자동 생성 기능 업데이트!",
