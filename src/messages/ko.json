@@ -64,6 +64,10 @@
       "viewSample": "샘플 보기",
       "subText": "신용카드 없이 무료로 시작 • 100% 자동 변환"
     },
+    "successStory": {
+      "badge": "Global Success Story",
+      "description": "지원고고 사용자, <strong>보잉(Boeing) 서류 전형 합격!</strong>"
+    },
     "pain": {
       "title": "한국어 이력서 작성, \n번역만으로는 부족합니다.",
       "subtitle": "채용 담당자가 이력서를 검토하는 시간은 단 6초. 그 짧은 순간에 합격을 결정짓는 한국어 이력서가 필요합니다.",

@@ -11,6 +11,14 @@ const nextConfig = {
     },
   },
   transpilePackages: ["@react-pdf/renderer"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+    ],
+  },
 };
 
 export default withNextIntl(nextConfig);

@@ -64,6 +64,10 @@
       "viewSample": "サンプルを見る",
       "subText": "クレジットカード不要で開始 • 最初の2回変換無料"
     },
+    "successStory": {
+      "badge": "Global Success Story",
+      "description": "実績証明：<strong>ボーイング(Boeing) 書類選考通過</strong>"
+    },
     "pain": {
       "title": "韓国の履歴書は独特です。\n単なる翻訳では不十分です。",
       "subtitle": "採用担当者が履歴書を見る時間は平均6秒。その瞬間にアピールできる韓国語の履歴書が必要です。",

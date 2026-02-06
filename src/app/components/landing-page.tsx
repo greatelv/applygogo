@@ -109,6 +109,46 @@ export function LandingPage({
         </div>
       </section>
 
+      {/* Success Story Section (Korean Only for now) */}
+      {locale === "ko" && (
+        <section className="py-10 bg-slate-900 border-y border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-purple-900/20" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+              {/* Logo */}
+              <div className="bg-white p-4 rounded-lg shadow-lg shadow-blue-900/20 shrink-0">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Boeing_full_logo.svg/1280px-Boeing_full_logo.svg.png"
+                  alt="Boeing"
+                  width={180}
+                  height={45}
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+
+              {/* Divider (Mobile hidden) */}
+              <div className="hidden md:block w-px h-12 bg-white/20" />
+
+              {/* Text */}
+              <div className="text-center md:text-left">
+                <div className="text-blue-400 text-xs font-bold tracking-wider uppercase mb-1">
+                  {t("successStory.badge")}
+                </div>
+                <p className="text-lg md:text-xl font-medium text-white">
+                  {t.rich("successStory.description", {
+                    strong: (chunks) => (
+                      <span className="text-blue-200 font-bold ml-1">
+                        {chunks}
+                      </span>
+                    ),
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Pain Point Section */}
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

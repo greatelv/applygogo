@@ -64,6 +64,10 @@
       "viewSample": "View Sample",
       "subText": "Start free without credit card • First 2 conversions free"
     },
+    "successStory": {
+      "badge": "Global Success Story",
+      "description": "Proven Success: <strong>Boeing Resume/CV Screening Passed</strong> w/ ApplyGogo"
+    },
     "pain": {
       "title": "Korean Resumes are Unique.\nJust Translating isn't Enough.",
       "subtitle": "Recruiters spend 6 seconds on a resume. Make yours count in Korean.",
