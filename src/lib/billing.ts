@@ -32,7 +32,7 @@ export function calculateCost(
  */
 export async function grantBetaWelcomeBenefit(userId: string): Promise<void> {
   const BENEFIT_START_DATE = new Date("2026-01-18T00:00:00+09:00"); // KST (Beta Start)
-  const BENEFIT_END_DATE = new Date("2026-02-08T23:59:59+09:00"); // KST
+  const BENEFIT_END_DATE = new Date("2026-02-15T23:59:59+09:00"); // KST
   const now = new Date();
 
   // 1. 프로모션 기간 체크
