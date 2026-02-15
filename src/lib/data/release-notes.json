@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.4.1",
+    "title": {
+      "ko": "지원고고 블로그 자동 발행 기능 개선",
+      "en": "ApplyGogo Blog Automatic Posting Improvement",
+      "ja": "ApplyGogoブログの自動投稿機能の改善"
+    },
+    "description": {
+      "ko": "매일 새로운 소식을 더 빠르게 전달해 드릴 수 있도록 블로그 자동 발행 기능을 개선했어요. 이제 더욱 다양한 정보를 놓치지 마세요!",
+      "en": "We've improved the blog auto-posting feature to deliver daily news faster! Don't miss out on even more information.",
+      "ja": "毎日の最新ニュースをより早くお届けできるよう、ブログの自動投稿機能を改善しました。さらに多くの情報をお見逃しなく！"
+    },
+    "week": {
+      "ko": "6주차",
+      "en": "Week 6",
+      "ja": "6週目"
+    },
+    "date": "2026-02-15"
+  },
+  {
     "version": "1.3.1",
     "title": {
       "ko": "지원고고 베타 패스 지급 및 블로그 자동 발행 기능 업데이트!",
