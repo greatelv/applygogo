@@ -26,7 +26,7 @@ export default async function Page({
     select: { plan_type: true },
   });
 
-  const showBetaBanner = user?.plan_type === "PASS_BETA_3DAY";
+
 
   const mappedResumes = resumes.map((r) => ({
     id: r.id,
@@ -53,7 +53,6 @@ export default async function Page({
     <ResumesClient
       resumes={mappedResumes}
       quota={quota}
-      showBetaBanner={showBetaBanner}
     />
   );
 }

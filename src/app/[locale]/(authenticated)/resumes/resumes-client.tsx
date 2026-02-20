@@ -15,13 +15,11 @@ interface Resume {
 interface ResumesClientProps {
   resumes: Resume[];
   quota?: number;
-  showBetaBanner?: boolean;
 }
 
 export function ResumesClient({
   resumes,
   quota,
-  showBetaBanner,
 }: ResumesClientProps) {
   const router = useRouter();
   const t = useTranslations("resumes");
@@ -50,7 +48,6 @@ export function ResumesClient({
       }}
       onUpgrade={() => router.push("/pricing")}
       quota={quota}
-      showBetaBanner={showBetaBanner}
     />
   );
 }

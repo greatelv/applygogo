@@ -795,14 +795,6 @@
       "item3": "You can get the final PDF after the summary and translation steps."
     }
   },
-  "betaBanner": {
-    "badge": "BETA",
-    "mobilePrefix": "Beta Gift: ",
-    "desktopPrefix": "Beta Launch Special: ",
-    "value": "$15 Value ",
-    "benefit": "Free 3-Day Unlimited Pass!",
-    "consoleMessage": "Try it out freely and please report any bugs or feedback at the <link>bottom left</link>."
-  },
   "company": {
     "header": {
       "introduction": "About Service",

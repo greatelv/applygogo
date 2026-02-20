@@ -792,14 +792,6 @@
       "item3": "アップロード後、要約、翻訳の段階を経て最終的なPDFを受け取ることができます。"
     }
   },
-  "betaBanner": {
-    "badge": "BETA",
-    "mobilePrefix": "ベータ記念 ",
-    "desktopPrefix": "ベータローンチ記念 ",
-    "value": "2,000円相当の ",
-    "benefit": "3日間無制限利用券プレゼント！",
-    "consoleMessage": "自由にご利用いただき、<link>左下</link>からフィードバックやバグを報告してください。"
-  },
   "company": {
     "header": {
       "introduction": "サービス紹介",

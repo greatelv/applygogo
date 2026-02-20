@@ -796,14 +796,6 @@
       "item3": "업로드 후 요약, 번역 단계를 거쳐 최종 PDF를 받을 수 있습니다"
     }
   },
-  "betaBanner": {
-    "badge": "BETA",
-    "mobilePrefix": "베타 기념 ",
-    "desktopPrefix": "베타 런칭 기념 ",
-    "value": "₩20,000 상당의 ",
-    "benefit": "3일 무제한 이용권 증정!",
-    "consoleMessage": "마음껏 이용해보시고 <link>좌측 하단</link>에서 서비스 의견 혹은 버그를 제보해주세요."
-  },
   "company": {
     "header": {
       "introduction": "서비스 소개",

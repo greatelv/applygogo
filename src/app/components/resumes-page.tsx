@@ -30,7 +30,6 @@ interface ResumesPageProps {
   onDelete?: (id: string) => void;
   quota?: number;
   onUpgrade?: () => void;
-  showBetaBanner?: boolean;
 }
 
 const stepConfig = {
@@ -58,7 +57,6 @@ export function ResumesPage({
   onDelete,
   quota = 0,
   onUpgrade,
-  showBetaBanner,
 }: ResumesPageProps) {
   const t = useTranslations("resumes");
   const hasNoCredits = quota === 0;

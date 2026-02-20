@@ -25,7 +25,7 @@ const TemplatePreviewDialog = dynamic(
   { ssr: false },
 );
 import { PLAN_PRODUCTS } from "@/lib/constants/plans";
-import { BetaBanner } from "./beta-banner";
+
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -51,7 +51,7 @@ export function LandingPage({
   return (
     <div className="min-h-screen bg-background">
       <LandingSurveyModal locale={locale} />
-      <BetaBanner />
+
       <PublicHeader onGetStarted={onGetStarted} isLoading={isLoading} />
 
       {/* Hero Section */}
