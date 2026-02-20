@@ -113,10 +113,7 @@ export function SettingsPage({
     .toUpperCase()
     .slice(0, 2);
   const isGlobal = locale !== "ko";
-  const isRestricted =
-    !isGlobal &&
-    userEmail !== "test@applygogo.com" &&
-    process.env.NODE_ENV !== "development";
+
 
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isPassWarningOpen, setIsPassWarningOpen] = useState(false);
@@ -425,10 +422,7 @@ export function SettingsPage({
                   : "default"
               }
               className="w-full mt-auto"
-              disabled={
-                userEmail !== "test@applygogo.com" &&
-                (hasActivePass || isRestricted)
-              }
+              disabled={hasActivePass}
               onClick={() => onUpgrade("PASS_30DAY")}
               isLoading={isUpgrading}
             >
@@ -436,11 +430,7 @@ export function SettingsPage({
                 ? passType === "PASS_30DAY"
                   ? t("plans.pass30.current")
                   : t("plans.pass30.unavailable")
-                : userEmail === "test@applygogo.com"
-                  ? t("plans.pass30.test")
-                  : isRestricted
-                    ? t("plans.pass30.beta")
-                    : t("plans.pass30.purchase")}
+                : t("plans.pass30.purchase")}
             </Button>
           </div>
 
@@ -504,10 +494,7 @@ export function SettingsPage({
                   : "outline"
               }
               className="w-full mt-auto"
-              disabled={
-                userEmail !== "test@applygogo.com" &&
-                (hasActivePass || isRestricted)
-              }
+              disabled={hasActivePass}
               onClick={() => onUpgrade("PASS_7DAY")}
               isLoading={isUpgrading}
             >
@@ -515,11 +502,7 @@ export function SettingsPage({
                 ? passType === "PASS_7DAY"
                   ? t("plans.pass7.current")
                   : t("plans.pass7.unavailable")
-                : userEmail === "test@applygogo.com"
-                  ? t("plans.pass7.test")
-                  : isRestricted
-                    ? t("plans.pass7.beta")
-                    : t("plans.pass7.purchase")}
+                : t("plans.pass7.purchase")}
             </Button>
           </div>
 
@@ -566,15 +549,11 @@ export function SettingsPage({
             <Button
               variant="outline"
               className="w-full mt-auto"
-              disabled={!hasActivePass || isRestricted}
+              disabled={!hasActivePass}
               onClick={() => onUpgrade("REFILL_50")}
               isLoading={isUpgrading}
             >
-              {userEmail === "test@applygogo.com"
-                ? t("plans.refill.test")
-                : isRestricted
-                  ? t("plans.refill.beta")
-                  : t("plans.refill.purchase")}
+              {t("plans.refill.purchase")}
             </Button>
           </div>
         </div>
