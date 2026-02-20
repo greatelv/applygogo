@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.4.2",
+    "title": {
+      "ko": "결제 관련 URL 생성 기능 추가",
+      "en": "Added Billing URL Generation Feature",
+      "ja": "請求関連URL生成機能を追加"
+    },
+    "description": {
+      "ko": "이제 `getBillingUrl` 및 `getBillingPortalUrl` 유틸리티 함수를 사용하여 결제 관련 URL을 더 쉽게 생성할 수 있습니다! 결제 관리 페이지로 바로 연결되는 링크를 만드세요.",
+      "en": "You can now easily generate billing-related URLs using the `getBillingUrl` and `getBillingPortalUrl` utility functions! Create direct links to your billing management page.",
+      "ja": "`getBillingUrl`と`getBillingPortalUrl`ユーティリティ関数を使用して、請求関連URLを簡単に生成できるようになりました！請求管理ページへの直接リンクを作成できます。"
+    },
+    "week": {
+      "ko": "7주차",
+      "en": "Week 7",
+      "ja": "7週目"
+    },
+    "date": "2026-02-20"
+  },
+  {
     "version": "1.4.1",
     "title": {
       "ko": "지원고고 블로그 자동 발행 기능 개선",
