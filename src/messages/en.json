@@ -43,6 +43,7 @@
     },
     "plan": {
       "FREE": "Free",
+      "PASS_1DAY": "1-Day Pass",
       "PASS_7DAY": "7-Day Pass",
       "PASS_30DAY": "30-Day Pass",
       "PASS_BETA_3DAY": "Beta Unlimited"
@@ -63,6 +64,9 @@
       "cta": "Start for Free",
       "viewSample": "View Sample",
       "subText": "Start free without credit card • First 2 conversions free"
+    },
+    "promoBanner": {
+      "message": "🌸 Spring Pricing Promo! Perfect your resume for the price of a coffee ➔"
     },
     "successStory": {
       "badge": "Global Success Story",
@@ -176,6 +180,7 @@
         "credits": "<strong>{count}</strong> Credits included",
         "template": "All templates included",
         "retranslate": "Unlimited re-translations",
+        "period1": "24-hour access",
         "period7": "7-day access",
         "period30": "30-day access"
       },
@@ -454,6 +459,16 @@
     "title": "Purchase a Pass and Unlock Templates",
     "description": "A pass is required to use premium templates. <br></br>Enjoy benefits like <strong>Split View Editing</strong> and <strong>Unlimited Retranslation</strong>!",
     "plans": {
+      "pass1": {
+        "title": "1-Day Rush Pass",
+        "subtitle": "Best for tight deadlines",
+        "features": [
+          "{credits} Credits",
+          "Use all premium templates",
+          "Unlimited retranslation",
+          "Valid for 24h"
+        ]
+      },
       "pass7": {
         "title": "7-Day Pass",
         "subtitle": "Best for short-term focus",
@@ -560,6 +575,7 @@
       "paypalPayment": "PayPal Payment"
     },
     "passLabels": {
+      "PASS_1DAY": "1-Day Rush Pass",
       "PASS_7DAY": "7-Day Pass",
       "PASS_30DAY": "30-Day Pass",
       "PASS_BETA_3DAY": "Beta Launch Special 3-Day Unlimited",
@@ -580,6 +596,19 @@
           "{credits} Credits",
           "Unlimited templates & retranslation",
           "Valid for 30 days"
+        ]
+      },
+      "pass1": {
+        "title": "1-Day Rush Pass",
+        "current": "In Use",
+        "unavailable": "Cannot switch",
+        "beta": "Coming soon",
+        "purchase": "Purchase Pass",
+        "test": "Buy Pass (Test)",
+        "features": [
+          "{credits} Credits",
+          "Unlimited templates & retranslation",
+          "Valid for 24 hours"
         ]
       },
       "pass7": {

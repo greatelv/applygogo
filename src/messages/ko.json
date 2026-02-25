@@ -43,6 +43,7 @@
     },
     "plan": {
       "FREE": "무료",
+      "PASS_1DAY": "1일 이용권",
       "PASS_7DAY": "7일 이용권",
       "PASS_30DAY": "30일 이용권",
       "PASS_BETA_3DAY": "베타 무제한"
@@ -63,6 +64,9 @@
       "cta": "무료로 이력서 만들기",
       "viewSample": "샘플 보기",
       "subText": "신용카드 없이 무료로 시작 • 100% 자동 변환"
+    },
+    "promoBanner": {
+      "message": "🌸 봄맞이 가격할인 특가 진행 중! 커피 한 잔 값으로 완벽한 이력서 완성하기 ➔"
     },
     "successStory": {
       "badge": "Global Success Story",
@@ -177,6 +181,7 @@
         "credits": "<strong>{count}</strong> 크레딧 포함",
         "template": "모든 템플릿 사용",
         "retranslate": "재번역 무제한",
+        "period1": "24시간 이용",
         "period7": "7일간 이용",
         "period30": "30일간 이용"
       },
@@ -455,6 +460,16 @@
     "title": "이용권 구매하고 템플릿 잠금 해제",
     "description": "프리미엄 템플릿을 사용하려면 이용권이 필요합니다. <br></br><strong>Split View 편집</strong>과 <strong>재번역 무제한</strong> 혜택도 함께 누리세요!",
     "plans": {
+      "pass1": {
+        "title": "1일 벼락치기 패스",
+        "subtitle": "마감 직전 급할 때 추천",
+        "features": [
+          "{credits} 크레딧",
+          "모든 고급 템플릿 사용",
+          "재번역 무제한",
+          "{days}일간(24h) 이용"
+        ]
+      },
       "pass7": {
         "title": "7일 이용권",
         "subtitle": "단기 집중 준비에 적합",
@@ -561,6 +576,7 @@
       "paypalPayment": "페이팔 결제"
     },
     "passLabels": {
+      "PASS_1DAY": "1일 벼락치기 패스",
       "PASS_7DAY": "7일 이용권",
       "PASS_30DAY": "30일 이용권",
       "PASS_BETA_3DAY": "베타 런칭 기념 3일 무제한",
@@ -581,6 +597,19 @@
           "{credits} 크레딧",
           "모든 템플릿 & 재번역 무제한",
           "30일간 자유 이용"
+        ]
+      },
+      "pass1": {
+        "title": "1일 벼락치기 패스",
+        "current": "현재 이용 중",
+        "unavailable": "전환 불가",
+        "beta": "베타 기간 준비 중",
+        "purchase": "이용권 구매하기",
+        "test": "이용권 구매 (테스트)",
+        "features": [
+          "{credits} 크레딧",
+          "모든 템플릿 & 재번역 무제한",
+          "24시간 맛보기 이용"
         ]
       },
       "pass7": {

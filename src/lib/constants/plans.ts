@@ -1,20 +1,30 @@
 export const PLAN_PRODUCTS = {
+  PASS_1DAY: {
+    id: "PASS_1DAY",
+    name: "ApplyGoGo 1일 이용권 (벼락치기 패스)", // DB orderName matching
+    price: 3900,
+    priceGlobal: 3, // USD
+    originalPrice: 8900, // Anchoring: ~56%
+    originalPriceGlobal: 8, // USD
+    credits: 50,
+    days: 1,
+  },
   PASS_7DAY: {
     id: "PASS_7DAY",
     name: "ApplyGoGo 7일 이용권", // DB orderName matching
-    price: 9900,
-    priceGlobal: 9, // USD
-    originalPrice: 19900, // Anchoring: ~50% (Half Price Strategy)
+    price: 5900,
+    priceGlobal: 6, // USD
+    originalPrice: 19900, // Anchoring: ~70%
     originalPriceGlobal: 18, // USD
-    credits: 50,
+    credits: 100,
     days: 7,
   },
   PASS_30DAY: {
     id: "PASS_30DAY",
     name: "ApplyGoGo 30일 이용권", // DB orderName matching
-    price: 12900,
-    priceGlobal: 12, // USD
-    originalPrice: 29900, // Anchoring: ~57% (Global SaaS Value)
+    price: 9900,
+    priceGlobal: 10, // USD
+    originalPrice: 29900, // Anchoring: ~66% (Global SaaS Value)
     originalPriceGlobal: 28, // USD
     credits: 300,
     days: 30,

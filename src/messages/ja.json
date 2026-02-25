@@ -43,6 +43,7 @@
     },
     "plan": {
       "FREE": "無料",
+      "PASS_1DAY": "1日利用券",
       "PASS_7DAY": "7日利用券",
       "PASS_30DAY": "30日利用券",
       "PASS_BETA_3DAY": "ベータ無制限"
@@ -63,6 +64,9 @@
       "cta": "無料で始める",
       "viewSample": "サンプルを見る",
       "subText": "クレジットカード不要で開始 • 最初の2回変換無料"
+    },
+    "promoBanner": {
+      "message": "🌸 春の価格割引プロモーション実施中！コーヒー1杯の価格で履歴書を完成 ➔"
     },
     "successStory": {
       "badge": "Global Success Story",
@@ -176,6 +180,7 @@
         "credits": "<strong>{count}</strong> クレジット含む",
         "template": "すべてのテンプレート使用",
         "retranslate": "再翻訳無制限",
+        "period1": "24時間利用",
         "period7": "7日間利用",
         "period30": "30日間利用"
       },
@@ -454,6 +459,16 @@
     "title": "利用券を購入してテンプレートをアンロック",
     "description": "プレミアムテンプレートを使用するには利用券が必要です。 <br></br><strong>Split View編集</strong>や<strong>再翻訳無制限</strong>などの特典も一緒にご利用ください！",
     "plans": {
+      "pass1": {
+        "title": "1日利用券",
+        "subtitle": "締め切り直前の準備に最適",
+        "features": [
+          "{credits} クレジット",
+          "すべての高級テンプレートを使用可能",
+          "再翻訳無制限",
+          "24時間利用可能"
+        ]
+      },
       "pass7": {
         "title": "7日間利用券",
         "subtitle": "短期集中での準備に最適",
@@ -559,6 +574,7 @@
       "paypalPayment": "PayPal決済"
     },
     "passLabels": {
+      "PASS_1DAY": "1日間利用券",
       "PASS_7DAY": "7日間利用券",
       "PASS_30DAY": "30日間利用券",
       "PASS_BETA_3DAY": "ベータローンチ記念3日間無制限",
@@ -578,6 +594,18 @@
           "{credits} クレジット",
           "すべてのテンプレート＆再翻訳無制限",
           "30日間自由利用"
+        ]
+      },
+      "pass1": {
+        "title": "1日利用券",
+        "current": "利用中",
+        "unavailable": "切り替え不可",
+        "beta": "ベータ期間準備中",
+        "test": "利用券購入（テスト）",
+        "features": [
+          "{credits} クレ딧",
+          "すべてのテンプレート＆再翻訳無制限",
+          "24時間自由利用"
         ]
       },
       "pass7": {

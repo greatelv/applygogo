@@ -184,7 +184,7 @@ export async function deductCredits(
  */
 export async function grantPass(
   userId: string,
-  passType: "PASS_7DAY" | "PASS_30DAY" | "PASS_BETA_3DAY",
+  passType: "PASS_1DAY" | "PASS_7DAY" | "PASS_30DAY" | "PASS_BETA_3DAY",
   client: any = prisma,
 ): Promise<void> {
   const planConfig = PLAN_PRODUCTS[passType];
@@ -376,7 +376,7 @@ export async function processPaymentSuccess(
 
   await prisma.$transaction(async (tx) => {
     // 1. Grant Plan or Refill Credits
-    if (product.id === "PASS_7DAY" || product.id === "PASS_30DAY") {
+    if (product.id === "PASS_1DAY" || product.id === "PASS_7DAY" || product.id === "PASS_30DAY") {
       await grantPass(user.id, product.id, tx);
     } else if (product.id === "CREDIT_50") {
       await refillCredits(user.id, product.credits, tx);

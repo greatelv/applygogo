@@ -69,7 +69,7 @@ export function SettingsClientPage({
   }, []);
 
   const handleUpgrade = async (
-    passType: "PASS_7DAY" | "PASS_30DAY" | "REFILL_50",
+    passType: "PASS_1DAY" | "PASS_7DAY" | "PASS_30DAY" | "REFILL_50",
   ) => {
     if (isUpgrading) return;
     setIsUpgrading(true);
@@ -79,6 +79,12 @@ export function SettingsClientPage({
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       const productConfig: Record<string, { amount: number; name: string }> = {
+        PASS_1DAY: {
+          amount: isGlobal
+            ? PLAN_PRODUCTS.PASS_1DAY.priceGlobal
+            : PLAN_PRODUCTS.PASS_1DAY.price,
+          name: PLAN_PRODUCTS.PASS_1DAY.name,
+        },
         PASS_7DAY: {
           amount: isGlobal
             ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal

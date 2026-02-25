@@ -356,7 +356,7 @@ export function SettingsPage({
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* 30-Day Pass */}
           <div
             className={`border-2 border-primary/30 rounded-lg p-6 bg-primary/5 relative flex flex-col h-full ${
@@ -394,12 +394,12 @@ export function SettingsPage({
                       : PLAN_PRODUCTS.PASS_30DAY.price,
                   )}
                 </span>
-                <Badge
-                  variant="outline"
-                  className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
-                >
-                  57% OFF
-                </Badge>
+                  <Badge
+                    variant="outline"
+                    className="h-5 px-1.5 text-[10px] text-destructive border-destructive/20 bg-destructive/10"
+                  >
+                    {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal / PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_30DAY.price / PLAN_PRODUCTS.PASS_30DAY.originalPrice)) * 100)}% OFF
+                  </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
@@ -466,12 +466,12 @@ export function SettingsPage({
                       : PLAN_PRODUCTS.PASS_7DAY.price,
                   )}
                 </span>
-                <Badge
-                  variant="outline"
-                  className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
-                >
-                  50% OFF
-                </Badge>
+                  <Badge
+                    variant="outline"
+                    className="h-5 px-1.5 text-[10px] text-primary border-primary/20 bg-primary/10"
+                  >
+                    {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal / PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_7DAY.price / PLAN_PRODUCTS.PASS_7DAY.originalPrice)) * 100)}% OFF
+                  </Badge>
               </div>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
@@ -503,6 +503,78 @@ export function SettingsPage({
                   ? t("plans.pass7.current")
                   : t("plans.pass7.unavailable")
                 : t("plans.pass7.purchase")}
+            </Button>
+          </div>
+
+          {/* 1-Day Pass */}
+          <div
+            className={`border rounded-lg p-6 relative flex flex-col h-full ${
+              hasActivePass && passType !== "PASS_1DAY"
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }`}
+          >
+            {hasActivePass && passType === "PASS_1DAY" && (
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                {t("plans.pass1.current")}
+              </div>
+            )}
+            <h3 className="text-lg font-bold mb-2 mt-2">
+              {t("plans.pass1.title")}
+            </h3>
+            <div className="flex flex-col items-start mb-6">
+              <span className="text-sm text-muted-foreground/60 line-through min-h-[20px]">
+                {formatPrice(
+                  isGlobal
+                    ? PLAN_PRODUCTS.PASS_1DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_1DAY.originalPrice,
+                )}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-foreground">
+                  {formatPrice(
+                    isGlobal
+                      ? PLAN_PRODUCTS.PASS_1DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_1DAY.price,
+                  )}
+                </span>
+                <Badge
+                  variant="outline"
+                  className="h-5 px-1.5 text-[10px] text-foreground border-foreground/10 bg-foreground/5"
+                >
+                  {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_1DAY.priceGlobal / PLAN_PRODUCTS.PASS_1DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_1DAY.price / PLAN_PRODUCTS.PASS_1DAY.originalPrice)) * 100)}% OFF
+                </Badge>
+              </div>
+            </div>
+            <ul className="space-y-2 text-sm text-muted-foreground mb-6 flex-1">
+              {t
+                .raw("plans.pass1.features")
+                .map((feature: string, idx: number) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <Check className="size-4 text-primary shrink-0" />
+                    {feature.replace(
+                      "{credits}",
+                      PLAN_PRODUCTS.PASS_1DAY.credits.toString(),
+                    )}
+                  </li>
+                ))}
+            </ul>
+            <Button
+              variant={
+                hasActivePass && passType === "PASS_1DAY"
+                  ? "secondary"
+                  : "outline"
+              }
+              className="w-full mt-auto"
+              disabled={hasActivePass}
+              onClick={() => onUpgrade("PASS_1DAY")}
+              isLoading={isUpgrading}
+            >
+              {hasActivePass
+                ? passType === "PASS_1DAY"
+                  ? t("plans.pass1.current")
+                  : t("plans.pass1.unavailable")
+                : t("plans.pass1.purchase")}
             </Button>
           </div>
 

@@ -48,9 +48,25 @@ export function LandingPage({
   const locale = useLocale();
   const isGlobal = locale !== "ko";
 
+  const handleBannerClick = () => {
+    // Scroll to pricing section smoothly
+    document.getElementById("pricing_section")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <LandingSurveyModal locale={locale} />
+      
+      {/* Spring Promo Banner */}
+      <div 
+        onClick={handleBannerClick}
+        className="w-full bg-gradient-to-r from-pink-500 via-rose-400 to-orange-400 text-white px-4 py-2.5 flex items-center justify-center cursor-pointer transition-opacity hover:opacity-90 z-50 relative"
+      >
+        <div className="flex items-center gap-2 text-sm font-bold">
+          <Sparkles className="size-4 animate-pulse" />
+          <span>{t("promoBanner.message")}</span>
+        </div>
+      </div>
 
       <PublicHeader onGetStarted={onGetStarted} isLoading={isLoading} />
 
@@ -395,8 +411,8 @@ export function LandingPage({
       </section>
 
       {/* Pricing Preview */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="pricing_section" className="py-20 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-4">
             <h3 className="text-3xl tracking-tight font-bold">
               {t("pricing.title")}
@@ -408,7 +424,7 @@ export function LandingPage({
             <p className="text-muted-foreground">{t("pricing.subtitle")}</p>
           </div>
 
-          <ul className="grid md:grid-cols-3 gap-6">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* 무료 체험 */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-2">
@@ -455,6 +471,69 @@ export function LandingPage({
               </Button>
             </li>
 
+            {/* 1일 이용권 */}
+            <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
+              <h4 className="text-lg font-semibold mb-2">
+                {tc("plan.PASS_1DAY")}
+              </h4>
+              <div className="flex flex-col items-center justify-center mb-4">
+                <span className="text-lg font-medium text-muted-foreground/60 line-through mb-1 min-h-[28px]">
+                  {tc("currency")}
+                  {isGlobal
+                    ? PLAN_PRODUCTS.PASS_1DAY.originalPriceGlobal
+                    : PLAN_PRODUCTS.PASS_1DAY.originalPrice?.toLocaleString()}
+                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-4xl font-bold">
+                    {tc("currency")}
+                    {isGlobal
+                      ? PLAN_PRODUCTS.PASS_1DAY.priceGlobal
+                      : PLAN_PRODUCTS.PASS_1DAY.price.toLocaleString()}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
+                  >
+                    {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_1DAY.priceGlobal / PLAN_PRODUCTS.PASS_1DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_1DAY.price / PLAN_PRODUCTS.PASS_1DAY.originalPrice)) * 100)}% OFF
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-6">
+                {t("pricing.free.subtitle")}
+              </p>
+              <ul className="space-y-2.5 mb-6 text-sm text-muted-foreground text-left flex-1">
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  <span>
+                    {t.rich("pricing.features.credits", {
+                      count: PLAN_PRODUCTS.PASS_1DAY.credits,
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  {t("pricing.features.template")}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  {t("pricing.features.retranslate")}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-green-600 shrink-0" />
+                  {t("pricing.features.period1")}
+                </li>
+              </ul>
+              <Button
+                variant="outline"
+                className="w-full mt-auto"
+                onClick={onGetStarted}
+                isLoading={isLoading}
+              >
+                {t("header.getStarted")}
+              </Button>
+            </li>
+
             {/* 7일 이용권 */}
             <li className="bg-card border border-border rounded-lg p-6 text-center flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-2">
@@ -476,9 +555,9 @@ export function LandingPage({
                   </span>
                   <Badge
                     variant="outline"
-                    className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
+                    className="text-sm px-2 py-0.5 text-primary border-primary/20 bg-primary/10"
                   >
-                    50% OFF
+                    {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_7DAY.priceGlobal / PLAN_PRODUCTS.PASS_7DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_7DAY.price / PLAN_PRODUCTS.PASS_7DAY.originalPrice)) * 100)}% OFF
                   </Badge>
                 </div>
               </div>
@@ -541,10 +620,10 @@ export function LandingPage({
                       : PLAN_PRODUCTS.PASS_30DAY.price.toLocaleString()}
                   </span>
                   <Badge
-                    variant="outline"
-                    className="text-sm px-2 py-0.5 text-foreground border-foreground/10 bg-foreground/5"
+                    variant="destructive"
+                    className="text-sm px-2 py-0.5 text-destructive border-destructive/20 bg-destructive/10"
                   >
-                    57% OFF
+                    {Math.round((1 - (isGlobal ? PLAN_PRODUCTS.PASS_30DAY.priceGlobal / PLAN_PRODUCTS.PASS_30DAY.originalPriceGlobal : PLAN_PRODUCTS.PASS_30DAY.price / PLAN_PRODUCTS.PASS_30DAY.originalPrice)) * 100)}% OFF
                   </Badge>
                 </div>
               </div>
