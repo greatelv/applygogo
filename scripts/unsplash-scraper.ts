@@ -46,7 +46,7 @@ export class UnsplashScraper {
 
       const photoData = await page.evaluate(() => {
         // Try precise selector first, then generic
-        const figures = document.querySelectorAll("figure");
+        const figures = document.querySelectorAll('figure[data-testid="asset-grid-masonry-figure"], figure');
 
         if (figures.length === 0) return null;
 
@@ -55,21 +55,17 @@ export class UnsplashScraper {
         let targetImg: HTMLImageElement | null = null;
 
         for (const fig of figures) {
-          const img = fig.querySelector("img");
+          const img = (fig.querySelector('img[data-testid="asset-grid-masonry-img"]') || fig.querySelector("img")) as HTMLImageElement;
 
-          if (img && img.src) {
+          if (img && (img.src || img.srcset)) {
+            const tempSrc = img.src || img.currentSrc || img.srcset || "";
             // 1. Filter: Must be from images.unsplash.com/photo- (Free images)
             // 2. Filter: Must NOT be from plus.unsplash.com (Premium/Unsplash+)
             const isFreeUnsplash =
-              img.src.includes("images.unsplash.com/photo-") &&
-              !img.src.includes("plus.unsplash.com");
+              tempSrc.includes("images.unsplash.com/photo-") &&
+              !tempSrc.includes("plus.unsplash.com");
 
-            // 3. Filter: Not an icon or tiny thumbnail
-            // Use clientWidth/Height as naturalWidth might be 0 if not fully loaded
-            const width = img.naturalWidth || img.width || img.clientWidth || 0;
-            const isLargeEnough = width > 200;
-
-            if (isFreeUnsplash && isLargeEnough) {
+            if (isFreeUnsplash) {
               targetFigure = fig;
               targetImg = img;
               break;
@@ -80,7 +76,9 @@ export class UnsplashScraper {
         if (!targetFigure || !targetImg) return null;
 
         // Get the source set or src.
-        let src = targetImg.currentSrc || targetImg.src;
+        let src = targetImg.currentSrc || targetImg.src || (targetImg.srcset ? targetImg.srcset.split(' ')[0] : '');
+
+        if (!src) return null;
 
         // Modify URL to get 1200px width for quality/size balance
         const urlObj = new URL(src);

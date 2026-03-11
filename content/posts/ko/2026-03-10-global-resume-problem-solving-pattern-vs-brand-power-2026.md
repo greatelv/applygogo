@@ -2,7 +2,7 @@
 title: "당신의 'S대/대기업' 타이틀이 해외 취업에서 무용지물인 이유: 2026년 이력서 트렌드 'Problem-Solving Pattern' 구축법"
 description: "2026년 글로벌 채용의 판도는 '간판'이 아닌 '문제 해결의 논리'로 결정된다. 당신의 경력을 ATS가 사랑하는 패턴으로 재설계하는 구체적인 전략과 지원고고만의 필승 솔루션을 공개한다."
 date: 1773103288458
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/post-1773103288458-hero.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "ATS최적화", "커리어전략", "비즈니스로직", "이력서작성법"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![이력서 트렌드](/generated/post-1773103288458-hero.jpg)
 
 글로벌 헤드헌팅 시장에서 수천 장의 이력서를 검토해온 수석 컨설턴트로서 단언한다. 한국의 이른바 'S대' 졸업장이나 국내 굴지의 '대기업' 타이틀은 2026년 현재, 영미권 리크루터들에게 더 이상 'Pass'를 보장하는 프리패스권이 아니다. 냉혹하게 들리겠지만, 구글(Google)이나 아마존(Amazon) 같은 빅테크는 물론이고 촉망받는 글로벌 스타트업들조차 당신이 '어디에 있었는지'보다 '어떤 사고 체계로 문제를 해결했는지'를 더 중요하게 평가한다.
 
@@ -23,7 +23,8 @@ isSponsored: false
 
 글로벌 리크루터들이 이력서를 훑는 시간은 평균 6초 내외다. 이 짧은 시간 동안 그들은 당신의 이름이나 대학명을 보는 것이 아니라, 'Situation(상황) - Action(행동) - Result(결과)'로 이어지는 논리적 일관성을 찾는다. 이 일관성이 결여된 이력서는 설령 그 내용이 화려할지라도 시스템에 의해 조용히 휴지통으로 직행한다.
 
-> *어두운 사무실에서 모니터의 복잡한 데이터 지표를 응시하며 이력서의 수치적 성과를 고민하는 전문적인 커리어 컨설턴트의 뒷모습*
+![커리어 컨설턴트](/generated/post-1773103288458-body1.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@kooldark?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">TRAN NHU TUAN</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. 'Problem-Solving Pattern'의 핵심 구조
 
@@ -57,7 +58,8 @@ isSponsored: false
 ### Step 3: 비즈니스 로직의 시각화
 영문 이력서는 소설이 아니다. 철저하게 구조화된 보고서여야 한다. ATS 최적화를 위해 여백은 최소 0.5인치에서 1인치를 유지하고, 불필요한 그래픽이나 아이콘은 지워라. 기계(ATS)가 읽기 편한 폰트(Arial, Calibri, Helvetica 등)를 선택하는 것도 기술적인 필수 요소다.
 
-> *세련된 화이트 톤의 집무실에서 최신형 노트북으로 영문 이력서를 검토하며 만족스러운 미소를 짓는 성공한 해외 취업 준비생*
+![이력서 준비생](/generated/post-1773103288458-body2.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@jaypme4?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Joao paulo m ramos paulo</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 왜 '직접' 하는 것이 위험한가? (The Pitfalls)
 

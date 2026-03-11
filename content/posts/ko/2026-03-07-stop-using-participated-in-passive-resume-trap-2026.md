@@ -2,7 +2,7 @@
 title: "‘참여함’이라고 쓰셨나요? 글로벌 기업이 당신을 ‘구경꾼’으로 오해하는 치명적 표현"
 description: "글로벌 채용 시장에서 'Project Participation'은 탈락을 부르는 신호입니다. 2026년 최신 ATS 분석 알고리즘을 뚫고 합격을 쟁취할 수 있는 '주도적 액션 버브' 선택법과 이력서 최적화 전략을 공개합니다."
 date: 1772844175661
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-03-07-stop-using-participated-in-passive-resume-trap-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 비즈니스영어, 지원고고]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![Hero](/generated/2026-03-07-stop-using-participated-in-passive-resume-trap-2026-hero-fix.jpg)
 
 글로벌 기업의 채용 담당자가 한 장의 영문 이력서를 검토하는 데 걸리는 시간은 평균 6초에 불과하다. 이 짧은 찰나에 당신이 ‘성과를 내는 인재’인지, 아니면 그저 ‘남이 차려놓은 밥상에 숟가락만 얹은 사람’인지가 판가름 난다. 수천 건의 합격과 불합격 사례를 실시간으로 지켜보는 지원고고(ApplyGoGo)의 컨설턴트로서 단언컨대, 한국 지원자들이 가장 많이 범하는 치명적인 실수는 바로 **‘수동적 표현의 남발’**이다.
 
@@ -66,7 +66,8 @@ isSponsored: false
 
 당신이 직접 이 모든 뉘앙스를 교정하려면 비즈니스 영어에 대한 깊은 이해뿐만 아니라, 해당 산업군의 최신 채용 트렌드까지 꿰고 있어야 한다. 한 문장을 고치는 데 1시간을 허비하고도 여전히 확신이 서지 않는다면, 그것은 당신의 역량 부족이 아니라 도구의 한계 때문이다.
 
-> *세련된 카페에서 맥북을 열어두고 영문 이력서의 단어 하나하나를 고심하며 수정하다가 확신에 찬 표정으로 마우스를 클릭하는 전문직 여성*
+![본문 이미지](/generated/2026-03-07-stop-using-participated-in-passive-resume-trap-2026-bodyfix1.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. 지원고고(ApplyGoGo): 당신의 이력서에 '합격의 숨결'을 불어넣는 법
 

@@ -2,7 +2,7 @@
 title: "2026년 글로벌 리모트 채용의 핵심: '자율성'과 '비동기 협업'을 영문 이력서에 녹여내는 법"
 description: "단단한 한국식 경력이 왜 글로벌 리모트 시장에서 외면받을까? 2026년 채용 트렌드인 'Autonomy'와 'Async' 역량을 이력서에 박아넣는 실전 전략을 공개한다. 서류 합격률을 3배 높이는 필승 워크플로우를 확인하라."
 date: 1772585072515
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "리모트워크", "ATS최적화", "커리어전략", "비동기협업"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![Hero](/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix.jpg)
 
 ## 당신의 이력서가 'Read' 상태로 멈춰 있는 진짜 이유
 
@@ -59,7 +59,8 @@ isSponsored: false
 
 > **전문가의 조언**: 직접 영작한 뒤 DeepL로 돌리고, 다시 챗GPT로 다듬는 방식은 위험하다. 이 과정에서 당신만의 'Unique Selling Point'는 거세되고, 흔하디흔한 '양산형 이력서'만 남게 된다. 글로벌 기업은 '완벽한 영어'를 하는 사람보다 '자신만의 논리적 서사를 가진 사람'을 뽑는다.
 
-> *깔끔한 화이트톤 서재에서 대형 모니터 두 대를 활용해 글로벌 팀과 비동기 협업 툴을 능숙하게 다루며 미소 짓는 전문가*
+![본문 이미지](/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-bodyfix1.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 당신의 이력서를 '합격하는 시스템'으로 바꾸는 방법
 

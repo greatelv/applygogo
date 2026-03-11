@@ -2,7 +2,7 @@
 title: "레퍼런스 체크(Reference Check)에서 탈락하는 1순위 이유: 영문 이력서의 '직급 현지화'와 '경력 과장' 사이의 아슬아슬한 경계"
 description: "최종 합격 후 오퍼가 취소되는 비극, 그 원인은 당신의 '영어 실력'이 아닌 '직함 번역'에 있다. 2026년 채용 시장을 뒤흔드는 레퍼런스 체크의 실체와 합격으로 직결되는 직함 현지화 전략을 공개한다."
 date: 1772671525188
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-03-05-reference-check-title-localization-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 레퍼런스체크, 커리어전략, 비즈니스영어, 경력직이직, ATS]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![Hero](/generated/2026-03-05-reference-check-title-localization-strategy-2026-hero-fix.jpg)
 
 글로벌 기업으로의 이직을 꿈꾸는 지원자가 가장 먼저 부딪히는 벽은 '영문 이력서(Resume)' 작성이다. 수많은 탈락 고배를 마신 끝에 꿈에 그리던 최종 면접을 통과하고 오퍼 레터(Offer Letter)를 손에 쥐기 직전, 예상치 못한 곳에서 발목을 잡히는 이들이 속출하고 있다. 바로 '레퍼런스 체크(Reference Check)'와 '배경 조사(Background Check)' 단계다.
 
@@ -64,7 +64,8 @@ isSponsored: false
 
 결국 개인이 직접 이 모든 리스크를 관리하며 현지화 작업을 완수하기에는 한계가 명확하다. 사소한 단어 선택 하나로 연봉 협상 테이블에서의 위치가 달라지고, 최악의 경우 다 잡은 기회를 놓치게 되는 것이 냉정한 현실이다.
 
-> *글로벌 기업의 세련된 로비에서 최종 합격 통보를 받고 밝게 웃으며 팀원들과 인사하는 신입 경력직 사원*
+![본문 이미지](/generated/2026-03-05-reference-check-title-localization-strategy-2026-bodyfix1.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. '지원고고(ApplyGoGo)'가 제안하는 필승 솔루션
 
