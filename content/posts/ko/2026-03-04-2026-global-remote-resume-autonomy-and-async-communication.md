@@ -2,7 +2,7 @@
 title: "2026년 글로벌 리모트 채용의 핵심: '자율성'과 '비동기 협업'을 영문 이력서에 녹여내는 법"
 description: "단단한 한국식 경력이 왜 글로벌 리모트 시장에서 외면받을까? 2026년 채용 트렌드인 'Autonomy'와 'Async' 역량을 이력서에 박아넣는 실전 전략을 공개한다. 서류 합격률을 3배 높이는 필승 워크플로우를 확인하라."
 date: 1772585072515
-thumbnail: "/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix.jpg"
+thumbnail: "/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix2.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "리모트워크", "ATS최적화", "커리어전략", "비동기협업"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![Hero](/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix.jpg)
+![Hero](/generated/2026-03-04-2026-global-remote-resume-autonomy-and-async-communication-hero-fix2.jpg)
 
 ## 당신의 이력서가 'Read' 상태로 멈춰 있는 진짜 이유
 

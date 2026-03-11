@@ -64,7 +64,7 @@ isSponsored: false
 
 결국 개인이 직접 이 모든 리스크를 관리하며 현지화 작업을 완수하기에는 한계가 명확하다. 사소한 단어 선택 하나로 연봉 협상 테이블에서의 위치가 달라지고, 최악의 경우 다 잡은 기회를 놓치게 되는 것이 냉정한 현실이다.
 
-![본문 이미지](/generated/2026-03-05-reference-check-title-localization-strategy-2026-bodyfix1.jpg)
+![본문 이미지](/generated/2026-03-05-reference-check-title-localization-strategy-2026-bodyfix2-0.jpg)
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. '지원고고(ApplyGoGo)'가 제안하는 필승 솔루션

@@ -2,7 +2,7 @@
 title: "영문 이력서에 모든 걸 적으려 하지 마세요: 2026년 글로벌 기업이 주목하는 '신호 대 잡음비(SNR)' 최적화 전략"
 description: "당신의 이력서가 6초 만에 휴지통으로 직행하는 이유를 아는가? 2026년 글로벌 채용 시장에서 살아남기 위한 '덜어내기'의 기술, 신호 대 잡음비(SNR) 최적화 전략을 공개한다."
 date: 1772758094089
-thumbnail: "/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-hero-fix.jpg"
+thumbnail: "/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-hero-fix2.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS, 커리어전략, 비즈니스영어, 레주메작성]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![Hero](/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-hero-fix.jpg)
+![Hero](/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-hero-fix2.jpg)
 
 글로벌 기업의 채용 담당자가 한 장의 영문 이력서(Resume)를 검토하는 데 걸리는 시간은 평균 6초 내외다. 2026년 현재, AI 기반의 서류 스크리닝 시스템(ATS, Applicant Tracking System)은 더욱 정교해졌고, 인간 채용 담당자는 AI가 걸러낸 '고농축' 후보자들 사이에서 단 1%의 결함을 찾아내기 위해 혈안이 되어 있다.
 
@@ -63,7 +63,7 @@ SNR은 본래 통신 공학 용어로, 신호(Signal)와 잡음(Noise)의 비율
 2.  **문화적 맥락(Cultural Nuance) 부재**: 단순히 영어 문법이 맞다고 해서 좋은 이력서가 아니다. 특정 국가, 특정 산업군에서 선호하는 비즈니스 언어와 톤앤매너(Tone & Manner)는 일반적인 AI가 학습하기 어려운 영역이다.
 3.  **포맷팅 붕괴**: ATS는 PDF의 레이어를 분석한다. 워드에서 보기 좋게 만든 표나 화려한 디자인 요소는 ATS의 텍스트 추출을 방해하여 당신의 이력서를 '읽을 수 없는 문서'로 만든다.
 
-![본문 이미지](/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-bodyfix1.jpg)
+![본문 이미지](/generated/2026-03-06-optimize-resume-signal-to-noise-ratio-2026-bodyfix2-0.jpg)
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 5. 실전 워크플로우: 한 페이지의 치명적인 무기를 만드는 법

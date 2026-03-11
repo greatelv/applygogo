@@ -2,7 +2,7 @@
 title: "영어 면접이 두려운 당신을 위한 '인터뷰 미끼' 설계법: 영문 이력서로 질문의 주도권을 잡는 기술"
 description: "영어 실력보다 중요한 것은 '전략'이다. 면접관의 질문을 내 의도대로 유도하는 영문 이력서 작성법과 ATS 최적화 기술, 그리고 실패 없는 글로벌 취업을 위한 필승 시나리오를 공개한다."
 date: 1773017155123
-thumbnail: "/generated/2026-03-09-resume-interview-bait-strategy-2026-hero-fix.jpg"
+thumbnail: "/generated/2026-03-09-resume-interview-bait-strategy-2026-hero-fix2.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 인터뷰전략, ATS최적화, 커리어코칭, 영문자소서, 글로벌이직]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![Hero](/generated/2026-03-09-resume-interview-bait-strategy-2026-hero-fix.jpg)
+![Hero](/generated/2026-03-09-resume-interview-bait-strategy-2026-hero-fix2.jpg)
 
 ## 서류 합격은 시작일 뿐, 진짜 지옥은 '인터뷰'에서 시작된다
 
@@ -65,7 +65,7 @@ isSponsored: false
 
 > **Expert Tip**: "Experienced in..." 혹은 "Familiar with..." 같은 표현은 당신의 전문성을 깎아먹는다. 대신 "Expertise in..." 혹은 "Proven track record of..."를 사용하라.
 
-![본문 이미지](/generated/2026-03-09-resume-interview-bait-strategy-2026-bodyfix1.jpg)
+![본문 이미지](/generated/2026-03-09-resume-interview-bait-strategy-2026-bodyfix2-0.jpg)
 <p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@silverkblack?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Vitaly Gariev</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 왜 당신의 독학은 실패할 수밖에 없는가?

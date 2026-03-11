@@ -2,7 +2,7 @@
 title: "면접관의 압박 질문을 내가 설계한 대로 유도하는 '역설계(Reverse-Engineering)' 영문 이력서 작성법"
 description: "서류 통과를 넘어 면접의 주도권까지 가져오는 전략적 영문 이력서 작성 비법. ATS 최적화부터 인터뷰 유도형 키워드 배치까지, 지원고고 수석 컨설턴트가 공개하는 합격 공식."
 date: 1772930785656
-thumbnail: "/generated/2026-03-08-reverse-engineering-interview-success-via-global-resume-2026-hero-fix.jpg"
+thumbnail: "/generated/2026-03-08-reverse-engineering-interview-success-via-global-resume-2026-hero-fix2.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 외국계취업, 비즈니스영어, 인터뷰준비]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![Hero](/generated/2026-03-08-reverse-engineering-interview-success-via-global-resume-2026-hero-fix.jpg)
+![Hero](/generated/2026-03-08-reverse-engineering-interview-success-via-global-resume-2026-hero-fix2.jpg)
 
 해외 취업 시장에서 서류 합격률이 5% 미만이라면, 당신의 경력이 부족해서가 아니라 이력서의 '설계'가 잘못되었을 가능성이 99%다. 대부분의 한국인 지원자는 영문 이력서(Resume)를 단순한 경력의 번역본으로 착각한다. 하지만 글로벌 기업의 리크루터와 면접관에게 이력서는 당신의 과거를 기록한 일기장이 아니다. 그것은 **면접관이 당신에게 던질 질문을 사전에 정의하고, 당신이 원하는 대답을 하도록 유도하는 '전략적 미끼(Hook)'**여야 한다.
 

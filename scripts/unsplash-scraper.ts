@@ -50,9 +50,7 @@ export class UnsplashScraper {
 
         if (figures.length === 0) return null;
 
-        // Iterate figures to find one that looks like a photo result (has an image with unsplash url)
-        let targetFigure: Element | null = null;
-        let targetImg: HTMLImageElement | null = null;
+        let validItems: { fig: Element, img: HTMLImageElement }[] = [];
 
         for (const fig of figures) {
           const img = (fig.querySelector('img[data-testid="asset-grid-masonry-img"]') || fig.querySelector("img")) as HTMLImageElement;
@@ -66,12 +64,17 @@ export class UnsplashScraper {
               !tempSrc.includes("plus.unsplash.com");
 
             if (isFreeUnsplash) {
-              targetFigure = fig;
-              targetImg = img;
-              break;
+              validItems.push({ fig, img });
             }
           }
         }
+
+        if (validItems.length === 0) return null;
+        
+        // Pick a random image from the first 5 valid images to ensure variety
+        const randomIndex = Math.floor(Math.random() * Math.min(validItems.length, 5));
+        let targetFigure = validItems[randomIndex].fig;
+        let targetImg = validItems[randomIndex].img;
 
         if (!targetFigure || !targetImg) return null;
 
