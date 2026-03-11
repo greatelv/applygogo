@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.6.2",
+    "title": {
+      "ko": "지원고고 업데이트 - 더욱 편리해진 블로그!",
+      "en": "ApplyGogo Update - More Convenient Blog!",
+      "ja": "ApplyGogoアップデート - より便利なブログ！"
+    },
+    "description": {
+      "ko": "이제 매일 새로운 글이 자동으로 게시됩니다! Unsplash 이미지 오류도 수정되었으니 더욱 쾌적하게 이용하세요.",
+      "en": "New articles are now automatically posted every day! We've also fixed the Unsplash image errors, so enjoy a smoother experience.",
+      "ja": "新しい記事が毎日自動的に投稿されるようになりました！ Unsplashの画像エラーも修正しましたので、より快適にご利用ください。"
+    },
+    "week": {
+      "ko": "9주차",
+      "en": "Week 9",
+      "ja": "9週目"
+    },
+    "date": "2026-03-11"
+  },
+  {
     "version": "1.5.2",
     "title": {
       "ko": "🎉 지원고고 1일 패스 출시! 🎉",
