@@ -2,7 +2,7 @@
 title: "에이전시·컨설팅 출신을 위한 글로벌 이직 필승법: '프로젝트 수행자'에서 '비즈니스 오너'로 이력서 리브랜딩하기"
 description: "에이전시 경력자가 글로벌 기업 인하우스로 이직할 때 겪는 '오너십 부재' 선입견을 깨부수는 전략을 공개한다. 단순 업무 대행을 넘어 핵심 지표를 변화시킨 비즈니스 오너의 관점으로 이력서를 재구조화하는 법을 전한다."
 date: 1773189741009
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-03-11-agency-consultant-to-inhouse-global-resume-rebranding-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 커리어이직, 에이전시이직, 비즈니스영어, ATS최적화]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![에이전시 컨설팅 이직 전문가](/generated/2026-03-11-agency-consultant-to-inhouse-global-resume-rebranding-2026-hero-fix.jpg)
 
 글로벌 기업의 채용 담당자가 에이전시나 컨설팅 펌 출신의 이력서를 검토할 때 가장 먼저 품는 의구심은 "이 사람이 과연 우리 비즈니스에 대한 '주인의식(Ownership)'을 가지고 성과를 끝까지 책임질 수 있는가?"이다. 수천 장의 합격과 불합격 이력서를 분석해 온 필자의 관점에서 볼 때, 에이전시 출신 지원자의 80% 이상이 이 지점에서 탈락한다. 그들은 자신이 수행한 프로젝트의 화려한 리스트를 나열하지만, 그 프로젝트가 클라이언트의 비즈니스에 어떤 '결정적 임팩트'를 주었는지, 그리고 그 과정에서 본인이 어떤 '전략적 의사결정'을 내렸는지를 증명하는 데 실패한다.
 
@@ -32,7 +32,8 @@ isSponsored: false
 
 단순히 단어를 바꾸는 수준을 넘어, 성과의 '주소'를 클라이언트가 아닌 '나의 전략적 선택'으로 옮겨와야 한다. "클라이언트가 원해서 했다"가 아니라, "이러한 비즈니스 기회를 포착하여 내가 제안했고, 그 결과 이 정도의 수치적 개선을 이루어냈다"는 서술 방식이 필요하다.
 
-> *밤늦게까지 스탠드 조명 아래에서 어두운 화면을 응시하며 영문 이력서의 단어 하나하나를 고심해서 수정하는 경력직 지원자의 뒷모습*
+![본문 이미지 1](/generated/2026-03-11-agency-consultant-to-inhouse-global-resume-rebranding-2026-bodyfix-0.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@yenvu2410?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Yen Vu</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 2. ATS(Applicant Tracking System)가 사랑하는 핵심 지표 설계법
 
@@ -60,7 +61,8 @@ isSponsored: false
 
 무료 툴이나 단순 번역 서비스는 당신의 이력을 '영어'로 바꿔줄 수는 있지만, 당신을 '합격할 만한 인재'로 브랜딩해주지는 않는다. 사소한 관사 하나, 동사의 시제 하나가 당신을 '실행자'로 가둘지 '리더'로 세울지를 결정하는 것이 글로벌 채용 시장의 냉정한 현실이다.
 
-> *밝고 채광이 좋은 모던한 오피스 회의실에서 자신감 넘치는 표정으로 글로벌 면접관들과 대화를 나누며 긍정적인 분위기를 리드하는 지원자*
+![본문 이미지 2](/generated/2026-03-11-agency-consultant-to-inhouse-global-resume-rebranding-2026-bodyfix-1.jpg)
+<p class="text-xs text-center text-gray-500 mt-2">Photo by <a href="https://unsplash.com/ko/@photosbychalo?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Chalo Garcia</a> on <a href="https://unsplash.com/?utm_source=applygogo_blog&utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
 
 ## 4. 지원고고(ApplyGoGo)가 경력의 관점을 바꾸는 방식
 
