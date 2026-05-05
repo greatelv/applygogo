@@ -403,16 +403,36 @@ isSponsored: false
       }
     }
 
-    if (heroImagePath) {
-      articleContent = articleContent.replace(
-        "![HERO](HERO_PLACEHOLDER)",
-        `![${topicData.title}](${heroImagePath})`,
-      );
-      articleContent = articleContent.replace(
-        /thumbnail:.*$/m,
-        `thumbnail: "${heroImagePath}"`,
+    // Guard: never publish a post without a working hero image.
+    // Past incident: 2026-03-04 ~ 2026-04-09 ko/en/ja posts shipped with
+    // either /placeholder.svg or a /generated/<file>.jpg that didn't exist on
+    // disk because the Unsplash download silently failed. Fail the run instead.
+    if (!heroImagePath) {
+      throw new Error(
+        `[${locale}] Hero image generation failed for "${topicData.title}". Aborting post creation to prevent broken thumbnails.`,
       );
     }
+    const heroOnDisk = path.join(
+      process.cwd(),
+      "public",
+      heroImagePath.replace(/^\//, ""),
+    );
+    try {
+      await fs.access(heroOnDisk);
+    } catch {
+      throw new Error(
+        `[${locale}] Hero image path was set (${heroImagePath}) but file is missing on disk. Aborting.`,
+      );
+    }
+
+    articleContent = articleContent.replace(
+      "![HERO](HERO_PLACEHOLDER)",
+      `![${topicData.title}](${heroImagePath})`,
+    );
+    articleContent = articleContent.replace(
+      /thumbnail:.*$/m,
+      `thumbnail: "${heroImagePath}"`,
+    );
 
     // 2. Unsplash Body Images
     const unsplashRegex = /!\[(.*?)\]\(UNSPLASH:(.*?)\)/g;
