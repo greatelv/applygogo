@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.6.3",
+    "title": {
+      "ko": "지원고고 블로그 자동 업데이트 및 섬네일 복구",
+      "en": "ApplyGogo Blog Auto-updates and Thumbnail Recovery",
+      "ja": "ApplyGogoブログの自動更新とサムネイルの復旧"
+    },
+    "description": {
+      "ko": "매일 새로운 소식을 블로그에서 만나보세요! 오래된 게시물의 섬네일 이미지도 복구되었습니다.",
+      "en": "Discover daily updates on our blog! We've also recovered thumbnail images for older posts.",
+      "ja": "ブログで毎日の最新情報をチェック！古い記事のサムネイル画像も復旧しました。"
+    },
+    "week": {
+      "ko": "10주차",
+      "en": "Week 10",
+      "ja": "10週目"
+    },
+    "date": "2026-05-05"
+  },
+  {
     "version": "1.6.2",
     "title": {
       "ko": "지원고고 업데이트 - 더욱 편리해진 블로그!",
