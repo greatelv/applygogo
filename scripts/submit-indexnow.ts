@@ -1,33 +1,42 @@
 import axios from "axios";
 
 const API_KEY = process.env.INDEXNOW_API_KEY || "";
-const HOST = "applygogo.com";
+const HOST = process.env.INDEXNOW_HOST || "applygogo.com";
 const KEY_LOCATION = `https://${HOST}/${API_KEY}.txt`;
+const SITEMAP_URL = `https://${HOST}/sitemap.xml`;
 
-async function submitToIndexNow(url: string) {
-  if (!url) {
-    console.error("Error: URL is required");
-    process.exit(1);
+async function submitToIndexNow(urls: string[]) {
+  if (!API_KEY) {
+    console.error("Error: INDEXNOW_API_KEY env var is not set");
+    process.exit(0);
   }
 
-  console.log(`Submitting ${url} to IndexNow...`);
+  const cleaned = Array.from(
+    new Set(urls.map((u) => u?.trim()).filter((u): u is string => !!u)),
+  );
+  if (cleaned.length === 0) {
+    console.error("Error: at least one URL is required");
+    process.exit(0);
+  }
+
+  // Always notify the sitemap so receiving engines re-fetch the full URL set.
+  if (!cleaned.includes(SITEMAP_URL)) cleaned.push(SITEMAP_URL);
+
+  console.log(`Submitting ${cleaned.length} URL(s) to IndexNow:`);
+  for (const u of cleaned) console.log(`  - ${u}`);
 
   try {
-    const payload = {
-      host: HOST,
-      key: API_KEY,
-      keyLocation: KEY_LOCATION,
-      urlList: [url],
-    };
-
     const response = await axios.post(
       "https://api.indexnow.org/indexnow",
-      payload,
       {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-      }
+        host: HOST,
+        key: API_KEY,
+        keyLocation: KEY_LOCATION,
+        urlList: cleaned,
+      },
+      {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      },
     );
 
     if (response.status === 200 || response.status === 202) {
@@ -50,5 +59,5 @@ async function submitToIndexNow(url: string) {
   }
 }
 
-const urlArg = process.argv[2];
-submitToIndexNow(urlArg);
+const urlArgs = process.argv.slice(2);
+submitToIndexNow(urlArgs);

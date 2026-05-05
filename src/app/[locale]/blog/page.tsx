@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: Props) {
     description: t("description"),
     alternates: {
       canonical: "/blog",
+      types: {
+        "application/atom+xml": `/${locale}/rss.xml`,
+      },
     },
     openGraph: {
       title: t("title"),
