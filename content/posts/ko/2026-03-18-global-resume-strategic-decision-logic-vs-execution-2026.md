@@ -2,7 +2,7 @@
 title: "한국식 '실행력'의 비극: 글로벌 기업이 당신의 이력서에서 끝내 찾지 못한 '의사결정 논리(Decision Logic)'"
 description: "2026년 글로벌 채용 시장에서 '성실함'은 더 이상 무기가 아니다. AI 스캐너가 분석하는 당신의 '의사결정 논리'를 어떻게 이력서에 녹여낼 것인가? 합격률을 결정짓는 전략적 서술법과 ATS 최적화 워크플로우를 공개한다."
 date: 1773794835536
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/global-resume-strategic-decision-logic-vs-execution-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 비즈니스영어, 이직성공]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![한국식 '실행력'의 비극: 글로벌 기업이 당신의 이력서에서 끝내 찾지 못한 '의사결정 논리(Decision Logic)'](/generated/global-resume-strategic-decision-logic-vs-execution-2026-hero-fix.jpg)
 
 해외 취업과 글로벌 기업 이직을 준비하는 한국 인재들이 가장 많이 착각하는 지점이 하나 있다. 바로 "내가 얼마나 많은 일을 했는지(Execution)"를 나열하면 리크루터가 감동할 것이라는 믿음이다. 하지만 필자가 지원고고 수석 컨설턴트로서 지난 수년간 수만 건의 불합격 이력서를 분석하며 마주한 현실은 냉혹하다. 구글, 아마존, 메타와 같은 글로벌 테크 자이언트부터 유수의 컨설팅 펌까지, 그들은 당신이 '얼마나 열심히 했는지'에는 관심이 없다. 그들이 집요하게 찾는 것은 오직 하나, 당신의 행동 뒤에 숨겨진 **'의사결정 논리(Decision Logic)'**다.
 

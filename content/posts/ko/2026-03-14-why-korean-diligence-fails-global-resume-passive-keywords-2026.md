@@ -2,7 +2,7 @@
 title: "한국 대기업 출신의 '성실함'은 왜 글로벌 탈락 사유가 될까? 2026년 영문 이력서에서 반드시 삭제해야 할 'Passive Keywords'"
 description: "한국식 '성실함'이 해외 취업의 독이 되는 이유를 분석하고, 2026년 ATS 채용 시스템을 뚫기 위한 능동적 키워드 전환 전략과 구체적인 합격 공식을 공개한다."
 date: 1773448988246
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/why-korean-diligence-fails-global-resume-passive-keywords-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, ATS, 커리어전략, 이직준비]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![한국 대기업 출신의 '성실함'은 왜 글로벌 탈락 사유가 될까? 2026년 영문 이력서에서 반드시 삭제해야 할 'Passive Keywords'](/generated/why-korean-diligence-fails-global-resume-passive-keywords-2026-hero-fix.jpg)
 
 삼성, 현대, SK 등 국내 굴지의 대기업에서 10년 넘게 '에이스' 소리를 듣던 인재들이 글로벌 시장(FAANG, 글로벌 투자은행, 전략 컨설팅 펌 등)에 도전할 때 가장 먼저 맞닥뜨리는 벽은 의외로 언어 장벽이 아니다. 바로 **'이력서의 톤앤매너(Tone & Manner)'**다. 
 

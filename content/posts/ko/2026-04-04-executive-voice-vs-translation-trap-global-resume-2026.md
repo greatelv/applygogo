@@ -2,7 +2,7 @@
 title: "완벽한 번역이 광탈의 원인? 영문 이력서의 '학생 톤(Student Tone)'을 '임원 톤(Executive Voice)'으로 바꾸는 3가지 원칙"
 description: "AI 번역기가 놓치는 영문 이력서의 치명적 함정! 2026년 글로벌 채용 시장에서 살아남기 위한 'Executive Voice' 구축 전략과 ATS를 관통하는 Diction 최적화 비법을 공개합니다."
 date: 1775263623967
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/executive-voice-vs-translation-trap-global-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, 커리어전략, ATS최적화, 이직준비]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![완벽한 번역이 광탈의 원인? 영문 이력서의 '학생 톤(Student Tone)'을 '임원 톤(Executive Voice)'으로 바꾸는 3가지 원칙](/generated/executive-voice-vs-translation-trap-global-resume-2026-hero-fix.jpg)
 
 ### "당신의 이력서에서 '학생의 냄새'가 난다"
 

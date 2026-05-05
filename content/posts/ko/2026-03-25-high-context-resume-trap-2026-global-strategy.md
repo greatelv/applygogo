@@ -2,7 +2,7 @@
 title: "글로벌 리크루터는 당신의 '맥락'을 모른다: 한국식 하이 컨텍스트(High-Context) 이력서가 광탈하는 이유"
 description: "삼성전자 출신이라서, 조 단위 프로젝트라서 당연히 합격할 줄 알았는가? 글로벌 리크루터에게 '한국적 위상'은 아무런 의미가 없다. 당신의 경력을 글로벌 비즈니스 언어로 재정의하여 합격률을 5배 높이는 로우 컨텍스트(Low-Context) 전략을 공개한다."
 date: 1774399643425
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/high-context-resume-trap-2026-global-strategy-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS, 비즈니스영어, 커리어전략, 리크루팅]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![글로벌 리크루터는 당신의 '맥락'을 모른다: 한국식 하이 컨텍스트(High-Context) 이력서가 광탈하는 이유](/generated/high-context-resume-trap-2026-global-strategy-hero-fix.jpg)
 
 글로벌 시장으로 눈을 돌린 한국인 인재들이 가장 먼저 마주하는 벽은 언어의 장벽이 아니다. 바로 **'맥락의 장벽'**이다. 지원자는 자신의 경력이 국내에서 얼마나 대단한지 스스로 잘 알고 있기에, 이력서에 그 가치가 당연히 묻어날 것이라 착각한다. 하지만 당신의 이력서를 검토하는 싱가포르의 리크루터나 뉴욕의 하이어링 매니저(Hiring Manager)에게 당신이 다닌 기업의 네임밸류나 프로젝트의 난이도는 '설명되지 않은 암호'에 불과하다.
 

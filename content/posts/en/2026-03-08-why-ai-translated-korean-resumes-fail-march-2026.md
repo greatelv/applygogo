@@ -2,7 +2,7 @@
 title: "Why Your 100% Accurate Papago Resume is Still Getting Zero Calls This March"
 description: "Grammatically correct is not culturally competent. Learn why using generic AI translation like Papago is the fastest way to get ghosted by Korean HR, and how ApplyGoGo localizes your career for the 2026 market."
 date: 2026-03-08T09:00:00Z
-thumbnail: "/generated/papago-resume-rejection-korea-2026-hero.jpg"
+thumbnail: "/generated/why-ai-translated-korean-resumes-fail-march-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Papago vs Reality", "Resume Tips", "Working in Korea 2026", "Jagisogaeseo"]

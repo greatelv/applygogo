@@ -2,7 +2,7 @@
 title: "삼성·네이버 출신도 해외에선 '듣보잡'? 국내 브랜드 파워를 '글로벌 성과'로 치환하는 영문 이력서 전략"
 description: "국내 대기업 경력이 글로벌 시장에서 무용지물이 되는 이유를 분석하고, 브랜드 인지도를 압도적인 '글로벌 성과' 수치로 재설계하여 서류 합격률을 300% 높이는 필승 전략을 공개한다."
 date: 1773708280486
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/rebranding-korean-brand-power-to-global-market-context-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 경력기술서, ATS 최적화, 글로벌커리어, 이직전략]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![삼성·네이버 출신도 해외에선 '듣보잡'? 국내 브랜드 파워를 '글로벌 성과'로 치환하는 영문 이력서 전략](/generated/rebranding-korean-brand-power-to-global-market-context-2026-hero-fix.jpg)
 
 ## 당신의 '삼성' 경력이 실리콘밸리에서 'Unknown' 처리되는 이유
 

@@ -2,7 +2,7 @@
 title: "The 2026 'Free-Format' Trap: Why Your Western CV Still Fails English-Friendly Korean Startups"
 description: "Think 'Free-Format' means a standard 1-page Western CV? Think again. Discover why Korean startups in 2026 still reject global talent and how to hack the 'Jayu Yangsik' code."
 date: 2026-04-01T09:00:00Z
-thumbnail: "/generated/free-format-trap-2026-korean-startups-hero.jpg"
+thumbnail: "/generated/korean-startup-free-format-resume-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Free Format Resume", "Working in Korea"]

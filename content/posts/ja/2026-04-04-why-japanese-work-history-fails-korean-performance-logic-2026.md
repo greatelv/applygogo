@@ -2,7 +2,7 @@
 title: "日本の「職務経歴書」をそのまま出すのは自殺行為？韓国企業が求める「経歴記述書」への劇的変換ルール【2026年最新トレンド】"
 description: "韓国就職の書類選考で落ち続ける理由、それは「日本式の謙虚さ」かもしれません。2026年のAI選考を突破するために不可欠な、数値指標(KPI)と韓国式ロジックへの劇的変換メソッドを伝授します。"
 date: 2026-04-04T09:00:00Z
-thumbnail: "/generated/korean-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-japanese-work-history-fails-korean-performance-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "韓国転職"]

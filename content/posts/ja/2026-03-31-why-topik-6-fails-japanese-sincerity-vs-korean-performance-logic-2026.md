@@ -2,7 +2,7 @@
 title: "【2026年最新】TOPIK 6級でも書類落ち？韓国企業が「日本式の誠実さ」を「受動的」と見なす決定的な瞬間"
 description: "「韓国語ができる」のは最低条件。TOPIK 6級の保有者がなぜ韓国企業の書類選考で落とされるのか？日本人が陥りやすい「誠実さの罠」を解明し、内定を勝ち取るためのKPI・成果完結型への書き換え戦略を伝授します。"
 date: 2026-03-31T09:00:00Z
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-topik-6-fails-japanese-sincerity-vs-korean-performance-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo 首席コンサルタント"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "自己紹介書", "海外就職", "キャリアアップ", "TOPIK"]

@@ -2,7 +2,7 @@
 title: "Why Your AI-Translated Korean Resume Sounds 'Childish' to Recruiters (And How to Fix It)"
 description: "Most global talents use Papago or ChatGPT for their Korean resumes, but these tools fail to use 'Gyeoksik-che'. Learn how 'translation smell' destroys your professional authority in Korea."
 date: 2026-03-30
-thumbnail: "/generated/why-ai-translated-korean-resume-childish-hero.jpg"
+thumbnail: "/generated/why-ai-translated-korean-resumes-sound-childish-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Resume", "Business Korean", "Job Search Korea", "Jagisogaeseo", "Career Advice"]

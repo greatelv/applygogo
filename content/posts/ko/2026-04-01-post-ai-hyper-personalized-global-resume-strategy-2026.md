@@ -2,7 +2,7 @@
 title: "AI가 쓴 영문 이력서는 1초 만에 걸러집니다: 2026년 글로벌 리크루터가 요구하는 '하이퍼-퍼스널라이징' 전략"
 description: "2026년 글로벌 채용 시장에서 살아남는 유일한 방법은 단순한 AI 번역이 아닌 '하이퍼-퍼스널라이징'입니다. 1초 만에 탈락하는 영문 이력서의 비밀과 합격률을 300% 높이는 수석 컨설턴트의 실전 전략을 공개합니다."
 date: 1775004939695
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/post-ai-hyper-personalized-global-resume-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, 커리어전략, ATS최적화, 채용트렌드]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![AI가 쓴 영문 이력서는 1초 만에 걸러집니다: 2026년 글로벌 리크루터가 요구하는 '하이퍼-퍼스널라이징' 전략](/generated/post-ai-hyper-personalized-global-resume-strategy-2026-hero-fix.jpg)
 
 2026년 현재, 전 세계 리크루터들의 이메일함은 생성형 AI가 쏟아낸 ‘완벽하지만 영혼 없는’ 이력서들로 가득 차 있다. 챗GPT(ChatGPT)나 클로드(Claude)에 내 경력을 대충 던져 넣고 "구글 스타일 영문 이력서로 변환해줘"라고 명령하는 방식은 이제 더 이상 통하지 않는다. 오히려 독이다. 글로벌 테크 기업의 리크루터들은 이제 LLM(대규모 언어 모델) 특유의 문체와 단어 선택을 1초 만에 간파해내며, 이를 ‘성의 없는 지원자’로 분류하여 즉시 탈락시킨다.
 

@@ -2,7 +2,7 @@
 title: "The 'Free Format' Trap: Why Your Modern Western Resume is Still Being Ignored by Korean HR in 2026"
 description: "In 2026, 'Free Format' applications are standard in Korea, but they are a dangerous trap for foreigners. Learn why your 1-page resume is being ignored and how to inject 'Korean Logic' to get hired."
 date: 2026-03-12
-thumbnail: "/generated/free-format-trap-korean-resume-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-free-format-trap-march-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Work in Seoul"]

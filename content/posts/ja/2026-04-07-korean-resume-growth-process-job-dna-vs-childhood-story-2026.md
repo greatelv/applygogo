@@ -2,7 +2,7 @@
 title: "「私の幼少期」は不合格確定。2026年韓国採用で勝つための『成長過程』は、自分語りではなく「職務DNA」の証明だ。"
 description: "韓国就職で最初の壁となる「成長過程」。日本的な感覚で子供時代の思い出を書いていませんか？2026年の採用基準に合わせ、あなたの過去を「職務能力のルーツ」へと書き換える必勝法を伝授します。"
 date: 2026-04-07
-thumbnail: "/generated/korean-resume-growth-process-strategy-hero.jpg"
+thumbnail: "/generated/korean-resume-growth-process-job-dna-vs-childhood-story-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア"]

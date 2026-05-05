@@ -2,7 +2,7 @@
 title: "「TOPIK 6級でも書類落ち」の正体。韓国企業が0.5秒で不合格にする『日本式自己PR』の致命的な欠陥とは？"
 description: "TOPIK 6級なのに書類選考で落ちる理由を徹底解説。韓国企業が求めるのは「謙虚さ」ではなく「数字と成果」です。2026年の採用市場を勝ち抜くための韓国式ロジックと、ApplyGoGoによる履歴書変換術を公開します。"
 date: 2026-03-26
-thumbnail: "/generated/korea-resume-strategy-hero.jpg"
+thumbnail: "/generated/why-topik-6-is-not-enough-korean-resume-kpi-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "韓国転職"]

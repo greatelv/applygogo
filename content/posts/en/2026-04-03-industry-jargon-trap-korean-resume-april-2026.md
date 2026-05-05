@@ -2,7 +2,7 @@
 title: "Why 'Good Enough' Korean is Getting You Ghosted: The 2026 Industry-Jargon Trap"
 description: "By April, the 'Gongchae' season is over. Now, department managers in Pangyo and Gangnam are looking for 'Silmu-yongo' mastery. Learn why literal translation is failing your Korean career."
 date: 2026-04-03T10:00:00Z
-thumbnail: "/generated/why-good-enough-korean-gets-you-ghosted-hero.jpg"
+thumbnail: "/generated/industry-jargon-trap-korean-resume-april-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Silmu-yongo", "Working in Korea", "Resume Strategy", "Pangyo Tech"]

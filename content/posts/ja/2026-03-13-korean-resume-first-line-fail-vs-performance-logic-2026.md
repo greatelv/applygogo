@@ -2,7 +2,7 @@
 title: "履歴書の一行目で「不採用」が決まる。韓国企業が日本の職務経歴書を「実績なし」と見なす致命的な書き方の違い"
 description: "「韓国就職を目指すあなたへ」。韓国企業が求めるのは「謙虚なプロセス」ではなく「数字に基づいた成果」です。2026年のAI審査を突破し、日本式履歴書を合格圏内へ引き上げる禁断の書き換え戦略を公開。"
 date: 2026-03-13
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-first-line-fail-vs-performance-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

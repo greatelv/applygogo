@@ -2,7 +2,7 @@
 title: "The 'Injaesang' Trap: Why Your Skills Mean Nothing Without the Right Korean Keywords"
 description: "In 2026, technical skills aren't enough for the Korean job market. Learn how to decode 'Injaesang' and inject the cultural keywords that turn rejections into offers at Samsung, Hyundai, and Kakao."
 date: 2026-03-27
-thumbnail: "/generated/injaesang-trap-korean-keywords-hero.jpg"
+thumbnail: "/generated/korean-injaesang-talent-image-keyword-resume-strategy-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Injaesang", "Career Advice", "Jagisogaeseo", "Work in Korea"]

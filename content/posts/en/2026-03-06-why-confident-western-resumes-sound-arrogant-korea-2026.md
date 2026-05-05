@@ -2,7 +2,7 @@
 title: "The 'Arrogance Trap': Why Your Confident English Resume Sounds Disrespectful in Korean"
 description: "Even a grammatically perfect Korean translation can trigger cultural red flags. Learn why 'power verbs' like Spearheaded and Led often fail in the Korean job market and how to recalibrate for 'Respectful Authority'."
 date: 2026-03-06T09:00:00Z
-thumbnail: "/generated/arrogance-trap-hero.jpg"
+thumbnail: "/generated/why-confident-western-resumes-sound-arrogant-korea-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Cultural Intelligence"]

@@ -2,7 +2,7 @@
 title: "당신의 영문 이력서가 '단순 실행자'처럼 보이는 이유: 2026년 글로벌 기업이 요구하는 '의사결정 오너십' 서술법"
 description: "글로벌 기업이 경력직에게 요구하는 것은 단순 업무 나열이 아닌 '왜 그 결정을 내렸는가'에 대한 논리입니다. 언더레벨링을 방지하고 몸값을 높이는 2026년형 영문 이력서 설계 전략을 공개합니다."
 date: 1775177404538
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/global-resume-decision-ownership-vs-task-execution-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 커리어전략, ATS, 비즈니스영어, 이직성공]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![당신의 영문 이력서가 '단순 실행자'처럼 보이는 이유: 2026년 글로벌 기업이 요구하는 '의사결정 오너십' 서술법](/generated/global-resume-decision-ownership-vs-task-execution-2026-hero-fix.jpg)
 
 아무리 화려한 경력을 가진 인재라도 영문 이력서(Resume) 한 장 때문에 해외 취업 시장에서 자신의 가치보다 낮은 직급으로 제안받는 '언더레벨링(Under-leveling)'을 경험하곤 한다. 한국의 수많은 시니어급 인재들이 구글, 메타, 엔비디아와 같은 글로벌 테크 기업이나 골드만삭스 같은 금융권의 문을 두드릴 때 가장 많이 범하는 실수는 이력서를 '업무 일지'처럼 작성한다는 점이다.
 

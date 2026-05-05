@@ -2,7 +2,7 @@
 title: "그로스 마케터의 영문 이력서: '집행 예산' 규모가 아닌 '실험 설계(Experiment Design)' 능력을 증명해야 하는 이유 (2026 트렌드)"
 description: "단순한 예산 집행자에서 벗어나 글로벌 테크 기업이 갈망하는 '전략적 가설 검증자'로 거듭나는 법. 2026년 채용 시장을 관통하는 실험 설계 중심의 영문 이력서 작성 전략과 실전 사례를 공개한다."
 date: 1774486206045
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/growth-marketer-resume-experiment-design-vs-budget-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 그로스마케팅, 해외취업, ATS최적화, 커리어전략, 데이터드리븐, 글로벌커리어]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![그로스 마케터의 영문 이력서: '집행 예산' 규모가 아닌 '실험 설계(Experiment Design)' 능력을 증명해야 하는 이유 (2026 트렌드)](/generated/growth-marketer-resume-experiment-design-vs-budget-2026-hero-fix.jpg)
 
 ## 2026년, 'Media Buyer'의 시대는 끝났다
 

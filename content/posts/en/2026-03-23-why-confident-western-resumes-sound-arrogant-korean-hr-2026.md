@@ -2,7 +2,7 @@
 title: "Why 'Confident' Resumes Get Ghosted: The Professional Humility Gap in 2026 Korean Hiring"
 description: "Discover why high-impact 'Western' resumes fail in the Korean job market. Learn to bridge the 'Professional Humility Gap' and re-frame your achievements for Samsung, Hyundai, and Kakao."
 date: 2026-03-23T09:00:00Z
-thumbnail: "/generated/why-confident-resumes-get-ghosted-korean-hiring-hero.jpg"
+thumbnail: "/generated/why-confident-western-resumes-sound-arrogant-korean-hr-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Professional Humility", "Work in Korea"]

@@ -2,7 +2,7 @@
 title: "Stop Saying 'I Love Korea' in Your Resume: The 2026 Strategy for a Winning 'Jiwon Dong-gi'"
 description: "Why your passion for K-culture is getting you rejected and how to pivot your 'Motivation for Application' into a strategic business asset that Korean HR managers can't ignore."
 date: 2026-03-18
-thumbnail: "/generated/stop-saying-i-love-korea-2026-strategy-hero.jpg"
+thumbnail: "/generated/why-loving-korea-is-not-a-job-qualification-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Resume", "Jiwon Dong-gi", "Work in Korea", "Career Advice", "ApplyGoGo"]

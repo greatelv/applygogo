@@ -2,7 +2,7 @@
 title: "The 'Cultural Logic' Gap: Why Your Translated Resume Still Sounds 'Foreign' to Korean HR in 2026"
 description: "Linguistic accuracy isn't enough for the Korean job market. Discover why your Western-style resume gets flagged as a turnover risk and how to re-engineer your story into the 'We-centric' logic preferred by Samsung, Kakao, and Coupang."
 date: 2026-03-05T09:00:00Z
-thumbnail: "/generated/the-cultural-logic-gap-korean-resume-2026-hero.jpg"
+thumbnail: "/generated/cultural-logic-gap-translated-korean-resume-rejection-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Jagisogaeseo", "Career in Korea", "AI Recruitment"]

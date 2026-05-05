@@ -2,7 +2,7 @@
 title: "당신은 'PM'인가요, 아니면 '코디네이터'인가요? 2026년 영문 이력서에서 전략적 임팩트를 증명하는 '프로그램 매니지먼트(Program Management)' 서술법"
 description: "한국형 PM이 글로벌 시장에서 저평가받는 결정적 이유를 분석하고, 억대 연봉을 결정짓는 '프로그램 매니저'로서의 이력서 개조 전략을 공개한다. 2026년 ATS 트렌드 완벽 반영."
 date: 1775436754981
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/korean-pm-vs-global-program-manager-rebranding-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "프로그램매니저", "커리어전략", "ATS최적화", "비즈니스영어"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![당신은 'PM'인가요, 아니면 '코디네이터'인가요? 2026년 영문 이력서에서 전략적 임팩트를 증명하는 '프로그램 매니지먼트(Program Management)' 서술법](/generated/korean-pm-vs-global-program-manager-rebranding-2026-hero-fix.jpg)
 
 글로벌 테크 기업이나 포춘 500대 기업의 채용 공고를 뒤지다 보면 반드시 마주치는 직무가 있다. 바로 '프로그램 매니저(Program Manager)'다. 많은 한국인 지원자가 본인의 경력을 'Project Manager(PM)'로 명명하며 이 자리에 도전한다. 그러나 서류 전형 결과는 참담하다. 운 좋게 면접에 가더라도 "당신의 역할은 단순 일정 조율(Coordination)에 가깝다"는 피드백과 함께 언더레벨링(Under-leveling)된 처우를 제안받기 일쑤다.
 

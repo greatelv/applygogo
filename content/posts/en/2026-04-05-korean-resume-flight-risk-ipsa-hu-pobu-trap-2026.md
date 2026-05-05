@@ -2,7 +2,7 @@
 title: "Why Your 'Career Growth' Goals Sound Like a 'Flight Risk' to Korean HR"
 description: "Discover why personal ambition often leads to rejection in the 2026 Korean job market and how to master the 'Ipsa Hu Pobu' to prove you are a long-term asset."
 date: 2026-04-05
-thumbnail: "/generated/career-growth-flight-risk-hero.jpg"
+thumbnail: "/generated/korean-resume-flight-risk-ipsa-hu-pobu-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Ipsa Hu Pobu", "Working in Korea", "Resume Tips", "Korean Corporate Culture"]

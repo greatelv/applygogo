@@ -2,7 +2,7 @@
 title: "Why 'English-Friendly' Korean Tech Companies Are Still Ghosting Your English Resume This March"
 description: "Applying to Kakao, Coupang, or Toss with a Western-style CV? Discover why even 'Global' Korean companies reject top-tier foreign talent and how to pivot your strategy for the March hiring peak."
 date: 2026-03-17T09:00:00Z
-thumbnail: "/generated/why-english-friendly-korean-tech-companies-ghost-resume-hero.jpg"
+thumbnail: "/generated/english-friendly-korean-tech-startup-resume-ghosting-march-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Jagisogaeseo", "Tech Jobs Korea", "Work in Seoul", "ApplyGoGo"]

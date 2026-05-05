@@ -2,7 +2,7 @@
 title: "Why High-Spec Foreigners Fail the April Hiring Wave: The 'Standard Format' Trap"
 description: "High-spec global talent is being ghosted by Korean firms this April. Discover why your 'Global Standard' 1-page resume is failing and how to K-Standardize your application for 2026."
 date: 2026-04-02T10:00:00Z
-thumbnail: "/generated/high-spec-foreigners-april-hiring-fail-hero.jpg"
+thumbnail: "/generated/high-spec-foreigners-april-hiring-wave-korean-resume-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "April Hiring Wave", "Working in Korea"]

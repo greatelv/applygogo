@@ -2,7 +2,7 @@
 title: "「TOPIK6級でも書類落ち」の正体。2026年韓国AI採用が瞬時に弾く『日本的あいまい表現』の罠"
 description: "TOPIK6級や高学歴でも韓国就職で苦戦する日本人には共通点があります。2026年のAI採用市場で即不合格となる「日本的あいまい表現」を、韓国企業が好む「攻撃的な成果表現」へ劇的に変換する戦略を解説します。"
 date: 2026-03-08
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-topik-6-fails-vague-japanese-expressions-korean-ai-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

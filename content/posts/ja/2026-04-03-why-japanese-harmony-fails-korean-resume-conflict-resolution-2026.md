@@ -2,7 +2,7 @@
 title: "韓国の自己紹介書で「協調性」をアピールすると落ちる？AI選考が求める「攻めのチームワーク」への変換戦略"
 description: "成果主義の韓国就職で「和」を語るのは危険？2026年の採用トレンドを徹底解説。日本人が陥る「協調性」の罠を、内定を勝ち取る「課題解決型シナジー」へ書き換える必勝ロジックを公開します。"
 date: 2026-04-03
-thumbnail: "/generated/korean-resume-teamwork-strategy-hero.jpg"
+thumbnail: "/generated/why-japanese-harmony-fails-korean-resume-conflict-resolution-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア"]

@@ -2,7 +2,7 @@
 title: "「頑張ります」では100%落ちる。2026年韓国採用で履歴書1行目で見抜かれる『即戦力』の正体"
 description: "2026年の韓国就職で成功するために不可欠なのは「謙虚さ」ではなく「数字で語る即戦力」です。日本人が陥りがちな「ポテンシャル採用への期待」を断ち切り、SamsungやCoupangが熱望する履歴書へ変貌させる戦略を解説します。"
 date: 2026-03-10T09:00:00Z
-thumbnail: "/generated/korea-job-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-effort-mindset-fails-korean-resume-2026-roi-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "自己紹介書", "韓国転職", "海外キャリア"]

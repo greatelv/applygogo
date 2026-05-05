@@ -2,7 +2,7 @@
 title: "「空気を読む」履歴書は即落選。2026年韓国就職で勝つための、日本人が知らない『小見出し（サブタイトル）』の鉄則"
 description: "韓国企業の採用担当者が履歴書を見る時間はわずか3秒。日本の「謙虚なプロセス説明」を、韓国式の「成果直結型キャッチコピー」へ書き換えるだけで、書類通過率は劇的に変わります。"
 date: 2026-03-22
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-subheading-result-oriented-vs-japanese-narrative-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "自己紹介書", "キャリアアップ"]

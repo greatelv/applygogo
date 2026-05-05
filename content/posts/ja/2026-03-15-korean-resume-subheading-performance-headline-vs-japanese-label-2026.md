@@ -2,7 +2,7 @@
 title: "【2026年最新】日本の「自己PR」は韓国では通用しない？ 採用担当者の手を3秒で止める「刺さる小見出し」の黄金法則"
 description: "韓国就職を目指す日本人必見。2026年の韓国採用市場で「自己PR」という言葉はNG？AIスクリーニングを突破し、採用担当者の手を止める数値化された『小見出し』の作り方をApplyGoGoが徹底解説します。"
 date: 2026-03-15
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-subheading-performance-headline-vs-japanese-label-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

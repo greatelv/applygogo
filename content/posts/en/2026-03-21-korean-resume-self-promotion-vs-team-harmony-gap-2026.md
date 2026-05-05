@@ -2,7 +2,7 @@
 title: "Why Your 'Self-Promotion' Is Getting You Ghosted: The Humble-Brag Gap in Korean Resumes"
 description: "Is your Western-style achievement-based resume failing in Korea? Discover why 'Inhwa' (Harmony) and 'Professional Humility' are the keys to winning offers at Samsung, Hyundai, and Kakao."
 date: 2026-03-21
-thumbnail: "/generated/humble-brag-gap-korean-resumes-hero.jpg"
+thumbnail: "/generated/korean-resume-self-promotion-vs-team-harmony-gap-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Jagisogaeseo", "Career Strategy", "Working in Korea", "Resume Tips"]

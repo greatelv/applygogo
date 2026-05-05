@@ -2,7 +2,7 @@
 title: "Why Your 1-Page Western Resume Feels 'Lazy' to Korean Recruiters in 2026"
 description: "Is your efficient 1-page resume the reason you're being ghosted by Korean conglomerates? Learn why Korean HR demands 'Sincerity' through detail and how ApplyGoGo turns your bullet points into winning narratives."
 date: 2026-04-04
-thumbnail: "/generated/why-your-1-page-western-resume-feels-lazy-to-korean-recruiters-in-2026-hero.jpg"
+thumbnail: "/generated/why-one-page-western-resume-feels-lazy-korean-hr-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Gyeongnyeok Kisulseo"]

@@ -2,7 +2,7 @@
 title: "日本人がやりがちな「タイトル」のミス。韓国企業を0.5秒で黙らせる『勝てる小見出し』の黄金法則【2026年最新版】"
 description: "韓国就職の成否は「小見出し」で決まる。TOPIK6級でも落ちる理由とは？人事担当者の目を釘付けにする『成果直結型ヘッドライン』の作り方をApplyGoGoが徹底解説。"
 date: 2026-03-16T09:00:00Z
-thumbnail: "/generated/korea-resume-subheading-strategy-hero.jpg"
+thumbnail: "/generated/korean-resume-subheading-0-5sec-rule-2026-performance-logic-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

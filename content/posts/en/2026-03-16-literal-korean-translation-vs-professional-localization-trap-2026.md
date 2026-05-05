@@ -2,7 +2,7 @@
 title: "The 'Native' Trap: Why Literal Korean Translations Are Killing Your Job Prospects in March 2026"
 description: "Is your translated resume getting you ghosted? Discover why literal Korean translations fail AI filters and how to master 'Corporate Sincerity' for the March 2026 hiring season."
 date: 2026-03-16T09:00:00Z
-thumbnail: "/generated/native-trap-korean-resume-2026-hero.jpg"
+thumbnail: "/generated/literal-korean-translation-vs-professional-localization-trap-2026-hero-fix.jpg"
 author: "Senior Career Consultant, ApplyGoGo"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Jagisogaeseo", "Working in Korea", "Career Advice"]

@@ -2,7 +2,7 @@
 title: "지인 추천(Referral) 합격률을 3배 높이는 비밀: 추천인이 바로 복사해 쓸 수 있는 '3줄 요약' 패키징 전략"
 description: "글로벌 기업 내부 추천 제도의 본질을 꿰뚫는 필승 전략을 공개한다. 단순히 이력서만 전달하는 하수에서 벗어나, 추천인이 열광하는 '리퍼럴 블러브'로 합격률을 압도적으로 높이는 법을 확인하라."
 date: 1775609502790
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/global-resume-referral-pitch-blurb-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 내부추천, 리퍼럴블러브, ATS최적화, 커리어전략]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![지인 추천(Referral) 합격률을 3배 높이는 비밀: 추천인이 바로 복사해 쓸 수 있는 '3줄 요약' 패키징 전략](/generated/global-resume-referral-pitch-blurb-strategy-2026-hero-fix.jpg)
 
 글로벌 기업 취업을 준비하는 지원자들 사이에서 '내부 추천(Referral)'은 이제 선택이 아닌 필수다. 2026년 현재, 구글(Google), 아마존(Amazon), 메타(Meta)와 같은 빅테크 기업은 물론 글로벌 컨설팅 펌과 투자은행(IB)의 신규 채용 중 50% 이상이 내부 임직원 추천을 통해 이루어진다.
 

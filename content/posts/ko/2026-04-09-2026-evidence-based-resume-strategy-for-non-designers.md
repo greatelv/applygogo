@@ -2,7 +2,7 @@
 title: "포트폴리오 없는 PM·마케터는 생존 불가? 2026년 영문 이력서의 새로운 표준 'Evidence-Link' 설계법"
 description: "글로벌 채용 시장의 패러다임이 변했다. 단순 텍스트 나열은 이제 필패다. PM, 마케터 등 비디자이너 직군이 2026년 합격권을 거머쥐기 위해 반드시 갖춰야 할 'Evidence-Link' 영문 이력서 구축 전략을 공개한다."
 date: 1775695399817
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-evidence-based-resume-strategy-for-non-designers-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, PM이직, 마케팅포트폴리오]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![포트폴리오 없는 PM·마케터는 생존 불가? 2026년 영문 이력서의 새로운 표준 'Evidence-Link' 설계법](/generated/2026-evidence-based-resume-strategy-for-non-designers-hero-fix.jpg)
 
 글로벌 채용 시장의 문턱은 2026년 현재 그 어느 때보다 높다. 구글, 메타, 엔비디아와 같은 빅테크 기업뿐만 아니라 북미와 유럽의 유망 스타트업들 역시 '검증되지 않은 인재'에게 낭비할 시간은 없다는 태도를 견지한다. 과거에는 'Action Verb'를 잘 활용하고 성과를 수치화(Quantify)하는 것만으로도 합격권에 들 수 있었다. 하지만 이제는 상황이 다르다. 
 

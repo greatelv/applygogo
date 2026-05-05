@@ -2,7 +2,7 @@
 title: "「何でもできます」は「何もできません」と同じ。2026年韓国就職で生き残る『職務専門性』への完全転換"
 description: "2026年の韓国就職市場は「職務専門性」が全て。日本の総合職思考で書かれた「何でもできる」履歴書がなぜ落ちるのか？ApplyGoGoが教える、韓国企業に刺さる専門特化型への書き換え戦略。"
 date: 2026-03-05
-thumbnail: "/generated/2026-korea-job-specialization-hero.jpg"
+thumbnail: "/generated/korean-job-based-hiring-vs-japanese-generalist-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "自己紹介書", "海外転職", "韓国企業"]

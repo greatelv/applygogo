@@ -2,7 +2,7 @@
 title: "「TOPIK 6級でも書類落ち」の正体。2026年の韓国採用で、日本人志望者が真っ先に捨てるべき『3つの日本式表現』"
 description: "韓国語が完璧でも書類で落ちる理由は「日本式の情緒的表現」にあります。2026年の最新採用トレンドに基づき、日本人志望者が無意識に使うNG表現を徹底解剖。AI選考を突破する数値ベースの戦略を伝授します。"
 date: 2026-03-20
-thumbnail: "/generated/topik6-fail-hero.jpg"
+thumbnail: "/generated/why-topik-6-fails-japanese-narrative-vs-korean-performance-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

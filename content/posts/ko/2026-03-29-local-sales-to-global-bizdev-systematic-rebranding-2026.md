@@ -2,7 +2,7 @@
 title: "국내 영업 '베테랑'이 글로벌 기업에선 '주니어'로 평가받는 이유: 인맥 중심 성과를 시스템 성과로 재정의하는 법"
 description: "국내 10년 차 영업 베테랑이 글로벌 기업 지원 시 '직급 하향'을 당하는 치명적 이유를 분석합니다. 인맥 중심의 한국식 성과를 글로벌 표준인 데이터 기반 전략으로 재설계하여 당신의 몸값을 증명하는 필승 전략을 공개합니다."
 date: 1774745591480
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/local-sales-to-global-bizdev-systematic-rebranding-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 경력기술서, ATS, 글로벌이직, 사업개발, 영업전략]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![국내 영업 '베테랑'이 글로벌 기업에선 '주니어'로 평가받는 이유: 인맥 중심 성과를 시스템 성과로 재정의하는 법](/generated/local-sales-to-global-bizdev-systematic-rebranding-2026-hero-fix.jpg)
 
 국내 유수의 대기업에서 10년 넘게 '영업왕' 소리를 듣던 K 부장은 최근 외국계 테크 기업 이직 시도 중 큰 충격에 빠졌다. 서류 전형에서부터 줄탈락하는 것은 물론, 간신히 기회를 잡은 면접에서도 "경력에 비해 전략적 사고(Strategic Thinking)가 부족해 보이니 한 단계 낮은 시니어 매니저 직급으로 시작하는 게 어떻겠느냐"는 제안을 받았기 때문이다.
 

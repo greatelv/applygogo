@@ -2,7 +2,7 @@
 title: "「頑張りました」は評価ゼロ。2026年韓国就職でAI選考を突破する「頭括式（ドゥガルシク）」の絶対法則"
 description: "韓国就職を目指すあなたへ。日本の「起承転結」が不合格を招く理由とは？2026年のAI選考を突破する「頭括式」の極意と、ApplyGoGoによる最強の書類選考対策を徹底解説。"
 date: 2026-03-12
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-dugalsik-conclusion-first-strategy-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "海外キャリア", "AI選考対策"]

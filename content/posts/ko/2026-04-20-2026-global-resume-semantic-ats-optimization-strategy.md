@@ -2,7 +2,7 @@
 title: "2026년 해외 취업의 첫 관문: 글로벌 채용 AI(ATS)를 통과하는 '시맨틱 영문 이력서' 최적화 전략"
 description: "단순한 키워드 나열로는 더 이상 글로벌 대기업의 문턱을 넘을 수 없다. AI가 문맥을 읽는 2026년, 서류 합격률을 10배 끌어올리는 시맨틱 영문 이력서의 비밀과 지원고고만의 필승 전략을 공개한다."
 date: 1776646622540
-thumbnail: "/generated/2026-global-resume-semantic-ats-optimization-strategy-hero.jpg"
+thumbnail: "/generated/2026-global-resume-semantic-ats-optimization-strategy-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 비즈니스영어, 구글취업, 글로벌커리어]

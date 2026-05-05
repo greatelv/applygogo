@@ -2,7 +2,7 @@
 title: "\"10명을 관리했다\"는 말로는 부족하다: 2026 영문 이력서가 요구하는 '수평적 영향력' 증명법"
 description: "한국식 수직적 관리 경력은 글로벌 시장에서 통하지 않는다. 2026년 채용 시장이 요구하는 '권한 없는 영향력'과 전략적 리더십을 이력서에 녹여내는 필승 전략을 공개한다."
 date: 1774918224489
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/horizontal-leadership-vs-hierarchical-management-global-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 리더십, 경력기술서, 이직전략, ATS, 커리어코칭]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![\](/generated/horizontal-leadership-vs-hierarchical-management-global-resume-2026-hero-fix.jpg)
 
 ## 관리(Management)의 시대는 가고 영향력(Influence)의 시대가 왔다
 

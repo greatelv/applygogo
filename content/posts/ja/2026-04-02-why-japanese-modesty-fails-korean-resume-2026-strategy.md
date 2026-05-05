@@ -2,7 +2,7 @@
 title: "「謙遜」は即不合格。韓国採用市場で日本人が陥る「アピール不足」の罠と、選考を突破する“強気”の履歴書戦略"
 description: "2026年の韓国就職はAI選考が主流。日本式の控えめな表現が「自信なし」と見なされる理由を徹底解説。ApplyGoGoを活用し、あなたの職歴を韓国企業が求める「圧倒的な成果」へと変換する必勝戦略を伝授します。"
 date: 2024-05-22T09:00:00Z
-thumbnail: "/generated/korea-job-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-japanese-modesty-fails-korean-resume-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "海外転職", "韓国キャリア"]

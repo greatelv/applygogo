@@ -2,7 +2,7 @@
 title: "「返信待ち」は不採用の合図？2026年韓国・随時採用で生き残る『即戦力型』履歴書の鉄則"
 description: "2026年の韓国採用市場は「随時採用」が主流。募集から数日で枠が埋まる中、日本式の丁寧すぎる履歴書は命取りです。3秒で採否が決まる「成果報酬型」への書き換え戦略を、ApplyGoGoが伝授します。"
 date: 2026-03-29T09:00:00Z
-thumbnail: "/generated/korea-career-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-occasional-hiring-speed-strategy-vs-japanese-resume-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

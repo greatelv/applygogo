@@ -2,7 +2,7 @@
 title: "Why 'Personal Growth' is a Rejection Red Flag in Your 2026 Korean Resume"
 description: "Stop scaring off Korean HR managers with Western-style ambition. Learn why 'Personal Growth' signals a flight risk and how to pivot to 'Organizational Contribution' using ApplyGoGo’s winning strategies."
 date: 2026-03-31T09:00:00Z
-thumbnail: "/generated/personal-growth-rejection-korea-2026-hero.jpg"
+thumbnail: "/generated/why-personal-growth-is-a-red-flag-korean-resume-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Working in Seoul"]

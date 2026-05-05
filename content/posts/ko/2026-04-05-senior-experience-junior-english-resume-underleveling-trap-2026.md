@@ -2,7 +2,7 @@
 title: "경력은 시니어인데 영문 이력서는 '신입'입니까? 2026 글로벌 기업이 연봉을 깎는 결정적 단서"
 description: "10년 차 과차장급 인재들이 영문 이력서 작성 시 범하는 치명적 실수, '단순 번역'의 늪에서 벗어나세요. 2026년 지능형 ATS를 뚫고 연봉 협상력을 극대화하는 시니어 전용 'Executive Voice' 구축 전략을 공개합니다."
 date: 1775350434350
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/senior-experience-junior-english-resume-underleveling-trap-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 경력직이직, ATS최적화, 비즈니스영어, 커리어전략]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![경력은 시니어인데 영문 이력서는 '신입'입니까? 2026 글로벌 기업이 연봉을 깎는 결정적 단서](/generated/senior-experience-junior-english-resume-underleveling-trap-2026-hero-fix.jpg)
 
 대한민국 기업에서 10년, 혹은 15년 동안 굵직한 프로젝트를 성공시킨 베테랑 과장과 차장들이 글로벌 시장의 문을 두드릴 때 가장 먼저 마주하는 벽은 언어 장벽이 아니다. 바로 본인의 찬란한 경력을 '초라한 신입 사원의 업무 일기' 수준으로 격하시켜 버리는 **영문 이력서의 함량 미달**이다.
 

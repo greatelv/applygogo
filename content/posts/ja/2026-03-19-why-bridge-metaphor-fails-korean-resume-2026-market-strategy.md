@@ -2,7 +2,7 @@
 title: "「日本と韓国の架け橋」は不合格フラグ？ 2026年韓国採用が求める『架け橋』の再定義と合格の条件"
 description: "韓国就職で「日本と韓国の架け橋になりたい」という志望動機は、実は不採用への近道です。2026年の韓国企業が求めるのは情緒的な繋がりではなく「市場開拓の具体策」。ApplyGoGoが合格率を劇的に変える戦略を公開します。"
 date: 2026-03-19T09:00:00Z
-thumbnail: "/generated/korea-job-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-bridge-metaphor-fails-korean-resume-2026-market-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

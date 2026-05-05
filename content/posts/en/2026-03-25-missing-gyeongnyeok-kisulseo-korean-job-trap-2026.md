@@ -2,7 +2,7 @@
 title: "Still Ghosted in March? Why Your English CV is Only Half of a Korean Application"
 description: "Discover why a standard English resume is no longer enough in the 2026 Korean hiring market and how to master the mandatory 'Gyeongnyeok Kisul-seo' to land interviews."
 date: 2026-03-25
-thumbnail: "/generated/ghosted-march-korean-application-hero.jpg"
+thumbnail: "/generated/missing-gyeongnyeok-kisulseo-korean-job-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Strategy", "Gyeongnyeok Kisul-seo", "Working in Seoul"]

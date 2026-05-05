@@ -2,7 +2,7 @@
 title: "당신의 영문 이력서가 '아마추어'처럼 보이는 3가지 결정적 징후: 2026 글로벌 리크루터의 신뢰를 얻는 프로페셔널 톤앤매너"
 description: "스펙은 완벽한데 왜 서류에서 떨어질까? 2026년 글로벌 채용 시장에서 리크루터의 눈을 단번에 사로잡는 '프로페셔널 톤앤매너'의 비밀과 당신이 놓치고 있는 치명적 실수 3가지를 분석한다."
 date: 1774226971029
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/3-signs-your-english-resume-looks-amateur-2026-global-standard-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 비즈니스영어, 리브랜딩]

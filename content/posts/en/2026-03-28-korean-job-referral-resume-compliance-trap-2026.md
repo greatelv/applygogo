@@ -2,7 +2,7 @@
 title: "Networking Isn't a Shortcut: Why a 'Referral' Won't Save You from a Korean Resume Rejection"
 description: "Think a referral at Coupang or Line is a golden ticket? In 2026, Korean HR compliance and AI-ATS demand a native-level 'Iryeokseo'. Learn why your Western CV fails and how to protect your reputation."
 date: 2026-03-28
-thumbnail: "/generated/networking-not-shortcut-hero.jpg"
+thumbnail: "/generated/korean-job-referral-resume-compliance-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Networking in Korea", "Iryeokseo", "Career Strategy", "Expat Jobs Korea"]

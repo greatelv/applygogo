@@ -2,7 +2,7 @@
 title: "전통적인 '프로젝트 완료'는 이제 버리세요: 2026년 모든 직군 영문 이력서의 합격 당락을 결정짓는 '애자일(Agile) 성과 서술법'"
 description: "단순한 업무 나열은 2026년 글로벌 채용 시장에서 '탈락 확정' 통보와 다름없다. HR, 재무, 영업 등 전 직군에 요구되는 '제품 주도(Product-Led)' 마인드셋을 이력서에 녹여내는 비법을 공개한다. 당신의 성과를 '가설-실행-개선'의 루프로 재구성하여 합격률을 300% 높이는 전략적 서술 공식을 확인하라."
 date: 1775523078602
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/agile-performance-narrative-for-all-roles-global-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 애자일성과, 커리어전략, 비즈니스영어, 지원고고]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![전통적인 '프로젝트 완료'는 이제 버리세요: 2026년 모든 직군 영문 이력서의 합격 당락을 결정짓는 '애자일(Agile) 성과 서술법'](/generated/agile-performance-narrative-for-all-roles-global-resume-2026-hero-fix.jpg)
 
 ## 당신의 영문 이력서가 '읽히지도 않고' 휴지통으로 직행하는 이유
 

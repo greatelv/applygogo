@@ -2,7 +2,7 @@
 title: "「TOPIK 6級でも書類落ち」の正体。韓国企業が履歴書1行目で見抜く『日本人特有の致命的な弱点』とは？"
 description: "韓国就職を目指す日本人が陥る「謙虚さの罠」を徹底解説。TOPIK 6級は前提条件に過ぎません。韓国企業の採用担当者が一瞬で見抜く「主体性の欠如」を「解決志向」へ変換する必勝戦略を公開。"
 date: 2026-04-01T09:00:00Z
-thumbnail: "/generated/topik6-fail-korea-resume-hero.jpg"
+thumbnail: "/generated/why-topik-6-fails-and-the-solution-for-korean-performance-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "海外キャリア", "韓国転職"]

@@ -2,7 +2,7 @@
 title: "その「職務経歴書」AIに3秒で捨てられます。2026年韓国採用で勝ち抜く『実績の数値化』と『ROI思考』の極意"
 description: "韓国就職を目指す日本人の最大の壁は「謙虚さ」です。2026年のAI選考を突破するために必要な『実績の数値化』と『ROI思考』、そしてApplyGoGoによるキャリア再構築の戦略を伝授します。"
 date: 2026-03-30
-thumbnail: "/generated/korea-career-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-ai-screening-roi-logic-vs-japanese-process-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "職務経歴書", "自己紹介書", "海外キャリア"]

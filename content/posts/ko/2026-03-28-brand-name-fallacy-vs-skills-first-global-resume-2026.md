@@ -2,7 +2,7 @@
 title: "삼성·네카라 출신도 해외 지원 시 '광탈'하는 이유: 2026 글로벌 채용 '브랜드 네임'의 함정과 기술 중심(Skills-First) 재편법"
 description: "국내 1등 타이틀이 왜 글로벌 시장에서는 무용지물일까? 2026년 가속화된 'Skills-First' 채용 트렌드를 분석하고, 당신의 이력을 글로벌 표준 자산으로 재설계하는 압도적 전략을 공개한다."
 date: 1774658801484
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/brand-name-fallacy-vs-skills-first-global-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS, 기술중심채용, 커리어이직, 글로벌커리어]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![삼성·네카라 출신도 해외 지원 시 '광탈'하는 이유: 2026 글로벌 채용 '브랜드 네임'의 함정과 기술 중심(Skills-First) 재편법](/generated/brand-name-fallacy-vs-skills-first-global-resume-2026-hero-fix.jpg)
 
 ## 한국의 '금태두리'가 해외에서 '무명'으로 전락하는 순간
 

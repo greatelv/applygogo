@@ -2,7 +2,7 @@
 title: "The 'Amateur' Trap: Why Even Accurate Translations Make Top Global Talents Look Underqualified to Korean HR"
 description: "Is your 'perfect' Korean resume actually hurting your chances? Discover why standard translation fails to capture the professional nuance required for the March 2026 hiring season and how to sound like a native executive."
 date: 2026-03-11T09:00:00Z
-thumbnail: "/generated/amateur-trap-korean-hr-hero.jpg"
+thumbnail: "/generated/amateur-translation-trap-korean-resume-professionalism-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Business Korean", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Global Talent"]

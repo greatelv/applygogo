@@ -2,7 +2,7 @@
 title: "「コミュニケーション能力」と書いた瞬間、不合格。2026年韓国就職、AI選考で即脱落する『日本的NG表現』の正体"
 description: "TOPIK6級でも書類で落ちる理由を知っていますか？2026年の韓国採用市場では「日本的謙虚さ」は致命傷。AI選考を突破し、SamsungやCoupangの内定を勝ち取るための「戦略的自己紹介書」の書き換え術を伝授します。"
 date: 2026-03-21T09:00:00Z
-thumbnail: "/generated/korea-job-strategy-2026-hero.jpg"
+thumbnail: "/generated/stop-using-vague-communication-korean-resume-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

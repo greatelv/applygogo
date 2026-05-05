@@ -2,7 +2,7 @@
 title: "The 'Hero' Trap: Why Your Western Achievement Stories Sound Arrogant to Korean HR in 2026"
 description: "Master the subtle shift from 'I' to 'We' in your Korean resume. Learn how to satisfy 2026 HR AI sentiment analysis and pivot solo wins into collaborative success."
 date: 2026-03-20T10:00:00Z
-thumbnail: "/generated/hero-trap-korean-hr-2026-hero.jpg"
+thumbnail: "/generated/western-achievement-vs-korean-harmony-resume-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korea Career", "Job Search Tips", "Jagisogaeseo", "Cross-Cultural Communication", "ApplyGoGo"]

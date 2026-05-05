@@ -2,7 +2,7 @@
 title: "Why Your 'Result-Oriented' Western Resume Is Getting You Ghosted This April"
 description: "By mid-April, many foreign applicants realize their high-spec resumes aren't getting callbacks. Learn how to re-engineer your 'Solo Hero' narrative into the 'Harmony-First' high-performer image Korean HR managers crave."
 date: 2026-04-08
-thumbnail: "/generated/why-result-oriented-western-resume-ghosted-april-hero.jpg"
+thumbnail: "/generated/why-result-oriented-western-resume-fails-korean-hr-april-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Work in Korea", "Jagisogaeseo", "Career Advice"]

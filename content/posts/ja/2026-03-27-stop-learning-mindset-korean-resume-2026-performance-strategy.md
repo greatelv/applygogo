@@ -2,7 +2,7 @@
 title: "「御社で学びたい」は不合格確定？2026年韓国採用で勝ち抜く『学び』から『貢献』への書き換え戦略"
 description: "2026年の韓国就職市場は「即戦力」重視が加速。日本人が陥りがちな「謙虚な学習姿勢」という落とし穴を指摘し、書類選考を確実に突破するための『貢献の論理』への書き換え術を伝授します。"
 date: 2026-03-27
-thumbnail: "/generated/2026-korea-hiring-strategy-hero.jpg"
+thumbnail: "/generated/stop-learning-mindset-korean-resume-2026-performance-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

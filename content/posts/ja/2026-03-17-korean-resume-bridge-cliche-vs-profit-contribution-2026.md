@@ -2,7 +2,7 @@
 title: "「日本と韓国の架け橋になりたい」は不合格フラグ。2026年韓国採用が求める『冷徹な貢献利益』の書き方"
 description: "韓国就職を目指す日本人が陥る「架け橋」表現の罠。2026年の韓国採用市場で求められるのは情緒的な熱意ではなく、数字に基づいた『貢献利益』です。不合格を招く日本式表現を韓国式ビジネス言語へ変換する必勝戦略を解説します。"
 date: 2026-03-17
-thumbnail: "/generated/korea-career-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-bridge-cliche-vs-profit-contribution-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

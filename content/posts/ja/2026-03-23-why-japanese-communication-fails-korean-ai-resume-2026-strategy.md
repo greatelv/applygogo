@@ -2,7 +2,7 @@
 title: "「コミュニケーション能力」と書いた瞬間に不合格？2026年韓国就職、AI選考を突破する“具体的事実”の書き方"
 description: "韓国企業の書類選考通過率は、実は「日本語の直訳」をやめるだけで劇的に上がります。2026年のAI選考トレンドと、韓国企業が求める『攻撃的な実績』の書き方を首席コンサルタントが徹底解説。"
 date: 2026-03-23
-thumbnail: "/generated/korea-job-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-japanese-communication-fails-korean-ai-resume-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "海外キャリア", "韓国企業"]

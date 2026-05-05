@@ -2,7 +2,7 @@
 title: "Ghosted After the March Hiring Peak? Your 'Achievement-First' Resume Sounds Like a 'Flight Risk' to Korean HR"
 description: "Why high-achieving foreign applicants fail the 2026 Korean job market and how to pivot from 'Individualistic' Western resumes to the 'Team-centric' narratives Korean recruiters demand."
 date: 2026-04-07
-thumbnail: "/generated/ghosted-march-peak-hero.jpg"
+thumbnail: "/generated/korean-resume-achievement-vs-harmony-rejection-april-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Jagisogaeseo", "Career Advice Korea", "ApplyGoGo"]

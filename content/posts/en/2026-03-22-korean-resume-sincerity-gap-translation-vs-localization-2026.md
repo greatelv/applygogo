@@ -2,7 +2,7 @@
 title: "The 'Sincerity Gap': Why Your Directly Translated Korean Resume Signals 'Low Effort' to 2026 HR Managers"
 description: "Even with 2026 AI technology, direct translations fail the 'Jeong-seong' test. Learn why 'Gyeok-sik' and 'Hap-sho-che' are the keys to unlocking offers at Samsung, Hyundai, and Kakao."
 date: 2026-03-22T09:00:00Z
-thumbnail: "/generated/sincerity-gap-korean-resume-hero.jpg"
+thumbnail: "/generated/korean-resume-sincerity-gap-translation-vs-localization-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Work in Seoul"]

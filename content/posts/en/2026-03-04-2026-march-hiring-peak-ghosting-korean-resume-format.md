@@ -2,7 +2,7 @@
 title: "Why Top-Tier Global Experience is Being Ghosted in the 2026 March Hiring Peak"
 description: "Ivy League degrees and FAANG experience are no longer enough. Discover why the 'Sincerity Gap' and lack of localized 'Ipsa-hu-pobu' are causing silent rejections in Korea's 2026 recruitment cycle."
 date: 2026-03-04T09:00:00Z
-thumbnail: "/generated/top-tier-experience-ghosted-korea-2026-hero.jpg"
+thumbnail: "/generated/2026-march-hiring-peak-ghosting-korean-resume-format-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Jagisogaeseo", "Working in Seoul", "2026 Hiring Trends"]

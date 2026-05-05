@@ -2,7 +2,7 @@
 title: "2026년 영문 이력서의 대전환: '수행한 업무'가 아닌 '내린 결정'의 가치를 증명하라"
 description: "글로벌 기업의 ATS는 단순 나열을 거부한다. 2026년 채용 시장에서 'Doer'를 넘어 'Strategist'로 평가받기 위한 의사결정 논리 설계법과 합격률을 300% 높이는 영문 이력서 개조 전략을 공개한다."
 date: 1773881237888
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/global-resume-decision-logic-vs-task-execution-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "ATS최적화", "커리어전략", "글로벌이직", "경력기술서"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![2026년 영문 이력서의 대전환: '수행한 업무'가 아닌 '내린 결정'의 가치를 증명하라](/generated/global-resume-decision-logic-vs-task-execution-2026-hero-fix.jpg)
 
 글로벌 기업으로의 이직을 꿈꾸는 수많은 한국 경력직들이 범하는 치명적인 실수가 있다. 바로 자신의 이력서를 ‘업무 일지’로 만드는 것이다. 수년간 쌓아온 눈부신 성과가 영문 이력서(Resume)라는 필터를 거치며 단순히 ‘남이 시킨 일을 잘 해낸 사람(Doer)’의 수준으로 전락한다. 
 

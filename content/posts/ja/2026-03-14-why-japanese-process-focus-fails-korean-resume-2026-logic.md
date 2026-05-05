@@ -2,7 +2,7 @@
 title: "「頑張りました」は即不合格。韓国企業が3秒でボツにする「日本式自己PR」の致命的な欠陥"
 description: "韓国就職を目指す日本人が陥る「謙虚さの罠」を徹底解説。2026年の完全職務中心採用で勝つための、KPIに基づいた成果強調型「頭括式（ドゥガルシク）」履歴書の書き方と、ApplyGoGoによる最短突破戦略を公開します。"
 date: 2026-03-14T09:00:00Z
-thumbnail: "/generated/korea-resume-strategy-hero.jpg"
+thumbnail: "/generated/why-japanese-process-focus-fails-korean-resume-2026-logic-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

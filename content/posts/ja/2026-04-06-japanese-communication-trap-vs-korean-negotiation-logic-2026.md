@@ -2,7 +2,7 @@
 title: "日本語の「コミュニケーション力」は不採用への近道？韓国企業が求める『解決型対人スキル』への書き換え戦略"
 description: "2026年の韓国就職戦線、AIスクリーニングは「調和」ではなく「交渉力」を探しています。日本的な強みを韓国式の武器に変換し、SamsungやNaverの合格圏内に入るためのApplyGoGo流・必勝戦略。"
 date: 2026-04-06
-thumbnail: "/generated/korean-resume-strategy-hero.jpg"
+thumbnail: "/generated/japanese-communication-trap-vs-korean-negotiation-logic-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア"]

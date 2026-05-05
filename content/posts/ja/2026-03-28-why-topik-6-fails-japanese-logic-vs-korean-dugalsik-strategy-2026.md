@@ -2,7 +2,7 @@
 title: "「TOPIK 6級でも書類落ち」の真犯人は日本語特有の『起承転結』。2026年韓国採用で勝つための『結論ファースト（頭括式）』戦略"
 description: "TOPIK 6級やSKY大卒でも韓国就職の書類選考で落ちる理由を解説。日本式の『起承転結』を捨て、韓国企業が好む『頭括式（ドゥガルシク）』でAIスクリーニングを突破する2026年最新の履歴書戦略を公開します。"
 date: 2026-03-28
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-topik-6-fails-japanese-logic-vs-korean-dugalsik-strategy-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "自己紹介書", "海外就職", "キャリア対策"]

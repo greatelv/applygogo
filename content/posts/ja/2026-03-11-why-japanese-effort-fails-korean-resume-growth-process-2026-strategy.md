@@ -2,7 +2,7 @@
 title: "「努力」は評価されない？2026年韓国就職、自己紹介書の『成長過程』で日本人が陥る致命的なミス"
 description: "韓国就職を目指す日本人が書類選考で落ちる最大の原因は、自己紹介書の「成長過程」にあります。日本のガクチカをそのまま持ち込んでいませんか？2026年の韓国採用市場で勝つための「職務核心力量」への変換術を、ApplyGoGoが徹底解説します。"
 date: 2026-03-11
-thumbnail: "/generated/korea-job-growth-process-mistake-hero.jpg"
+thumbnail: "/generated/why-japanese-effort-fails-korean-resume-growth-process-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

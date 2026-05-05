@@ -2,7 +2,7 @@
 title: "Beyond the CV: Why Your 'Experience Description' is Getting You Ghosted in 2026 Korea"
 description: "Think a 1-page Western resume is enough for Samsung or Kakao? Think again. Discover why the 'Gyeongnyeok Kisulseo' is the secret weapon you're missing in the 2026 Korean job market."
 date: 2026-03-26
-thumbnail: "/generated/beyond-the-cv-korea-2026-hero.jpg"
+thumbnail: "/generated/korean-gyeongnyeok-kisulseo-vs-western-experience-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Gyeongnyeok Kisulseo", "Expat Jobs Korea", "Resume Tips", "Tech Jobs Korea"]

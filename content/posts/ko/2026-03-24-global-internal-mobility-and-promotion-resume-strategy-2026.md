@@ -2,7 +2,7 @@
 title: "외국계 사내 승진과 해외 본사 이동: 인사팀도 다시 보게 만드는 '글로벌 내부 이동(Internal Mobility)' 레주메 전략"
 description: "글로벌 기업 재직자라면 반드시 알아야 할 내부 승진 및 본사(HQ) 이동 필승 레주메 전략. 단순 업무 나열을 넘어 전략적 가치를 증명하고 합격 확률을 200% 높이는 전문가의 비책을 공개한다."
 date: 1774312846188
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/global-internal-mobility-and-promotion-resume-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 사내승진, 본사이동, 커리어전략, 비즈니스영어, ATS, 글로벌커리어]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![외국계 사내 승진과 해외 본사 이동: 인사팀도 다시 보게 만드는 '글로벌 내부 이동(Internal Mobility)' 레주메 전략](/generated/global-internal-mobility-and-promotion-resume-strategy-2026-hero-fix.jpg)
 
 외국계 기업이나 글로벌 테크 기업의 한국 지사에 입사했다는 사실만으로 커리어의 종착역에 도달했다고 믿는 것은 위험한 착각이다. 진정한 글로벌 인재로 거듭나는 분기점은 '국내 지사'에서의 안정적인 안주가 아니라, **'해외 본사(HQ)로의 이동'** 혹은 **'시니어 리더십으로의 승진'**이 결정되는 순간이다.
 

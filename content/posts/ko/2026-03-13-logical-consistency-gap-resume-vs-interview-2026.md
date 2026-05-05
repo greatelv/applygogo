@@ -2,7 +2,7 @@
 title: "2026년 글로벌 채용의 냉혹한 현실: 영문 이력서와 인터뷰 사이의 '논리적 불일치'가 탈락 1순위인 이유"
 description: "AI로 다듬은 화려한 이력서가 왜 면접에서 독이 되는지 분석합니다. 2026년 글로벌 채용 시장에서 살아남기 위한 전략적 서사 구축법과 ATS 최적화 실전 가이드를 공개합니다."
 date: 1773362676146
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/logical-consistency-gap-resume-vs-interview-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, ATS최적화, 커리어전략, 비즈니스영어, 면접대비]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![2026년 글로벌 채용의 냉혹한 현실: 영문 이력서와 인터뷰 사이의 '논리적 불일치'가 탈락 1순위인 이유](/generated/logical-consistency-gap-resume-vs-interview-2026-hero-fix.jpg)
 
 2026년 3월 현재, 글로벌 채용 시장은 유례없는 전환점을 맞이했다. 생성형 AI의 보편화로 인해 누구나 '겉보기에 완벽한' 영문 이력서를 단 몇 초 만에 만들어낼 수 있게 되었다. 하지만 역설적이게도 구글, 아마존, 테슬라와 같은 글로벌 빅테크 기업의 서류 합격률은 0.1% 수준으로 급락했다. 
 

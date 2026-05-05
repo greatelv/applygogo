@@ -2,7 +2,7 @@
 title: "【2026年最新】自己紹介書の「成長過程」に子供時代の思い出は不要。韓国企業が1秒で見抜く『職務核心価値』の正体"
 description: "「韓国語は完璧なのになぜ書類で落ちるのか？」その理由は、日本式の『自分史』を直訳しているからです。2026年の韓国採用市場で勝つための、自己紹介書「成長過程」の書き換え戦略を徹底解説。"
 date: 2026-03-24T00:00:00Z
-thumbnail: "/generated/resume-growth-process-korea-hero.jpg"
+thumbnail: "/generated/korean-resume-growth-process-job-value-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

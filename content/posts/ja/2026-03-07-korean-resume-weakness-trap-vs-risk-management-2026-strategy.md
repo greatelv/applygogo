@@ -2,7 +2,7 @@
 title: "【2026年最新】「私の短所は〇〇です」で即落選？韓国企業が求めるのは「謙遜」ではなく「ビジネスのリスク管理能力」だ"
 description: "韓国就職で日本人が最も陥りやすい「短所の書き方」の罠を徹底解説。日本の謙遜文化が韓国では「能力不足」と見なされる理由と、合格率を劇的に高めるプロフェッショナルな変換術を伝授します。"
 date: 2026-03-07T00:00:00Z
-thumbnail: "/generated/korean-resume-weakness-strategy-hero.jpg"
+thumbnail: "/generated/korean-resume-weakness-trap-vs-risk-management-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア"]

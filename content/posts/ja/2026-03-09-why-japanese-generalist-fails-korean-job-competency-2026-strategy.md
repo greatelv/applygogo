@@ -2,7 +2,7 @@
 title: "日本での「何でも屋」は韓国では「専門性なし」。2026年最新、書類選考を100%通過する『職務力量（チクムリョンニャン）』の言語化戦略"
 description: "韓国就職で「何でも頑張ります」は禁句。2026年の採用市場で必須となる『職務力量』の書き換え術を、ApplyGoGo首席コンサルタントが徹底解説します。"
 date: 2026-03-09
-thumbnail: "/generated/resume-strategy-korea-2026-hero.jpg"
+thumbnail: "/generated/why-japanese-generalist-fails-korean-job-competency-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "キャリアアップ", "海外転職"]

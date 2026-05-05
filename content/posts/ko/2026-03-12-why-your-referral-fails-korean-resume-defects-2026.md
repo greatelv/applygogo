@@ -2,7 +2,7 @@
 title: "아는 사람도 추천을 망설이는 영문 이력서의 치명적 결함: 2026 리퍼럴(Referral) 시장의 민낯"
 description: "글로벌 채용의 70%를 차지하는 리퍼럴 시장에서 당신의 이력서가 외면받는 진짜 이유를 분석한다. 추천인의 평판을 위협하는 한국식 나열형 서술의 한계를 짚고, 합격 확률을 극대화하는 임팩트 중심의 2026년형 레주메 전략을 제시한다."
 date: 1773275974289
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/why-your-referral-fails-korean-resume-defects-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 리퍼럴, ATS, 커리어전략, 비즈니스영어, 지원고고]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![아는 사람도 추천을 망설이는 영문 이력서의 치명적 결함: 2026 리퍼럴(Referral) 시장의 민낯](/generated/why-your-referral-fails-korean-resume-defects-2026-hero-fix.jpg)
 
 지인에게 "우리 회사에 자리 났는데, 이력서 한번 보내봐"라는 말을 들었을 때, 대부분의 지원자는 이를 '합격 보증수표'로 착각한다. 하지만 2026년 현재, 글로벌 기업의 채용 프로세스에서 리퍼럴(Internal Referral, 내부 추천)은 결코 무임승차가 아니다. 오히려 더 날카로운 검증의 시작이다.
 

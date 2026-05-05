@@ -2,7 +2,7 @@
 title: "The 'Translation Smell' Sabotage: Why Mid-March Rejections Are About Your Tone, Not Your Talent"
 description: "It’s peak hiring season in Korea. If you're getting ghosted, it's likely 'Beon-yeok-tu' (Translation Smell). Learn how to re-engineer your tone for the 2026 Korean job market."
 date: 2026-03-15T09:00:00Z
-thumbnail: "/generated/translation-smell-sabotage-hero.jpg"
+thumbnail: "/generated/korean-resume-translation-smell-tone-rejection-march-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Working in Korea", "Career Advice"]

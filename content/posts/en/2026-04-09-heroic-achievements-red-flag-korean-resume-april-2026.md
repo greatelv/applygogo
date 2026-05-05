@@ -2,7 +2,7 @@
 title: "Why Your ‘Heroic’ Achievements are a Red Flag for Korean HR this April"
 description: "Ghosted after the March hiring peak? Discover why your solo wins are blocking your path to Korean giants like Samsung and Kakao, and how to pivot to a 'Team-First' narrative."
 date: 2026-04-09
-thumbnail: "/generated/heroic-achievements-korean-hr-red-flag-hero.jpg"
+thumbnail: "/generated/heroic-achievements-red-flag-korean-resume-april-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Jagisogaeseo", "Career Strategy", "Work in Korea", "Resume Tips"]

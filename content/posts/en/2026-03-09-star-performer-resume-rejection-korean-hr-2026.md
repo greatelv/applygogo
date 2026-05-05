@@ -2,7 +2,7 @@
 title: "Why Your 'Star Performer' Resume is Being Ghosted by Korean HR This March"
 description: "Even with a stellar global background, Western resumes focusing solely on 'Individual Achievement' are often rejected by Korean recruiters. Learn how to pivot your 'I-centered' narrative into a 'We-centered' success story for the 2026 peak hiring season."
 date: 2026-03-09
-thumbnail: "/generated/why-your-star-performer-resume-is-being-ghosted-by-korean-hr-hero.jpg"
+thumbnail: "/generated/star-performer-resume-rejection-korean-hr-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "2026 Hiring Season"]

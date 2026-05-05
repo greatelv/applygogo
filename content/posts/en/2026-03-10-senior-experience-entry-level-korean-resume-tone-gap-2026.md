@@ -2,7 +2,7 @@
 title: "Why Your 'Senior' Experience Looks Like an 'Entry-Level' Resume to Korean HR"
 description: "Experienced expats are being ghosted for roles they are overqualified for. The culprit? The 'Tone Gap.' Learn how to bridge the seniority divide in the Korean job market."
 date: 2026-03-10
-thumbnail: "/generated/senior-vs-entry-level-korean-resume-hero.jpg"
+thumbnail: "/generated/senior-experience-entry-level-korean-resume-tone-gap-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Senior Careers", "Resume Localization", "Expat Jobs Korea", "Gyeongnyeok-jik"]

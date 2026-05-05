@@ -2,7 +2,7 @@
 title: "The 'Flight Risk' Filter: Why Your High-Performance Western Resume Triggers Red Flags for Korean HR"
 description: "Even with top-tier global experience, many foreigners are rejected in Korea because their resumes sound like 'temporary visitors.' Learn how to re-engineer your professional narrative into a 'Stable Long-Term Asset' story."
 date: 2026-03-24
-thumbnail: "/generated/flight-risk-filter-korean-hr-hero.jpg"
+thumbnail: "/generated/korean-hr-flight-risk-resume-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Retention", "Career Strategy Korea"]

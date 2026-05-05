@@ -2,7 +2,7 @@
 title: "당신의 '관리' 경력이 해외에선 '단순 행정'으로 읽히는 이유: 시니어 영문 이력서의 전략적 재설계"
 description: "국내 대기업 시니어조차 해외 취업에서 고전하는 이유는 '관리'라는 단어의 함정 때문입니다. 2026년 글로벌 채용 시장이 원하는 '전략적 의사결정자'로 거듭나는 필승 이력서 작성 전략을 공개합니다."
 date: 1774572610711
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/senior-management-vs-strategic-leadership-rebranding-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 시니어이직, ATS, 경력기술서, 지원고고]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![당신의 '관리' 경력이 해외에선 '단순 행정'으로 읽히는 이유: 시니어 영문 이력서의 전략적 재설계](/generated/senior-management-vs-strategic-leadership-rebranding-2026-hero-fix.jpg)
 
 ## 1. 'Management'라는 단어가 당신의 연봉을 깎아먹고 있다
 

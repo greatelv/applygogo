@@ -2,7 +2,7 @@
 title: "「職務経歴書」をそのまま出すのは自爆行為。2026年、韓国企業が唸る「経歴記述書（ギョンリョク・キスルソ）」への劇的変換術"
 description: "韓国就職を目指す日本人の最大の落とし穴は「履歴書の直訳」です。2026年の最新AI選考を突破し、サムスンやカカオから内定を勝ち取るための『成果中心型』経歴記述書の作り方を徹底解説します。"
 date: 2026-03-25
-thumbnail: "/generated/korea-career-strategy-2026-hero.jpg"
+thumbnail: "/generated/japanese-cv-vs-korean-career-description-2026-conversion-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "海外転職"]

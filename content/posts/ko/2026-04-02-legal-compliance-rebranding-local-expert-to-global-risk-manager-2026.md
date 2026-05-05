@@ -2,7 +2,7 @@
 title: "법무·컴플라이언스 전문가의 글로벌 이직: '국내법 전문가'를 '글로벌 리스크 관리자'로 리브랜딩하는 영문 이력서 전략"
 description: "2026년 글로벌 법무 시장이 원하는 인재는 단순 법률 지식인이 아닌 '리스크 전략가'다. 합격률을 5배 높이는 리브랜딩 기술과 ATS 최적화 전략을 공개한다."
 date: 1775090881413
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/legal-compliance-rebranding-local-expert-to-global-risk-manager-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 컴플라이언스, 법무이직, 리브랜딩, 리스크관리, 2026채용트렌드]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![법무·컴플라이언스 전문가의 글로벌 이직: '국내법 전문가'를 '글로벌 리스크 관리자'로 리브랜딩하는 영문 이력서 전략](/generated/legal-compliance-rebranding-local-expert-to-global-risk-manager-2026-hero-fix.jpg)
 
 글로벌 채용 시장에서 한국의 법무·컴플라이언스 전문가는 기로에 서 있다. 실력은 출중하지만, 그 실력을 영문 이력서라는 그릇에 담아내는 과정에서 치명적인 오류를 범하기 때문이다. 수천 건의 글로벌 이력서를 검토해온 수석 컨설턴트로서 단언컨대, 해외 인사 담당자(Recruiter)는 당신이 한국의 상법 제몇 조를 잘 알고 있는지는 관심이 없다. 그들이 보고 싶어 하는 것은 "이 지원자가 우리 회사의 글로벌 비즈니스가 마주할 리스크를 선제적으로 제어할 수 있는가?"라는 단 한 가지 질문에 대한 답이다.
 

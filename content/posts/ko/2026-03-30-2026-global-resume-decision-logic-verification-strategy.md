@@ -2,7 +2,7 @@
 title: "2026 글로벌 채용의 핵심: 완벽한 영문 이력서가 '의사결정 논리(Decision Logic)' 없으면 광탈하는 이유"
 description: "AI가 상향 평준화시킨 영문 이력서 시장에서 살아남는 유일한 방법은 '의사결정 논리'의 증명이다. 리크루터의 뇌리에 박히는 전략적 이력서 작성법과 지원고고만의 필승 전략을 공개한다."
 date: 1774831978669
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-global-resume-decision-logic-verification-strategy-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, 커리어전략, ATS최적화, 외국계이직]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![2026 글로벌 채용의 핵심: 완벽한 영문 이력서가 '의사결정 논리(Decision Logic)' 없으면 광탈하는 이유](/generated/2026-global-resume-decision-logic-verification-strategy-hero-fix.jpg)
 
 글로벌 채용 시장의 문턱은 2026년 현재 그 어느 때보다 높고 정교해졌다. 2024년과 2025년을 거치며 생성형 AI 기술이 보편화되었고, 이제 문법이 완벽한 영문 이력서는 '기본'이지 더 이상 '강점'이 아니다. 필자가 수천 건의 합격과 불합격 데이터를 분석하며 내린 결론은 명확하다. 단순히 "영어를 잘하는 후보자"는 넘쳐나지만, 자신의 성과 뒤에 숨겨진 **'의사결정 논리(Decision Logic)'**를 이력서 한 줄에 녹여내는 후보자는 극소수라는 사실이다.
 

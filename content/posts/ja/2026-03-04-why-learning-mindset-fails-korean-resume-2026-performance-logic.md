@@ -2,7 +2,7 @@
 title: "「一生懸命頑張ります」が不採用を招く？2026年韓国就職で「学ぶ姿勢」より「稼ぐ根拠」を書くべき理由"
 description: "韓国就職を目指す日本人が陥る「謙虚さの罠」を徹底解説。2026年の超実力主義採用において、日本的な「意欲」がなぜ低評価になるのか？合格率を劇的に高める「成果指標」への書き換え戦略を公開します。"
 date: 2026-03-04
-thumbnail: "/generated/korea-career-strategy-2026-hero.jpg"
+thumbnail: "/generated/why-learning-mindset-fails-korean-resume-2026-performance-logic-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "海外キャリア", "ApplyGoGo"]

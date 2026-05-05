@@ -2,7 +2,7 @@
 title: "The 'Sincerity' Trap: Why Your Efficient 1-Page Resume is Getting You Ghosted This March"
 description: "Is your high-impact Western resume failing in the Korean job market? Learn why 'Seong-sil-seong' (Sincerity) and the traditional 'Jagisogaeseo' are the keys to unlocking offers from Samsung, Kakao, and Coupang."
 date: 2026-03-07
-thumbnail: "/generated/the-sincerity-trap-korean-resume-ghosted-hero.jpg"
+thumbnail: "/generated/why-one-page-western-resumes-lack-sincerity-korea-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Career in Korea", "Working in Seoul"]

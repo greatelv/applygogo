@@ -2,7 +2,7 @@
 title: "Still Ghosted After the March Hiring Peak? The 'Attitude vs. Achievement' Trap in Your Korean Application"
 description: "Why are high-impact Western resumes failing in the Korean market? Learn the cultural shift from 'Solo Hero' to 'Harmonious Contributor' and how to secure offers from Samsung, Kakao, and Coupang."
 date: 2026-04-06
-thumbnail: "/generated/ghosted-after-march-peak-korean-resume-trap-hero.jpg"
+thumbnail: "/generated/ghosted-march-hiring-peak-korean-attitude-trap-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Localization", "Jagisogaeseo", "Expat Career", "Work in Korea"]

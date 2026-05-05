@@ -2,7 +2,7 @@
 title: "포트폴리오 없는 관리직의 반전: 영문 이력서에서 '행정 지원'을 '전략적 거버넌스(Governance)'로 재포지셔닝하기"
 description: "결과물이 모호한 인사, 총무, 법무 직군을 위한 필승 전략. 단순 지원 업무를 글로벌 기업이 갈망하는 '전략적 거버넌스'로 탈바꿈시켜 ATS 통과율을 300% 높이는 비결을 공개한다."
 date: 1774140534904
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/rebrand-admin-support-to-strategic-governance-global-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 경력기술서, ATS최적화, 거버넌스, 리스크관리, 커리어전략]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![포트폴리오 없는 관리직의 반전: 영문 이력서에서 '행정 지원'을 '전략적 거버넌스(Governance)'로 재포지셔닝하기](/generated/rebrand-admin-support-to-strategic-governance-global-resume-2026-hero-fix.jpg)
 
 ## 실적이 눈에 보이지 않는다는 착각이 당신의 낙방을 결정한다
 

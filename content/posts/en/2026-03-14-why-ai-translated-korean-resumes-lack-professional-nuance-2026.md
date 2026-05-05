@@ -2,7 +2,7 @@
 title: "Why Your 'Perfect' AI Translation Sounds Like a Child to Korean HR: The 2026 Professionalism Gap"
 description: "Think ChatGPT can write your Korean resume? Think again. Discover why 'perfect' AI translations often lead to instant rejections in the 2026 Korean job market and how to fix the 'nuance gap' today."
 date: 2026-03-14 09:00:00
-thumbnail: "/generated/ai-translation-professionalism-gap-korea-hero.jpg"
+thumbnail: "/generated/why-ai-translated-korean-resumes-lack-professional-nuance-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Korean Resume Tips", "Jagisogaeseo", "Career in Korea", "AI Translation Risks"]

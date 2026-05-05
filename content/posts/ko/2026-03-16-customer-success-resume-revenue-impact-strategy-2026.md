@@ -2,7 +2,7 @@
 title: "글로벌 CS·고객 경험(CX) 전문가의 영문 이력서: '친절' 대신 '수익 기여'를 증명하는 법"
 description: "글로벌 기업이 원하는 CX 전문가는 단순 응대자가 아닙니다. 매출과 직결된 데이터로 승부하는 영문 이력서 작성법과 ATS 최적화 전략을 공개합니다."
 date: 1773622283577
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/customer-success-resume-revenue-impact-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, CX전략, ATS최적화, 외국계이직, 비즈니스영어]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![글로벌 CS·고객 경험(CX) 전문가의 영문 이력서: '친절' 대신 '수익 기여'를 증명하는 법](/generated/customer-success-resume-revenue-impact-strategy-2026-hero-fix.jpg)
 
 글로벌 기업의 채용 담당자가 한국인 지원자의 CS(Customer Service) 이력서를 열었을 때 가장 먼저 느끼는 감정은 '당혹감'이다. 한국의 수많은 경력자가 자신의 강점으로 '성실함', '친절한 응대', '고객 만족'을 내세우지만, 2026년 현재 글로벌 시장에서 요구하는 CX(Customer Experience) 전문가의 자질은 이와 궤를 달리한다. 
 

@@ -2,7 +2,7 @@
 title: "공고 없는 포지션을 쟁취하는 'Hidden Job' 공략법: 2026년 하이링 매니저를 움직이는 영문 이력서의 '첫 문장'"
 description: "80%의 핵심 포지션은 공고 전 채워진다. 하이링 매니저의 Pain Point를 꿰뚫는 '문제 해결형 요약문' 작성법부터 ATS 최적화 전략까지, 합격 확률을 300% 높이는 영문 이력서 필승 전략을 공개한다."
 date: 1773967536866
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/hidden-job-market-resume-hook-strategy-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "하이든잡", "커리어전략", "ATS최적화", "리쥬메", "글로벌이직"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![공고 없는 포지션을 쟁취하는 'Hidden Job' 공략법: 2026년 하이링 매니저를 움직이는 영문 이력서의 '첫 문장'](/generated/hidden-job-market-resume-hook-strategy-2026-hero-fix.jpg)
 
 글로벌 채용 시장에서 '공고가 올라올 때까지 기다리는 행위'는 사실상 탈락을 예약하는 것과 다름없다. 2026년 현재, 구글(Google), 아마존(Amazon), 메타(Meta)와 같은 빅테크 기업을 포함한 글로벌 기업의 핵심 포지션 중 약 70~80%는 공개 채용 시장에 나오기도 전에 내부 추천이나 하이링 매니저의 다이렉트 소싱으로 채워진다. 이를 이른바 **'히든 잡 마켓(Hidden Job Market)'**이라 부른다.
 

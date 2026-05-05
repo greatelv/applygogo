@@ -2,7 +2,7 @@
 title: "日本式の『頑張りました』は通用しない。2026年韓国就職で問われる『数字で殴る』履歴書戦略"
 description: "TOPIK 6級でも落ちる理由を知っていますか？2026年の韓国就職で勝つために必要なのは「謙虚さ」ではなく「数字」です。AI選考を突破し、サムスンやカカオから内定を勝ち取るための履歴書戦略を徹底解説。"
 date: 2026-03-18T09:00:00Z
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/japanese-process-vs-korean-performance-resume-strategy-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書", "海外就職", "キャリア", "自己紹介書"]

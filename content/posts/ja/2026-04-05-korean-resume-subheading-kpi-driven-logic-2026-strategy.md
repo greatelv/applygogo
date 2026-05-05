@@ -2,7 +2,7 @@
 title: "【2026年最新】韓国企業は「見出し」で合否を決める。日本式ラベルから「KPI型小タイトル」へ今すぐ変換せよ"
 description: "韓国就職の書類選考で落ちる原因は「見出し」にあります。日本式の抽象的な表現はAIスクリーニングで即不合格。SamsungやCoupangが求める「KPI型小タイトル」への書き換え戦略をApplyGoGoが徹底解説します。"
 date: 2026-04-05
-thumbnail: "/generated/korea-resume-kpi-headings-hero.jpg"
+thumbnail: "/generated/korean-resume-subheading-kpi-driven-logic-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "キャリアアップ", "海外転職"]

@@ -2,7 +2,7 @@
 title: "The 'Solo Star' Rejection: Why Your High-Performance Western CV Sounds Like a 'Flight Risk' to Korean HR"
 description: "High-performers often fail in the Korean job market because their resumes scream 'Individualist.' Learn how to pivot your 'I'-centric success into the 'Humble Expert' tone Korean HR demands in 2026."
 date: 2026-03-29
-thumbnail: "/generated/solo-star-rejection-hero.jpg"
+thumbnail: "/generated/why-solo-superstar-resumes-fail-korean-hr-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Work in Korea", "Korean Resume Tips", "Jagisogaeseo", "E-7 Visa", "Job Search Strategy"]

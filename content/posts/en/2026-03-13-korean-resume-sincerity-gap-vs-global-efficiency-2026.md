@@ -2,7 +2,7 @@
 title: "The 'Sincerity' Gap: Why your 1-Page Global CV feels like a 'Low-Effort' spam to Korean HR in 2026"
 description: "In the competitive Korean job market, efficiency can be mistaken for a lack of effort. Learn why your high-impact 1-page resume is getting you ghosted and how to master the art of 'Jeong-seong' to land offers at Samsung, Kakao, and Coupang."
 date: 2026-03-13T09:00:00Z
-thumbnail: "/generated/the-sincerity-gap-korean-resume-hero.jpg"
+thumbnail: "/generated/korean-resume-sincerity-gap-vs-global-efficiency-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Working in Korea", "Career Strategy"]

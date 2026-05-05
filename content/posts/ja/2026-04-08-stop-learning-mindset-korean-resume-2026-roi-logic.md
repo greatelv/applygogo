@@ -2,7 +2,7 @@
 title: "「御社で学びたい」は即不合格。2026年韓国採用市場が履歴書に求めるのは「志望動機」ではなく「収益への最短ルート」だ。"
 description: "韓国就職を目指す日本人が陥る「謙虚さの罠」を徹底解説。2026年の韓国採用市場でSamsungやCoupangが求める、数値に基づいたROI（投資回収率）の提示方法と、ApplyGoGoによる戦略的な履歴書変換術を伝授します。"
 date: 2026-04-08
-thumbnail: "/generated/2026-korea-career-strategy-hero.jpg"
+thumbnail: "/generated/stop-learning-mindset-korean-resume-2026-roi-logic-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "履歴書対策", "自己紹介書", "海外転職", "韓国キャリア"]

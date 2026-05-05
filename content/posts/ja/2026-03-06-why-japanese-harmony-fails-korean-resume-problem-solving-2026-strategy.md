@@ -2,7 +2,7 @@
 title: "協調性アピールは不合格フラグ？2026年韓国就職、「和を尊ぶ」日本人が自己紹介書で陥る“受動的”の罠"
 description: "「和を尊ぶ」日本の美徳が、韓国就職では致命的な弱点に？2026年の韓国採用トレンドを徹底解説。協調性を『解決力』に変換し、書類選考を確実に突破するApplyGoGo式の戦略を伝授します。"
 date: 2026-03-06
-thumbnail: "/generated/2026-korea-resume-trap-hero.jpg"
+thumbnail: "/generated/why-japanese-harmony-fails-korean-resume-problem-solving-2026-strategy-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "韓国転職", "ApplyGoGo"]

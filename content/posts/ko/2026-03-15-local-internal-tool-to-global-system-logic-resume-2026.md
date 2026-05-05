@@ -2,7 +2,7 @@
 title: "한국형 사내 툴(Internal Tool) 경험의 반전: '로컬 경력'을 글로벌 테크 기업이 탐내는 '시스템 로직'으로 바꾸는 법"
 description: "국내 기업 특유의 자체 시스템 사용 경험이 해외 취업의 장애물이라 생각했다면 오산이다. '툴의 이름'이 아닌 '비즈니스 로직'으로 재정의하여 글로벌 채용 담당자의 눈길을 사로잡는 이력서 리브랜딩 전략을 공개한다."
 date: 1773535945767
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/local-internal-tool-to-global-system-logic-resume-2026-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["영문이력서", "해외취업", "경력기술서", "ATS최적화", "커리어전략", "시스템로직"]
@@ -11,7 +11,7 @@ targetLink: "https://applygogo.com"
 isSponsored: false
 ---
 
-![HERO](HERO_PLACEHOLDER)
+![한국형 사내 툴(Internal Tool) 경험의 반전: '로컬 경력'을 글로벌 테크 기업이 탐내는 '시스템 로직'으로 바꾸는 법](/generated/local-internal-tool-to-global-system-logic-resume-2026-hero-fix.jpg)
 
 ## 사내 툴 사용 경험이 '독'이 되는가, '득'이 되는가?
 

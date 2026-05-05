@@ -2,7 +2,7 @@
 title: "自己紹介書の「成長過程」に家族の話は不要。韓国企業が2026年に求める『職務DNA』への書き換え戦略"
 description: "韓国就職を目指す日本人が陥る最大の罠「成長過程」。2026年の採用トレンドは『家族の教え』ではなく『職務DNA』です。ApplyGoGoが、不合格になる日本的エピソードを韓国式合格戦略へと精密に変換します。"
 date: 2026-04-09
-thumbnail: "/generated/korea-resume-strategy-2026-hero.jpg"
+thumbnail: "/generated/korean-resume-growth-process-job-dna-vs-family-story-2026-hero-fix.jpg"
 author: "ApplyGoGo Team"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["韓国就職", "韓国履歴書", "自己紹介書", "キャリアアップ", "ApplyGoGo"]

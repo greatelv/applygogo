@@ -2,7 +2,7 @@
 title: "The 'English-Friendly' Trap: Why Global Startups in Seoul Still Ghost Your English Resume in March 2026"
 description: "Discover why a global-standard English CV is no longer enough for the competitive Seoul tech scene. Learn how the hidden 'Jagisogaeseo' requirement determines your success in Pangyo and Teheran-ro."
 date: 2026-03-19T09:00:00Z
-thumbnail: "/generated/english-friendly-trap-hero.jpg"
+thumbnail: "/generated/english-friendly-korean-job-trap-resume-localization-2026-hero-fix.jpg"
 author: "ApplyGoGo Senior Career Consultant"
 officialWebsiteUrl: "https://applygogo.com"
 tags: ["Korean Job Market", "Resume Tips", "Jagisogaeseo", "Living in Korea", "Pangyo Tech Hub"]

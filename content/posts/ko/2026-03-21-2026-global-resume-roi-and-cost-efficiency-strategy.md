@@ -2,7 +2,7 @@
 title: "성장보다 '효율'을 사는 2026 글로벌 채용 시장: 영문 이력서에서 'Cost-Efficiency'와 'ROI'를 극대화해 서술하는 법"
 description: "무조건적인 매출 성장을 자랑하던 시대는 끝났다. 2026년 글로벌 기업이 원하는 '지속 가능한 효율성'을 영문 이력서에 녹여내는 ROI 중심의 서술 전략과 ATS 통과 비법을 공개한다."
 date: 1774053796377
-thumbnail: "/placeholder.svg?height=600&width=1200"
+thumbnail: "/generated/2026-global-resume-roi-and-cost-efficiency-strategy-hero-fix.jpg"
 author: "고고지기"
 officialWebsiteUrl: "https://applygogo.com"
 tags: [영문이력서, 해외취업, 비즈니스영어, 커리어전략, ATS, ROI]
