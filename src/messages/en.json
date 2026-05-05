@@ -90,8 +90,16 @@
       "agencies": "Translation Agencies",
       "us": "ApplyGogo Agent",
       "rows": [
-        { "label": "Cost", "bad": "$100+", "good": "From $10" },
-        { "label": "Time", "bad": "3-5 Business Days", "good": "5 Minutes" },
+        {
+          "label": "Cost",
+          "bad": "$100+",
+          "good": "From $10"
+        },
+        {
+          "label": "Time",
+          "bad": "3-5 Business Days",
+          "good": "5 Minutes"
+        },
         {
           "label": "Expertise",
           "bad": "General Translators",
@@ -630,7 +638,10 @@
         "beta": "Coming soon",
         "purchase": "Refill Credits",
         "test": "Refill Credits (Test)",
-        "features": ["Refill {credits} Credits", "No expiration"]
+        "features": [
+          "Refill {credits} Credits",
+          "No expiration"
+        ]
       }
     },
     "notices": {
@@ -1052,6 +1063,15 @@
       "title": "All Articles",
       "subtitle": "Check out the latest news and career tips from ApplyGogo",
       "empty": "No posts yet."
+    },
+    "fallbackBanner": {
+      "message": "This article is only available in {language}. We have not translated it into your language yet.",
+      "browseAll": "Browse all articles →",
+      "languageName": {
+        "ko": "Korean",
+        "en": "English",
+        "ja": "Japanese"
+      }
     }
   }
 }

@@ -1,7 +1,12 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Image from "next/image";
 import { Calendar, Tag } from "lucide-react";
-import { getAllPostSlugs, getPostBySlug } from "@/lib/markdown";
+import {
+  getAllPostSlugs,
+  getAvailableLocalesForSlug,
+  getPostBySlug,
+} from "@/lib/markdown";
+import { CrossLocaleFallbackBanner } from "@/app/components/blog/cross-locale-fallback-banner";
 import { markdownToHtml } from "@/lib/markdown-to-html";
 import {
   generateArticleSchema,
@@ -21,6 +26,7 @@ interface PostPageProps {
     locale: string;
     slug: string;
   }>;
+  searchParams?: Promise<{ from?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -80,13 +86,35 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({ params }: PostPageProps) {
+const LOCALE_PRIORITY = ["ko", "en", "ja"];
+
+function pickFallbackLocale(available: string[], current: string): string | null {
+  return (
+    LOCALE_PRIORITY.find((l) => l !== current && available.includes(l)) ?? null
+  );
+}
+
+export default async function PostPage({
+  params,
+  searchParams,
+}: PostPageProps) {
   const { locale, slug } = await params;
   const post = getPostBySlug(slug, locale);
 
   if (!post) {
+    const available = getAvailableLocalesForSlug(slug);
+    const fallback = pickFallbackLocale(available, locale);
+    if (fallback) {
+      permanentRedirect(`/${fallback}/blog/${slug}?from=${locale}`);
+    }
     notFound();
   }
+
+  const fromLocale = (await searchParams)?.from;
+  const showFallbackBanner =
+    !!fromLocale &&
+    fromLocale !== locale &&
+    ["ko", "en", "ja"].includes(fromLocale);
 
   const contentHtml = await markdownToHtml(post.content);
   const articleSchema = generateArticleSchema(post.frontmatter);
@@ -104,6 +132,12 @@ export default async function PostPage({ params }: PostPageProps) {
       />
 
       <BlogHeader />
+      {showFallbackBanner && (
+        <CrossLocaleFallbackBanner
+          requestedLocale={fromLocale!}
+          articleLocale={locale}
+        />
+      )}
       <article className="min-h-screen">
         {/* Hero Image */}
         <div className="relative w-full aspect-[21/9] max-h-[500px] overflow-hidden bg-muted/30">

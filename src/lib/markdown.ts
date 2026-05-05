@@ -28,6 +28,19 @@ function getPostsDirectory(locale: string): string {
   return path.join(process.cwd(), "content/posts", locale);
 }
 
+const SUPPORTED_LOCALES = ["ko", "en", "ja"] as const;
+
+// Returns the locales (ko/en/ja) where this slug exists as a markdown file.
+export function getAvailableLocalesForSlug(slug: string): string[] {
+  return SUPPORTED_LOCALES.filter((locale) => {
+    const dir = getPostsDirectory(locale);
+    return (
+      fs.existsSync(path.join(dir, `${slug}.md`)) ||
+      fs.existsSync(path.join(dir, `${slug}.mdx`))
+    );
+  });
+}
+
 // Get all post slugs for a specific locale
 export function getAllPostSlugs(locale: string): string[] {
   const postsDirectory = getPostsDirectory(locale);
